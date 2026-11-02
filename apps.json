@@ -1,5 +1,11 @@
 [
   {
+    "slug": "belagsaufbau",
+    "title": "Belagsaufbau von Wegen und Plätzen (EFZ 2)",
+    "description": "19 Übungen zu Planum, Fundation, Verkehrslast, Einfassungen, Verlegemuster, Materialien und Mengenrechnen.",
+    "added": "2026-11-02"
+  },
+  {
     "slug": "test",
     "title": "Test-App",
     "description": "Kleines Quiz, um den automatischen Ablauf zu prüfen.",

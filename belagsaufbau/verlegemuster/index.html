@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verlegemuster erkennen</title><style>
+:root{--ink:#26302b;--muted:#5d6a63;--accent:#7a5a3a;--green:#3f7d4e;--red:#b04a4a;--card:#fffdf8;--line:#d9cfba}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#f1ead8;
+ background-image:repeating-linear-gradient(0deg,rgba(122,90,58,.07) 0 2px,transparent 2px 46px),repeating-linear-gradient(90deg,rgba(122,90,58,.07) 0 2px,transparent 2px 92px);min-height:100vh}
+.top{background:linear-gradient(#5b4630,#7a5a3a);color:#fff;padding:.8rem 1rem}
+.top a{color:#ffe9c2;text-decoration:none;font-size:.95rem}
+.wrap{max-width:720px;margin:0 auto;padding:1rem}
+h1{font-size:1.45rem;margin:.2rem 0 .4rem}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.2rem 0 .8rem}
+.chip{background:#e8dcc0;border:1px solid var(--line);border-radius:999px;padding:.12rem .6rem;font-size:.8rem;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:1rem}
+.bar{height:8px;background:#e5dcc6;border-radius:6px;overflow:hidden;margin:.3rem 0 1rem}.bar>i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+.q{font-size:1.12rem;font-weight:700;margin:.2rem 0 .8rem;line-height:1.35}
+.opt,.btn{display:block;width:100%;text-align:left;font:inherit;padding:.85rem 1rem;margin:.45rem 0;border:2px solid var(--line);background:#fff;border-radius:12px;cursor:pointer;min-height:48px;color:inherit}
+.btn{text-align:center;background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+.btn.sec{background:#fff;color:var(--accent)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.ok{background:#d8eedd;border-color:var(--green)}.opt.no{background:#f6dcdc;border-color:var(--red)}
+.why{margin:.8rem 0;padding:.7rem .9rem;background:#fff7dc;border-left:4px solid #e0b43a;border-radius:8px;font-size:.95rem}
+.img{display:block;max-width:100%;max-height:260px;margin:.2rem auto .8rem;border:1px solid var(--line);border-radius:8px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.m{padding:.7rem .6rem;border:2px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font:inherit;text-align:left;min-height:48px;color:inherit}
+.m.sel{border-color:var(--accent);background:#fbeccd}.m.done{background:#d8eedd;border-color:var(--green);cursor:default}.m.bad{background:#f6dcdc;border-color:var(--red)}
+.ord{display:flex;align-items:center;gap:.5rem;background:#fff;border:2px solid var(--line);border-radius:10px;padding:.5rem .7rem;margin:.4rem 0}
+.ord span{flex:1}.ord button{border:1px solid var(--line);background:#f4ecd6;border-radius:8px;width:44px;height:44px;font-size:1.2rem;cursor:pointer}
+.ord.ok{background:#d8eedd;border-color:var(--green)}.ord.no{background:#f6dcdc;border-color:var(--red)}
+input.num{font:inherit;font-size:1.3rem;padding:.6rem .8rem;width:100%;border:2px solid var(--line);border-radius:10px;margin:.3rem 0}
+label{font-weight:600;font-size:.9rem}select,input.fld{font:inherit;padding:.55rem;border:2px solid var(--line);border-radius:10px;width:100%;margin:.2rem 0 .7rem;background:#fff}
+.res{text-align:center}.res .big{font-size:2.6rem;font-weight:800;color:var(--green)}
+table.t{width:100%;border-collapse:collapse}table.t td,table.t th{border-bottom:1px solid var(--line);padding:.45rem .3rem;text-align:left;font-size:.95rem}
+</style></head><body>
+<div class="top"><a href="../">← Belagsaufbau von Wegen und Plätzen</a> &nbsp;·&nbsp; <a href="../../">Alle Apps</a></div>
+<div class="wrap"><h1>🔷 Verlegemuster erkennen</h1><div class="chips"><span class="chip">L176</span></div><p style="color:var(--muted);margin-top:0">Wie heisst das Muster? Dazu Fragen zu Fugenbild und Verschnitt.</p><div id="app"></div></div>
+<script>const CFG={"type": "quiz", "title": "Verlegemuster erkennen", "questions": [{"q": "Wie heisst dieses Verlegemuster?", "opts": ["Mosaik / formwild", "Englisches Fugenmuster", "Reihenpflästerung", "Schuppenpflästerung"], "a": 0, "why": "Formwild (Mosaik): Platten werden von Hand zugeschnitten oder zugeschlagen.", "img": "tiles/mosaik.png"}, {"q": "Welches Fugenmuster besteht aus Bahnen gleicher oder verschiedener Breite?", "opts": ["Mosaik", "Englisches Fugenmuster", "Kreispflästerung", "Schuppenpflästerung"], "a": 1, "why": "Englisches Fugenmuster: Platten in Bahnen, gleich breit oder verschieden breit."}, {"q": "Bei welchem Fugenbild gibt es Platten verschiedener Breiten und Längen?", "opts": ["Englisches Fugenmuster", "Reihenpflästerung", "Schottisches (römisches) Fugenbild", "Mosaik"], "a": 2, "why": "Schottisch/römisch: Platten verschiedener Breiten und Längen, es gibt keine durchlaufenden Längsfugen."}, {"q": "Wie heisst dieses Muster?", "opts": ["Reihenpflästerung", "Kreispflästerung", "Mosaik", "Englisches Fugenmuster"], "a": 0, "why": "Reihenpflästerung: Steine in geraden Reihen.", "img": "tiles/reihe.png"}, {"q": "Wie heisst dieses Muster?", "opts": ["Schuppenpflästerung", "Reihenpflästerung", "Kreispflästerung", "Schottisches Fugenbild"], "a": 2, "why": "Kreispflästerung: Steine in konzentrischen Kreisen.", "img": "tiles/kreis.png"}, {"q": "Wie heisst dieses Muster?", "opts": ["Kreispflästerung", "Schuppenpflästerung", "Mosaik", "Englisches Fugenmuster"], "a": 1, "why": "Schuppenpflästerung: Bogen wie Fischschuppen.", "img": "tiles/schuppen.png"}, {"q": "Wie viel Verlust (Verhau) rechnet J5 bei Mosaik/formwild mit?", "opts": ["Bis 5 %", "Bis 10 %", "Bis 25 %", "Keinen"], "a": 2, "why": "Je nach Bearbeitungsart bis zu 25 %. Eine Tonne Gneisplatten ergibt ca. 8 m² unbearbeitete Platten."}, {"q": "Welche Fuge soll bei Natursteinplatten <b>vermieden</b> werden?", "opts": ["Versetzte Fugen", "Kreuzfugen", "Fugen mit Fugensand", "Fugen ≥ 3 mm"], "a": 1, "why": "Keine Kreuzfugen, keine Spinnenfugen (mehr als 4 Fugen), keine Schlangenfugen."}, {"q": "Wie gross soll der Fugenversatz mindestens sein?", "opts": ["2 cm", "5 cm", "10 cm oder 1/3 der Kantenlänge", "50 cm"], "a": 2, "why": "Fugenversatz nicht kleiner als 10 cm oder 1/3 der Kantenlänge."}, {"q": "Wie breit sind offene Fugen bei Betonplatten mit Fugenkreuzen laut J5?", "opts": ["Keine Fuge", "1 mm", "3 bis 8 mm", "3 cm"], "a": 2, "why": "Offene Fugen 3 bis 8 mm, mit Fugenkreuzen verlegt."}], "slug": "verlegemuster"};</script><script>
+const $=s=>document.querySelector(s);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const rnd=(a)=>a[Math.floor(Math.random()*a.length)];
+const KEY='belag:'+CFG.slug;
+function save(p){try{const o=JSON.parse(localStorage.getItem(KEY)||'{}');if(!o.best||p>o.best)o.best=p;o.last=p;localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+const root=$('#app');
+function finish(score,total,extra){
+ const p=Math.round(100*score/total);save(p);
+ root.innerHTML=`<div class="card res"><div class="big">${score} / ${total}</div><p>${p>=80?'Sehr gut! 🎉':p>=60?'Gut, noch etwas üben 💪':'Schau dir die Erklärungen nochmals an 📖'}</p>${extra||''}<button class="btn" onclick="start()">Nochmals versuchen</button><button class="btn sec" onclick="location.href='../'">← Zurück zur Übersicht</button></div>`;
+}
+function pb(i,n){return `<div class="bar"><i style="width:${100*i/n}%"></i></div><small>${Math.min(i+1,n)} von ${n}</small>`}
+
+/* ---------- QUIZ ---------- */
+function quiz(){
+ const qs=shuffle(CFG.questions).slice(0,CFG.count||CFG.questions.length);let i=0,score=0;
+ function show(){
+  if(i>=qs.length)return finish(score,qs.length);
+  const q=qs[i];const idx=shuffle(q.opts.map((_,k)=>k));
+  root.innerHTML=`<div class="card">${pb(i,qs.length)}${q.img?`<img class="img" src="${q.img}" alt="Abbildung">`:''}<div class="q">${q.q}</div><div id="o"></div><div id="w"></div></div>`;
+  idx.forEach(k=>{const b=document.createElement('button');b.className='opt';b.innerHTML=q.opts[k];b.onclick=()=>{
+    document.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+    const ok=k===q.a;if(ok)score++;b.classList.add(ok?'ok':'no');
+    document.querySelectorAll('.opt').forEach((x,n)=>{if(idx[n]===q.a)x.classList.add('ok')});
+    $('#w').innerHTML=`<div class="why">${ok?'✅ Richtig. ':'❌ Nicht ganz. '}${q.why||''}</div><button class="btn" id="nx">${i+1<qs.length?'Weiter →':'Resultat'}</button>`;
+    $('#nx').onclick=()=>{i++;show()}};$('#o').append(b)});
+ }show();
+}
+
+/* ---------- MATCH ---------- */
+function match(){
+ const pairs=CFG.pairs;let L=shuffle(pairs.map((p,k)=>({t:p[0],k}))),R=shuffle(pairs.map((p,k)=>({t:p[1],k})));
+ let sel=null,errors=0,found=0;
+ root.innerHTML=`<div class="card"><div class="q">${CFG.task||'Ordne zu: Tippe links einen Begriff an, dann rechts den passenden.'}</div><div class="cols"><div id="l"></div><div id="r"></div></div><p id="s"></p></div>`;
+ const mk=(arr,host,side)=>arr.forEach(o=>{const b=document.createElement('button');b.className='m';b.innerHTML=o.t;b.dataset.k=o.k;b.dataset.side=side;b.style.marginBottom='.5rem';b.style.width='100%';
+  b.onclick=()=>{if(b.classList.contains('done'))return;
+   if(side==='l'){document.querySelectorAll('#l .m').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sel=b;return}
+   if(!sel){$('#s').textContent='Wähle zuerst links einen Begriff.';return}
+   if(sel.dataset.k===b.dataset.k){sel.classList.remove('sel');sel.classList.add('done');b.classList.add('done');sel=null;found++;$('#s').textContent=`${found} von ${pairs.length} gefunden`;
+     if(found===pairs.length)setTimeout(()=>finish(Math.max(0,pairs.length-errors),pairs.length,`<p>Fehlversuche: ${errors}</p>`),400)}
+   else{errors++;b.classList.add('bad');setTimeout(()=>b.classList.remove('bad'),600);$('#s').textContent='Das passt nicht. Fehlversuche: '+errors}}
+  $(host).append(b)});
+ mk(L,'#l','l');mk(R,'#r','r');
+}
+
+/* ---------- ORDER ---------- */
+function order(){
+ let cur=shuffle(CFG.items.map((t,k)=>({t,k})));
+ root.innerHTML=`<div class="card"><div class="q">${CFG.task}</div><small>${CFG.top||''}</small><div id="list"></div><small>${CFG.bottom||''}</small><button class="btn" id="chk">Prüfen</button><div id="fb"></div></div>`;
+ let tries=0;
+ function draw(res){const h=$('#list');h.innerHTML='';cur.forEach((o,n)=>{const d=document.createElement('div');d.className='ord'+(res?(o.k===n?' ok':' no'):'');
+  d.innerHTML=`<span>${o.t}</span>`;const u=document.createElement('button');u.textContent='↑';u.onclick=()=>{if(n>0){[cur[n-1],cur[n]]=[cur[n],cur[n-1]];draw()}};
+  const dn=document.createElement('button');dn.textContent='↓';dn.onclick=()=>{if(n<cur.length-1){[cur[n+1],cur[n]]=[cur[n],cur[n+1]];draw()}};d.append(u,dn);h.append(d)})}
+ draw();
+ $('#chk').onclick=()=>{tries++;draw(true);const ok=cur.filter((o,n)=>o.k===n).length;
+  if(ok===cur.length){$('#fb').innerHTML=`<div class="why">✅ Alles richtig! ${CFG.why||''}</div><button class="btn" id="d">Fertig</button>`;$('#d').onclick=()=>finish(Math.max(1,cur.length-(tries-1)),cur.length)}
+  else $('#fb').innerHTML=`<div class="why">${ok} von ${cur.length} an der richtigen Stelle. Grün = richtig, rot = falsch. Verschiebe und prüfe erneut.</div>`}
+}
+
+/* ---------- CALC ---------- */
+const TAB={ZP:[30,20,10],T1:[50,30,20],T2:[60,35,25],T3:[60,35,25]};
+const GENS={
+ fund(){const k=rnd(['ZP','T1','T2','T3']),s=rnd([1,2,3]);return{q:`Verkehrslastklasse <b>${k}</b>, Untergrund <b>S${s}</b>: Welche Mindeststärke hat die Fundation (in cm)?`,a:TAB[k][s-1],u:'cm',tol:0,why:`Tabelle J5: ${k} / S${s} = ${TAB[k][s-1]} cm.`}},
+ bankett(){const F=rnd([20,25,30,35,40]);const t=rnd([0,1,2]);
+  if(t==0)return{q:`Fundationsstärke F = <b>${F} cm</b>. Wie breit ist das Bankett (in cm)?`,a:F/2,u:'cm',tol:0,why:`Bankett = F/2 = ${F/2} cm.`};
+  if(t==1)return{q:`F = <b>${F} cm</b>. Wie breit ist die Böschung (Böschung 2:3, Höhe = F) in cm?`,a:1.5*F,u:'cm',tol:0,why:`Breite = 1.5 × F = ${1.5*F} cm.`};
+  return{q:`F = <b>${F} cm</b>. Wie weit liegt das Planum neben dem Belagsrand (in cm)?`,a:2*F,u:'cm',tol:0,why:`F/2 + 1.5 × F = 2 × F = ${2*F} cm.`}},
+ festlose(){const A=rnd([12,16.8,20,25.6,18,30]),d=rnd([0.2,0.25,0.3]);const fest=A*d;
+  if(Math.random()<.7)return{q:`Fläche <b>${A} m²</b>, Fundation <b>${d*100} cm</b> (fest). Wie viel Kiesgemisch musst du <b>lose</b> bestellen (m³)?`,a:Math.round(fest*1.25*100)/100,u:'m³',tol:0.05,why:`${A} × ${d} = ${fest.toFixed(2)} m³ fest × 1.25 = ${(fest*1.25).toFixed(2)} m³ lose.`};
+  const L=Math.round(fest*1.25*100)/100;return{q:`Geliefert wurden <b>${L} m³ lose</b>. Wie viel m³ sind das <b>fest</b> (verdichtet)?`,a:Math.round(L*0.8*100)/100,u:'m³',tol:0.05,why:`${L} × 0.80 = ${(L*0.8).toFixed(2)} m³ fest.`}},
+ keil(){const L=rnd([8,12,16,20,24,30]),k=rnd([['ZP',12],['T1',20]]);return{q:`Einfassung mit Betonkeil, Klasse <b>${k[0]}</b>, Länge <b>${L} m</b>. Wie viele <b>Liter</b> Beton brauchst du? (ZP: 12 l/m, T1: 20 l/m)`,a:L*k[1],u:'Liter',tol:0,why:`${L} m × ${k[1]} l/m = ${L*k[1]} Liter.`}},
+ einfass(){const s=rnd([['Naturstein-Pflasterstein 6/8',.045,.06],['Naturstein-Pflasterstein 8/11',.05,.07],['Naturstein-Pflasterstein 11/13',.06,.08],['Schalen-/Binderstein 10',.05,.075]]);const L=rnd([10,12,18,20,30]),z=rnd([1,2]);
+  return{q:`Einfassung mit <b>${s[0]}</b>, <b>${z==1?'einreihig':'zweireihig'}</b>, Länge <b>${L} m</b>. Wie viel Beton in m³? (einreihig ${s[1]} m³/m, zweireihig ${s[2]} m³/m)`,a:Math.round(L*s[z]*1000)/1000,u:'m³',tol:0.01,why:`${L} × ${s[z]} = ${(L*s[z]).toFixed(3)} m³.`}},
+ verschnitt(){const A=rnd([16.8,20,25.6,12,30]),p=rnd([5,10,15,25]);return{q:`Belagsfläche <b>${A} m²</b>, Verschnitt-Zuschlag <b>${p} %</b>. Wie gross ist die Bestellfläche (m²)?`,a:Math.round(A*(1+p/100)*100)/100,u:'m²',tol:0.05,why:`${A} × ${(1+p/100).toFixed(2)} = ${(A*(1+p/100)).toFixed(2)} m².`}},
+ gefaelle(){const L=rnd([4,5,6,8,10,14]),g=rnd([1.5,2,2.5]);return{q:`Weg <b>${L} m</b> lang mit <b>${g} %</b> Gefälle. Wie gross ist der Höhenunterschied (in cm)?`,a:Math.round(L*g*10)/10,u:'cm',tol:0.1,why:`${g} % = ${g} cm pro m → ${L} × ${g} = ${L*g} cm.`}},
+ einheiten(){const t=rnd([0,1,2,3,4,5]);
+  const L=[()=>{const v=rnd([25,6.5,45,120,80]);return{q:`${v} cm = ? m`,a:v/100,u:'m',why:`${v} ÷ 100 = ${v/100} m.`}},
+   ()=>{const v=rnd([20,35,85,350]);return{q:`${v} Liter = ? m³`,a:v/1000,u:'m³',why:`${v} ÷ 1000 = ${v/1000} m³.`}},
+   ()=>{const v=rnd([0.35,0.085,1.8,0.02]);return{q:`${v} m³ = ? Liter`,a:Math.round(v*1000),u:'Liter',why:`${v} × 1000 = ${Math.round(v*1000)} Liter.`}},
+   ()=>{const v=rnd([3,8,50,12]);return{q:`${v} mm = ? cm`,a:v/10,u:'cm',why:`${v} ÷ 10 = ${v/10} cm.`}},
+   ()=>{const v=rnd([0.25,16.8,2]);return{q:`${v} m² = ? cm²`,a:Math.round(v*10000),u:'cm²',why:`${v} × 10 000 = ${Math.round(v*10000)} cm².`}},
+   ()=>{const v=rnd([1.2,0.45,2.5]);return{q:`${v} m = ? mm`,a:Math.round(v*1000),u:'mm',why:`${v} × 1000 = ${Math.round(v*1000)} mm.`}}][t]();
+  return Object.assign({tol:0.0001},L)}
+};
+function calc(){
+ const n=CFG.count||8;const qs=[];for(let i=0;i<n;i++){const g=rnd(CFG.gens);qs.push(GENS[g]())}
+ let i=0,score=0;
+ function show(){
+  if(i>=qs.length)return finish(score,qs.length);
+  const q=qs[i];
+  root.innerHTML=`<div class="card">${pb(i,qs.length)}<div class="q">${q.q}</div><input class="num" id="in" inputmode="decimal" placeholder="Antwort in ${q.u}" autocomplete="off"><button class="btn" id="ok">Prüfen</button><div id="w"></div></div>`;
+  const check=()=>{const v=parseFloat(String($('#in').value).replace(',','.'));if(isNaN(v))return;
+   const ok=Math.abs(v-q.a)<=Math.max(q.tol,1e-9);if(ok)score++;$('#in').disabled=true;
+   $('#w').innerHTML=`<div class="why">${ok?'✅ Richtig! ':'❌ Richtig wäre <b>'+q.a+' '+q.u+'</b>. '}${q.why}</div><button class="btn" id="nx">${i+1<qs.length?'Weiter →':'Resultat'}</button>`;
+   $('#ok').style.display='none';$('#nx').onclick=()=>{i++;show()};$('#nx').focus()};
+  $('#ok').onclick=check;$('#in').addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('#in').disabled)check()});$('#in').focus();
+ }show();
+}
+
+/* ---------- TOOL: Mengenrechner ---------- */
+function tool(){
+ root.innerHTML=`<div class="card"><label>Länge (m)</label><input class="fld" id="L" inputmode="decimal" value="14"><label>Breite (m)</label><input class="fld" id="B" inputmode="decimal" value="1.2">
+ <label>Verkehrslastklasse</label><select id="K"><option>ZP</option><option>T1</option><option>T2</option><option>T3</option></select>
+ <label>Tragfähigkeit Untergrund</label><select id="S"><option value="0">S1 (gering)</option><option value="1" selected>S2 (mittel)</option><option value="2">S3 (hoch)</option></select>
+ <label>Verschnitt Belag (%)</label><input class="fld" id="V" inputmode="decimal" value="5"></div><div class="card" id="o"></div>`;
+ const f=()=>{const L=parseFloat($('#L').value.replace(',','.'))||0,B=parseFloat($('#B').value.replace(',','.'))||0,V=parseFloat($('#V').value.replace(',','.'))||0;
+  const F=TAB[$('#K').value][+$('#S').value];const A=L*B;const fest=A*F/100;
+  const teil=F>25?`2 Lagen (z. B. ${F-5} cm + 5 cm Ausgleichsschicht)`:'1 Lage';
+  $('#o').innerHTML=`<table class="t"><tr><th>Fläche</th><td>${A.toFixed(2)} m²</td></tr><tr><th>Fundationsstärke F</th><td><b>${F} cm</b> (${teil})</td></tr>
+  <tr><th>Bankett (F/2)</th><td>${F/2} cm</td></tr><tr><th>Planum neben Belagsrand (2 × F)</th><td>${2*F} cm je Seite</td></tr><tr><th>Planumsbreite</th><td>${(B+4*F/100).toFixed(2)} m (ohne Hausseite)</td></tr>
+  <tr><th>Fundation fest</th><td>${fest.toFixed(2)} m³</td></tr><tr><th>Fundation lose bestellen (× 1.25)</th><td><b>${(fest*1.25).toFixed(2)} m³</b></td></tr>
+  <tr><th>Belag bestellen (+${V} %)</th><td><b>${(A*(1+V/100)).toFixed(2)} m²</b></td></tr></table><p><small>Vereinfacht: ohne Bankett-Mehrmenge. Werte nach Lehrmittel J5.</small></p>`};
+ root.addEventListener('input',f);root.addEventListener('change',f);f();
+}
+function start(){({quiz,match,order,calc,tool})[CFG.type]()}
+document.title=CFG.title+' – Belagsaufbau';start();
+</script></body></html>
