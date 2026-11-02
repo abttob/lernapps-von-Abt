@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lernapps von Abt</title>
+  <style>
+    :root { --bg:#f4f1ea; --card:#fff; --ink:#23302a; --muted:#6b756f; --accent:#3f7d4e; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, sans-serif; background:var(--bg); color:var(--ink); }
+    header { padding: 3rem 1.5rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    h1 { margin: 0 0 .3rem; font-size: 2rem; }
+    header p { margin: 0; color: var(--muted); }
+    main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 3rem; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+    a.card { display:block; background:var(--card); border-radius:14px; padding:1.2rem 1.3rem; text-decoration:none; color:inherit; box-shadow:0 1px 3px rgba(0,0,0,.08); border-left:5px solid var(--accent); transition: transform .15s; }
+    a.card:hover { transform: translateY(-2px); }
+    a.card h2 { margin:0 0 .4rem; font-size:1.15rem; }
+    a.card p { margin:0; color:var(--muted); font-size:.95rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Lernapps von Abt</h1>
+    <p>Alle Apps auf einen Blick</p>
+  </header>
+  <main id="apps"><p>Lade Apps …</p></main>
+  <script>
+    fetch('apps.json')
+      .then(r => r.json())
+      .then(apps => {
+        const el = document.getElementById('apps');
+        el.innerHTML = '';
+        apps.slice().reverse().forEach(a => {
+          const card = document.createElement('a');
+          card.className = 'card';
+          card.href = a.slug + '/';
+          const h = document.createElement('h2'); h.textContent = a.title;
+          const p = document.createElement('p'); p.textContent = a.description;
+          card.append(h, p);
+          el.append(card);
+        });
+      })
+      .catch(() => { document.getElementById('apps').textContent = 'Apps konnten nicht geladen werden.'; });
+  </script>
+</body>
+</html>

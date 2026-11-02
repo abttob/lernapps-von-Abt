@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test-App</title>
+  <style>
+    body { margin:0; font-family: system-ui, sans-serif; background:#f4f1ea; color:#23302a; display:grid; place-items:center; min-height:100vh; }
+    .box { background:#fff; padding:2rem; border-radius:14px; max-width:420px; width:90%; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+    button { display:block; width:100%; margin:.5rem 0; padding:.8rem; border:1px solid #ccd3cd; border-radius:10px; background:#fff; font-size:1rem; cursor:pointer; }
+    button.ok { background:#d8eedd; border-color:#3f7d4e; }
+    button.no { background:#f6dcdc; border-color:#b04a4a; }
+    a { color:#3f7d4e; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Test-App ✅</h1>
+    <p>Wenn du das siehst, funktioniert der automatische Ablauf.</p>
+    <p><strong>Welche Schicht liegt direkt unter einem Pflasterbelag?</strong></p>
+    <button data-ok="0">Planie</button>
+    <button data-ok="1">Bettung (Splitt/Sand)</button>
+    <button data-ok="0">Untergrund</button>
+    <p id="msg"></p>
+    <p><a href="../">← Alle Apps</a></p>
+  </div>
+  <script>
+    document.querySelectorAll('button').forEach(b => b.onclick = () => {
+      const ok = b.dataset.ok === '1';
+      b.className = ok ? 'ok' : 'no';
+      document.getElementById('msg').textContent = ok ? 'Richtig!' : 'Leider falsch – versuch es nochmal.';
+    });
+  </script>
+</body>
+</html>
