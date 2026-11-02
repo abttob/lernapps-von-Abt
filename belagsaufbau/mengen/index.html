@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mengen: fest, lose und Fahrten</title><style>
+<title>Mengen, Fahrten und Kosten</title><style>
 :root{--ink:#26302b;--muted:#5d6a63;--accent:#7a5a3a;--green:#3f7d4e;--red:#b04a4a;--card:#fffdf8;--line:#d9cfba}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#f1ead8;
@@ -29,19 +29,22 @@ h1{font-size:1.45rem;margin:.2rem 0 .4rem}
 .ord.ok{background:#d8eedd;border-color:var(--green)}.ord.no{background:#f6dcdc;border-color:var(--red)}
 input.num{font:inherit;font-size:1.3rem;padding:.6rem .8rem;width:100%;border:2px solid var(--line);border-radius:10px;margin:.3rem 0}
 label{font-weight:600;font-size:.9rem}select,input.fld{font:inherit;padding:.55rem;border:2px solid var(--line);border-radius:10px;width:100%;margin:.2rem 0 .7rem;background:#fff}
-.res{text-align:center}.res .big{font-size:2.6rem;font-weight:800;color:var(--green)}
+.res{text-align:center}.stg{display:flex;align-items:center;gap:.4rem;margin:0 0 .6rem}.stg span{width:26px;height:26px;border-radius:50%;background:#e5dcc6;display:grid;place-items:center;font-size:.8rem;font-weight:700}.stg span.d{background:var(--green);color:#fff}.stg span.a{background:var(--accent);color:#fff}.stg b{font-size:.9rem;margin-left:.3rem}
+.res .big{font-size:2.6rem;font-weight:800;color:var(--green)}
 table.t{width:100%;border-collapse:collapse}table.t td,table.t th{border-bottom:1px solid var(--line);padding:.45rem .3rem;text-align:left;font-size:.95rem}
 </style></head><body>
 <div class="top"><a href="../">← Belagsaufbau von Wegen und Plätzen</a> &nbsp;·&nbsp; <a href="../../">Alle Apps</a></div>
-<div class="wrap"><h1>🚛 Mengen: fest, lose und Fahrten</h1><div class="chips"><span class="chip">L168</span><span class="chip">L175</span></div><p style="color:var(--muted);margin-top:0">Kies wird lose bestellt, die Fundation fest gemessen: Auflockerungsfaktor 1.25, Verdichtung 0.80. Dazu die Anzahl Fahrten.</p><div id="app"></div></div>
-<script>const CFG={"type": "calc", "title": "Mengen: fest und lose", "gens": ["festlose", "aushub"], "count": 10, "slug": "mengen"};</script><script>
+<div class="wrap"><h1>🚛 Mengen, Fahrten und Kosten</h1><div class="chips"><span class="chip">L168</span><span class="chip">L175</span></div><p style="color:var(--muted);margin-top:0">Fest oder lose? Wie viele Fahrten? Was kostet es? Rechne wie auf einer echten Baustelle.</p><div id="stg"></div><div id="app"></div></div>
+<script>const CFG={"type": "multi", "title": "Mengen, Fahrten und Kosten", "slug": "mengen", "stages": [{"type": "calc", "title": "Fest und lose", "gens": ["festlose", "aushub"], "count": 8, "info": "fest × 1.25 = lose, lose × 0.80 = fest."}, {"type": "calc", "title": "Fahrten und Gewicht", "gens": ["fahrten", "gewicht"], "count": 6, "info": "Ein 3-Achser fasst 10 m³. Kiesgemisch lose: 1.71 t pro m³ (Richtwert)."}, {"type": "calc", "title": "Kosten (Preise 2026)", "gens": ["kosten"], "count": 6, "info": "Preise Kieswerk, ab Werk, ohne MWST."}, {"type": "tool", "title": "Mengenrechner (Werkzeug)", "info": "Probiere verschiedene Klassen und Untergründe aus."}]};</script><script>
 const $=s=>document.querySelector(s);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const rnd=(a)=>a[Math.floor(Math.random()*a.length)];
-const KEY='belag:'+CFG.slug;
+let C=CFG;const KEY='belag:'+CFG.slug;
 function save(p){try{const o=JSON.parse(localStorage.getItem(KEY)||'{}');if(!o.best||p>o.best)o.best=p;o.last=p;localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
 const root=$('#app');
+var HOOK=null;
 function finish(score,total,extra){
+ if(HOOK){return HOOK(score,total)}
  const p=Math.round(100*score/total);save(p);
  root.innerHTML=`<div class="card res"><div class="big">${score} / ${total}</div><p>${p>=80?'Sehr gut! 🎉':p>=60?'Gut, noch etwas üben 💪':'Schau dir die Erklärungen nochmals an 📖'}</p>${extra||''}<button class="btn" onclick="start()">Nochmals versuchen</button><button class="btn sec" onclick="location.href='../'">← Zurück zur Übersicht</button></div>`;
 }
@@ -49,7 +52,7 @@ function pb(i,n){return `<div class="bar"><i style="width:${100*i/n}%"></i></div
 
 /* ---------- QUIZ ---------- */
 function quiz(){
- const qs=shuffle(CFG.questions).slice(0,CFG.count||CFG.questions.length);let i=0,score=0;
+ const qs=shuffle(C.questions).slice(0,C.count||C.questions.length);let i=0,score=0;
  function show(){
   if(i>=qs.length)return finish(score,qs.length);
   const q=qs[i];const idx=shuffle(q.opts.map((_,k)=>k));
@@ -65,9 +68,9 @@ function quiz(){
 
 /* ---------- MATCH ---------- */
 function match(){
- const pairs=CFG.pairs;let L=shuffle(pairs.map((p,k)=>({t:p[0],k}))),R=shuffle(pairs.map((p,k)=>({t:p[1],k})));
+ const pairs=C.pairs;let L=shuffle(pairs.map((p,k)=>({t:p[0],k}))),R=shuffle(pairs.map((p,k)=>({t:p[1],k})));
  let sel=null,errors=0,found=0;
- root.innerHTML=`<div class="card"><div class="q">${CFG.task||'Ordne zu: Tippe links einen Begriff an, dann rechts den passenden.'}</div><div class="cols"><div id="l"></div><div id="r"></div></div><p id="s"></p></div>`;
+ root.innerHTML=`<div class="card"><div class="q">${C.task||'Ordne zu: Tippe links einen Begriff an, dann rechts den passenden.'}</div><div class="cols"><div id="l"></div><div id="r"></div></div><p id="s"></p></div>`;
  const mk=(arr,host,side)=>arr.forEach(o=>{const b=document.createElement('button');b.className='m';b.innerHTML=o.t;b.dataset.k=o.k;b.dataset.side=side;b.style.marginBottom='.5rem';b.style.width='100%';
   b.onclick=()=>{if(b.classList.contains('done'))return;
    if(side==='l'){document.querySelectorAll('#l .m').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sel=b;return}
@@ -81,15 +84,15 @@ function match(){
 
 /* ---------- ORDER ---------- */
 function order(){
- let cur=shuffle(CFG.items.map((t,k)=>({t,k})));
- root.innerHTML=`<div class="card"><div class="q">${CFG.task}</div><small>${CFG.top||''}</small><div id="list"></div><small>${CFG.bottom||''}</small><button class="btn" id="chk">Prüfen</button><div id="fb"></div></div>`;
+ let cur=shuffle(C.items.map((t,k)=>({t,k})));
+ root.innerHTML=`<div class="card"><div class="q">${C.task}</div><small>${C.top||''}</small><div id="list"></div><small>${C.bottom||''}</small><button class="btn" id="chk">Prüfen</button><div id="fb"></div></div>`;
  let tries=0;
  function draw(res){const h=$('#list');h.innerHTML='';cur.forEach((o,n)=>{const d=document.createElement('div');d.className='ord'+(res?(o.k===n?' ok':' no'):'');
   d.innerHTML=`<span>${o.t}</span>`;const u=document.createElement('button');u.textContent='↑';u.onclick=()=>{if(n>0){[cur[n-1],cur[n]]=[cur[n],cur[n-1]];draw()}};
   const dn=document.createElement('button');dn.textContent='↓';dn.onclick=()=>{if(n<cur.length-1){[cur[n+1],cur[n]]=[cur[n],cur[n+1]];draw()}};d.append(u,dn);h.append(d)})}
  draw();
  $('#chk').onclick=()=>{tries++;draw(true);const ok=cur.filter((o,n)=>o.k===n).length;
-  if(ok===cur.length){$('#fb').innerHTML=`<div class="why">✅ Alles richtig! ${CFG.why||''}</div><button class="btn" id="d">Fertig</button>`;$('#d').onclick=()=>finish(Math.max(1,cur.length-(tries-1)),cur.length)}
+  if(ok===cur.length){$('#fb').innerHTML=`<div class="why">✅ Alles richtig! ${C.why||''}</div><button class="btn" id="d">Fertig</button>`;$('#d').onclick=()=>finish(Math.max(1,cur.length-(tries-1)),cur.length)}
   else $('#fb').innerHTML=`<div class="why">${ok} von ${cur.length} an der richtigen Stelle. Grün = richtig, rot = falsch. Verschiebe und prüfe erneut.</div>`}
 }
 
@@ -107,6 +110,18 @@ const GENS={
  keil(){const L=rnd([8,12,16,20,24,30]),k=rnd([['ZP',12],['T1',20]]);return{q:`Einfassung mit Betonkeil, Klasse <b>${k[0]}</b>, Länge <b>${L} m</b>. Wie viele <b>Liter</b> Beton brauchst du? (ZP: 12 l/m, T1: 20 l/m)`,a:L*k[1],u:'Liter',tol:0,why:`${L} m × ${k[1]} l/m = ${L*k[1]} Liter.`}},
  einfass(){const s=rnd([['Naturstein-Pflasterstein 6/8',45,60],['Naturstein-Pflasterstein 8/11',50,70],['Naturstein-Pflasterstein 11/13',60,80],['Schalen-/Binderstein 10',50,75]]);const L=rnd([10,12,18,20,30]),z=rnd([1,2]);
   return{q:`Einfassung mit <b>${s[0]}</b>, <b>${z==1?'einreihig':'zweireihig'}</b>, Länge <b>${L} m</b>. Wie viel Beton in <b>Litern</b>? (einreihig ${s[1]} l/m, zweireihig ${s[2]} l/m)`,a:L*s[z],u:'Liter',tol:0,why:`${L} × ${s[z]} = ${L*s[z]} Liter (= ${(L*s[z]/1000).toFixed(3)} m³).`}},
+ fundlose(){const L=rnd([10,12,14,18,20]),B=rnd([1.0,1.2,1.5,2.0]),k=rnd(['ZP','T1','T2']),s=rnd([1,2,3]);const F=TAB[k][s-1];const fest=L*B*F/100;
+  return{q:`Weg <b>${L} m × ${B} m</b>, Klasse <b>${k}</b>, Untergrund <b>S${s}</b>. Wie viel Kiesgemisch bestellst du <b>lose</b> für die Fundation (m³, ohne Bankett)?`,a:Math.round(fest*1.25*100)/100,u:'m³',tol:0.05,why:`F = ${F} cm. ${L} × ${B} × ${F/100} = ${fest.toFixed(2)} m³ fest × 1.25 = ${(fest*1.25).toFixed(2)} m³ lose.`}},
+ planumbreite(){const B=rnd([1.0,1.2,1.5,2.5,3.2]),k=rnd(['ZP','T1','T2']),s=rnd([1,2,3]);const F=TAB[k][s-1];
+  return{q:`Belagsbreite <b>${B} m</b>, Klasse <b>${k}</b>, Untergrund <b>S${s}</b>. Wie breit muss das Planum sein, wenn der Weg auf <b>beiden Seiten</b> frei liegt (m)?`,a:Math.round((B+4*F/100)*100)/100,u:'m',tol:0.01,why:`F = ${F} cm. Planum = Belag + 2 × (2 × F) = ${B} + 4 × ${F/100} = ${(B+4*F/100).toFixed(2)} m.`}},
+ fahrten(){const A=rnd([20,25.6,30,45,60]),k=rnd(['ZP','T1','T2']),s=rnd([1,2]);const F=TAB[k][s-1];const lose=A*F/100*1.25;
+  return{q:`Platz <b>${A} m²</b>, Klasse <b>${k}</b>, Untergrund <b>S${s}</b>. Ein Lastwagen fasst <b>10 m³</b>. Wie viele Fahrten Kiesgemisch (lose) brauchst du mindestens?`,a:Math.ceil(lose/10-1e-9),u:'Fahrten',tol:0,why:`F = ${F} cm → ${A} × ${F/100} = ${(A*F/100).toFixed(2)} m³ fest × 1.25 = ${lose.toFixed(2)} m³ lose ÷ 10 = ${(lose/10).toFixed(2)} → aufrunden: ${Math.ceil(lose/10-1e-9)}.`}},
+ bettung(){const A=rnd([8,12,16.8,20,25.6]),d=rnd([3,4,5]);return{q:`Bettungsschicht aus Splitt, <b>${d} cm</b> stark, auf <b>${A} m²</b>. Wie viele <b>Liter</b> Splitt brauchst du (fest)?`,a:Math.round(A*d*10*10)/10,u:'Liter',tol:0.5,why:`${A} m² × ${d} cm = ${A*d} m²·cm; 1 m² × 1 cm = 10 Liter → ${A*d*10} Liter.`}},
+ keil2(){const k=rnd([['ZP',12],['T1',20],['T2',30]]),L=rnd([6,9,12,15,24]);const z=rnd([0,10]);
+  return{q:`Betonkeil für Klasse <b>${k[0]}</b> (${k[0]=='ZP'?'12':k[0]=='T1'?'20':'30'} l/m), Länge <b>${L} m</b>${z?', dazu <b>10 % Reserve</b>':''}. Wie viele <b>Liter</b> Beton bestellst du?`,a:Math.round(L*k[1]*(1+z/100)*10)/10,u:'Liter',tol:0.5,why:`${L} × ${k[1]} = ${L*k[1]} Liter${z?`, plus 10 % = ${(L*k[1]*1.1).toFixed(1)} Liter`:''}.`}},
+ platten(){const A=rnd([12,16.8,20,25.6]),p=rnd([5,10]),pl=rnd([[0.5,0.5],[0.4,0.4],[0.6,0.4]]);const n=Math.ceil(A*(1+p/100)/(pl[0]*pl[1])-1e-9);
+  return{q:`Fläche <b>${A} m²</b> mit Platten <b>${pl[0]*100}/${pl[1]*100} cm</b>, Verschnitt <b>${p} %</b>. Wie viele Platten bestellst du (aufrunden)?`,a:n,u:'Platten',tol:0,why:`${A} × ${(1+p/100).toFixed(2)} = ${(A*(1+p/100)).toFixed(2)} m² ÷ ${(pl[0]*pl[1]).toFixed(2)} m² = ${(A*(1+p/100)/(pl[0]*pl[1])).toFixed(2)} → ${n} Platten.`}},
+ gewicht(){const V=rnd([6.25,8,10,12.5]);return{q:`Du bestellst <b>${V} m³ Kiesgemisch lose</b> (1.71 t pro m³ lose). Wie schwer ist die Ladung (in t)?`,a:Math.round(V*1.71*100)/100,u:'t',tol:0.05,why:`${V} × 1.71 = ${(V*1.71).toFixed(2)} t.`}},
  verschnitt(){const A=rnd([16.8,20,25.6,12,30]),p=rnd([5,10,15,25]);return{q:`Belagsfläche <b>${A} m²</b>, Verschnitt-Zuschlag <b>${p} %</b>. Wie gross ist die Bestellfläche (m²)?`,a:Math.round(A*(1+p/100)*100)/100,u:'m²',tol:0.05,why:`${A} × ${(1+p/100).toFixed(2)} = ${(A*(1+p/100)).toFixed(2)} m².`}},
  gefaelle(){const L=rnd([4,5,6,8,10,14]),g=rnd([1.5,2,2.5]);return{q:`Weg <b>${L} m</b> lang mit <b>${g} %</b> Gefälle. Wie gross ist der Höhenunterschied (in cm)?`,a:Math.round(L*g*10)/10,u:'cm',tol:0.1,why:`${g} % = ${g} cm pro m → ${L} × ${g} = ${L*g} cm.`}},
  einheiten(){const t=rnd([0,1,2,3,4,5]);
@@ -127,7 +142,7 @@ const GENS={
   return{q:`<b>${V} m³ Kiesgemisch 0/45</b> zu Fr. 28.–/m³, Transport Fr. 23.50/m³, dazu Bestellpauschale <b>Fr. 125.–</b> pro Bestellung. Wie hoch sind die Gesamtkosten (in Fr.)?`,a:Math.round((V*(28+23.5)+125)*100)/100,u:'Fr.',tol:0.05,why:`${V} × (28 + 23.50) + 125 = Fr. ${(V*51.5+125).toFixed(2)} (Preise 2026, ohne MWST).`}}
 };
 function calc(){
- const n=CFG.count||8;const qs=[];for(let i=0;i<n;i++){const g=rnd(CFG.gens);qs.push(GENS[g]())}
+ const n=C.count||8;const qs=[];for(let i=0;i<n;i++){const g=rnd(C.gens);qs.push(GENS[g]())}
  let i=0,score=0;
  function show(){
   if(i>=qs.length)return finish(score,qs.length);
@@ -156,6 +171,24 @@ function tool(){
   <tr><th>Belag bestellen (+${V} %)</th><td><b>${(A*(1+V/100)).toFixed(2)} m²</b></td></tr></table><p><small>Vereinfacht: ohne Bankett-Mehrmenge. Werte nach Lehrmittel J5.</small></p>`};
  root.addEventListener('input',f);root.addEventListener('change',f);f();
 }
-function start(){({quiz,match,order,calc,tool})[CFG.type]()}
+
+/* ---------- MULTI: Lernpfad aus Stufen ---------- */
+function multi(){
+ const st=CFG.stages;let si=0,res=[];
+ function next(){
+  if(si>=st.length){HOOK=null;$('#stg').innerHTML='';const S=res.reduce((a,r)=>a+r[1],0),T=res.reduce((a,r)=>a+r[2],0);
+   const rows=res.map(r=>`<tr><td>${r[0]}</td><td><b>${r[2]?r[1]+' / '+r[2]:'–'}</b></td></tr>`).join('');
+   root.innerHTML=`<div class="card res"><div class="big">${S} / ${T}</div><p>${T&&S/T>=.8?'Sehr gut! 🎉 Lernpfad gemeistert.':T&&S/T>=.6?'Gut, die schwächeren Stufen nochmals üben 💪':'Schau dir die Erklärungen nochmals an 📖'}</p><table class="t">${rows}</table><button class="btn" onclick="start()">Lernpfad nochmals starten</button></div>`;
+   if(T)save(Math.round(100*S/T));return}
+  C=Object.assign({slug:CFG.slug},st[si]);
+  $('#stg').innerHTML=`<div class="stg">${st.map((s,k)=>`<span class="${k<si?'d':k==si?'a':''}">${k+1}</span>`).join('')}<b>Stufe ${si+1} von ${st.length}: ${C.title}</b></div>${C.info?`<div class="why" style="margin-top:0">${C.info}</div>`:''}`;
+  HOOK=(score,total)=>{res.push([st[si].title,score,total]);si++;next()};
+  if(C.type==='tool'){tool();root.insertAdjacentHTML('beforeend','<button class="btn" id="tn">Weiter →</button>');$('#tn').onclick=()=>{res.push([st[si].title,0,0]);si++;next()}}
+  else({quiz,match,order,calc})[C.type]();
+  window.scrollTo(0,0);
+ }
+ next();
+}
+function start(){({quiz,match,order,calc,tool,multi})[CFG.type]()}
 document.title=CFG.title+' – Belagsaufbau';start();
 </script></body></html>
