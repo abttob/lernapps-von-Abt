@@ -97,7 +97,7 @@ const LA={demo:DEMO,esc,norm,$,store,resizeImage,uuid,user:null,prog:{},
    <div class="tabs"><button data-t="in" class="on">Anmelden</button><button data-t="up">Neu registrieren</button></div>
    <label>Vorname</label><input class="fld" id="la_n" autocomplete="username" placeholder="nur dein Vorname" style="font-size:1.1rem">
    <label>Passwort</label><input class="fld" id="la_p" type="password" autocomplete="current-password" placeholder="mindestens 6 Zeichen" style="font-size:1.1rem">
-   <div id="la_up" style="display:none"><label>Klassencode</label><input class="fld" id="la_c" placeholder="vom Lehrer" style="font-size:1.1rem">
+   <div id="la_up" style="display:none"><label>Klassencode</label><input class="fld" id="la_c" placeholder="Klassencode (Lehrperson: Lehrercode)" style="font-size:1.1rem">
     <p class="small" style="margin:0 0 .6rem">Verwende nur deinen <b>Vornamen</b> (keinen Nachnamen). Das Passwort wählst du selbst und gibst es niemandem weiter.</p></div>
    <div id="la_m"></div><button class="btn" id="la_go">Anmelden</button></div>`;
   document.body.appendChild(box);let mode='in';

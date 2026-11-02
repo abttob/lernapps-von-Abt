@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Materialbuch: eigene Fotos sammeln</title><link rel="stylesheet" href="../assets/app.css"></head><body>
-<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>📸 Materialbuch: eigene Fotos sammeln</h1><p>Fotografiere echte Materialien (Kies, Körnungen, Natursteine …) und lege sie in deinem Materialbuch ab. Die Klasse sieht die Sammlung.</p></div>
+<!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Materialsammlung: eigene Fotos sammeln</title><link rel="stylesheet" href="../assets/app.css"></head><body>
+<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>📸 Materialsammlung: eigene Fotos sammeln</h1><p>Fotografiere echte Materialien (Kies, Körnungen, Natursteine …) und lege sie in deiner Materialsammlung ab. Die Klasse sieht die Sammlung.</p></div>
 <div class="wrap"><div class="chips" style="margin:0 0 .8rem"><span class="chip">L169</span><span class="chip">L171</span></div><div class="card info"><b>Auftrag:</b> Suche echte Beispiele, zum Beispiel auf der Baustelle, im Lager oder im Garten. Lege eine Hand, einen Zollstock oder eine Münze daneben, damit man die <b>Korngrösse</b> sieht. Mache ein Foto, beschreibe das Material und speichere es. Deine Klasse sieht die Sammlung.<br><span class="small">Bitte keine Gesichter, Namen oder Kennzeichen fotografieren.</span></div>
 <div id="mb"><div class="card">Lädt …</div></div>
 
@@ -30,7 +30,7 @@ async function load(){try{all=await LA.list('photo')}catch(e){document.getElemen
  const n=MAT.filter(m=>mine[m[1]]).length;LA.saveProgress('materialbuch',{count:all.filter(r=>r.owner===LA.user.id).length,progressPct:Math.round(100*n/MAT.length),pct:Math.round(100*n/MAT.length)});draw(n)}
 function draw(n){
  const root=document.getElementById('mb');
- root.innerHTML=`<div class="card"><b>Dein Materialbuch:</b> ${n} von ${MAT.length} Materialien mit Foto <div class="bar"><i style="width:${100*n/MAT.length}%"></i></div></div><div class="grid" id="mg"></div><div id="det"></div>`;
+ root.innerHTML=`<div class="card"><b>Deine Materialsammlung:</b> ${n} von ${MAT.length} Materialien mit Foto <div class="bar"><i style="width:${100*n/MAT.length}%"></i></div></div><div class="grid" id="mg"></div><div id="det"></div>`;
  const g=document.getElementById('mg');
  MAT.forEach(m=>{const a=document.createElement('a');a.className='app';a.href='#';a.style.minHeight='140px';
   const cnt=all.filter(r=>r.data.ctx==='material:'+m[1]).length;
@@ -45,7 +45,7 @@ function open_(m){
  <label>Kornform</label><select id="sf"><option>eckig (gebrochen)</option><option>gerundet</option><option>gemischt</option><option>plattig / Stein</option></select>
  <label>Feinanteil</label><select id="fa"><option>viel Feines (staubt, bindet)</option><option>wenig Feines</option><option>kein Feines (Einkorn)</option></select>
  <label>Wo hast du es gefunden und wofür eignet es sich?</label><textarea class="fld" id="nt" placeholder="Fundation, Bettung, Fuge … und warum?"></textarea>
- <div id="mm"></div><button class="btn" id="sv">💾 Im Materialbuch speichern</button></div>
+ <div id="mm"></div><button class="btn" id="sv">💾 In der Materialsammlung speichern</button></div>
  <div class="card"><b>Fotos der Klasse zu «${m[1]}»</b><div class="pgrid" id="gal" style="margin-top:.6rem"></div></div>`;
  const f=document.getElementById('f');f.onchange=()=>{const x=f.files[0];if(!x)return;const p=document.getElementById('pv');p.src=URL.createObjectURL(x);p.style.display='block'};
  document.getElementById('sv').onclick=async()=>{const x=f.files[0],mm=document.getElementById('mm');if(!x){mm.innerHTML='<div class="msg err">Bitte zuerst ein Foto machen.</div>';return}
