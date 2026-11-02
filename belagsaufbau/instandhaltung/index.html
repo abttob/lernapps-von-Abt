@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pflege und Probleme: Ursache und Massnahme</title><style>
+<title>Pflege und Unterhalt: Regeln aus J5</title><style>
 :root{--ink:#26302b;--muted:#5d6a63;--accent:#7a5a3a;--green:#3f7d4e;--red:#b04a4a;--card:#fffdf8;--line:#d9cfba}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#f1ead8;
@@ -33,8 +33,8 @@ label{font-weight:600;font-size:.9rem}select,input.fld{font:inherit;padding:.55r
 table.t{width:100%;border-collapse:collapse}table.t td,table.t th{border-bottom:1px solid var(--line);padding:.45rem .3rem;text-align:left;font-size:.95rem}
 </style></head><body>
 <div class="top"><a href="../">← Belagsaufbau von Wegen und Plätzen</a> &nbsp;·&nbsp; <a href="../../">Alle Apps</a></div>
-<div class="wrap"><h1>🧽 Pflege und Probleme: Ursache und Massnahme</h1><div class="chips"><span class="chip">L177</span></div><p style="color:var(--muted);margin-top:0">Ausblühungen, Flecken, Salz im Winter: Was gilt laut J5? Ordne zu.</p><div id="app"></div></div>
-<script>const CFG={"type": "match", "title": "Pflege und Probleme: Ursache und Massnahme", "task": "Tippe links ein Stichwort an, dann rechts die passende Aussage.", "pairs": [["Weisse Verfärbung auf dem Belag (Ausblühung)", "Kalk wird kapillar gelöst und bleibt an der Oberfläche zurück"], ["Ausblühungen vermeiden", "Kapillarbrechende Schicht einbauen, CEM V (Trasszement) statt CEM II"], ["Flecken auf Betonplatten", "Herstellerempfehlung beachten, Reinigungsmittel nach Angabe"], ["Betonplatten reinigen", "Nicht mit Hochdruck: Teilchen werden von der Oberfläche weggesprengt"], ["Sickersteine im Winter", "Keinesfalls Salz streuen"], ["Auswahl von Natursteinen", "Nicht alle Steinarten sind tausalzbeständig, schon bei der Wahl beachten"]], "slug": "instandhaltung"};</script><script>
+<div class="wrap"><h1>🧽 Pflege und Unterhalt: Regeln aus J5</h1><div class="chips"><span class="chip">L177</span></div><p style="color:var(--muted);margin-top:0">Flecken, Hochdruck, Salz im Winter: Was gilt laut J5? Ordne zu.</p><div id="app"></div></div>
+<script>const CFG={"type": "match", "title": "Pflege und Unterhalt: Regeln aus J5", "task": "Tippe links ein Stichwort an, dann rechts die passende Aussage.", "pairs": [["Flecken auf Betonplatten", "Herstellerempfehlung beachten, Reinigungsmittel nach Angabe"], ["Betonplatten reinigen", "Nicht mit Hochdruck: Teilchen werden von der Oberfläche weggesprengt"], ["Sickersteine im Winter", "Keinesfalls Salz streuen"], ["Auswahl von Natursteinen", "Nicht alle Steinarten sind tausalzbeständig, schon bei der Wahl beachten"], ["Nachsanden der Fugen", "Unterhaltsarbeit, keine Garantiearbeit"], ["Setzungen bei Aufschüttungen anderer Unternehmen", "Von der Mängelhaftung ausgeschlossen (SIA 118/318)"]], "slug": "instandhaltung"};</script><script>
 const $=s=>document.querySelector(s);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const rnd=(a)=>a[Math.floor(Math.random()*a.length)];
@@ -116,7 +116,15 @@ const GENS={
    ()=>{const v=rnd([3,8,50,12]);return{q:`${v} mm = ? cm`,a:v/10,u:'cm',why:`${v} ÷ 10 = ${v/10} cm.`}},
    ()=>{const v=rnd([0.25,16.8,2]);return{q:`${v} m² = ? cm²`,a:Math.round(v*10000),u:'cm²',why:`${v} × 10 000 = ${Math.round(v*10000)} cm².`}},
    ()=>{const v=rnd([1.2,0.45,2.5]);return{q:`${v} m = ? mm`,a:Math.round(v*1000),u:'mm',why:`${v} × 1000 = ${Math.round(v*1000)} mm.`}}][t]();
-  return Object.assign({tol:0.0001},L)}
+  return Object.assign({tol:0.0001},L)},
+ gefaelle2(){const L=rnd([4,5,6,8,10]),g=rnd([1.5,2,2.5,3]);const h=Math.round(L*g*10)/10;return{q:`Ein Weg ist <b>${L} m</b> lang. Der Belagsrand am Ende liegt <b>${h} cm</b> tiefer als am Anfang. Welches Gefälle hat er (in %)?`,a:g,u:'%',tol:0.01,why:`g = h ÷ L × 100 = ${h} ÷ ${L*100} × 100 = ${g} %.`}},
+ kote(){const L=rnd([3,4,5,6,8]),g=rnd([1.5,2,2.5]),K=rnd([500,432.5,611.2,498.75]);const d=L*g/100;return{q:`Kote an der Hauswand: <b>${K.toFixed(2)} m ü. M.</b> Der Platz ist <b>${L} m</b> tief und hat <b>${g} %</b> Gefälle weg vom Haus. Welche Kote hat der Belagsrand am Rasen (in m ü. M.)?`,a:Math.round((K-d)*1000)/1000,u:'m ü. M.',tol:0.006,why:`Höhenunterschied = ${L} × ${g} ÷ 100 = ${d.toFixed(3)} m. Kote = ${K.toFixed(2)} − ${d.toFixed(3)} = ${(K-d).toFixed(3)} m.`}},
+ aushub(){const A=rnd([12,16.8,20,25.6]),t=rnd([0.3,0.4,0.5]);const fest=A*t;const lose=Math.round(fest*1.25*100)/100;
+  if(Math.random()<.5)return{q:`Aushub auf <b>${A} m²</b>, <b>${t*100} cm</b> tief (gewachsener Boden, fest). Wie viel <b>lose</b> Material musst du abführen (m³)? Auflockerungsfaktor 1.25.`,a:lose,u:'m³',tol:0.05,why:`${A} × ${t} = ${fest.toFixed(2)} m³ fest × 1.25 = ${lose} m³ lose.`};
+  return{q:`Es fallen <b>${lose} m³ lose</b> Aushub an. Ein Lastwagen fasst <b>10 m³</b>. Wie viele Fahrten brauchst du mindestens?`,a:Math.ceil(lose/10),u:'Fahrten',tol:0,why:`${lose} ÷ 10 = ${(lose/10).toFixed(2)} → aufrunden: ${Math.ceil(lose/10)} Fahrten.`}},
+ kosten(){const V=rnd([6.25,8,14.25,4.2,10]);const t=rnd([0,1]);
+  if(t==0)return{q:`Du bestellst <b>${V} m³ Kiesgemisch 0/45</b> (lose) zu <b>Fr. 28.– pro m³</b> ab Werk. Wie hoch sind die Materialkosten (in Fr.)?`,a:Math.round(V*28*100)/100,u:'Fr.',tol:0.05,why:`${V} × 28 = Fr. ${(V*28).toFixed(2)} (Preise 2026, ohne MWST, ab Werk).`};
+  return{q:`<b>${V} m³ Kiesgemisch 0/45</b> zu Fr. 28.–/m³, Transport Fr. 23.50/m³, dazu Bestellpauschale <b>Fr. 125.–</b> pro Bestellung. Wie hoch sind die Gesamtkosten (in Fr.)?`,a:Math.round((V*(28+23.5)+125)*100)/100,u:'Fr.',tol:0.05,why:`${V} × (28 + 23.50) + 125 = Fr. ${(V*51.5+125).toFixed(2)} (Preise 2026, ohne MWST).`}}
 };
 function calc(){
  const n=CFG.count||8;const qs=[];for(let i=0;i<n;i++){const g=rnd(CFG.gens);qs.push(GENS[g]())}
