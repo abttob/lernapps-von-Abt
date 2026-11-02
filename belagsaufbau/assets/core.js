@@ -5,7 +5,7 @@ const DEMO=!C.url||!C.key||/[?&]demo=1/.test(location.search);
 const $=(s,r)=> (r||document).querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const norm=n=>String(n).trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ß/g,'ss').replace(/[^a-z0-9]/g,'');
-const emailOf=n=>norm(n)+'@lernapp-bbzbl.ch';
+const emailOf=n=>'lernapp-bbzbl-'+norm(n)+'@gmail.com';
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
 const uuid=()=>'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c=='x'?r:(r&3|8)).toString(16)});
 
