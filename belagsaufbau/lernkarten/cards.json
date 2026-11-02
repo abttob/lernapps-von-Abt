@@ -1,0 +1,741 @@
+[
+{
+"id": 1,
+"lz": "L166",
+"q": "Was ist das Planum?",
+"a": "Die **Oberfläche des Untergrunds** (Sohlenplanie). Es liegt unter der Fundation und bildet die Grenze zwischen Oberbau und Unterbau."
+},
+{
+"id": 2,
+"lz": "L166",
+"q": "Welche Toleranz hat das Planum?",
+"a": "**±3 cm.** Es muss ebenflächig sein, ohne Mulden und Hügel."
+},
+{
+"id": 3,
+"lz": "L166",
+"q": "Welche Toleranzen gelten für Rohplanie und Reinplanie der Fundation?",
+"a": "**Rohplanie ±2 cm, Reinplanie ±1 cm.** Die Deckschicht hat ±1 cm."
+},
+{
+"id": 4,
+"lz": "L166",
+"q": "Was gehört zum Oberbau, was zum Unterbau?",
+"a": "**Oberbau:** alles über dem Planum (Deckschicht, Bettung, Ausgleichsschicht, Fundation). **Unterbau:** der eingebaute, evtl. verbesserte Boden unter dem Planum. **Untergrund:** unverändert gewachsener Boden."
+},
+{
+"id": 5,
+"lz": "L166",
+"q": "Wie kann man einen weichen Unterbau verbessern (stabilisieren)?",
+"a": "Mit Bindemittel, z. B. **gebranntem Kalk oder Zement**, das in den Boden eingefräst wird."
+},
+{
+"id": 6,
+"lz": "L166",
+"q": "Wozu dient ein Geotextil auf dem Planum?",
+"a": "Es **filtert und trennt** den unverbesserten Baugrund vom Oberbau. Es wird auf das korrekte Planum verlegt.",
+"img": "ph_geotex.jpg"
+},
+{
+"id": 7,
+"lz": "L166",
+"q": "Wie berechnest du den Höhenunterschied bei einem Gefälle?",
+"a": "**h = L × g ÷ 100** (L in m, g in %, h in cm). Beispiel: 5 m mit 2 % = 10 cm."
+},
+{
+"id": 8,
+"lz": "L166",
+"q": "Welche Minimalgefälle gelten für Beläge?",
+"a": "Pflästerung **bruchroh 2.5 %**, bearbeitet 2 %, **Feinsteinzeug 1.5 %**. Chaussierung höchstens **6 %**."
+},
+{
+"id": 9,
+"lz": "L166",
+"q": "Wie berechnest du die Kote am Rasenrand, wenn der Platz mit 2 % vom Haus wegfällt?",
+"a": "Kote Hauswand **minus** Höhenunterschied (Tiefe × 2 ÷ 100). Beispiel: 500.00 m ü. M., 4 m tief: 500.00 − 0.08 = **499.92 m ü. M.**"
+},
+{
+"id": 10,
+"lz": "L166",
+"q": "Wie sieht der Aufbau eines Belags von oben nach unten aus?",
+"a": "Deckschicht, Bettungsschicht, Ausgleichsschicht (≤5 cm), Fundationsschicht, **Planum**, Unterbau, Untergrund.",
+"img": "aufbau_nr.png"
+},
+{
+"id": 11,
+"lz": "L167",
+"q": "Was bedeuten ZP, T1, T2 und T3?",
+"a": "**ZP** nicht befahren (Fussgänger), **T1** sehr leicht (bis 30 Überfahrten/Tag), **T2** leicht (30 bis 100), **T3** mittel/stark (100 bis 300).",
+"img": "verkehrslast.png"
+},
+{
+"id": 12,
+"lz": "L167",
+"q": "Wonach richtet sich die Verkehrslastklasse?",
+"a": "Nach der **Anzahl Überfahrten pro Tag**, nicht nach dem Gewicht eines einzelnen Fahrzeugs. Referenzachslast: 8.16 t."
+},
+{
+"id": 13,
+"lz": "L167",
+"q": "Garageneinfahrt mit 4 Überfahrten pro Tag: Welche Klasse?",
+"a": "**T1** (bis 30 Überfahrten pro Tag)."
+},
+{
+"id": 14,
+"lz": "L167",
+"q": "Zufahrt mit ca. 60 Fahrzeugen pro Tag: Welche Klasse?",
+"a": "**T2** (30 bis 100 Überfahrten pro Tag)."
+},
+{
+"id": 15,
+"lz": "L167",
+"q": "Wie viele Überfahrten hat eine Fläche der Klasse T3?",
+"a": "**100 bis 300** pro Tag (mittel bis stark befahren)."
+},
+{
+"id": 16,
+"lz": "L167",
+"q": "Ein Zügelwagen fährt einmal im Jahr auf den Fussweg. Welche Klasse?",
+"a": "Es bleibt **ZP**. Die Klasse richtet sich nach den täglichen Überfahrten, nicht nach einzelnen Fahrten. Für seltene Schwerlast (Feuerwehr, Zügeln) eignet sich z. B. ein Schotterrasen."
+},
+{
+"id": 17,
+"lz": "L168",
+"q": "Welche Fundationsstärken gelten für ZP auf S1, S2, S3?",
+"a": "**30 / 20 / 10 cm.**",
+"img": "verkehrslast.png"
+},
+{
+"id": 18,
+"lz": "L168",
+"q": "Welche Fundationsstärken gelten für T1 auf S1, S2, S3?",
+"a": "**50 / 30 / 20 cm.**"
+},
+{
+"id": 19,
+"lz": "L168",
+"q": "Welche Fundationsstärken gelten für T2 und T3 auf S1, S2, S3?",
+"a": "**60 / 35 / 25 cm.**"
+},
+{
+"id": 20,
+"lz": "L168",
+"q": "Was bedeuten S1, S2 und S3?",
+"a": "Die **Tragfähigkeit des Untergrunds**: S1 gering, S2 mittel, S3 hoch. Je schlechter der Untergrund, desto stärker die Fundation."
+},
+{
+"id": 21,
+"lz": "L168",
+"q": "Wie stark darf eine Lage der Fundation höchstens sein?",
+"a": "**25 cm.** Stärkere Fundationen werden in mehreren Lagen eingebaut und lagenweise verdichtet."
+},
+{
+"id": 22,
+"lz": "L168",
+"q": "Fundation T1 auf S2 (30 cm): Wie baust du sie ein?",
+"a": "In **2 Lagen** (z. B. 15 + 15 cm), jede Lage einzeln verdichten."
+},
+{
+"id": 23,
+"lz": "L168",
+"q": "Wie dick darf die Ausgleichsschicht sein und wozu gehört sie?",
+"a": "**Höchstens 5 cm.** Sie ist Bestandteil der Fundationsschicht (z. B. Planiekies 0/22)."
+},
+{
+"id": 24,
+"lz": "L168",
+"q": "Wie breit ist das Bankett?",
+"a": "**F/2** (halbe Fundationsstärke). Die Böschung hat das Verhältnis 2:3.",
+"img": "bankett.png"
+},
+{
+"id": 25,
+"lz": "L168",
+"q": "Wie weit liegt das Planum neben dem Belagsrand?",
+"a": "**2 × F** (Bankett F/2 plus Böschung 1.5 × F)."
+},
+{
+"id": 26,
+"lz": "L168",
+"q": "Welchen Faktor brauchst du, um fest in lose umzurechnen?",
+"a": "**× 1.25** (Auflockerungsfaktor). Umgekehrt lose in fest: **× 0.80** (Verdichtungsfaktor).",
+"img": "faktoren.png"
+},
+{
+"id": 27,
+"lz": "L168",
+"q": "Du brauchst 4 m³ Fundation fest. Wie viel bestellst du lose?",
+"a": "4 × 1.25 = **5 m³ lose.**"
+},
+{
+"id": 28,
+"lz": "L168",
+"q": "Du bekommst 10 m³ Kies lose. Wie viel ist das fest?",
+"a": "10 × 0.80 = **8 m³ fest.**"
+},
+{
+"id": 29,
+"lz": "L168",
+"q": "Wie viele Fahrten brauchst du für 25.6 m³ lose mit einem 10-m³-Lastwagen?",
+"a": "25.6 ÷ 10 = 2.56, aufrunden: **3 Fahrten.**"
+},
+{
+"id": 30,
+"lz": "L168",
+"q": "Wie viele Liter sind 1 m² mit 1 cm Stärke?",
+"a": "**10 Liter.** (1 m² × 0.01 m = 0.01 m³ = 10 l)"
+},
+{
+"id": 31,
+"lz": "L168",
+"q": "Wie schwer ist 1 m³ Kiesgemisch lose ungefähr?",
+"a": "Richtwert: **1.71 t** pro m³ lose."
+},
+{
+"id": 32,
+"lz": "L169",
+"q": "Was bedeutet Kiesgemisch 0/45?",
+"a": "Ein **Gemisch von 0 bis 45 mm** Korngrösse. Die erste Zahl ist das Kleinstkorn, die zweite das Grösstkorn.",
+"img": "korngroesse.png"
+},
+{
+"id": 33,
+"lz": "L169",
+"q": "Welche Eigenschaften muss Fundationsmaterial haben?",
+"a": "**Frostsicher, wasserdurchlässig, tragfähig** und gut verdichtbar."
+},
+{
+"id": 34,
+"lz": "L169",
+"q": "Warum gehört Mergel nicht in die Fundation?",
+"a": "Er ist **bindig** (viel Ton), nicht frostsicher und zu wenig wasserdurchlässig. Mergel eignet sich nur als Tragschicht bei Chaussierungen."
+},
+{
+"id": 35,
+"lz": "L169",
+"q": "Welche Materialien sind für Fundationen üblich (mit Körnung)?",
+"a": "**Kiesgemisch 0/45**, RC-Kiesgemisch, Planiekies 0/22 (Ausgleichsschicht).",
+"img": "ph_kies.jpg"
+},
+{
+"id": 36,
+"lz": "L169",
+"q": "Welches Material verwendest du für die Bettung unter Platten?",
+"a": "**Splitt 2/4** (oder 4/8, Rundkies 4/8). Dicke der Bettung: **3 bis 5 cm.**"
+},
+{
+"id": 37,
+"lz": "L169",
+"q": "Was ist Brechsand 0/4 und wofür wird er verwendet?",
+"a": "Gebrochener Sand von 0 bis 4 mm: **Fugenmaterial** und Abstreuung."
+},
+{
+"id": 38,
+"lz": "L169",
+"q": "Was bedeutet RC-Kiesgemisch?",
+"a": "Ein **Recycling**-Kiesgemisch (aufbereitetes Material, z. B. aus Betonabbruch) für die Fundation."
+},
+{
+"id": 39,
+"lz": "L169",
+"q": "Wozu dient die Fundationsschicht?",
+"a": "Sie **trägt und verteilt die Lasten** auf den Untergrund und ist frostsicher und wasserdurchlässig."
+},
+{
+"id": 40,
+"lz": "L170",
+"q": "Welche Verdichtungsgeräte gibt es und wo setzt man sie ein?",
+"a": "**Handstampfer** (kleinste Flächen), **Vibrationsstampfer** (Gräben, Kanten), **Rüttelplatte** (Wege, Plätze), **Vibrationswalze** (grosse Flächen).",
+"img": "verdichtungsgeraete.png"
+},
+{
+"id": 41,
+"lz": "L170",
+"q": "Welches Gerät siehst du?",
+"a": "**Vibrationsstampfer.** Er verdichtet Gräben, Kanten und kleine Flächen.",
+"img": "ph_stampfer.jpg"
+},
+{
+"id": 42,
+"lz": "L170",
+"q": "Welches Gerät siehst du?",
+"a": "**Rüttelplatte** (Reversierplatte). Sie verdichtet Wege und Plätze.",
+"img": "lk_image9.png"
+},
+{
+"id": 43,
+"lz": "L170",
+"q": "Welches Gerät nimmst du für einen Leitungsgraben von 40 cm Breite?",
+"a": "Den **Vibrationsstampfer.**"
+},
+{
+"id": 44,
+"lz": "L170",
+"q": "Welches Gerät nimmst du für einen Parkplatz von 500 m²?",
+"a": "Die **Vibrationswalze.**"
+},
+{
+"id": 45,
+"lz": "L170",
+"q": "Was musst du beim Verdichten der Fundation beachten?",
+"a": "Lagen **höchstens 25 cm**, Material **erdfeucht**, Übergänge überlappen, auf Gefälle und Kanten achten. Lage für Lage verdichten."
+},
+{
+"id": 46,
+"lz": "L170",
+"q": "Das Material ist zu nass und federt beim Verdichten. Was tust du?",
+"a": "Es **trocknen lassen** oder anderes Material wählen. Zu nasses Material verdichtet nicht."
+},
+{
+"id": 47,
+"lz": "L171",
+"q": "Welche Dauerhaftigkeitsklasse hat Robinie, und wie lange hält sie?",
+"a": "**Klasse 1, sehr dauerhaft, über 25 Jahre.**",
+"img": "holz.png"
+},
+{
+"id": 48,
+"lz": "L171",
+"q": "Klasse 2: Wie lange hält das Holz, und welche Hölzer gehören dazu?",
+"a": "**Dauerhaft, 15 bis 25 Jahre:** Lärche, Eiche, Edelkastanie, Thermoholz, Accoya."
+},
+{
+"id": 49,
+"lz": "L171",
+"q": "Welche Klasse hat Douglasie?",
+"a": "**Klasse 3, mässig dauerhaft, 10 bis 15 Jahre.**"
+},
+{
+"id": 50,
+"lz": "L171",
+"q": "Wie dauerhaft ist unbehandelte Fichte?",
+"a": "**Klasse 4, wenig dauerhaft, 5 bis 10 Jahre.** (Klasse 5: unter 5 Jahre, z. B. Buche, Birke unbehandelt.)"
+},
+{
+"id": 51,
+"lz": "L171",
+"q": "Was bedeutet konstruktiver Holzschutz?",
+"a": "Die Holzkonstruktion muss **immer ganz abtrocknen** können. Keine Verschraubungen von oben, keine spitzwinkligen Dielen."
+},
+{
+"id": 52,
+"lz": "L171",
+"q": "Wie verlängerst du die Lebensdauer eines Holzdecks?",
+"a": "**Periodisch mit schwacher Lauge reinigen**, danach lasieren oder ölen.",
+"img": "j_holz2.jpg"
+},
+{
+"id": 53,
+"lz": "L171",
+"q": "Was ist die Patina beim Holz?",
+"a": "Die natürliche **Vergrauung** des Holzes durch Witterung.",
+"img": "j_holz3.jpg"
+},
+{
+"id": 54,
+"lz": "L171",
+"q": "Nenne die drei Gesteinsgruppen mit je einem Beispiel.",
+"a": "**Erstarrungsgesteine** (Granit), **Umwandlungsgesteine** (Gneis, Quarzit), **Ablagerungsgesteine** (Sandstein, Jurakalk).",
+"img": "gesteine.png"
+},
+{
+"id": 55,
+"lz": "L171",
+"q": "Was ist der Unterschied zwischen Hart- und Weichgestein?",
+"a": "**Hartgestein** (z. B. Granit, Gneis): witterungsbeständig, aber aufwendig zu bearbeiten. **Weichgestein** (z. B. Sandstein): leicht zu bearbeiten, aber weniger beständig."
+},
+{
+"id": 56,
+"lz": "L171",
+"q": "Welche Oberflächenbearbeitungen gibt es bei Naturstein?",
+"a": "Bruchroh, geflammt, gestrahlt, gefräst/gesägt, geschliffen/poliert, gestockt/gespitzt/scharriert.",
+"img": "oberflaechen.png"
+},
+{
+"id": 57,
+"lz": "L171",
+"q": "Welche Oberfläche ist sehr rutschfest und natürlich im Aussehen?",
+"a": "**Geflammt** (kleinste Plättchen springen durch die Hitze ab).",
+"img": "j_quarzit.jpg"
+},
+{
+"id": 58,
+"lz": "L171",
+"q": "Welche Oberfläche ist für den Aussenbereich nicht geeignet?",
+"a": "**Geschliffen/poliert:** fein und glatt, nur für den Innenbereich."
+},
+{
+"id": 59,
+"lz": "L171",
+"q": "Welcher Stein ist das? Rötlichbraun, leicht geschichtet.",
+"a": "**Porphyr** (Hartgestein).",
+"img": "j_porphyr.jpg"
+},
+{
+"id": 60,
+"lz": "L171",
+"q": "Welcher Stein ist das? Hartgestein, nicht geschichtet, schwer zu bearbeiten.",
+"a": "**Granit.**",
+"img": "j_granit.jpg"
+},
+{
+"id": 61,
+"lz": "L171",
+"q": "Wie heisst die Platte? Unregelmässige Form, ohne feste Kanten.",
+"a": "**Polygonalplatte** (formwild verlegt).",
+"img": "lk_image22.png"
+},
+{
+"id": 62,
+"lz": "L171",
+"q": "Wie viel Verhau musst du bei Mosaik/formwild einrechnen?",
+"a": "Bis zu **25 %.** 1 t Gneisplatten ergibt etwa 8 m²."
+},
+{
+"id": 63,
+"lz": "L171",
+"q": "Wie heisst die Bearbeitung, die der Kalkstein zeigt (oben rechts / unten rechts)?",
+"a": "Oben rechts **gespitzt**, unten rechts **gestockt**, links bruchroh.",
+"img": "j_kalk.jpg"
+},
+{
+"id": 64,
+"lz": "L174",
+"q": "Was ist ein Betonkeil (Anbetonieren)?",
+"a": "Eine **unsichtbare Randbefestigung:** Beton hält den Belag seitlich fest, im Querschnitt ein Dreieck (45° Neigung) hinter dem Stein.",
+"img": "keil.png"
+},
+{
+"id": 65,
+"lz": "L174",
+"q": "Welche Grösse hat der Betonkeil für ZP, T1 und T2?",
+"a": "**ZP 15 cm (12 l/m), T1 20 cm (20 l/m), T2 25 cm (30 l/m).**",
+"img": "j_rand_richtig.jpg"
+},
+{
+"id": 66,
+"lz": "L174",
+"q": "Welcher Beton wird für den Betonkeil verwendet?",
+"a": "**Monokornbeton CEM II 200.**"
+},
+{
+"id": 67,
+"lz": "L174",
+"q": "Wo liegt der Betonkeil auf?",
+"a": "Auf der **Fundation bzw. dem Bankett**, nie auf der Bettungsschicht.",
+"img": "j_rand_falsch.jpg"
+},
+{
+"id": 68,
+"lz": "L174",
+"q": "Was passiert, wenn der Randbeton auf der Bettung abgestützt wird?",
+"a": "Er kann seine Funktion nicht erfüllen, der **Belag kippt seitlich ab.**",
+"img": "j_rand_falsch.jpg"
+},
+{
+"id": 69,
+"lz": "L174",
+"q": "Wie hoch liegt die Oberkante des Betons?",
+"a": "**Unter der Oberkante der Deckschicht** (nicht sichtbar)."
+},
+{
+"id": 70,
+"lz": "L174",
+"q": "Welche Mindestmasse haben Einfassungen?",
+"a": "**Gehbereich 80 mm, befahrener Bereich 100 mm.**",
+"img": "ph_rand1.jpg"
+},
+{
+"id": 71,
+"lz": "L174",
+"q": "Nenne zwei Gründe für einen Randabschluss.",
+"a": "Er gibt dem Belag **seitlichen Halt** (nimmt Schub auf) und **trennt** den Belag sauber von Rasen oder Beet."
+},
+{
+"id": 72,
+"lz": "L174",
+"q": "Wann setzt man zusätzlich einen Wasserstein?",
+"a": "Wenn das Wasser **nicht auf die Anschlussfläche geleitet** werden darf. Er führt das Wasser weg."
+},
+{
+"id": 73,
+"lz": "L174",
+"q": "Wie nennt sich der schräg gestellte Stein korrekt?",
+"a": "**Gestürzter Pflasterstein** (Variante mit Wasserstein).",
+"img": "lk_image16.png"
+},
+{
+"id": 74,
+"lz": "L174",
+"q": "Wann nimmst du eine Stellplatte statt eines Pflastersteins?",
+"a": "Wenn ein Randabschluss mit **Anschlag** nötig ist (zusammen mit dem Wasserstein)."
+},
+{
+"id": 75,
+"lz": "L174",
+"q": "Wie viel Beton braucht eine Einfassung mit Naturstein 6/8 (einreihig / zweireihig)?",
+"a": "**45 / 60 Liter pro Laufmeter.** (8/11: 50/70, 11/13: 60/80.)"
+},
+{
+"id": 76,
+"lz": "L174",
+"q": "Was ist ein Randabschlussprofil?",
+"a": "Ein Kunststoffprofil (oft mit Netz), mit **Stahlnägeln verankert.** Es ersetzt das Anbetonieren und fängt den seitlichen Schub auf. Es bleibt mehr Oberboden für die Begrünung.",
+"img": "j_profil2.jpg"
+},
+{
+"id": 77,
+"lz": "L174",
+"q": "Warum trocknet der Rasen am Betonrand aus?",
+"a": "Es liegt **zu wenig Oberboden** neben dem Beton, die Wurzeln finden kein Wasser. Beim Anbetonieren genug tiefen Oberboden lassen.",
+"img": "rasenrand.png"
+},
+{
+"id": 78,
+"lz": "L174",
+"q": "Was zeigt das Bild? Welchen Vorteil hat es?",
+"a": "Ein **Metallrandabschluss:** schlank und zwischen Rasen und Chaussierung kaum sichtbar.",
+"img": "j_metall1.jpg"
+},
+{
+"id": 79,
+"lz": "L174",
+"q": "Welche Kantenausbildungen gibt es bei Betonprodukten?",
+"a": "**Vollkantig, gefast, gerundet.** Vollkantige Produkte nicht gegeneinanderstossen, die Kanten brechen aus."
+},
+{
+"id": 80,
+"lz": "L175",
+"q": "Was ist der Unterschied zwischen ungebundener und gebundener Bauweise?",
+"a": "**Ungebunden:** Bettung und Fugen lose (Splitt, Brechsand), wasserdurchlässig. **Gebunden:** mit Mörtel, Bindemittel oder Beton, starr.",
+"img": "bauweisen2.png"
+},
+{
+"id": 81,
+"lz": "L175",
+"q": "Was ist die Mischbauweise?",
+"a": "**Lose Bettung, gebundene Fugen** (oder umgekehrt). Die starren Fugen können reissen, wenn sich die Bettung bewegt."
+},
+{
+"id": 82,
+"lz": "L175",
+"q": "Wie sind Betonplatten ungebunden aufgebaut?",
+"a": "Fundation mit Kiesgemisch, **Bettung 3 bis 5 cm** (Splitt oder Rundkies 4/8), Platten mit **Fugen 3 bis 8 mm** (Fugenkreuze).",
+"img": "j_platte2.jpg"
+},
+{
+"id": 83,
+"lz": "L175",
+"q": "Welche Mindeststärke brauchen Betonverbundsteine für T1 und für T2/T3?",
+"a": "**T1: 60 mm, T2/T3: 100 mm** (ZP: 40 mm). Pflastersteine ohne Verbundwirkung: 80 mm (T1), 120 mm (T2/T3).",
+"img": "j_verbund.jpg"
+},
+{
+"id": 84,
+"lz": "L175",
+"q": "Was ist der Unterschied zwischen Betonpflastersteinen und Betonverbundsteinen?",
+"a": "Pflastersteine sind **rechteckig ohne Verbundwirkung.** Verbundsteine haben eine **verzahnende Form** und nehmen Scherkräfte besser auf.",
+"img": "j_betonpflaster.jpg"
+},
+{
+"id": 85,
+"lz": "L175",
+"q": "Wie sieht eine Chaussierung aus (Aufbau)?",
+"a": "Fundation Kiesgemisch, **Mergel 6 bis 7 cm** (feucht eingebaut und vibriert), **Abstreuung 0.5 bis 2 cm.** Randabschluss in Splittbeton.",
+"img": "chaussierung.png"
+},
+{
+"id": 86,
+"lz": "L175",
+"q": "Wie steil darf eine Chaussierung höchstens sein?",
+"a": "**6 %.** Bei mehr Gefälle wird der Belag ausgewaschen."
+},
+{
+"id": 87,
+"lz": "L175",
+"q": "Wie läuft der Bau einer Chaussierung ab?",
+"a": "Planum und Rand, Fundation, Mergel einbauen, **vibrieren, abstreuen,** anwalzen.",
+"img": "prozess.png"
+},
+{
+"id": 88,
+"lz": "L175",
+"q": "Wie wurde diese Chaussierung abgestreut?",
+"a": "Mit **Rundkies 2/4.**",
+"img": "j_chauss_rundkies.jpg"
+},
+{
+"id": 89,
+"lz": "L175",
+"q": "Was fehlt bei diesem Weg noch?",
+"a": "Die **Abstreuung** (0.5 bis 2 cm). Das bindige Planiematerial ist schon eingebaut.",
+"img": "j_chauss_weg.jpg"
+},
+{
+"id": 90,
+"lz": "L175",
+"q": "Wofür eignet sich ein Schotterrasen?",
+"a": "Für **sporadisch befahrene Flächen:** Zufahrten, Parkflächen, auch für schwere Feuerwehr- und Zügelfahrzeuge. Ansaat zwischen Mai und September.",
+"img": "j_schotterrasen.jpg"
+},
+{
+"id": 91,
+"lz": "L175",
+"q": "Nenne vier sickerfähige Belagsarten.",
+"a": "**Aufgeweitete Fugen, Sickersteine, eingelassene Kammern (Rasengitter), Schotterrasen / Chaussierung, Sickerasphalt, Festkies (Saibro).**"
+},
+{
+"id": 92,
+"lz": "L175",
+"q": "Wie nennt man diese Belagsart? Die Nocken sind gut sichtbar.",
+"a": "**Aufgeweitete Fugen** (mit Splitt 2/4 oder 4/8 oder begrünt).",
+"img": "j_fuge_nocken.jpg"
+},
+{
+"id": 93,
+"lz": "L175",
+"q": "Was ist ein Sickerstein, und was gilt im Winter?",
+"a": "Ein Betonstein mit poröser Struktur, durch die das **Wasser versickert.** Er ist **nicht frosttausalzbeständig:** im Winterdienst kein Salz.",
+"img": "j_sicker.jpg"
+},
+{
+"id": 94,
+"lz": "L175",
+"q": "Welches Format haben Rasengittersteine?",
+"a": "Normalformat **40 × 60 cm**, Dicke **8, 10 oder 12 cm.**",
+"img": "j_rasengitter.jpg"
+},
+{
+"id": 95,
+"lz": "L175",
+"q": "Wie nennt man diese Steine, die mit Humus-Sand-Splitt-Gemisch gefüllt werden?",
+"a": "**Steine mit eingelassenen Kammern** (z. B. Rasengittersteine).",
+"img": "j_kammer.jpg"
+},
+{
+"id": 96,
+"lz": "L175",
+"q": "Was ist Saibro (Festkies)?",
+"a": "Eine **sickerfähige, gebundene Belagsart** aus rundem oder gebrochenem Material mit speziellem Bindemittel. Sie braucht wie ein Sickerstein eine sickerfähige Fundation."
+},
+{
+"id": 97,
+"lz": "L175",
+"q": "Wie dick ist die Einbaustärke bei Rinden- oder Holzschnitzeln?",
+"a": "**5 bis 10 cm** je nach Verwendung (z. B. Fallschutz auf Spielplätzen).",
+"img": "j_spielplatz.jpg"
+},
+{
+"id": 98,
+"lz": "L175",
+"q": "Wie sollen Pflästerungen mit ungebundenen Fugen gereinigt werden?",
+"a": "**Schonend von Hand mit dem Besen.** Kein Hochdruckreiniger, keine saugenden Geräte.",
+"img": "ph_hochdruck.jpg"
+},
+{
+"id": 99,
+"lz": "L176",
+"q": "Welche Fugenbilder gibt es bei Pflästerungen?",
+"a": "**Reihen-, Kreis-, Bogen-, Schuppen-, Wild- und Rundkopfpflästerung.**",
+"img": "j_kreis.jpg"
+},
+{
+"id": 100,
+"lz": "L176",
+"q": "Welche Pflästerung ist das?",
+"a": "**Reihenpflästerung.**",
+"img": "j_reihe.jpg"
+},
+{
+"id": 101,
+"lz": "L176",
+"q": "Welche Pflästerung ist das?",
+"a": "**Schuppenpflästerung.**",
+"img": "j_schuppen.jpg"
+},
+{
+"id": 102,
+"lz": "L176",
+"q": "Welche Pflästerung ist das? Runde Flusssteine.",
+"a": "**Rundkopfpflästerung.**",
+"img": "j_rundkopf.jpg"
+},
+{
+"id": 103,
+"lz": "L176",
+"q": "Welche Pflästerung ist das? Unregelmässige Steine.",
+"a": "**Wildpflästerung.**",
+"img": "j_wild.jpg"
+},
+{
+"id": 104,
+"lz": "L176",
+"q": "Wie berechnest du die Bestellmenge mit Verschnitt?",
+"a": "**Bestellmenge = Fläche × (1 + Verschnitt in %).**"
+},
+{
+"id": 105,
+"lz": "L176",
+"q": "Wie viel Verschnitt rechnest du bei Reihenpflästerung, Kreis und Mosaik?",
+"a": "Reihe/Läufer ca. **5 %**, Kreis/Schuppen ca. **15–20 %**, Mosaik/formwild bis **25 %.**",
+"img": "verschnitt.png"
+},
+{
+"id": 106,
+"lz": "L176",
+"q": "Du verlegst 20 m² Mosaik mit 25 % Verschnitt. Wie viel bestellst du?",
+"a": "20 × 1.25 = **25 m².**"
+},
+{
+"id": 107,
+"lz": "L176",
+"q": "Welche Regeln gelten für Fugenbilder bei Natursteinplatten?",
+"a": "Kreuzfugen vermeiden, **Fugen versetzen,** Winkel und Plattengrösse mischen (Verband).",
+"img": "fugen.png"
+},
+{
+"id": 108,
+"lz": "L176",
+"q": "Beschreibe die Reihenfolge beim Pflastern (Anfang).",
+"a": "Fundation und Randabschluss erstellen, **Bettung abziehen,** Steine im Muster verlegen, Fugen füllen, abrütteln.",
+"img": "ph_verlegen.jpg"
+},
+{
+"id": 109,
+"lz": "L176",
+"q": "Darf man fertig gestossene Pflästerungen nachstossen?",
+"a": "**Nein.** Unregelmässigkeiten werden durch **Umpflastern** behoben."
+},
+{
+"id": 110,
+"lz": "L177",
+"q": "Was gilt für den Einsatz von Hochdruckreinigern bei Belägen?",
+"a": "Bei **ungebundenen Fugen verzichten** (Fugenmaterial wird ausgespült). Bei Betonplatten Vorsicht.",
+"img": "ph_hochdruck.jpg"
+},
+{
+"id": 111,
+"lz": "L177",
+"q": "Was darfst du im Winterdienst auf Sickersteinen nicht verwenden?",
+"a": "**Kein Salz** (Frosttausalz)."
+},
+{
+"id": 112,
+"lz": "L177",
+"q": "Wie pflegst du einen Holzbelag?",
+"a": "Periodisch mit schwacher Lauge reinigen, lasieren oder ölen. Konstruktiver Holzschutz beachten.",
+"img": "ph_besen.jpg"
+},
+{
+"id": 113,
+"lz": "L177",
+"q": "Was tust du, wenn Fugen ausgewaschen sind?",
+"a": "Fugenmaterial **nachfüllen** (Brechsand/Splitt) und einwischen oder einschlämmen."
+},
+{
+"id": 114,
+"lz": "L177",
+"q": "Wie reinigst du Natursteinpflaster mit ungebundenen Fugen?",
+"a": "Mit dem **Besen von Hand,** nicht mit Hochdruck oder Saugern."
+}
+]

@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Materialbuch: eigene Fotos sammeln</title><link rel="stylesheet" href="../assets/app.css"></head><body>
+<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>📸 Materialbuch: eigene Fotos sammeln</h1><p>Fotografiere echte Materialien (Kies, Körnungen, Natursteine …) und lege sie in deinem Materialbuch ab. Die Klasse sieht die Sammlung.</p></div>
+<div class="wrap"><div class="chips" style="margin:0 0 .8rem"><span class="chip">L169</span><span class="chip">L171</span></div><div class="card info"><b>Auftrag:</b> Suche echte Beispiele, zum Beispiel auf der Baustelle, im Lager oder im Garten. Lege eine Hand, einen Zollstock oder eine Münze daneben, damit man die <b>Korngrösse</b> sieht. Mache ein Foto, beschreibe das Material und speichere es. Deine Klasse sieht die Sammlung.<br><span class="small">Bitte keine Gesichter, Namen oder Kennzeichen fotografieren.</span></div>
+<div id="mb"><div class="card">Lädt …</div></div>
+
+</div>
+<script src="../assets/config.js"></script><script src="../assets/core.js"></script>
+<script>
+const MAT=[
+ ['🪨','Kiesgemisch 0/45','Fundation: grobe und feine Körner gemischt (Korngemisch)','Fundation'],
+ ['🧱','Planiekies 0/22','Ausgleichsschicht, feiner als 0/45','Fundation'],
+ ['🔹','Splitt 2/4','Bettung unter Platten und Pflaster, Fugen','Bettung'],
+ ['🔸','Splitt 4/8','Bettung und aufgeweitete Fugen','Bettung'],
+ ['⏳','Brechsand 0/4','Fugenmaterial, Abstreuung','Fuge'],
+ ['⚪','Rundkies 4/8','Bettung, Abstreuung, Dekoration','Bettung'],
+ ['🏖','Pflästerersand 0/8','Bettungsmaterial unter Pflästerungen','Bettung'],
+ ['🟤','Mergel (bindiges Planiematerial)','Tragschicht der Chaussierung','Chaussierung'],
+ ['♻️','RC-Kiesgemisch','Recycling-Material für die Fundation','Fundation'],
+ ['🧊','Granit-Pflasterstein','Hartgestein, Pflaster und Randsteine','Naturstein'],
+ ['🪧','Natursteinplatte (Gneis o. ä.)','Platten, Oberfläche und Kanten ansehen','Naturstein'],
+ ['🟫','Betonverbundstein','Verzahnt sich, nimmt Scherkräfte auf','Beton'],
+ ['⬜','Betonplatte','Plattenbelag, Fugen 3 bis 8 mm','Beton'],
+ ['🌿','Rasengitterstein / Sickerstein','Sickerfähiger Belag','Beton'],
+ ['🪵','Holz (Deck, Palisade)','Dauerhaftigkeitsklasse, Zustand, Patina','Holz']
+];
+let mine={},all=[];
+function ready(){return LA.user}
+async function load(){try{all=await LA.list('photo')}catch(e){document.getElementById('mb').innerHTML='<div class="msg err">'+LA.esc(e.message)+'</div>';return}
+ all=all.filter(r=>(r.data.ctx||'').startsWith('material:'));mine={};all.filter(r=>r.owner===LA.user.id).forEach(r=>{const k=r.data.ctx.slice(9);mine[k]=(mine[k]||0)+1});
+ const n=MAT.filter(m=>mine[m[1]]).length;LA.saveProgress('materialbuch',{count:all.filter(r=>r.owner===LA.user.id).length,progressPct:Math.round(100*n/MAT.length),pct:Math.round(100*n/MAT.length)});draw(n)}
+function draw(n){
+ const root=document.getElementById('mb');
+ root.innerHTML=`<div class="card"><b>Dein Materialbuch:</b> ${n} von ${MAT.length} Materialien mit Foto <div class="bar"><i style="width:${100*n/MAT.length}%"></i></div></div><div class="grid" id="mg"></div><div id="det"></div>`;
+ const g=document.getElementById('mg');
+ MAT.forEach(m=>{const a=document.createElement('a');a.className='app';a.href='#';a.style.minHeight='140px';
+  const cnt=all.filter(r=>r.data.ctx==='material:'+m[1]).length;
+  a.innerHTML=`<span class="ic">${m[0]}</span><b>${m[1]}</b><small>${m[2]}</small><small>${mine[m[1]]?'✅ eigenes Foto · ':'📷 noch kein eigenes Foto · '}${cnt} Foto${cnt==1?'':'s'} der Klasse</small>`;
+  a.onclick=e=>{e.preventDefault();open_(m)};g.appendChild(a)})}
+function open_(m){
+ const det=document.getElementById('det');const ph=all.filter(r=>r.data.ctx==='material:'+m[1]);
+ det.innerHTML=`<div class="card" id="dc"><h2 style="margin-top:0">${m[0]} ${m[1]}</h2><p class="small">${m[2]}</p>
+ <label>📷 Foto aufnehmen oder auswählen</label><input class="fld" type="file" id="f" accept="image/*" capture="environment" style="font-size:1rem">
+ <img id="pv" class="img" style="display:none">
+ <label>Grösstes Korn (mm, geschätzt oder gemessen)</label><input class="num" id="k" inputmode="decimal" placeholder="z. B. 8">
+ <label>Kornform</label><select id="sf"><option>eckig (gebrochen)</option><option>gerundet</option><option>gemischt</option><option>plattig / Stein</option></select>
+ <label>Feinanteil</label><select id="fa"><option>viel Feines (staubt, bindet)</option><option>wenig Feines</option><option>kein Feines (Einkorn)</option></select>
+ <label>Wo hast du es gefunden und wofür eignet es sich?</label><textarea class="fld" id="nt" placeholder="Fundation, Bettung, Fuge … und warum?"></textarea>
+ <div id="mm"></div><button class="btn" id="sv">💾 Im Materialbuch speichern</button></div>
+ <div class="card"><b>Fotos der Klasse zu «${m[1]}»</b><div class="pgrid" id="gal" style="margin-top:.6rem"></div></div>`;
+ const f=document.getElementById('f');f.onchange=()=>{const x=f.files[0];if(!x)return;const p=document.getElementById('pv');p.src=URL.createObjectURL(x);p.style.display='block'};
+ document.getElementById('sv').onclick=async()=>{const x=f.files[0],mm=document.getElementById('mm');if(!x){mm.innerHTML='<div class="msg err">Bitte zuerst ein Foto machen.</div>';return}
+  const cap=[document.getElementById('k').value&&('Korn ca. '+document.getElementById('k').value+' mm'),document.getElementById('sf').value,document.getElementById('fa').value,document.getElementById('nt').value].filter(Boolean).join(' · ');
+  document.getElementById('sv').disabled=true;mm.innerHTML='<div class="msg ok">Wird gespeichert …</div>';
+  try{await LA.photo(x,'material:'+m[1],null,cap);await load();open_(m);window.scrollTo(0,document.getElementById('det').offsetTop-20)}catch(e){mm.innerHTML='<div class="msg err">'+LA.esc(e.message)+'</div>';document.getElementById('sv').disabled=false}};
+ const gal=document.getElementById('gal');
+ gal.innerHTML=ph.length?ph.map(r=>`<div class="photo"><img src="${LA.esc(r.data.url)}" loading="lazy"><div><b>${LA.esc(r.owner_name)}</b><br>${LA.esc(r.data.caption||'')}${(r.owner===LA.user.id||LA.user.role==='teacher')?`<br><a href="#" data-d="${r.id}">löschen</a>`:''}</div></div>`).join(''):'<span class="small">Noch kein Foto. Sei die Erste oder der Erste!</span>';
+ gal.onclick=async e=>{const a=e.target.closest('a[data-d]');if(!a)return;e.preventDefault();if(!confirm('Foto löschen?'))return;await LA.remove(a.dataset.d);await load();open_(m)};
+ det.scrollIntoView({behavior:'smooth'})}
+LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));load()});
+</script></body></html>

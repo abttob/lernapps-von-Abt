@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belag-Detektive: draussen analysieren</title><link rel="stylesheet" href="../assets/app.css"></head><body>
+<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>🔍 Belag-Detektive: draussen analysieren</h1><p>In 3er-Gruppen draussen einen Belag untersuchen: Aufbau, Zustand, Fehler, Bewertung. Alle sehen die Ergebnisse.</p></div>
+<div class="wrap"><div class="chips" style="margin:0 0 .8rem"><span class="chip">L166</span><span class="chip">L168</span><span class="chip">L175</span><span class="chip">L176</span></div><div class="card info"><b>Auftrag für 3er-Gruppen:</b> Geht nach draussen (Schulareal, Strasse, Quartier) und untersucht <b>einen Belag</b>. Was liegt darunter? Wie ist er aufgebaut? Was ist gut, was weniger gut? Macht Fotos und füllt den Bericht aus. Alle sehen die Berichte.<br><span class="small">Bitte keine Personen, Gesichter oder Autokennzeichen fotografieren.</span></div>
+<div id="ba"><div class="card">Lädt …</div></div>
+
+</div>
+<script src="../assets/config.js"></script><script src="../assets/core.js"></script>
+<script>
+const esc=LA.esc;let reps=[],photos=[],cur=null;
+const BELAG=['Betonverbundsteine','Betonpflastersteine','Betonplatten','Natursteinplatten','Natursteinpflaster','Chaussierung / Kies','Asphalt','Rasengitter / Sickerbelag','Holzbelag','Anderer Belag'];
+const SCH=['Absenkungen / Spurrillen','Risse','Fugen ausgewaschen','Unkraut / Moos in den Fugen','Pfützen (Wasser bleibt stehen)','Randsteine kippen','Kanten ausgebrochen','Verfärbungen / Flecken','Wackelnde Platten','Frostschäden'];
+const FOTO=[['gesamt','Gesamtbild des Belags'],['oberflaeche','Oberfläche ganz nah (mit Münze oder Zollstock)'],['fuge','Fuge nah'],['rand','Randabschluss'],['aufbau','Schnitt oder Aufbruch (falls sichtbar: Schacht, Rand, Baustelle)'],['schaden','Schaden oder Besonderheit']];
+async function load(){try{reps=await LA.list('report');photos=(await LA.list('photo')).filter(r=>(r.data.ctx||'').startsWith('report:'))}catch(e){document.getElementById('ba').innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return}render()}
+function render(){
+ const el=document.getElementById('ba');
+ el.innerHTML=`<div class="card"><label>Euer Gruppenname (alle drei schreiben dasselbe)</label><input class="fld" id="gn" placeholder="z. B. Team Kies" value="${esc(LA.store.get('la:grp','')||'')}"><button class="btn" id="go">▶ Bericht der Gruppe öffnen / neu starten</button></div><div id="form"></div>
+ <div class="card"><h2 style="margin-top:0">Berichte der Klasse</h2><div id="list"></div></div>`;
+ document.getElementById('go').onclick=()=>{const g=document.getElementById('gn').value.trim();if(!g){alert('Bitte einen Gruppennamen eingeben.');return}LA.store.set('la:grp',g);cur=reps.find(r=>r.grp===g)||{grp:g,data:{},isNew:true};form()};
+ list();if(LA.store.get('la:grp','')&&reps.find(r=>r.grp===LA.store.get('la:grp','')))document.getElementById('go').click()}
+function sel(id,opts,v){return`<select id="${id}">${opts.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('')}</select>`}
+function form(){
+ const d=cur.data||{};const mineOwner=cur.isNew||cur.owner===LA.user.id||LA.user.role==='teacher';const f=document.getElementById('form');
+ const ps=cur.id?photos.filter(p=>p.data.ctx==='report:'+cur.id):[];
+ f.innerHTML=`<div class="card"><h2 style="margin-top:0">Bericht: ${esc(cur.grp)}</h2>${cur.isNew?'<p class="small">Neuer Bericht. Fotos kannst du hinzufügen, sobald der Bericht gespeichert ist.</p>':`<p class="small">Erstellt von ${esc(cur.owner_name||'')}. ${mineOwner?'Du kannst ihn bearbeiten.':'Nur die Person, die ihn erstellt hat, kann Texte ändern. Du kannst aber Fotos beisteuern.'}</p>`}
+ <fieldset ${mineOwner?'':'disabled'} style="border:0;padding:0;margin:0">
+ <label>1. Wo seid ihr? (Ort, z. B. Eingang Schulhaus)</label><input class="fld" id="ort" value="${esc(d.ort||'')}">
+ <label>2. Welcher Belag ist es?</label>${sel('belag',BELAG,d.belag)}
+ <label>3. Wie stark wird er befahren? (Schätzung ZP, T1, T2 oder T3 und Begründung)</label>${sel('klasse',['ZP (nur Fussgänger)','T1 (bis 30 Überfahrten pro Tag)','T2 (30 bis 100)','T3 (100 bis 300)'],d.klasse)}<input class="fld" id="ueber" placeholder="Wie habt ihr das geschätzt?" value="${esc(d.ueber||'')}">
+ <label>4. Fugen: Material, Breite und Zustand</label>${sel('fuge',['Splitt','Sand / Brechsand','Mörtel (gebunden)','Gras (begrünt)','leer / ausgewaschen','keine sichtbaren Fugen'],d.fuge)}<input class="fld" id="fugeb" placeholder="Fugenbreite in mm" value="${esc(d.fugeb||'')}">
+ <label>5. Gefälle: Wohin läuft das Wasser? Wie stark ist das Gefälle (Schätzung in %)?</label><input class="fld" id="gef" value="${esc(d.gef||'')}">
+ <label>6. Randabschluss: Welche Art, und wie ist er eingebaut?</label>${sel('rand',['Randstein (Bundstein)','Stellplatte / Stellstein','Betonkeil (anbetoniert)','Wasserstein / Wasserschale','Metallprofil','kein Randabschluss'],d.rand)}<input class="fld" id="randz" placeholder="Zustand und Beobachtung" value="${esc(d.randz||'')}">
+ <label>7. Was liegt darunter? Was vermutet ihr (Deckschicht, Bettung, Fundation, Untergrund)? Woran seht ihr das (Schacht, Rand, Baustelle, Bohrung)?</label><textarea class="fld" id="dar">${esc(d.dar||'')}</textarea>
+ <label>8. Schäden und Zustand</label><div id="sch">${SCH.map((s,i)=>`<label style="font-weight:600;display:flex;gap:.6rem;align-items:center;min-height:44px"><input type="checkbox" style="width:24px;height:24px" ${(d.schaeden||[]).includes(s)?'checked':''} value="${esc(s)}"> ${esc(s)}</label>`).join('')}</div>
+ <label>9. Das ist gut:</label><textarea class="fld" id="gut">${esc(d.gut||'')}</textarea>
+ <label>10. Das ist weniger gut:</label><textarea class="fld" id="schl">${esc(d.schl||'')}</textarea>
+ <label>11. Verbesserungsvorschlag (was würdet ihr anders bauen?)</label><textarea class="fld" id="bes">${esc(d.bes||'')}</textarea>
+ <label>12. Gesamtbewertung: ${[1,2,3,4,5].map(n=>`<span class="star" data-n="${n}" style="font-size:2.2rem;cursor:pointer;color:${n<=(d.sterne||0)?'#f4b400':'#ccc'}">★</span>`).join('')}</label></fieldset>
+ <div id="fm"></div>${mineOwner?'<button class="btn" id="save">💾 Bericht speichern</button>':''}</div>
+ ${cur.id?`<div class="card"><h2 style="margin-top:0">📷 Fotos</h2>${FOTO.map(([k,t])=>`<div style="margin:.5rem 0"><b>${esc(t)}</b><br><input type="file" accept="image/*" capture="environment" data-k="${k}" data-t="${esc(t)}" style="font-size:1rem;margin:.3rem 0"></div>`).join('')}<div id="pm"></div><div class="pgrid" id="pg" style="margin-top:.8rem">${ps.map(p=>pcard(p)).join('')||'<span class="small">Noch keine Fotos.</span>'}</div></div>`:''}`;
+ let st=d.sterne||0;f.querySelectorAll('.star').forEach(s=>s.onclick=()=>{if(!mineOwner)return;st=+s.dataset.n;f.querySelectorAll('.star').forEach(x=>x.style.color=+x.dataset.n<=st?'#f4b400':'#ccc')});
+ const sv=document.getElementById('save');
+ if(sv)sv.onclick=async()=>{const g=i=>document.getElementById(i).value;
+  const nd={ort:g('ort'),belag:g('belag'),klasse:g('klasse'),ueber:g('ueber'),fuge:g('fuge'),fugeb:g('fugeb'),gef:g('gef'),rand:g('rand'),randz:g('randz'),dar:g('dar'),schaeden:[...f.querySelectorAll('#sch input:checked')].map(x=>x.value),gut:g('gut'),schl:g('schl'),bes:g('bes'),sterne:st};
+  if(!nd.ort){document.getElementById('fm').innerHTML='<div class="msg err">Bitte den Ort angeben.</div>';return}
+  sv.disabled=true;try{if(cur.isNew){const r=await LA.add('report',cur.grp,nd);cur=r}else{await LA.update(cur.id,nd);cur.data=nd}
+   await LA.saveProgress('belaganalyse',{count:1,pct:100,progressPct:100,finished:true,stage:1,stages:1});await load();cur=reps.find(r=>r.grp===cur.grp);form();document.getElementById('fm').innerHTML='<div class="msg ok">Gespeichert. Jetzt Fotos hinzufügen!</div>'}catch(e){document.getElementById('fm').innerHTML='<div class="msg err">'+esc(e.message)+'</div>';sv.disabled=false}};
+ f.querySelectorAll('input[type=file]').forEach(i=>i.onchange=async()=>{const x=i.files[0];if(!x)return;const pm=document.getElementById('pm');pm.innerHTML='<div class="msg ok">Foto wird gespeichert …</div>';
+  try{await LA.photo(x,'report:'+cur.id,cur.grp,i.dataset.t);await load();cur=reps.find(r=>r.grp===cur.grp);form()}catch(e){pm.innerHTML='<div class="msg err">'+esc(e.message)+'</div>'}});
+ f.querySelectorAll('a[data-d]').forEach(a=>a.onclick=async e=>{e.preventDefault();if(!confirm('Foto löschen?'))return;await LA.remove(a.dataset.d);await load();cur=reps.find(r=>r.grp===cur.grp);form()});
+ f.scrollIntoView({behavior:'smooth'})}
+function pcard(p){return`<div class="photo"><img src="${esc(p.data.url)}" loading="lazy"><div>${esc(p.data.caption||'')}<br><span class="small">${esc(p.owner_name)}</span>${(p.owner===LA.user.id||LA.user.role==='teacher')?` · <a href="#" data-d="${p.id}">löschen</a>`:''}</div></div>`}
+function list(){const l=document.getElementById('list');
+ l.innerHTML=reps.length?reps.map(r=>{const d=r.data,ps=photos.filter(p=>p.data.ctx==='report:'+r.id);return`<details class="card" style="box-shadow:none"><summary style="font-weight:800;cursor:pointer;min-height:44px">${esc(r.grp)} · ${esc(d.belag||'')} · ${'★'.repeat(d.sterne||0)}${'☆'.repeat(5-(d.sterne||0))}</summary>
+ <p><b>Ort:</b> ${esc(d.ort)}<br><b>Klasse:</b> ${esc(d.klasse)} (${esc(d.ueber)})<br><b>Fugen:</b> ${esc(d.fuge)} ${esc(d.fugeb)} mm<br><b>Gefälle:</b> ${esc(d.gef)}<br><b>Randabschluss:</b> ${esc(d.rand)}: ${esc(d.randz)}<br><b>Darunter (Vermutung):</b> ${esc(d.dar)}<br><b>Schäden:</b> ${esc((d.schaeden||[]).join(', ')||'keine')}</p>
+ <p><b>👍 Gut:</b> ${esc(d.gut)}<br><b>👎 Weniger gut:</b> ${esc(d.schl)}<br><b>💡 Besser:</b> ${esc(d.bes)}</p><div class="pgrid">${ps.map(p=>pcard(p).replace(/<a href[^>]*>löschen<\/a>/,'')).join('')}</div></details>`}).join(''):'<span class="small">Noch keine Berichte. Macht den Anfang!</span>'}
+LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));load()});
+</script></body></html>

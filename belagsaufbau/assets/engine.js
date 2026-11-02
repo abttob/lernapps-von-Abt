@@ -1,46 +1,9 @@
-<!DOCTYPE html>
-<html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rechenwerkstatt</title><style>
-:root{--ink:#26302b;--muted:#5d6a63;--accent:#7a5a3a;--green:#3f7d4e;--red:#b04a4a;--card:#fffdf8;--line:#d9cfba}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#f1ead8;
- background-image:repeating-linear-gradient(0deg,rgba(122,90,58,.07) 0 2px,transparent 2px 46px),repeating-linear-gradient(90deg,rgba(122,90,58,.07) 0 2px,transparent 2px 92px);min-height:100vh}
-.top{background:linear-gradient(#5b4630,#7a5a3a);color:#fff;padding:.8rem 1rem}
-.top a{color:#ffe9c2;text-decoration:none;font-size:.95rem}
-.wrap{max-width:720px;margin:0 auto;padding:1rem}
-h1{font-size:1.45rem;margin:.2rem 0 .4rem}
-.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.2rem 0 .8rem}
-.chip{background:#e8dcc0;border:1px solid var(--line);border-radius:999px;padding:.12rem .6rem;font-size:.8rem;font-weight:600}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:1rem}
-.bar{height:8px;background:#e5dcc6;border-radius:6px;overflow:hidden;margin:.3rem 0 1rem}.bar>i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
-.q{font-size:1.12rem;font-weight:700;margin:.2rem 0 .8rem;line-height:1.35}
-.opt,.btn{display:block;width:100%;text-align:left;font:inherit;padding:.85rem 1rem;margin:.45rem 0;border:2px solid var(--line);background:#fff;border-radius:12px;cursor:pointer;min-height:48px;color:inherit}
-.btn{text-align:center;background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
-.btn.sec{background:#fff;color:var(--accent)}
-.opt:hover:not(:disabled){border-color:var(--accent)}
-.opt.ok{background:#d8eedd;border-color:var(--green)}.opt.no{background:#f6dcdc;border-color:var(--red)}
-.why{margin:.8rem 0;padding:.7rem .9rem;background:#fff7dc;border-left:4px solid #e0b43a;border-radius:8px;font-size:.95rem}
-.img{display:block;max-width:100%;max-height:260px;margin:.2rem auto .8rem;border:1px solid var(--line);border-radius:8px}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
-.m{padding:.7rem .6rem;border:2px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font:inherit;text-align:left;min-height:48px;color:inherit}
-.m.sel{border-color:var(--accent);background:#fbeccd}.m.done{background:#d8eedd;border-color:var(--green);cursor:default}.m.bad{background:#f6dcdc;border-color:var(--red)}
-.ord{display:flex;align-items:center;gap:.5rem;background:#fff;border:2px solid var(--line);border-radius:10px;padding:.5rem .7rem;margin:.4rem 0}
-.ord span{flex:1}.ord button{border:1px solid var(--line);background:#f4ecd6;border-radius:8px;width:44px;height:44px;font-size:1.2rem;cursor:pointer}
-.ord.ok{background:#d8eedd;border-color:var(--green)}.ord.no{background:#f6dcdc;border-color:var(--red)}
-input.num{font:inherit;font-size:1.3rem;padding:.6rem .8rem;width:100%;border:2px solid var(--line);border-radius:10px;margin:.3rem 0}
-label{font-weight:600;font-size:.9rem}select,input.fld{font:inherit;padding:.55rem;border:2px solid var(--line);border-radius:10px;width:100%;margin:.2rem 0 .7rem;background:#fff}
-.res{text-align:center}.stg{display:flex;align-items:center;gap:.4rem;margin:0 0 .6rem}.stg span{width:26px;height:26px;border-radius:50%;background:#e5dcc6;display:grid;place-items:center;font-size:.8rem;font-weight:700}.stg span.d{background:var(--green);color:#fff}.stg span.a{background:var(--accent);color:#fff}.stg b{font-size:.9rem;margin-left:.3rem}
-.res .big{font-size:2.6rem;font-weight:800;color:var(--green)}
-table.t{width:100%;border-collapse:collapse}table.t td,table.t th{border-bottom:1px solid var(--line);padding:.45rem .3rem;text-align:left;font-size:.95rem}
-</style></head><body>
-<div class="top"><a href="../">← Belagsaufbau von Wegen und Plätzen</a> &nbsp;·&nbsp; <a href="../../">Alle Apps</a></div>
-<div class="wrap"><h1>🧮 Rechenwerkstatt</h1><div class="chips"><span class="chip">Rechnen</span></div><p style="color:var(--muted);margin-top:0">Alle Rechenarten gemischt: Menge, Planum, Fahrten, Beton, Gefälle, Kosten. Jede Runde ist neu.</p><div id="stg"></div><div id="app"></div></div>
-<script>const CFG={"type": "multi", "title": "Rechenwerkstatt", "slug": "rechenwerkstatt", "stages": [{"type": "calc", "title": "Runde 1: Menge und Planum", "gens": ["fundlose", "planumbreite", "fahrten"], "count": 8, "info": null}, {"type": "calc", "title": "Runde 2: Beton, Splitt, Platten", "gens": ["keil2", "einfass", "bettung", "platten"], "count": 8, "info": null}, {"type": "calc", "title": "Runde 3: Gefälle und Kosten", "gens": ["gefaelle2", "kote", "kosten", "gewicht"], "count": 8, "info": null}, {"type": "tool", "title": "Mengenrechner (Werkzeug)"}]};</script><script>
+
 const $=s=>document.querySelector(s);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const rnd=(a)=>a[Math.floor(Math.random()*a.length)];
 let C=CFG;const KEY='belag:'+CFG.slug;
-function save(p){try{const o=JSON.parse(localStorage.getItem(KEY)||'{}');if(!o.best||p>o.best)o.best=p;o.last=p;localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+function save(p){}
 const root=$('#app');
 var HOOK=null;
 function finish(score,total,extra){
@@ -57,7 +20,7 @@ function quiz(){
   if(i>=qs.length)return finish(score,qs.length);
   const q=qs[i];const idx=shuffle(q.opts.map((_,k)=>k));
   root.innerHTML=`<div class="card">${pb(i,qs.length)}${q.img?`<img class="img" src="${q.img}" alt="Abbildung">`:''}<div class="q">${q.q}</div><div id="o"></div><div id="w"></div></div>`;
-  idx.forEach(k=>{const b=document.createElement('button');b.className='opt';b.innerHTML=q.opts[k];b.onclick=()=>{
+  let n_=0;idx.forEach(k=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<span class="k">${'ABCDEFG'[n_++]}</span><span>${q.opts[k]}</span>`;b.onclick=()=>{
     document.querySelectorAll('.opt').forEach(x=>x.disabled=true);
     const ok=k===q.a;if(ok)score++;b.classList.add(ok?'ok':'no');
     document.querySelectorAll('.opt').forEach((x,n)=>{if(idx[n]===q.a)x.classList.add('ok')});
@@ -179,16 +142,17 @@ function multi(){
   if(si>=st.length){HOOK=null;$('#stg').innerHTML='';const S=res.reduce((a,r)=>a+r[1],0),T=res.reduce((a,r)=>a+r[2],0);
    const rows=res.map(r=>`<tr><td>${r[0]}</td><td><b>${r[2]?r[1]+' / '+r[2]:'–'}</b></td></tr>`).join('');
    root.innerHTML=`<div class="card res"><div class="big">${S} / ${T}</div><p>${T&&S/T>=.8?'Sehr gut! 🎉 Lernpfad gemeistert.':T&&S/T>=.6?'Gut, die schwächeren Stufen nochmals üben 💪':'Schau dir die Erklärungen nochmals an 📖'}</p><table class="t">${rows}</table><button class="btn" onclick="start()">Lernpfad nochmals starten</button></div>`;
-   if(T)save(Math.round(100*S/T));return}
+   if(T)LA.saveProgress(CFG.slug,{pct:Math.round(100*S/T),score:S,total:T,stage:st.length,stages:st.length,finished:true,progressPct:100,stagesRes:res});return}
   C=Object.assign({slug:CFG.slug},st[si]);
   $('#stg').innerHTML=`<div class="stg">${st.map((s,k)=>`<span class="${k<si?'d':k==si?'a':''}">${k+1}</span>`).join('')}<b>Stufe ${si+1} von ${st.length}: ${C.title}</b></div>${C.info?`<div class="why" style="margin-top:0">${C.info}</div>`:''}`;
-  HOOK=(score,total)=>{res.push([st[si].title,score,total]);si++;next()};
-  if(C.type==='tool'){tool();root.insertAdjacentHTML('beforeend','<button class="btn" id="tn">Weiter →</button>');$('#tn').onclick=()=>{res.push([st[si].title,0,0]);si++;next()}}
+  HOOK=(score,total)=>{res.push([st[si].title,score,total]);si++;LA.saveProgress(CFG.slug,{stage:si,stages:st.length,progressPct:Math.round(100*si/st.length)});next()};
+  if(C.type==='tool'){tool();root.insertAdjacentHTML('beforeend','<button class="btn" id="tn">Weiter →</button>');$('#tn').onclick=()=>{res.push([st[si].title,0,0]);si++;LA.saveProgress(CFG.slug,{stage:si,stages:st.length,progressPct:Math.round(100*si/st.length)});next()}}
   else({quiz,match,order,calc})[C.type]();
   window.scrollTo(0,0);
  }
  next();
 }
 function start(){({quiz,match,order,calc,tool,multi})[CFG.type]()}
-document.title=CFG.title+' – Belagsaufbau';start();
-</script></body></html>
+document.title=CFG.title+' – Belagsaufbau';
+
+window.startApp=function(){document.title=CFG.title+' – Belagsaufbau';LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));start()})};

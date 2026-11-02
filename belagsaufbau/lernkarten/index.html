@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lernkarten: alles üben</title><link rel="stylesheet" href="../assets/app.css"></head><body>
+<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>🃏 Lernkarten: alles üben</h1><p>Karten zu allen Lernzielen: Frage lesen, überlegen, umdrehen. Was du nicht kannst, kommt öfter dran.</p></div>
+<div class="wrap"><div class="chips" style="margin:0 0 .8rem"><span class="chip">L166–L177</span></div><div id="lk"><div class="card">Lädt …</div></div>
+
+</div>
+<script src="../assets/config.js"></script><script src="../assets/core.js"></script>
+<script>
+const esc=LA.esc;let cards=[],box={},filter='alle',queue=[],cur=null,flipped=false,saveT=null;
+const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+async function init(){
+ try{cards=await (await fetch('cards.json')).json()}catch(e){document.getElementById('lk').innerHTML='<div class="msg err">Karten konnten nicht geladen werden.</div>';return}
+ const p=LA.getProgress('lernkarten');box=(p&&p.data&&p.data.boxes)||{};render()}
+const inF=c=>filter==='alle'||c.lz===filter;
+function stats(){const L=cards.filter(inF);const b=[0,0,0,0];L.forEach(c=>b[box[c.id]||0]++);return{L,b}}
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>{const n=cards.length,k=cards.filter(c=>(box[c.id]||0)>=2).length;LA.saveProgress('lernkarten',{boxes:box,count:k,total:n,pct:Math.round(100*k/n),progressPct:Math.round(100*k/n),stage:k,stages:n})},400)}
+function render(){
+ const lzs=['alle',...[...new Set(cards.map(c=>c.lz))]];const {L,b}=stats();
+ document.getElementById('lk').innerHTML=`<div class="card"><div class="chips" style="margin:0 0 .6rem">${lzs.map(z=>`<button class="btn small ${z===filter?'':'sec'}" data-z="${z}">${z==='alle'?'Alle ('+cards.length+')':z}</button>`).join('')}</div>
+ <div class="small">📦 Box 0 neu: <b>${b[0]}</b> · Box 1 üben: <b>${b[1]}</b> · Box 2 fast: <b>${b[2]}</b> · Box 3 sicher: <b>${b[3]}</b></div><div class="bar"><i style="width:${L.length?100*(b[2]+b[3])/L.length:0}%"></i></div></div>
+ <div id="cd"></div>`;
+ document.querySelectorAll('[data-z]').forEach(x=>x.onclick=()=>{filter=x.dataset.z;queue=[];next();render()});
+ if(!cur||!inF(cur))next();show()}
+function next(){const L=cards.filter(inF);if(!L.length){cur=null;return}
+ if(!queue.length){queue=L.slice().sort(()=>Math.random()-.5).sort((a,b)=>((box[a.id]||0)>=3?1:0)-((box[b.id]||0)>=3?1:0)||((box[a.id]||0)-(box[b.id]||0))+(Math.random()-.5)*1.5)}
+ cur=queue.shift();flipped=false}
+function show(){const cd=document.getElementById('cd');if(!cur){cd.innerHTML='<div class="card">Keine Karten.</div>';return}
+ cd.innerHTML=`<div class="small" style="margin:.2rem 0">${cur.lz} · Karte ${cur.id} · Box ${box[cur.id]||0}</div>
+ <div class="flip ${flipped?'on':''}" id="fl"><div class="in" id="in"><div class="f">${cur.img?`<img src="../img/${esc(cur.img)}" alt="">`:''}<div>${md(cur.q)}</div><div class="small" style="margin-top:1rem">👆 Antippen zum Umdrehen</div></div><div class="b"><div style="text-align:left">${md(cur.a)}</div></div></div></div>
+ <div class="cols" id="bt" style="${flipped?'':'display:none'}"><button class="btn warn" id="no">🔁 Nochmals</button><button class="btn" id="yes">✅ Gewusst</button></div>
+ <button class="btn sec" id="turn" style="${flipped?'display:none':''}">🔄 Karte umdrehen</button>`;
+ const turn=()=>{flipped=true;document.getElementById('fl').classList.add('on');document.getElementById('bt').style.display='grid';document.getElementById('turn').style.display='none'};
+ document.getElementById('in').onclick=()=>{if(!flipped)turn()};document.getElementById('turn').onclick=turn;
+ const go=(ok)=>{const o=box[cur.id]||0;box[cur.id]=ok?Math.min(3,o+1):1;if(!ok)queue.push(cur);save();next();render()};
+ document.getElementById('yes').onclick=()=>go(true);document.getElementById('no').onclick=()=>go(false)}
+LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));init()});
+</script></body></html>
