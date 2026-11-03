@@ -5,22 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bewässerung – Was ist hängen geblieben?</title>
 <style>
-  :root{--bg:#eef3ee;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--green-l:#d9efe0;--red:#b04a4a;--red-l:#f7dede;--blue:#2b6a9a;--blue-l:#dcebf6;--line:#cfd9d2}
+  :root{--bg:#eef3ee;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--green-d:#245f39;--green-l:#d9efe0;--red:#b04a4a;--red-l:#f7dede;--yel-l:#fff0b8;--blue:#2b6a9a;--blue-l:#dcebf6;--line:#cfd9d2}
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
   .wrap{max-width:640px;margin:0 auto;padding:16px 16px 48px}
-  a.back{color:var(--green);text-decoration:none;font-size:.95rem}
+  .wrap.wide{max-width:1100px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  a.back,.who a{color:var(--green);text-decoration:none;font-size:.95rem}
+  .who{display:flex;gap:10px;align-items:center;font-size:.9rem}
+  .who span{background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-weight:600}
   h1{font-size:1.45rem;margin:.6rem 0 .2rem}
+  h2{font-size:1.15rem;margin:0 0 .5rem}
   .sub{color:var(--muted);margin:0 0 1rem}
   .card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
-  .btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:52px}
+  .btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:52px;font-family:inherit}
   .btn:hover{border-color:var(--green)}
   .btn.primary{background:var(--green);color:#fff;border-color:var(--green);text-align:center;font-weight:600}
   .btn.secondary{text-align:center;font-weight:600}
+  .btn.inline{display:inline-block;width:auto;padding:8px 14px;min-height:42px;margin:4px 4px 4px 0;text-align:center;font-weight:600;font-size:.9rem}
   .btn.ok{background:var(--green-l);border-color:var(--green)}
   .btn.no{background:var(--red-l);border-color:var(--red)}
   .btn:disabled{cursor:default}
-  .topic small{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
   .bar{height:8px;background:#dfe7e1;border-radius:6px;overflow:hidden;margin:6px 0 14px}
   .bar>div{height:100%;background:var(--green);transition:width .3s}
   .meta{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
@@ -31,8 +36,7 @@
   .numrow input{flex:1;font-size:1.15rem;padding:12px;border:1.5px solid var(--line);border-radius:12px;min-width:0}
   .numrow span{font-weight:600;color:var(--muted)}
   .fb{padding:12px 14px;border-radius:12px;margin-top:10px;font-size:.95rem}
-  .fb.ok{background:var(--green-l)}
-  .fb.no{background:var(--red-l)}
+  .fb.ok{background:var(--green-l)} .fb.no{background:var(--red-l)}
   .fb b{display:block;margin-bottom:4px}
   .big{font-size:2.6rem;font-weight:700;text-align:center;margin:6px 0}
   .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eef1ef}
@@ -40,24 +44,58 @@
   .wrong{font-size:.9rem;border-bottom:1px solid #eef1ef;padding:10px 0}
   .wrong:last-child{border:0}
   .wrong .a{color:var(--green);font-weight:600}
+  .wrong .g{color:var(--red)}
   .hidden{display:none}
+  .small{font-size:.85rem;color:var(--muted)}
+  /* Login-Overlay (aus core.js) */
+  .auth{position:fixed;inset:0;background:rgba(31,45,39,.55);display:grid;place-items:center;z-index:50;padding:1rem}
+  .auth .card{max-width:430px;width:100%;margin:0;max-height:94vh;overflow:auto}
+  .auth label{font-weight:600;font-size:.9rem}
+  .auth .fld{font:inherit;font-size:1.05rem;padding:12px;width:100%;border:1.5px solid var(--line);border-radius:12px;margin:.3rem 0 .8rem}
+  .auth .btn{text-align:center;background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+  .tabs{display:flex;gap:.5rem;margin-bottom:.8rem}
+  .tabs button{flex:1;font:inherit;font-weight:600;padding:.7rem;border-radius:12px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-height:48px}
+  .tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .msg{padding:.7rem .9rem;border-radius:12px;font-weight:600;margin:.4rem 0}
+  .msg.err{background:var(--red-l);color:#8a1f1b}
+  .banner{background:#fff3c0;border:2px dashed #e5b800;border-radius:12px;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem}
+  /* Lehrer-Auswertung */
+  .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;background:#fff}
+  th,td{border-bottom:1px solid #eef1ef;padding:8px 10px;text-align:left;white-space:nowrap}
+  th{background:#e7f1ea;font-size:.8rem;position:sticky;top:0}
+  td.n{text-align:center}
+  tr.click{cursor:pointer} tr.click:hover td{background:#f5faf6}
+  .sc{display:inline-block;min-width:48px;text-align:center;font-weight:700;border-radius:8px;padding:2px 6px}
+  .g0{background:#f1f1f1;color:#999}.g1{background:var(--red-l)}.g2{background:var(--yel-l)}.g3{background:var(--green-l)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+  .kpi{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .kpi b{display:block;font-size:1.6rem}
+  .kpi span{font-size:.8rem;color:var(--muted)}
+  .qbar{height:10px;border-radius:5px;background:#eef1ef;overflow:hidden;min-width:80px}
+  .qbar>div{height:100%}
+  td.wrap{white-space:normal;min-width:240px}
+  .det{background:#f7faf8;padding:10px 14px}
+  .det .it{padding:4px 0;font-size:.88rem;white-space:normal}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <a class="back" href="../">← Alle Apps</a>
+<div class="wrap" id="wrap">
+  <div class="top"><a class="back" href="../">← Alle Apps</a><div class="who" id="who"></div></div>
   <h1>💧 Bewässerung – Was ist hängen geblieben?</h1>
-  <p class="sub">Repetition zur Gruppenarbeit L214–L216 (6 Fallbeispiele)</p>
+  <p class="sub" id="subline">Repetition zur Gruppenarbeit L214–L216 · Klasse GLZ24A</p>
 
-  <!-- Start -->
-  <div id="start">
+  <div id="loading" class="card">Lädt …</div>
+
+  <!-- Start (Lernende) -->
+  <div id="start" class="hidden">
     <div class="card">
-      <b>Was willst du üben?</b>
-      <div id="topics"></div>
+      <h2 id="hello"></h2>
+      <p style="margin:.2rem 0 .6rem">Du erhältst <b>10 zufällige Fragen</b> aus allen 6 Fallbeispielen der Gruppenarbeit. Nach jeder Antwort siehst du, ob es stimmt. Dein Resultat wird gespeichert und deine Lehrperson sieht es.</p>
+      <p class="small" style="margin:0 0 .6rem">Taschenrechner bereithalten. Bei Rechenaufgaben nur die Zahl eingeben (Komma oder Punkt geht beide).</p>
+      <button class="btn primary" id="go">Test starten</button>
     </div>
-    <div class="card" style="font-size:.9rem;color:var(--muted)">
-      Tipp: Taschenrechner bereithalten. Bei Rechenaufgaben nur die Zahl eingeben (Komma oder Punkt geht beide).
-    </div>
+    <div class="card hidden" id="myHist"><h2>Deine bisherigen Tests</h2><div id="myHistList"></div></div>
   </div>
 
   <!-- Quiz -->
@@ -79,14 +117,20 @@
     <div class="card">
       <div class="big" id="pct"></div>
       <p style="text-align:center;margin:0" id="verdict"></p>
+      <p class="small" style="text-align:center;margin:.4rem 0 0" id="saved"></p>
     </div>
-    <div class="card"><b>Nach Lernziel</b><div id="byLz"></div></div>
-    <div class="card" id="wrongBox"><b>Das solltest du nochmals anschauen</b><div id="wrongList"></div></div>
-    <button class="btn primary" id="retryWrong">Nur die falschen nochmals</button>
-    <button class="btn secondary" id="home">Zurück zur Auswahl</button>
+    <div class="card"><h2>Nach Lernziel</h2><div id="byLz"></div></div>
+    <div class="card" id="wrongBox"><h2>Das solltest du nochmals anschauen</h2><div id="wrongList"></div></div>
+    <button class="btn primary" id="again">Neuer Test mit 10 anderen Fragen</button>
   </div>
+
+  <!-- Lehrer-Auswertung -->
+  <div id="teacher" class="hidden"></div>
 </div>
 
+<script src="../belagsaufbau/assets/config.js"></script>
+<script>window.LA_KLASSE="GLZ24A";</script>
+<script src="core.js"></script>
 <script>
 const FB = {
   1:"Fallbeispiel 1 · Wasserbedarf & Boden",
@@ -265,54 +309,63 @@ const Q = [
  e:"Ein sauberer, rechtwinkliger Schnitt und eine angefaste Kante verhindern, dass die Dichtung im Verbinder beschädigt wird – sonst gibt es Lecks."}
 ];
 
-// ---------- Logik ----------
+
+</script>
+<script>
+const SLUG = "bewaesserung-check";
+const N_QUESTIONS = 10;
 const $ = id => document.getElementById(id);
-let set = [], i = 0, right = 0, wrongs = [], answered = false;
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+Q.forEach((q,k)=>q.id="q"+(k+1));
+const byId = Object.fromEntries(Q.map(q=>[q.id,q]));
 
 function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
-function show(id){["start","quiz","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
 function fmt(n,unit){if(unit==="CHF")return n.toFixed(2);const [a,b]=String(n).split(".");return a.replace(/\B(?=(\d{3})+(?!\d))/g," ")+(b?","+b:"");}
+function ansText(q){return q.type==="mc"?q.o[q.a]:(q.unit==="CHF"?"CHF "+fmt(q.ans,"CHF"):fmt(q.ans)+" "+q.unit);}
+function show(id){["loading","start","quiz","result","teacher"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
+const dt = s => s?new Date(s).toLocaleString("de-CH",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"–";
+const cls = p => p==null?"g0":p>=80?"g3":p>=50?"g2":"g1";
 
-function loadBest(){try{return JSON.parse(localStorage.getItem("bew-check-best")||"{}");}catch(e){return {};}}
-function saveBest(key,pct){try{const b=loadBest();if(!(key in b)||pct>b[key]){b[key]=pct;localStorage.setItem("bew-check-best",JSON.stringify(b));}}catch(e){}}
-let currentKey = "";
-
-function buildStart(){
-  const best = loadBest();
-  const t = $("topics"); t.innerHTML = "";
-  const items = [["all","🎯 Alles gemischt",Q.length+" Fragen"]];
-  for(const k in FB) items.push(["fb"+k,FB[k],Q.filter(q=>q.fb==k).length+" Fragen"]);
-  items.push(["calc","🧮 Nur Rechenaufgaben",Q.filter(q=>q.type==="num").length+" Fragen"]);
-  items.forEach(([key,label,n])=>{
-    const b=document.createElement("button"); b.className="btn topic";
-    const bs = key in best ? " · Bestwert "+best[key]+" %" : "";
-    b.innerHTML = label+"<small>"+n+bs+"</small>";
-    b.onclick=()=>start(key); t.appendChild(b);
-  });
+/* 10 zufällige Fragen: aus jedem Fallbeispiel mindestens 1, Rest zufällig */
+function pickQuestions(){
+  const chosen=[];
+  for(const k in FB){ chosen.push(shuffle(Q.filter(q=>q.fb==k))[0]); }
+  const rest=shuffle(Q.filter(q=>!chosen.includes(q)));
+  while(chosen.length<N_QUESTIONS && rest.length) chosen.push(rest.pop());
+  return shuffle(chosen);
 }
 
-function start(key, list){
-  currentKey = key;
-  if(list) set = shuffle(list);
-  else if(key==="all") set = shuffle(Q);
-  else if(key==="calc") set = shuffle(Q.filter(q=>q.type==="num"));
-  else { const n=+key.slice(2); set = Q.filter(q=>q.fb===n); } // Fallbeispiel in Originalreihenfolge (Rechnungen bauen aufeinander auf)
-  i=0; right=0; wrongs=[]; show("quiz"); render();
+/* ---------- Lernende ---------- */
+let set=[], i=0, right=0, log=[], answered=false, startedAt=null;
+
+function attempts(){const p=LA.getProgress(SLUG);return (p&&p.data&&p.data.attempts)||[];}
+
+function buildStart(){
+  $("hello").textContent="Hallo "+LA.user.name+" 👋";
+  const A=attempts();
+  $("myHist").classList.toggle("hidden",!A.length);
+  $("myHistList").innerHTML=A.slice().reverse().map((a,k)=>'<div class="row"><span>Test '+(A.length-k)+' · '+dt(a.finished)+'</span><b><span class="sc '+cls(a.pct)+'">'+a.score+' / '+a.total+'</span></b></div>').join("");
+  $("go").textContent = A.length ? "Neuer Test (10 neue Zufallsfragen)" : "Test starten";
+  show("start");
+}
+
+function startTest(){
+  set=pickQuestions(); i=0; right=0; log=[]; startedAt=new Date().toISOString();
+  show("quiz"); render();
 }
 
 function render(){
   const q=set[i]; answered=false;
-  $("pos").textContent = "Frage "+(i+1)+" / "+set.length;
-  $("score").textContent = right+" richtig";
-  $("prog").style.width = (i/set.length*100)+"%";
-  $("tagFb").textContent = "FB "+q.fb; $("tagLz").textContent = q.lz;
-  $("ctx").classList.toggle("hidden",!q.ctx); $("ctx").textContent = q.ctx||"";
-  $("qtext").textContent = q.q;
+  $("pos").textContent="Frage "+(i+1)+" / "+set.length;
+  $("score").textContent=right+" richtig";
+  $("prog").style.width=(i/set.length*100)+"%";
+  $("tagFb").textContent="Fallbeispiel "+q.fb; $("tagLz").textContent=q.lz;
+  $("ctx").classList.toggle("hidden",!q.ctx); $("ctx").textContent=q.ctx||"";
+  $("qtext").textContent=q.q;
   $("feedback").innerHTML=""; $("next").classList.add("hidden");
   const A=$("answers"); A.innerHTML="";
   if(q.type==="mc"){
-    const order = shuffle(q.o.map((t,k)=>k));
-    order.forEach(k=>{
+    shuffle(q.o.map((t,k)=>k)).forEach(k=>{
       const b=document.createElement("button"); b.className="btn"; b.textContent=q.o[k]; b.dataset.k=k;
       b.onclick=()=>checkMc(k); A.appendChild(b);
     });
@@ -324,62 +377,133 @@ function render(){
   }
 }
 
-function finishAnswer(ok, correctText){
-  answered=true;
-  const q=set[i];
-  if(ok) right++; else wrongs.push({q,correctText});
-  $("score").textContent = right+" richtig";
-  $("feedback").innerHTML = '<div class="fb '+(ok?"ok":"no")+'"><b>'+(ok?"✅ Richtig!":"❌ Leider falsch. Richtig: "+correctText)+'</b>'+q.e+'</div>';
+function finishAnswer(ok, given){
+  answered=true; const q=set[i];
+  if(ok) right++;
+  log.push({id:q.id, ok, given});
+  $("score").textContent=right+" richtig";
+  $("feedback").innerHTML='<div class="fb '+(ok?"ok":"no")+'"><b>'+(ok?"✅ Richtig!":"❌ Leider falsch. Richtig: "+esc(ansText(q)))+'</b>'+esc(q.e)+'</div>';
   const nx=$("next"); nx.classList.remove("hidden");
-  nx.textContent = i<set.length-1 ? "Weiter" : "Resultat anzeigen";
-  nx.focus();
+  nx.textContent= i<set.length-1?"Weiter":"Resultat anzeigen"; nx.focus();
 }
-
 function checkMc(k){
-  if(answered) return;
-  const q=set[i];
-  document.querySelectorAll("#answers .btn").forEach(b=>{
-    b.disabled=true;
-    if(+b.dataset.k===q.a) b.classList.add("ok");
-    else if(+b.dataset.k===k) b.classList.add("no");
-  });
-  finishAnswer(k===q.a, q.o[q.a]);
+  if(answered) return; const q=set[i];
+  document.querySelectorAll("#answers .btn").forEach(b=>{b.disabled=true;
+    if(+b.dataset.k===q.a) b.classList.add("ok"); else if(+b.dataset.k===k) b.classList.add("no");});
+  finishAnswer(k===q.a, q.o[k]);
 }
-
 function checkNum(){
-  if(answered) return;
-  const q=set[i]; const inp=$("num");
+  if(answered) return; const q=set[i]; const inp=$("num");
   const raw=inp.value.trim().replace(/[\s']/g,"").replace(",",".");
   if(raw===""||isNaN(+raw)){inp.focus();inp.style.borderColor="var(--red)";return;}
   const v=+raw; const ok=Math.abs(v-q.ans)<=q.tol+1e-9;
-  inp.disabled=true; inp.style.borderColor= ok?"var(--green)":"var(--red)";
+  inp.disabled=true; inp.style.borderColor=ok?"var(--green)":"var(--red)";
   $("chk").classList.add("hidden");
-  finishAnswer(ok, q.unit==="CHF" ? "CHF "+fmt(q.ans,"CHF") : fmt(q.ans)+" "+q.unit);
+  finishAnswer(ok, inp.value.trim()+" "+q.unit);
 }
-
 $("next").onclick=()=>{ i++; if(i<set.length) render(); else result(); };
 
-function result(){
+async function result(){
   const pct=Math.round(right/set.length*100);
-  if(currentKey!=="retry") saveBest(currentKey,pct);
   $("pct").textContent=pct+" %";
-  $("verdict").textContent = right+" von "+set.length+" richtig – "+(pct>=90?"Top, sitzt! 🌱":pct>=70?"Gut, nur noch wenige Lücken.":pct>=50?"Einiges ist hängen geblieben – repetiere die Lücken unten.":"Nochmals die Gruppenarbeit anschauen und dann neu versuchen.");
+  $("verdict").textContent=right+" von "+set.length+" richtig – "+(pct>=90?"Top, sitzt! 🌱":pct>=70?"Gut, nur noch wenige Lücken.":pct>=50?"Einiges ist hängen geblieben – repetiere die Lücken unten.":"Nochmals die Gruppenarbeit anschauen und dann neu versuchen.");
   const by=$("byLz"); by.innerHTML="";
   for(const k in LZ){
-    const all=set.filter(q=>q.lz===k); if(!all.length) continue;
-    const w=wrongs.filter(x=>x.q.lz===k).length; const r=all.length-w;
-    by.innerHTML+='<div class="row"><span>'+LZ[k]+'</span><b>'+r+' / '+all.length+'</b></div>';
+    const all=log.filter(x=>byId[x.id].lz===k); if(!all.length) continue;
+    by.innerHTML+='<div class="row"><span>'+LZ[k]+'</span><b>'+all.filter(x=>x.ok).length+' / '+all.length+'</b></div>';
   }
-  $("wrongBox").classList.toggle("hidden",!wrongs.length);
-  $("retryWrong").classList.toggle("hidden",!wrongs.length);
-  $("wrongList").innerHTML = wrongs.map(x=>'<div class="wrong">'+x.q.q+'<br><span class="a">→ '+x.correctText+'</span></div>').join("");
+  const wr=log.filter(x=>!x.ok);
+  $("wrongBox").classList.toggle("hidden",!wr.length);
+  $("wrongList").innerHTML=wr.map(x=>{const q=byId[x.id];return '<div class="wrong">'+esc(q.q)+'<br><span class="g">Deine Antwort: '+esc(x.given)+'</span><br><span class="a">→ '+esc(ansText(q))+'</span></div>';}).join("");
+  $("saved").textContent="Wird gespeichert …";
   show("result");
+  const att={started:startedAt, finished:new Date().toISOString(), score:right, total:set.length, pct, answers:log};
+  const A=attempts().concat([att]);
+  try{ await LA.saveProgress(SLUG,{pct, finished:true, attempts:A}); $("saved").textContent="✔ Resultat gespeichert"; }
+  catch(e){ $("saved").textContent="⚠ Konnte nicht gespeichert werden: "+e.message; }
+}
+$("go").onclick=startTest;
+$("again").onclick=startTest;
+
+/* ---------- Lehrperson ---------- */
+async function teacherView(){
+  $("wrap").classList.add("wide");
+  $("subline").textContent="Auswertung Klasse "+LA.klasse+" (nur diese Klasse)";
+  const T=$("teacher"); show("teacher");
+  T.innerHTML='<div class="card">Lädt Resultate …</div>';
+  let profs, prog;
+  try{ [profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]); }
+  catch(e){ T.innerHTML='<div class="msg err">'+esc(e.message)+'</div>'; return; }
+  const P=Object.fromEntries(profs.map(p=>[p.id,p]));
+  const rows=prog.filter(r=>r.slug===SLUG && P[r.user_id] && P[r.user_id].role==="student" && P[r.user_id].klasse===LA.klasse)
+    .map(r=>{const A=(r.data&&r.data.attempts)||[];return {name:P[r.user_id].name, A, first:A[0], last:A[A.length-1], best:A.reduce((m,a)=>a.pct>m.pct?a:m,A[0]||{pct:0})};})
+    .filter(r=>r.A.length).sort((a,b)=>a.name.localeCompare(b.name,"de"));
+  const done=new Set(rows.map(r=>r.name));
+  const open=profs.filter(p=>p.role==="student" && p.klasse===LA.klasse && !done.has(p.name)).map(p=>p.name).sort((a,b)=>a.localeCompare(b,"de"));
+
+  // Statistik pro Frage (über ersten Versuch jeder Person)
+  const qs={}; rows.forEach(r=>r.first.answers.forEach(x=>{(qs[x.id]=qs[x.id]||{n:0,ok:0}); qs[x.id].n++; if(x.ok) qs[x.id].ok++;}));
+  const lzs={}; Object.entries(qs).forEach(([id,s])=>{const lz=byId[id]?byId[id].lz:"?";(lzs[lz]=lzs[lz]||{n:0,ok:0});lzs[lz].n+=s.n;lzs[lz].ok+=s.ok;});
+  const avg = rows.length ? Math.round(rows.reduce((s,r)=>s+r.first.pct,0)/rows.length) : null;
+
+  const qRows=Object.entries(qs).map(([id,s])=>({q:byId[id],...s,p:Math.round(s.ok/s.n*100)})).filter(x=>x.q).sort((a,b)=>a.p-b.p);
+
+  T.innerHTML=`
+  <div class="kpis">
+    <div class="kpi"><b>${rows.length}</b><span>Lernende mit Resultat</span></div>
+    <div class="kpi"><b>${avg==null?"–":avg+" %"}</b><span>Klassenschnitt (1. Versuch)</span></div>
+    ${Object.keys(LZ).map(k=>`<div class="kpi"><b>${lzs[k]?Math.round(lzs[k].ok/lzs[k].n*100)+" %":"–"}</b><span>${LZ[k]}</span></div>`).join("")}
+  </div>
+  <div class="card">
+    <h2>Resultate pro Lernende/r</h2>
+    <p class="small">Gewertet wird der <b>1. Versuch</b>. Weitere Versuche sind freiwilliges Üben (jedes Mal 10 neue Zufallsfragen). Auf eine Zeile tippen, um die einzelnen Antworten zu sehen.</p>
+    <div style="margin-bottom:8px"><button class="btn inline" id="csv">⬇ CSV exportieren</button><button class="btn inline" id="rf">🔄 Aktualisieren</button><a class="btn inline" href="?test=1" style="text-decoration:none;color:inherit">▶ Test selbst ausprobieren</a></div>
+    <div class="scroll"><table>
+      <tr><th>Name</th><th>1. Versuch</th><th>Datum</th><th>Bester</th><th>Letzter</th><th>Versuche</th></tr>
+      ${rows.map((r,k)=>`<tr class="click" data-k="${k}"><td><b>${esc(r.name)}</b></td>
+        <td class="n"><span class="sc ${cls(r.first.pct)}">${r.first.score}/${r.first.total}</span></td>
+        <td>${dt(r.first.finished)}</td>
+        <td class="n"><span class="sc ${cls(r.best.pct)}">${r.best.pct} %</span></td>
+        <td class="n"><span class="sc ${cls(r.last.pct)}">${r.last.pct} %</span></td>
+        <td class="n">${r.A.length}</td></tr>
+        <tr class="hidden" id="det${k}"><td colspan="6" class="det"></td></tr>`).join("") || '<tr><td colspan="6">Noch niemand hat den Test gelöst.</td></tr>'}
+    </table></div>
+    ${open.length?`<p class="small" style="margin-top:10px"><b>Registriert, aber noch kein Resultat (${open.length}):</b> ${open.map(esc).join(", ")}</p>`:""}
+  </div>
+  <div class="card">
+    <h2>Welche Fragen bereiten Mühe?</h2>
+    <p class="small">Anteil richtiger Antworten im 1. Versuch, schwierigste zuerst. Da jede Person andere Zufallsfragen erhält, ist «n» die Zahl der Lernenden, die diese Frage bekamen.</p>
+    <div class="scroll"><table>
+      <tr><th>Frage</th><th>FB</th><th>Richtig</th><th></th><th>n</th></tr>
+      ${qRows.map(x=>`<tr><td class="wrap">${esc(x.q.q)}<br><span class="small">→ ${esc(ansText(x.q))}</span></td><td class="n">${x.q.fb}</td>
+        <td class="n"><span class="sc ${cls(x.p)}">${x.p} %</span></td>
+        <td><div class="qbar"><div style="width:${x.p}%;background:${x.p>=80?"var(--green)":x.p>=50?"#e5b800":"var(--red)"}"></div></div></td>
+        <td class="n">${x.n}</td></tr>`).join("") || '<tr><td colspan="5">Noch keine Daten.</td></tr>'}
+    </table></div>
+  </div>`;
+
+  T.querySelectorAll("tr.click").forEach(tr=>tr.onclick=()=>{
+    const k=+tr.dataset.k, d=$("det"+k), r=rows[k];
+    if(!d.classList.contains("hidden")){d.classList.add("hidden");return;}
+    d.firstElementChild.innerHTML=r.A.map((a,n)=>`<div style="margin-bottom:8px"><b>Versuch ${n+1}</b> · ${dt(a.finished)} · ${a.score}/${a.total}${n===0?" (gewertet)":""}`+
+      a.answers.map(x=>{const q=byId[x.id];return q?`<div class="it">${x.ok?"✅":"❌"} ${esc(q.q)}${x.ok?"":` <span class="small">– Antwort: «${esc(x.given)}», richtig: «${esc(ansText(q))}»</span>`}</div>`:"";}).join("")+'</div>').join("");
+    d.classList.remove("hidden");
+  });
+  $("rf").onclick=()=>location.reload();
+  $("csv").onclick=()=>{
+    const head=["Name","1. Versuch Punkte","1. Versuch %","Datum 1. Versuch","Bester %","Letzter %","Versuche"];
+    const lines=[head].concat(rows.map(r=>[r.name,r.first.score+"/"+r.first.total,r.first.pct,dt(r.first.finished),r.best.pct,r.last.pct,r.A.length]));
+    const csv=lines.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");
+    const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"})); a.download="bewaesserung-resultate.csv"; a.click();
+  };
 }
 
-$("retryWrong").onclick=()=>start("retry", wrongs.map(x=>x.q));
-$("home").onclick=()=>{buildStart();show("start");};
-
-buildStart();
+/* ---------- Start ---------- */
+LA.requireLogin().then(()=>{
+  LA.who($("who"));
+  if(LA.user.role==="teacher" && !/[?&]test=1/.test(location.search)) teacherView();
+  else buildStart();
+});
 </script>
 </body>
 </html>
