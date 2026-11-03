@@ -135,6 +135,25 @@ function tool(){
  root.addEventListener('input',f);root.addEventListener('change',f);f();
 }
 
+
+/* ---------- PINS: Beschriften am Bild ---------- */
+function pins(){
+ const P=C.pins,groups={};P.forEach(p=>{(groups[p.g||'a']=groups[p.g||'a']||[]).push(p.a)});
+ const opts={};Object.keys(groups).forEach(g=>opts[g]=shuffle([...new Set(groups[g])]));
+ const gt=C.groups||{};
+ root.innerHTML=`<div class="card"><div class="q">${C.task}</div><div class="pinbox"><img src="${C.img}" alt=""><div id="pn"></div></div><div id="pr"></div><button class="btn" id="chk">Prüfen</button><div id="fb"></div></div>`;
+ P.forEach((p,k)=>{const d=document.createElement('span');d.className='pin';d.style.cssText=`left:${p.x}%;top:${p.y}%;background:${p.c||'#e53935'}`;d.textContent=p.l;d.id='pin'+k;$('#pn').append(d)});
+ let html='',lastg=null;
+ P.forEach((p,k)=>{if(p.g!==lastg){lastg=p.g;if(gt[p.g])html+=`<h4 class="pg">${gt[p.g]}</h4>`}
+  html+=`<div class="prow"><span class="pin st" style="background:${p.c||'#e53935'}">${p.l}</span><select id="s${k}"><option value="">Wähle …</option>${opts[p.g||'a'].map(o=>`<option>${o}</option>`).join('')}</select></div>`});
+ $('#pr').innerHTML=html;
+ let tries=0,first=null;
+ $('#chk').onclick=()=>{tries++;let ok=0;P.forEach((p,k)=>{const sel=$('#s'+k),good=sel.value===p.a;if(good)ok++;sel.className=good?'ok':(sel.value?'no':'');$('#pin'+k).style.outline=good?'3px solid #43a047':(sel.value?'3px solid #c62828':'none')});
+  if(first===null)first=ok;
+  if(ok===P.length){$('#fb').innerHTML=`<div class="why">✅ Alles richtig! ${C.why||''}</div><button class="btn" id="d">Fertig</button>`;$('#d').onclick=()=>finish(Math.max(1,first),P.length)}
+  else $('#fb').innerHTML=`<div class="why">${ok} von ${P.length} richtig. Grün = richtig, rot = falsch. Korrigiere und prüfe erneut.</div>`}
+}
+
 /* ---------- MULTI: Lernpfad aus Stufen ---------- */
 function multi(){
  const st=CFG.stages;let si=0,res=[];
@@ -147,12 +166,12 @@ function multi(){
   $('#stg').innerHTML=`<div class="stg">${st.map((s,k)=>`<span class="${k<si?'d':k==si?'a':''}">${k+1}</span>`).join('')}<b>Stufe ${si+1} von ${st.length}: ${C.title}</b></div>${C.info?`<div class="why" style="margin-top:0">${C.info}</div>`:''}`;
   HOOK=(score,total)=>{res.push([st[si].title,score,total]);si++;LA.saveProgress(CFG.slug,{stage:si,stages:st.length,progressPct:Math.round(100*si/st.length)});next()};
   if(C.type==='tool'){tool();root.insertAdjacentHTML('beforeend','<button class="btn" id="tn">Weiter →</button>');$('#tn').onclick=()=>{res.push([st[si].title,0,0]);si++;LA.saveProgress(CFG.slug,{stage:si,stages:st.length,progressPct:Math.round(100*si/st.length)});next()}}
-  else({quiz,match,order,calc})[C.type]();
+  else({quiz,match,order,calc,pins})[C.type]();
   window.scrollTo(0,0);
  }
  next();
 }
-function start(){({quiz,match,order,calc,tool,multi})[CFG.type]()}
+function start(){({quiz,match,order,calc,tool,multi,pins})[CFG.type]()}
 document.title=CFG.title+' – Belagsaufbau';
 
 window.startApp=function(){document.title=CFG.title+' – Belagsaufbau';LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));start()})};

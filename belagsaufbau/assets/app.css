@@ -73,3 +73,8 @@ table.t{width:100%;border-collapse:collapse;margin:.5rem 0}table.t td,table.t th
 .cam{flex:1 1 180px;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;background:#43a047;color:#fff;font-weight:800;font-size:1.1rem;border-radius:16px;border-bottom:5px solid #2e7d32;cursor:pointer;padding:.6rem 1rem}
 .cam.alt{background:#fff;color:#2e7d32;border:2px solid #43a047;border-bottom-width:5px}
 .cam:active{transform:translateY(2px)}
+.pinbox{position:relative;display:inline-block;max-width:100%;margin:.4rem 0}.pinbox img{display:block;max-width:100%;height:auto;border-radius:12px;border:2px solid #cfe3cc;background:#fff}
+.pin{position:absolute;transform:translate(-50%,-50%);min-width:30px;height:30px;border-radius:50%;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.4);border:2px solid #fff;font-size:.95rem}
+.pin.st{position:static;transform:none;flex:0 0 34px;height:34px}
+.prow{display:flex;gap:.6rem;align-items:center;margin:.45rem 0}.prow select{flex:1;min-height:52px;font-size:1.05rem;border-radius:12px;border:2px solid #cfe3cc;padding:.2rem .6rem;background:#fff}
+.prow select.ok{border-color:#43a047;background:#e8f5e9}.prow select.no{border-color:#c62828;background:#fdecea}.pg{margin:.9rem 0 .2rem;color:#2e7d32}
