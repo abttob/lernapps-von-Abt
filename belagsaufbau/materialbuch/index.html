@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Materialsammlung: eigene Fotos sammeln</title><link rel="stylesheet" href="../assets/app.css"></head><body>
-<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>📸 Materialsammlung: eigene Fotos sammeln</h1><p>Fotografiere echte Materialien (Kies, Körnungen, Natursteine …) und lege sie in deiner Materialsammlung ab. Die Klasse sieht die Sammlung.</p></div>
-<div class="wrap"><div class="chips" style="margin:0 0 .8rem"><span class="chip">L169</span><span class="chip">L171</span></div><div class="card info"><b>Auftrag:</b> Suche echte Beispiele, zum Beispiel auf der Baustelle, im Lager oder im Garten. Lege eine Hand, einen Zollstock oder eine Münze daneben, damit man die <b>Korngrösse</b> sieht. Mache ein Foto, beschreibe das Material und speichere es. Deine Klasse sieht die Sammlung.<br><span class="small">Bitte keine Gesichter, Namen oder Kennzeichen fotografieren.</span></div>
+<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>📸 Materialsammlung: eigene Fotos sammeln</h1><p>Fotografiere echte Materialien (Kies, Körnungen, Natursteinplatten …) und lege sie in deiner Materialsammlung ab. Die Klasse sieht die Sammlung.</p></div>
+<div class="wrap"><div class="chips" style="margin:0 0 .8rem"><span class="chip">L169</span><span class="chip">L171</span></div><div class="card info"><b>Auftrag:</b> Fotografiere die Materialien und lege sie in deiner Sammlung ab. <b>Frage deine Lehrperson:</b> Sie hat einige Materialien <b>in echt im Schulzimmer</b>. Weitere findest du auf der Baustelle, im Lager oder im Garten.<ol style="margin:.5rem 0 .2rem;padding-left:1.2rem"><li>Lege einen <b>Meterstab (Zollstock) oder eine Münze</b> daneben, damit man die Grösse sieht.</li><li>Tippe auf <b>«📷 Foto aufnehmen»</b>, das Handy öffnet die Kamera.</li><li>Beschreibe das Material und speichere es. Deine Klasse sieht die Sammlung.</li></ol><span class="small">Bitte keine Gesichter, Namen oder Kennzeichen fotografieren.</span></div>
 <div id="mb"><div class="card">Lädt …</div></div>
 
 </div>
@@ -17,11 +17,12 @@ const MAT=[
  ['🟤','Mergel (bindiges Planiematerial)','Tragschicht der Chaussierung','Chaussierung'],
  ['♻️','RC-Kiesgemisch','Recycling-Material für die Fundation','Fundation'],
  ['🧊','Granit-Pflasterstein','Hartgestein, Pflaster und Randsteine','Naturstein'],
- ['🪧','Natursteinplatte (Gneis o. ä.)','Platten, Oberfläche und Kanten ansehen','Naturstein'],
+ ['🪧','Granitplatte','Natursteinplatte: Hartgestein, Erstarrungsgestein, Oberfläche und Kanten ansehen','Naturstein'],
+ ['🐚','Muschelkalkplatte','Natursteinplatte: Ablagerungsgestein, Muscheln und Fossilien sichtbar','Naturstein'],
+ ['🟣','Porphyrplatte','Natursteinplatte: Erstarrungsgestein, rötlich, oft als Pflasterstein','Naturstein'],
  ['🟫','Betonverbundstein','Verzahnt sich, nimmt Scherkräfte auf','Beton'],
  ['⬜','Betonplatte','Plattenbelag, Fugen 3 bis 8 mm','Beton'],
- ['🌿','Rasengitterstein / Sickerstein','Sickerfähiger Belag','Beton'],
- ['🪵','Holz (Deck, Palisade)','Dauerhaftigkeitsklasse, Zustand, Patina','Holz']
+ ['🌿','Rasengitterstein / Sickerstein','Sickerfähiger Belag','Beton']
 ];
 let mine={},all=[];
 function ready(){return LA.user}
@@ -39,17 +40,19 @@ function draw(n){
 function open_(m){
  const det=document.getElementById('det');const ph=all.filter(r=>r.data.ctx==='material:'+m[1]);
  det.innerHTML=`<div class="card" id="dc"><h2 style="margin-top:0">${m[0]} ${m[1]}</h2><p class="small">${m[2]}</p>
- <label>📷 Foto aufnehmen oder auswählen</label><input class="fld" type="file" id="f" accept="image/*" capture="environment" style="font-size:1rem">
+ <div class="camrow"><label class="cam">📷 Foto aufnehmen<input type="file" id="f" accept="image/*" capture="environment" hidden></label><label class="cam alt">🖼 Aus Galerie wählen<input type="file" id="f2" accept="image/*" hidden></label></div>
  <img id="pv" class="img" style="display:none">
- <label>Grösstes Korn (mm, geschätzt oder gemessen)</label><input class="num" id="k" inputmode="decimal" placeholder="z. B. 8">
+ ${m[3]==='Naturstein'?`<label>Plattendicke (mm, gemessen)</label><input class="num" id="k" inputmode="decimal" placeholder="z. B. 30">
+ <label>Oberfläche</label><select id="sf"><option>bruchroh</option><option>geflammt</option><option>gestrahlt</option><option>gestockt</option><option>geschliffen / poliert</option><option>gesägt</option></select>
+ <label>Eignung</label><select id="fa"><option>Aussenbereich, rutschfest</option><option>nur Innenbereich</option><option>weiss ich nicht</option></select>`:`<label>Grösstes Korn (mm, geschätzt oder gemessen)</label><input class="num" id="k" inputmode="decimal" placeholder="z. B. 8">
  <label>Kornform</label><select id="sf"><option>eckig (gebrochen)</option><option>gerundet</option><option>gemischt</option><option>plattig / Stein</option></select>
- <label>Feinanteil</label><select id="fa"><option>viel Feines (staubt, bindet)</option><option>wenig Feines</option><option>kein Feines (Einkorn)</option></select>
+ <label>Feinanteil</label><select id="fa"><option>viel Feines (staubt, bindet)</option><option>wenig Feines</option><option>kein Feines (Einkorn)</option></select>`}
  <label>Wo hast du es gefunden und wofür eignet es sich?</label><textarea class="fld" id="nt" placeholder="Fundation, Bettung, Fuge … und warum?"></textarea>
  <div id="mm"></div><button class="btn" id="sv">💾 In der Materialsammlung speichern</button></div>
  <div class="card"><b>Fotos der Klasse zu «${m[1]}»</b><div class="pgrid" id="gal" style="margin-top:.6rem"></div></div>`;
- const f=document.getElementById('f');f.onchange=()=>{const x=f.files[0];if(!x)return;const p=document.getElementById('pv');p.src=URL.createObjectURL(x);p.style.display='block'};
- document.getElementById('sv').onclick=async()=>{const x=f.files[0],mm=document.getElementById('mm');if(!x){mm.innerHTML='<div class="msg err">Bitte zuerst ein Foto machen.</div>';return}
-  const cap=[document.getElementById('k').value&&('Korn ca. '+document.getElementById('k').value+' mm'),document.getElementById('sf').value,document.getElementById('fa').value,document.getElementById('nt').value].filter(Boolean).join(' · ');
+ let file=null;const pick=e=>{const x=e.target.files[0];if(!x)return;file=x;const p=document.getElementById('pv');p.src=URL.createObjectURL(x);p.style.display='block'};document.getElementById('f').onchange=pick;document.getElementById('f2').onchange=pick;
+ document.getElementById('sv').onclick=async()=>{const x=file,mm=document.getElementById('mm');if(!x){mm.innerHTML='<div class="msg err">Bitte zuerst ein Foto machen.</div>';return}
+  const cap=[document.getElementById('k').value&&((m[3]==='Naturstein'?'Dicke ca. ':'Korn ca. ')+document.getElementById('k').value+' mm'),document.getElementById('sf').value,document.getElementById('fa').value,document.getElementById('nt').value].filter(Boolean).join(' · ');
   document.getElementById('sv').disabled=true;mm.innerHTML='<div class="msg ok">Wird gespeichert …</div>';
   try{await LA.photo(x,'material:'+m[1],null,cap);await load();open_(m);window.scrollTo(0,document.getElementById('det').offsetTop-20)}catch(e){mm.innerHTML='<div class="msg err">'+LA.esc(e.message)+'</div>';document.getElementById('sv').disabled=false}};
  const gal=document.getElementById('gal');

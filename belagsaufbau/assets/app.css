@@ -69,3 +69,7 @@ table.t{width:100%;border-collapse:collapse;margin:.5rem 0}table.t td,table.t th
  .hero .who span{font-size:.85rem}
 }
 .copy{text-align:center;color:#5b6b60;font-size:.85rem;margin:1.5rem 0 1rem}
+.camrow{display:flex;gap:.6rem;flex-wrap:wrap;margin:.5rem 0}
+.cam{flex:1 1 180px;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;background:#43a047;color:#fff;font-weight:800;font-size:1.1rem;border-radius:16px;border-bottom:5px solid #2e7d32;cursor:pointer;padding:.6rem 1rem}
+.cam.alt{background:#fff;color:#2e7d32;border:2px solid #43a047;border-bottom-width:5px}
+.cam:active{transform:translateY(2px)}
