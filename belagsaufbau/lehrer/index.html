@@ -36,4 +36,4 @@ LA.requireLogin().then(async()=>{
   document.body.addEventListener('click',async e=>{const a=e.target.closest('a[data-d],a[data-r]');if(!a)return;e.preventDefault();if(!confirm('Wirklich löschen?'))return;await LA.remove(a.dataset.d||a.dataset.r);location.reload()})
  }catch(e){$('#mb').innerHTML='<div class="msg err">'+esc(e.message)+'</div>'}
 });
-</script></body></html>
+</script><p class="copy">© Tobias Abt, BBZ BL</p></body></html>

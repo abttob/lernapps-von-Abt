@@ -57,4 +57,4 @@ function open_(m){
  gal.onclick=async e=>{const a=e.target.closest('a[data-d]');if(!a)return;e.preventDefault();if(!confirm('Foto löschen?'))return;await LA.remove(a.dataset.d);await load();open_(m)};
  det.scrollIntoView({behavior:'smooth'})}
 LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));load()});
-</script></body></html>
+</script><p class="copy">© Tobias Abt, BBZ BL</p></body></html>

@@ -33,4 +33,4 @@ function show(){const cd=document.getElementById('cd');if(!cur){cd.innerHTML='<d
  const go=(ok)=>{const o=box[cur.id]||0;box[cur.id]=ok?Math.min(3,o+1):1;if(!ok)queue.push(cur);save();next();render()};
  document.getElementById('yes').onclick=()=>go(true);document.getElementById('no').onclick=()=>go(false)}
 LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));init()});
-</script></body></html>
+</script><p class="copy">© Tobias Abt, BBZ BL</p></body></html>

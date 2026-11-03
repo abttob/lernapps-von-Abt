@@ -54,4 +54,4 @@ function list(){const l=document.getElementById('list');
  <p><b>Ort:</b> ${esc(d.ort)}<br><b>Klasse:</b> ${esc(d.klasse)} (${esc(d.ueber)})<br><b>Fugen:</b> ${esc(d.fuge)} ${esc(d.fugeb)} mm<br><b>Gefälle:</b> ${esc(d.gef)}<br><b>Randabschluss:</b> ${esc(d.rand)}: ${esc(d.randz)}<br><b>Darunter (Vermutung):</b> ${esc(d.dar)}<br><b>Schäden:</b> ${esc((d.schaeden||[]).join(', ')||'keine')}</p>
  <p><b>👍 Gut:</b> ${esc(d.gut)}<br><b>👎 Weniger gut:</b> ${esc(d.schl)}<br><b>💡 Besser:</b> ${esc(d.bes)}</p><div class="pgrid">${ps.map(p=>pcard(p).replace(/<a href[^>]*>löschen<\/a>/,'')).join('')}</div></details>`}).join(''):'<span class="small">Noch keine Berichte. Macht den Anfang!</span>'}
 LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));load()});
-</script></body></html>
+</script><p class="copy">© Tobias Abt, BBZ BL</p></body></html>
