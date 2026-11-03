@@ -70,7 +70,7 @@ const Sup={
  async progressMine(uid){const {data,error}=await Sup.sb.from('progress').select('slug,pct,data,updated_at').eq('user_id',uid);if(error)throw Sup.err(error);const o={};(data||[]).forEach(r=>o[r.slug]=r);return o},
  async progressSave(uid,slug,pct,d){const {error}=await Sup.sb.from('progress').upsert({user_id:uid,slug,pct,data:d,updated_at:new Date().toISOString()},{onConflict:'user_id,slug'});if(error)throw Sup.err(error)},
  async progressAll(){const {data,error}=await Sup.sb.from('progress').select('user_id,slug,pct,data,updated_at').limit(10000);if(error)throw Sup.err(error);return data||[]},
- async profiles(){const {data,error}=await Sup.sb.from('profiles').select('id,name,role').order('name');if(error)throw Sup.err(error);return data||[]},
+ async profiles(){const {data,error}=await Sup.sb.from('profiles').select('*').order('name');if(error)throw Sup.err(error);return data||[]},
  async recAdd(me,kind,grp,data){const {data:r,error}=await Sup.sb.from('records').insert({kind,grp:grp||null,owner:me.id,owner_name:me.name,data}).select().single();if(error)throw Sup.err(error);return r},
  async recList(kind,f){let q=Sup.sb.from('records').select('*').eq('kind',kind).order('created_at',{ascending:false}).limit(500);if(f&&f.grp)q=q.eq('grp',f.grp);if(f&&f.owner)q=q.eq('owner',f.owner);const {data,error}=await q;if(error)throw Sup.err(error);return data||[]},
  async recUpdate(id,data){const {error}=await Sup.sb.from('records').update({data}).eq('id',id);if(error)throw Sup.err(error)},

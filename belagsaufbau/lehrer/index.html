@@ -13,7 +13,7 @@ LA.requireLogin().then(async()=>{
  if(LA.user.role!=='teacher'){root.innerHTML=`<div class="card"><b>Nur für Lehrpersonen.</b><p>Du bist als <b>${LA.esc(LA.user.name)}</b> (Lernende/r) angemeldet. Das Dashboard öffnet sich nur mit einem Lehrer-Konto: Melde dich ab, wähle «Neu registrieren» und gib im Feld <b>Klassencode</b> den <b>Lehrercode</b> ein.</p><button class="btn" id="lo">Abmelden und als Lehrperson anmelden</button></div>`;document.getElementById('lo').onclick=()=>LA.logout();return}
  root.innerHTML='<div class="card">Lädt …</div>';
  let profs,prog;try{[profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()])}catch(e){root.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return}
- const stu=profs.filter(p=>p.role==='student');const by={};prog.forEach(r=>{(by[r.user_id]=by[r.user_id]||{})[r.slug]=r});
+ const stu=profs.filter(p=>p.role==='student'&&!p.klasse); /* nur diese Klasse, andere Klassen (z.B. GLZ24A) ausblenden */const by={};prog.forEach(r=>{(by[r.user_id]=by[r.user_id]||{})[r.slug]=r});
  const quiz=APPS.filter(a=>a.stages>0);
  const SHORT={schichtaufbau:'Schichtaufbau',koernung:'Körnungen',verdichten:'Verdichten',verkehrslast:'Verkehrslast',planum:'Bankett, Planum',mengen:'Mengen',einfassungen:'Einfassungen',betonbedarf:'Betonbedarf',gefaelle:'Rechenwerkstatt',verlegemuster:'Verlegemuster',bauweisen:'Bauweisen',natursteine:'Natursteine',material:'Holz, Material',fall:'Fall Splitt-Weber',kolloquium:'Kolloquium',lernkarten:'Lernkarten',materialbuch:'Material-sammlung',belaganalyse:'Belag-Detektive'};
  function table(){const h='<tr><th>Lernende</th>'+APPS.map(a=>`<th title="${esc(a.title)}">${a.icon}<br>${esc(SHORT[a.slug]||a.title.split(':')[0])}</th>`).join('')+'<th>Fertig</th><th>Zuletzt aktiv</th></tr>';
