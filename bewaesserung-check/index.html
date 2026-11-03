@@ -92,7 +92,7 @@
     <div class="card">
       <h2 id="hello"></h2>
       <p style="margin:.2rem 0 .6rem">Du erhältst <b>10 zufällige Fragen</b> aus allen 6 Fallbeispielen der Gruppenarbeit. Nach jeder Antwort siehst du, ob es stimmt. Dein Resultat wird gespeichert und deine Lehrperson sieht es.</p>
-      <p class="small" style="margin:0 0 .6rem">Taschenrechner bereithalten. Bei Rechenaufgaben nur die Zahl eingeben (Komma oder Punkt geht beide).</p>
+      
       <button class="btn primary" id="go">Test starten</button>
     </div>
     <div class="card hidden" id="myHist"><h2>Deine bisherigen Tests</h2><div id="myHistList"></div></div>
@@ -203,7 +203,7 @@ const Q = [
 {fb:2,lz:"L215",type:"num",ctx:"1650 l, ¾-Zoll-Schlauch mit 8 l/min.",
  q:"Wie viele Minuten dauert das reine Befüllen?",ans:206.25,unit:"min",tol:0.3,
  e:"1650 l ÷ 8 l/min = 206,25 min ≈ 3 h 26 min"},
-{fb:2,lz:"L215",type:"mc",q:"206 Minuten sind wie viele Stunden?",
+{fb:2,lz:"L215",type:"mc",calc:true,q:"206 Minuten sind wie viele Stunden?",
  o:["ca. 2 h 6 min","ca. 3 h 26 min","ca. 3 h 6 min","ca. 4 h 10 min"],a:1,
  e:"206 min ÷ 60 = 3 h, Rest 26 min → ca. 3 h 26 min (≈ 3,4 h)."},
 {fb:2,lz:"L215",type:"mc",q:"Was bedeutet die Angabe «HOB 22/24»?",
@@ -317,6 +317,8 @@ const N_QUESTIONS = 10;
 const $ = id => document.getElementById(id);
 const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 Q.forEach((q,k)=>q.id="q"+(k+1));
+/* Rechenaufgaben sind ausgeblendet (IDs bleiben stabil) */
+for(let k=Q.length-1;k>=0;k--) if(Q[k].type==="num"||Q[k].calc) Q.splice(k,1);
 const byId = Object.fromEntries(Q.map(q=>[q.id,q]));
 
 function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}

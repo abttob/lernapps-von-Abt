@@ -1,8 +1,14 @@
 [
   {
+    "slug": "bewaesserung-checkup",
+    "title": "Checkup Bewässerung – Arbeitsblatt GLZ24A",
+    "description": "Checkup am Schluss des Unterrichts: 10 Zufallsfragen zum Arbeitsblatt L214–L216 (Begriffe, Geräte, Praxis, Unterhalt), Login GLZ24A, Auswertung für die Lehrperson.",
+    "added": "2026-11-03"
+  },
+  {
     "slug": "bewaesserung-check",
     "title": "Bewässerung – Test GLZ24A",
-    "description": "Login für die Klasse GLZ24A, 10 Zufallsfragen zur Gruppenarbeit L214–L216, Auswertung für die Lehrperson.",
+    "description": "Login für die Klasse GLZ24A, 10 Zufallsfragen zur Gruppenarbeit L214–L216 (ohne Rechenaufgaben), Auswertung für die Lehrperson.",
     "added": "2026-11-03"
   },
   {
