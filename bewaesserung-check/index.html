@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bewässerung – Was ist hängen geblieben?</title>
+<style>
+  :root{--bg:#eef3ee;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--green-l:#d9efe0;--red:#b04a4a;--red-l:#f7dede;--blue:#2b6a9a;--blue-l:#dcebf6;--line:#cfd9d2}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+  .wrap{max-width:640px;margin:0 auto;padding:16px 16px 48px}
+  a.back{color:var(--green);text-decoration:none;font-size:.95rem}
+  h1{font-size:1.45rem;margin:.6rem 0 .2rem}
+  .sub{color:var(--muted);margin:0 0 1rem}
+  .card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+  .btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:52px}
+  .btn:hover{border-color:var(--green)}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green);text-align:center;font-weight:600}
+  .btn.secondary{text-align:center;font-weight:600}
+  .btn.ok{background:var(--green-l);border-color:var(--green)}
+  .btn.no{background:var(--red-l);border-color:var(--red)}
+  .btn:disabled{cursor:default}
+  .topic small{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
+  .bar{height:8px;background:#dfe7e1;border-radius:6px;overflow:hidden;margin:6px 0 14px}
+  .bar>div{height:100%;background:var(--green);transition:width .3s}
+  .meta{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+  .tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:20px;background:var(--blue-l);color:var(--blue);margin-right:6px}
+  .q{font-size:1.1rem;font-weight:600;margin:10px 0 6px}
+  .ctx{font-size:.9rem;color:var(--muted);background:#f5f7f5;border-left:3px solid var(--line);padding:8px 10px;border-radius:6px;margin:8px 0}
+  .numrow{display:flex;gap:8px;align-items:center;margin:10px 0}
+  .numrow input{flex:1;font-size:1.15rem;padding:12px;border:1.5px solid var(--line);border-radius:12px;min-width:0}
+  .numrow span{font-weight:600;color:var(--muted)}
+  .fb{padding:12px 14px;border-radius:12px;margin-top:10px;font-size:.95rem}
+  .fb.ok{background:var(--green-l)}
+  .fb.no{background:var(--red-l)}
+  .fb b{display:block;margin-bottom:4px}
+  .big{font-size:2.6rem;font-weight:700;text-align:center;margin:6px 0}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eef1ef}
+  .row:last-child{border:0}
+  .wrong{font-size:.9rem;border-bottom:1px solid #eef1ef;padding:10px 0}
+  .wrong:last-child{border:0}
+  .wrong .a{color:var(--green);font-weight:600}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← Alle Apps</a>
+  <h1>💧 Bewässerung – Was ist hängen geblieben?</h1>
+  <p class="sub">Repetition zur Gruppenarbeit L214–L216 (6 Fallbeispiele)</p>
+
+  <!-- Start -->
+  <div id="start">
+    <div class="card">
+      <b>Was willst du üben?</b>
+      <div id="topics"></div>
+    </div>
+    <div class="card" style="font-size:.9rem;color:var(--muted)">
+      Tipp: Taschenrechner bereithalten. Bei Rechenaufgaben nur die Zahl eingeben (Komma oder Punkt geht beide).
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div id="quiz" class="hidden">
+    <div class="meta"><span id="pos"></span><span id="score"></span></div>
+    <div class="bar"><div id="prog"></div></div>
+    <div class="card">
+      <span class="tag" id="tagFb"></span><span class="tag" id="tagLz"></span>
+      <div class="ctx hidden" id="ctx"></div>
+      <div class="q" id="qtext"></div>
+      <div id="answers"></div>
+      <div id="feedback"></div>
+      <button class="btn primary hidden" id="next">Weiter</button>
+    </div>
+  </div>
+
+  <!-- Resultat -->
+  <div id="result" class="hidden">
+    <div class="card">
+      <div class="big" id="pct"></div>
+      <p style="text-align:center;margin:0" id="verdict"></p>
+    </div>
+    <div class="card"><b>Nach Lernziel</b><div id="byLz"></div></div>
+    <div class="card" id="wrongBox"><b>Das solltest du nochmals anschauen</b><div id="wrongList"></div></div>
+    <button class="btn primary" id="retryWrong">Nur die falschen nochmals</button>
+    <button class="btn secondary" id="home">Zurück zur Auswahl</button>
+  </div>
+</div>
+
+<script>
+const FB = {
+  1:"Fallbeispiel 1 · Wasserbedarf & Boden",
+  2:"Fallbeispiel 2 · Jungbäume",
+  3:"Fallbeispiel 3 · Automatische Anlage",
+  4:"Fallbeispiel 4 · Dachgarten & Trinkwasserschutz",
+  5:"Fallbeispiel 5 · Regenwasser & Zisterne",
+  6:"Fallbeispiel 6 · Einwinterung & Wartung"
+};
+const LZ = {
+  L214:"L214 Wasserbedarf abschätzen",
+  L215:"L215 Bewässerungsmöglichkeiten",
+  L216:"L216 Unterhaltsarbeiten"
+};
+
+// type: mc = Auswahl, num = Rechnung
+const Q = [
+// ---------- Fallbeispiel 1 ----------
+{fb:1,lz:"L214",type:"mc",q:"Wie viel des aufgenommenen Wassers gibt eine Pflanze durch Transpiration wieder ab?",
+ o:["etwa 50 %","etwa 75 %","etwa 97 %","etwa 3 %"],a:2,
+ e:"Rund 97 % verdunsten über die Blätter (Spaltöffnungen). Das kühlt die Pflanze und hält den Wasserstrom mit den Nährsalzen von der Wurzel bis zum Blatt in Gang."},
+{fb:1,lz:"L214",type:"mc",q:"Wofür braucht die Pflanze die restlichen ca. 3 % des Wassers?",
+ o:["Für die Kühlung der Blätter","Für Photosynthese und den Aufbau von Pflanzensubstanz (Zellen, Zellsaft)","Sie gibt sie über die Wurzeln wieder an den Boden ab","Für die Guttation in der Nacht"],a:1,
+ e:"Nur ein kleiner Teil bleibt in der Pflanze: als Baustoff bei der Photosynthese und als Bestandteil von Zellen und Zellsaft (Spannung/Turgor)."},
+{fb:1,lz:"L214",type:"mc",q:"Was bedeutet «Feldkapazität» (FK)?",
+ o:["Die Wassermenge, die der Boden maximal gegen die Schwerkraft festhalten kann",
+    "Das Wasser, das bei Regen oberflächlich abfliesst",
+    "Der Wassergehalt, bei dem die Pflanzen dauerhaft welken",
+    "Die Menge Wasser, die pro Tag verdunstet"],a:0,
+ e:"FK = maximale Wassermenge, die ein Boden nach dem Abfliessen des Sickerwassers gegen die Schwerkraft halten kann."},
+{fb:1,lz:"L214",type:"mc",q:"Was ist der «permanente Welkepunkt» (PWP)?",
+ o:["Der Zeitpunkt, an dem man bewässern sollte",
+    "Der Wassergehalt, bei dem das restliche Wasser so fest gebunden ist, dass die Pflanze es nicht mehr aufnehmen kann",
+    "Die Temperatur, ab der Pflanzen welken",
+    "Der Punkt, an dem der Boden gesättigt ist"],a:1,
+ e:"Am PWP ist das restliche Wasser so stark in den Feinporen gebunden, dass die Wurzeln es nicht mehr herausziehen können – die Pflanze welkt dauerhaft."},
+{fb:1,lz:"L214",type:"mc",q:"Wie berechnet man die nutzbare Feldkapazität (nFK)?",
+ o:["nFK = FK + PWP","nFK = FK − PWP","nFK = PWP − FK","nFK = FK × PWP"],a:1,
+ e:"Pflanzenverfügbar ist nur das Wasser zwischen Feldkapazität und Welkepunkt: nFK = FK − PWP."},
+{fb:1,lz:"L214",type:"mc",q:"Warum hält ein Sandboden das Wasser schlechter als ein Lehmboden?",
+ o:["Sand hat mehr Humus","Sand hat vor allem grosse Poren (Grobporen); das Wasser versickert schnell","Sand ist dunkler und erwärmt sich stärker","Sand hat mehr Feinporen als Lehm"],a:1,
+ e:"Grobporen leiten das Wasser rasch in die Tiefe. Lehm hat viele Mittel- und Feinporen, die Wasser speichern → höhere nFK."},
+{fb:1,lz:"L214",type:"mc",q:"Welche Wetterlage erhöht den Wasserbedarf einer Bepflanzung am stärksten?",
+ o:["Kühl, bewölkt, hohe Luftfeuchtigkeit","Hitze > 30 °C, starke Sonne, trockene Luft, Wind","Nebel und Windstille","Leichter Nieselregen"],a:1,
+ e:"Temperatur, Strahlung, tiefe Luftfeuchtigkeit und Wind steigern die Verdunstung (Evapotranspiration) – genau die Situation im Hitzesommer."},
+{fb:1,lz:"L214",type:"num",ctx:"Rasenfläche 120 m², durchdringend mit 15 mm (= 15 l/m²) bewässern.",
+ q:"Wie viele Liter Wasser braucht es insgesamt?",ans:1800,unit:"l",tol:0,
+ e:"120 m² × 15 l/m² = 1800 l"},
+{fb:1,lz:"L214",type:"num",ctx:"Gesamtmenge aus der vorherigen Aufgabe: 1800 l.",
+ q:"Wie viele Kubikmeter sind das?",ans:1.8,unit:"m³",tol:0.001,
+ e:"1 m³ = 1000 l → 1800 l ÷ 1000 = 1,8 m³"},
+{fb:1,lz:"L214",type:"mc",q:"Mit welchem Gerät misst du die Bodenfeuchte bzw. die Saugspannung im Boden?",
+ o:["Manometer","Tensiometer (oder Bodenfeuchtemessgerät)","Multimeter","Wasserwaage"],a:1,
+ e:"Ein Tensiometer zeigt, wie stark das Wasser im Boden gebunden ist. Für die ausgebrachte Menge eignet sich ein Regenmesser (Niederschlagsmesser)."},
+
+// ---------- Fallbeispiel 2 ----------
+{fb:2,lz:"L215",type:"mc",q:"Welchen Vorteil hat ein Bewässerungssack gegenüber dem Giessen mit dem Schlauch?",
+ o:["Er gibt das Wasser langsam über Stunden ab – es versickert in den Wurzelballen statt abzulaufen",
+    "Er muss nie nachgefüllt werden","Er braucht keinen Wasseranschluss","Er düngt den Baum automatisch"],a:0,
+ e:"Langsame Abgabe = kaum Oberflächenabfluss und weniger Verdunstung. Nachteil: Jeder Sack muss bei jedem Bewässerungsgang neu befüllt werden (Arbeitsaufwand)."},
+{fb:2,lz:"L215",type:"mc",q:"Was ist das Prinzip der Wurzelzonenbewässerung (Dränrohr im Ballen)?",
+ o:["Das Wasser wird über einen Regner auf die Krone gesprüht",
+    "Das Wasser wird über ein eingebautes Rohr direkt in die Wurzelzone geleitet",
+    "Der Baum wird nur über Regenwasser versorgt",
+    "Das Wasser wird in einen Graben neben der Strasse geleitet"],a:1,
+ e:"Ein ringförmig um den Ballen verlegtes Dränrohr mit Einfüllstutzen bringt das Wasser direkt zu den Wurzeln: sehr geringe Verdunstung, kein Abfluss auf Belag oder Strasse."},
+{fb:2,lz:"L215",type:"num",ctx:"22 Jungbäume (HOB 22/24), pro Wassergabe ca. 75 l je Baum.",
+ q:"Wie viele Liter braucht es pro Bewässerungsgang für alle Bäume?",ans:1650,unit:"l",tol:0,
+ e:"22 × 75 l = 1650 l"},
+{fb:2,lz:"L215",type:"num",ctx:"1650 l, ¾-Zoll-Schlauch mit 8 l/min.",
+ q:"Wie viele Minuten dauert das reine Befüllen?",ans:206.25,unit:"min",tol:0.3,
+ e:"1650 l ÷ 8 l/min = 206,25 min ≈ 3 h 26 min"},
+{fb:2,lz:"L215",type:"mc",q:"206 Minuten sind wie viele Stunden?",
+ o:["ca. 2 h 6 min","ca. 3 h 26 min","ca. 3 h 6 min","ca. 4 h 10 min"],a:1,
+ e:"206 min ÷ 60 = 3 h, Rest 26 min → ca. 3 h 26 min (≈ 3,4 h)."},
+{fb:2,lz:"L215",type:"mc",q:"Was bedeutet die Angabe «HOB 22/24»?",
+ o:["Höhe 22–24 m","Hochstamm mit Stammumfang 22–24 cm (gemessen auf 1 m Höhe)","Hochstamm mit Stammdurchmesser 22–24 mm","22–24 Jahre alt"],a:1,
+ e:"Bei Hochstämmen wird der Stammumfang in cm auf 1 m Höhe angegeben."},
+
+// ---------- Fallbeispiel 3 ----------
+{fb:3,lz:"L215",type:"mc",q:"Warum werden Rasen, Hecke und Stauden in verschiedene Steuerkreise (Ventile) aufgeteilt?",
+ o:["Weil es schöner aussieht",
+    "Unterschiedlicher Wasserbedarf und unterschiedliche Ausbringung (Regner vs. Tropfrohr) – und der Anschluss liefert nicht genug Wasser für alles gleichzeitig",
+    "Weil jedes Ventil nur 10 m Rohr versorgen darf",
+    "Damit man weniger Kabel braucht"],a:1,
+ e:"Jede Zone bekommt die passende Laufzeit. Regner und Tropfrohre haben ganz andere Niederschlagsraten und Drücke. Zudem ist die verfügbare Wassermenge begrenzt."},
+{fb:3,lz:"L215",type:"num",ctx:"Anschluss liefert max. 1,5 m³/h. Die Versenkregner im Rasen brauchen zusammen 3,5 m³/h.",
+ q:"In wie viele Zonen muss der Rasen mindestens aufgeteilt werden?",ans:3,unit:"Zonen",tol:0,
+ e:"3,5 ÷ 1,5 = 2,33 → immer aufrunden → 3 Zonen. Mit 2 Zonen bräuchte jede 1,75 m³/h – zu viel."},
+{fb:3,lz:"L215",type:"mc",q:"Welche Ausbringung passt am besten zur 60 m langen Blütenhecke?",
+ o:["Versenk-Getrieberegner","Druckkompensierendes Tropfrohr","Viereckregner","Kreisregner auf Stativ"],a:1,
+ e:"Tropfrohre bringen das Wasser direkt in den Wurzelbereich, ohne Laub zu benetzen. Druckkompensiert = auf der ganzen Länge gleich viel Wasser."},
+{fb:3,lz:"L215",type:"mc",q:"Welche Ausbringung passt zur Rasenfläche?",
+ o:["Tropfrohr","Versenkregner (Getriebe-, Sprüh- oder Multistrahlregner)","Bewässerungssack","Tropfer am Einzelbaum"],a:1,
+ e:"Rasen braucht eine flächige, gleichmässige Beregnung. Versenkregner fahren nur beim Betrieb hoch und stören das Mähen nicht."},
+{fb:3,lz:"L215",type:"mc",q:"Welche Reihenfolge der Bauteile ist richtig (vom Wasseranschluss aus)?",
+ o:["Regner → Ventil → Filter → Anschluss",
+    "Anschluss → Sicherungseinrichtung (Trinkwasserschutz) → Filter → Magnetventile (Ventilbox) → PE-Leitung → Regner/Tropfrohr",
+    "Anschluss → Regner → Filter → Steuergerät",
+    "Anschluss → PE-Leitung → Steuergerät → Filter"],a:1,
+ e:"Zuerst Trinkwasser schützen, dann filtern, dann über Magnetventile (vom Steuergerät geschaltet) auf die Zonen verteilen. Für Tropfzonen kommt meist noch ein Druckminderer dazu."},
+
+// ---------- Fallbeispiel 4 ----------
+{fb:4,lz:"L215",type:"mc",q:"Was ist die Aufgabe der DIN EN 1717 (in der Schweiz gleich angewendet)?",
+ o:["Sie regelt die Grösse von Regnern","Schutz des Trinkwassers vor Verunreinigung durch Rückfliessen von Nichttrinkwasser","Sie legt den Wasserpreis fest","Sie regelt die Frosttiefe von Leitungen"],a:1,
+ e:"Bei Druckabfall im Netz könnte verschmutztes Wasser aus der Bewässerung zurückgesaugt werden. Die Norm schreibt dagegen Sicherungseinrichtungen vor."},
+{fb:4,lz:"L215",type:"mc",q:"Welche Sicherungseinrichtung ist bei Flüssigkeitskategorie 5 zwingend?",
+ o:["Ein einfacher Rückflussverhinderer","Ein Systemtrenner Typ BA","Ein freier Auslauf (Typ AA / AB), z.B. Vorlagebehälter mit Pumpe","Ein Kugelhahn"],a:2,
+ e:"Kategorie 5 = höchstes Risiko (Keime). Nur eine vollständige Trennung durch einen freien Auslauf schützt. Ein Systemtrenner BA reicht nur bis Kategorie 4, ein Rückflussverhinderer nur bis Kategorie 2."},
+{fb:4,lz:"L215",type:"mc",q:"Wie führst du die Leitung von der Küche zerstörungsfrei auf die Dachterrasse?",
+ o:["Loch durch die Fassade bohren",
+    "Über einen Armaturenanschluss (z.B. Geräteanschlussventil unter der Spüle) und einen dünnen Schlauch durch Fensterfalz / Türdichtung bzw. vorhandene Durchführung",
+    "Durch den Abfluss der Spüle",
+    "Gar nicht möglich – man muss giessen"],a:1,
+ e:"Gewerblich sauber: fester Anschluss an der Wasserinstallation mit Absperrung und Trinkwasserschutz, flacher Schlauch durch eine bestehende Öffnung, kein Bohren. Wichtig: Abschalten bei Leck (Wasserstopp) einplanen."},
+{fb:4,lz:"L215",type:"num",ctx:"Trogbepflanzung 30 m², Bedarf 4 l/m² pro Tag.",
+ q:"Wie viele Liter braucht der Dachgarten pro Tag?",ans:120,unit:"l",tol:0,
+ e:"30 m² × 4 l/m² = 120 l pro Tag"},
+{fb:4,lz:"L215",type:"num",ctx:"120 l pro Tag, 14 Ferientage.",
+ q:"Wie hoch ist der Gesamtverbrauch?",ans:1680,unit:"l",tol:0,
+ e:"120 l × 14 = 1680 l (= 1,68 m³)"},
+{fb:4,lz:"L215",type:"mc",q:"Wozu braucht es bei einer Tropfbewässerung einen Druckminderer?",
+ o:["Damit das Wasser wärmer wird","Tropfer und Tropfrohre arbeiten mit tiefem Druck; zu hoher Druck lässt Verbindungen abspringen","Damit mehr Wasser fliesst","Er ersetzt den Filter"],a:1,
+ e:"Der Leitungsdruck im Haus ist oft 4–6 bar; Tropfsysteme brauchen deutlich weniger. Der Druckminderer schützt Tropfer, Verbinder und Leitungen."},
+
+// ---------- Fallbeispiel 5 ----------
+{fb:5,lz:"L214",type:"num",ctx:"Satteldach Gewächshaus: Breite 12,55 m, Länge 30,00 m (Grundfläche zählt).",
+ q:"Wie gross ist die Grundfläche des Dachs?",ans:376.5,unit:"m²",tol:0.05,
+ e:"12,55 m × 30,00 m = 376,5 m² (es zählt die Grundfläche, nicht die schräge Dachfläche)."},
+{fb:5,lz:"L214",type:"num",ctx:"Grundfläche 376,5 m², Niederschlag April–Oktober 500 mm (= 500 l/m²).",
+ q:"Wie viele Liter Brutto-Regenertrag fallen an?",ans:188250,unit:"l",tol:1,
+ e:"376,5 m² × 500 l/m² = 188 250 l"},
+{fb:5,lz:"L214",type:"num",ctx:"Brutto 188 250 l, Abflussbeiwert 0,8.",
+ q:"Wie viele Liter fliessen tatsächlich in die Zisterne (netto)?",ans:150600,unit:"l",tol:1,
+ e:"188 250 l × 0,8 = 150 600 l (≈ 150,6 m³). 20 % gehen durch Verdunstung und Rückhalt verloren."},
+{fb:5,lz:"L215",type:"mc",q:"Was sagt ein Abflussbeiwert von 0,8 aus?",
+ o:["80 % des Regens kommen tatsächlich in der Zisterne an","80 % verdunsten","Die Zisterne ist zu 80 % voll","Das Dach hat 80 % Gefälle"],a:0,
+ e:"Der Abflussbeiwert berücksichtigt Verdunstung, Benetzung und Rückhalt auf der Dachfläche."},
+{fb:5,lz:"L215",type:"num",ctx:"Tauchdruckpumpe 1 kW, 120 Tage à 1,5 h.",
+ q:"Wie viele kWh verbraucht die Pumpe pro Jahr?",ans:180,unit:"kWh",tol:0,
+ e:"1 kW × 1,5 h × 120 Tage = 180 kWh"},
+{fb:5,lz:"L215",type:"num",ctx:"180 kWh, Strompreis 0,31 CHF/kWh.",
+ q:"Wie hoch sind die jährlichen Stromkosten?",ans:55.8,unit:"CHF",tol:0.01,
+ e:"180 kWh × 0,31 CHF/kWh = CHF 55.80"},
+{fb:5,lz:"L215",type:"mc",q:"Wozu dient die Nachspeisung bei einer Zisterne?",
+ o:["Sie pumpt Wasser ins Trinkwassernetz zurück","Sie füllt bei leerer Zisterne Trinkwasser nach – über einen freien Auslauf, damit kein Zisternenwasser ins Trinkwasser gelangt","Sie filtert das Regenwasser","Sie entleert die Zisterne im Winter"],a:1,
+ e:"Zisternenwasser gilt als Kategorie 5. Darum darf die Trinkwassernachspeisung nur über einen freien Auslauf erfolgen."},
+{fb:5,lz:"L215",type:"mc",q:"Wo wird das Dachwasser gefiltert?",
+ o:["Erst beim Regner","Vor der Zisterne (z.B. Fallrohr- oder Zisternenfilter), damit Laub und Schmutz nicht hineingelangen","Gar nicht nötig","Im Steuergerät"],a:1,
+ e:"Ein Filter vor dem Zulauf hält Laub und Grobschmutz zurück. So bleibt das Wasser in der Zisterne sauberer und die Pumpe wird geschont."},
+
+// ---------- Fallbeispiel 6 ----------
+{fb:6,lz:"L216",type:"mc",q:"Warum reicht das blosse Öffnen der Entleerungsventile beim Einwintern oft nicht?",
+ o:["Weil die Ventile einfrieren","In Senken, Regnern, Ventilen und Tropfrohren bleibt Restwasser stehen – es kann gefrieren und Bauteile sprengen","Weil Wasser nicht nach unten fliesst","Weil das Steuergerät es verhindert"],a:1,
+ e:"Nur mit Druckluft wird auch das Restwasser aus Tiefpunkten, Regnergehäusen und Membranventilen zuverlässig herausgeblasen."},
+{fb:6,lz:"L216",type:"mc",q:"Welcher Druck darf beim Ausblasen mit Druckluft nicht überschritten werden?",
+ o:["ca. 0,5 bar","max. 1,5–2,0 bar","ca. 6 bar","ca. 10 bar"],a:1,
+ e:"Laut eurer Wartungsmatrix max. 1,5–2,0 bar. Zu hoher Druck zerstört Membranen, Dichtungen und Regnerköpfe."},
+{fb:6,lz:"L216",type:"mc",q:"Was ist der erste Schritt bei der Einwinterung?",
+ o:["Kompressor auf Maximum anschliessen","Hauptleitung absperren und Druck abbauen","Regner ausgraben","Steuergerät abmontieren"],a:1,
+ e:"Ablauf: 1. Hauptleitung zu, Druck ablassen → 2. Kompressor anschliessen (Klauenkupplung/Adapter) → 3. Zone für Zone ausblasen, bis nur noch Luft austritt → 4. Steuergerät auf «OFF»/Frostmodus."},
+{fb:6,lz:"L216",type:"mc",q:"Wie werden die Zonen beim Ausblasen behandelt?",
+ o:["Alle Ventile gleichzeitig öffnen","Zone für Zone nacheinander ausblasen, bis kein Wasser mehr austritt","Nur die längste Zone ausblasen","Ventile geschlossen lassen"],a:1,
+ e:"Nacheinander, damit der Luftstrom in jeder Zone stark genug ist, um das Wasser auszutreiben."},
+{fb:6,lz:"L216",type:"mc",q:"Was gehört zur Inbetriebnahme im Frühjahr?",
+ o:["Filter reinigen, Leitungen spülen, Druckprüfung, Regner ausrichten und Düsen prüfen","Anlage mit Druckluft ausblasen","Steuergerät auf Frostmodus","Nichts – die Anlage läuft einfach wieder"],a:0,
+ e:"Frühjahr: Filter & Spülen, Dichtigkeits-/Druckprüfung (Manometer), Regnerausrichtung und Düsenkontrolle."},
+{fb:6,lz:"L216",type:"mc",q:"Welche Kontrolle gehört in den Sommer (Betriebskontrolle)?",
+ o:["Ausblasen mit Druckluft","Sichtprüfung auf Leckagen, Regensensor und Batterien prüfen, Laufzeiten an Hitze anpassen","Ventile ausbauen","Hauptleitung absperren"],a:1,
+ e:"Im Betrieb: Leckagen/Rohrbruch suchen, Regensensor und Batterien (z.B. 9V) testen, Laufzeiten an Hitzeperioden anpassen."},
+{fb:6,lz:"L216",type:"mc",q:"Welche Werkzeuge brauchst du zum Einwintern?",
+ o:["Fahrbarer Druckluftkompressor, Klauenkupplung/Adapter, Schutzbrille","Tensiometer und Regenmesser","Bewässerungssack und Giesskanne","Nur einen Schraubenzieher"],a:0,
+ e:"Kompressor mit Druckregler, Adapter zum Anschliessen ans System und Schutzbrille (Wasser/Schmutz spritzt aus den Regnern)."},
+{fb:6,lz:"L216",type:"mc",q:"Wofür brauchst du PE-Schere und Anfasglocke bei Reparaturen?",
+ o:["Zum Ausblasen","PE-Rohr rechtwinklig schneiden und die Rohrkante anfasen, damit es sauber in den Klemmverbinder gleitet","Zum Messen des Drucks","Zum Einstellen der Regner"],a:1,
+ e:"Ein sauberer, rechtwinkliger Schnitt und eine angefaste Kante verhindern, dass die Dichtung im Verbinder beschädigt wird – sonst gibt es Lecks."}
+];
+
+// ---------- Logik ----------
+const $ = id => document.getElementById(id);
+let set = [], i = 0, right = 0, wrongs = [], answered = false;
+
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
+function show(id){["start","quiz","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
+function fmt(n,unit){if(unit==="CHF")return n.toFixed(2);const [a,b]=String(n).split(".");return a.replace(/\B(?=(\d{3})+(?!\d))/g," ")+(b?","+b:"");}
+
+function loadBest(){try{return JSON.parse(localStorage.getItem("bew-check-best")||"{}");}catch(e){return {};}}
+function saveBest(key,pct){try{const b=loadBest();if(!(key in b)||pct>b[key]){b[key]=pct;localStorage.setItem("bew-check-best",JSON.stringify(b));}}catch(e){}}
+let currentKey = "";
+
+function buildStart(){
+  const best = loadBest();
+  const t = $("topics"); t.innerHTML = "";
+  const items = [["all","🎯 Alles gemischt",Q.length+" Fragen"]];
+  for(const k in FB) items.push(["fb"+k,FB[k],Q.filter(q=>q.fb==k).length+" Fragen"]);
+  items.push(["calc","🧮 Nur Rechenaufgaben",Q.filter(q=>q.type==="num").length+" Fragen"]);
+  items.forEach(([key,label,n])=>{
+    const b=document.createElement("button"); b.className="btn topic";
+    const bs = key in best ? " · Bestwert "+best[key]+" %" : "";
+    b.innerHTML = label+"<small>"+n+bs+"</small>";
+    b.onclick=()=>start(key); t.appendChild(b);
+  });
+}
+
+function start(key, list){
+  currentKey = key;
+  if(list) set = shuffle(list);
+  else if(key==="all") set = shuffle(Q);
+  else if(key==="calc") set = shuffle(Q.filter(q=>q.type==="num"));
+  else { const n=+key.slice(2); set = Q.filter(q=>q.fb===n); } // Fallbeispiel in Originalreihenfolge (Rechnungen bauen aufeinander auf)
+  i=0; right=0; wrongs=[]; show("quiz"); render();
+}
+
+function render(){
+  const q=set[i]; answered=false;
+  $("pos").textContent = "Frage "+(i+1)+" / "+set.length;
+  $("score").textContent = right+" richtig";
+  $("prog").style.width = (i/set.length*100)+"%";
+  $("tagFb").textContent = "FB "+q.fb; $("tagLz").textContent = q.lz;
+  $("ctx").classList.toggle("hidden",!q.ctx); $("ctx").textContent = q.ctx||"";
+  $("qtext").textContent = q.q;
+  $("feedback").innerHTML=""; $("next").classList.add("hidden");
+  const A=$("answers"); A.innerHTML="";
+  if(q.type==="mc"){
+    const order = shuffle(q.o.map((t,k)=>k));
+    order.forEach(k=>{
+      const b=document.createElement("button"); b.className="btn"; b.textContent=q.o[k]; b.dataset.k=k;
+      b.onclick=()=>checkMc(k); A.appendChild(b);
+    });
+  } else {
+    A.innerHTML='<div class="numrow"><input id="num" inputmode="decimal" autocomplete="off" placeholder="Zahl eingeben"><span>'+q.unit+'</span></div><button class="btn primary" id="chk">Prüfen</button>';
+    const inp=$("num"); inp.focus();
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter")checkNum();});
+    $("chk").onclick=checkNum;
+  }
+}
+
+function finishAnswer(ok, correctText){
+  answered=true;
+  const q=set[i];
+  if(ok) right++; else wrongs.push({q,correctText});
+  $("score").textContent = right+" richtig";
+  $("feedback").innerHTML = '<div class="fb '+(ok?"ok":"no")+'"><b>'+(ok?"✅ Richtig!":"❌ Leider falsch. Richtig: "+correctText)+'</b>'+q.e+'</div>';
+  const nx=$("next"); nx.classList.remove("hidden");
+  nx.textContent = i<set.length-1 ? "Weiter" : "Resultat anzeigen";
+  nx.focus();
+}
+
+function checkMc(k){
+  if(answered) return;
+  const q=set[i];
+  document.querySelectorAll("#answers .btn").forEach(b=>{
+    b.disabled=true;
+    if(+b.dataset.k===q.a) b.classList.add("ok");
+    else if(+b.dataset.k===k) b.classList.add("no");
+  });
+  finishAnswer(k===q.a, q.o[q.a]);
+}
+
+function checkNum(){
+  if(answered) return;
+  const q=set[i]; const inp=$("num");
+  const raw=inp.value.trim().replace(/[\s']/g,"").replace(",",".");
+  if(raw===""||isNaN(+raw)){inp.focus();inp.style.borderColor="var(--red)";return;}
+  const v=+raw; const ok=Math.abs(v-q.ans)<=q.tol+1e-9;
+  inp.disabled=true; inp.style.borderColor= ok?"var(--green)":"var(--red)";
+  $("chk").classList.add("hidden");
+  finishAnswer(ok, q.unit==="CHF" ? "CHF "+fmt(q.ans,"CHF") : fmt(q.ans)+" "+q.unit);
+}
+
+$("next").onclick=()=>{ i++; if(i<set.length) render(); else result(); };
+
+function result(){
+  const pct=Math.round(right/set.length*100);
+  if(currentKey!=="retry") saveBest(currentKey,pct);
+  $("pct").textContent=pct+" %";
+  $("verdict").textContent = right+" von "+set.length+" richtig – "+(pct>=90?"Top, sitzt! 🌱":pct>=70?"Gut, nur noch wenige Lücken.":pct>=50?"Einiges ist hängen geblieben – repetiere die Lücken unten.":"Nochmals die Gruppenarbeit anschauen und dann neu versuchen.");
+  const by=$("byLz"); by.innerHTML="";
+  for(const k in LZ){
+    const all=set.filter(q=>q.lz===k); if(!all.length) continue;
+    const w=wrongs.filter(x=>x.q.lz===k).length; const r=all.length-w;
+    by.innerHTML+='<div class="row"><span>'+LZ[k]+'</span><b>'+r+' / '+all.length+'</b></div>';
+  }
+  $("wrongBox").classList.toggle("hidden",!wrongs.length);
+  $("retryWrong").classList.toggle("hidden",!wrongs.length);
+  $("wrongList").innerHTML = wrongs.map(x=>'<div class="wrong">'+x.q.q+'<br><span class="a">→ '+x.correctText+'</span></div>').join("");
+  show("result");
+}
+
+$("retryWrong").onclick=()=>start("retry", wrongs.map(x=>x.q));
+$("home").onclick=()=>{buildStart();show("start");};
+
+buildStart();
+</script>
+</body>
+</html>
