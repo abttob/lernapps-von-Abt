@@ -1,5 +1,11 @@
 [
   {
+    "slug": "abfall-checkout",
+    "title": "Checkout Abfall – GLA25A",
+    "description": "Checkout am Schluss des Unterrichts: 10 Zufallsfragen zu L66–L68 (Abfallpyramide, Trennen, Entsorgungswege, Sonderabfälle, Praxisfälle), Login GLA25A, Auswertung für die Lehrperson.",
+    "added": "2026-11-05"
+  },
+  {
     "slug": "abfalltrennung",
     "title": "Abfall trennen – EBA 2",
     "description": "Abfallpyramide lernen und ordnen, Sortierspiel «Welche Mulde?», Sonderabfall-Fälle (Eisenbahnschwellen, Eternit, Asphalt) und Schlussquiz zu L66–L68.",
