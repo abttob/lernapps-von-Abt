@@ -52,7 +52,7 @@ const Sup={
   Sup.sb=window.supabase.createClient(C.url,C.key,{auth:{persistSession:true,autoRefreshToken:true}});
  },
  err(e){const m=(e&&e.message)||String(e);
-  if(/Klassencode/i.test(m))return new Error('Klassencode falsch.');
+  if(/Klassencode|Database error saving new user/i.test(m))return new Error('Klassencode falsch. Bitte bei der Lehrperson nachfragen.');
   if(/already registered|already been registered|duplicate/i.test(m))return new Error('Dieser Name ist schon vergeben. Nimm z. B. einen Buchstaben dazu (Anna B).');
   if(/Invalid login/i.test(m))return new Error('Name oder Passwort stimmt nicht.');
   if(/at least|weak|short/i.test(m))return new Error('Das Passwort ist zu kurz (mindestens 6 Zeichen).');
@@ -115,7 +115,7 @@ const LA={demo:DEMO,klasse:KL,esc,norm,$,store,resizeImage,uuid,user:null,prog:{
    if(!n.trim()||!p){m.innerHTML='<div class="msg err">Bitte Name und Passwort eingeben.</div>';return}
    if(mode==='up'&&p.length<6){m.innerHTML='<div class="msg err">Das Passwort braucht mindestens 6 Zeichen.</div>';return}
    $('#la_go',box).disabled=true;
-   try{LA.user=mode==='up'?await B.signUp(n,p,c.trim()):await B.signIn(n,p);if(wrongClass(LA.user)){await B.signOut();LA.user=null;throw new Error(mode==='up'?'Klassencode falsch.':'Name oder Passwort stimmt nicht.')}try{LA.prog=await B.progressMine(LA.user.id)}catch(e){LA.prog={}}box.remove();res(LA.user)}
+   try{const cc=window.LA_FIXCODE?window.LA_FIXCODE(c.trim()):c.trim();LA.user=mode==='up'?await B.signUp(n,p,cc):await B.signIn(n,p);if(wrongClass(LA.user)){await B.signOut();LA.user=null;throw new Error(mode==='up'?'Klassencode falsch.':'Name oder Passwort stimmt nicht.')}try{LA.prog=await B.progressMine(LA.user.id)}catch(e){LA.prog={}}box.remove();res(LA.user)}
    catch(e){m.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';$('#la_go',box).disabled=false}};
   $('#la_go',box).onclick=go;box.addEventListener('keydown',e=>{if(e.key==='Enter')go()})})},
  async logout(){await B.signOut();LA.user=null;location.reload()},
