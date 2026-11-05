@@ -77,6 +77,13 @@
   td.wrap{white-space:normal;min-width:240px}
   .det{background:#f7faf8;padding:10px 14px}
   .det .it{padding:4px 0;font-size:.88rem;white-space:normal}
+  .langs{display:flex;gap:6px;margin:0 0 12px;flex-wrap:wrap}
+  .langs button{flex:1;min-width:90px;padding:10px 8px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:.95rem;font-weight:600;cursor:pointer;color:var(--ink)}
+  .langs button.on{background:var(--green);border-color:var(--green);color:#fff}
+  .deq{font-size:.85rem;color:var(--muted);margin:-2px 0 8px;direction:ltr;text-align:left}
+  [dir=rtl] .btn{text-align:right}
+  [dir=rtl] .ctx{border-left:0;border-right:3px solid var(--line)}
+  [dir=rtl] .meta,[dir=rtl] .row{direction:rtl}
 </style>
 </head>
 <body>
@@ -85,17 +92,18 @@
   <h1>✅ Checkout Abfall</h1>
   <p class="sub" id="subline">Checkout zum Thema Abfall L66–L68 · Klasse GLA25A</p>
 
+  <div class="langs hidden" id="langs"><button data-l="de">🇨🇭 Deutsch</button><button data-l="fr">🇫🇷 Français</button><button data-l="ar">العربية</button></div>
   <div id="loading" class="card">Lädt …</div>
 
   <!-- Start (Lernende) -->
   <div id="start" class="hidden">
     <div class="card">
       <h2 id="hello"></h2>
-      <p style="margin:.2rem 0 .6rem">Du erhältst <b>10 zufällige Fragen</b> aus allen Themen von heute (Abfallpyramide, Trennen, Entsorgungswege, Sonderabfälle, Praxisfälle). Nach jeder Antwort siehst du, ob es stimmt. Dein Resultat wird gespeichert und deine Lehrperson sieht es.</p>
+      <p style="margin:.2rem 0 .6rem" id="intro">Du erhältst <b>10 zufällige Fragen</b> aus allen Themen von heute (Abfallpyramide, Trennen, Entsorgungswege, Sonderabfälle, Praxisfälle). Nach jeder Antwort siehst du, ob es stimmt. Dein Resultat wird gespeichert und deine Lehrperson sieht es.</p>
       
       <button class="btn primary" id="go">Test starten</button>
     </div>
-    <div class="card hidden" id="myHist"><h2>Deine bisherigen Tests</h2><div id="myHistList"></div></div>
+    <div class="card hidden" id="myHist"><h2 id="histT">Deine bisherigen Tests</h2><div id="myHistList"></div></div>
   </div>
 
   <!-- Quiz -->
@@ -105,7 +113,7 @@
     <div class="card">
       <span class="tag" id="tagFb"></span><span class="tag" id="tagLz"></span>
       <div class="ctx hidden" id="ctx"></div>
-      <div class="q" id="qtext"></div>
+      <div class="q" id="qtext"></div><div class="deq hidden" id="qde"></div>
       <div id="answers"></div>
       <div id="feedback"></div>
       <button class="btn primary hidden" id="next">Weiter</button>
@@ -119,8 +127,8 @@
       <p style="text-align:center;margin:0" id="verdict"></p>
       <p class="small" style="text-align:center;margin:.4rem 0 0" id="saved"></p>
     </div>
-    <div class="card"><h2>Nach Lernziel</h2><div id="byLz"></div></div>
-    <div class="card" id="wrongBox"><h2>Das solltest du nochmals anschauen</h2><div id="wrongList"></div></div>
+    <div class="card"><h2 id="byLzT">Nach Lernziel</h2><div id="byLz"></div></div>
+    <div class="card" id="wrongBox"><h2 id="wrongT">Das solltest du nochmals anschauen</h2><div id="wrongList"></div></div>
     <button class="btn primary" id="again">Neuer Test mit 10 anderen Fragen</button>
   </div>
 
@@ -131,6 +139,7 @@
 <script src="../belagsaufbau/assets/config.js"></script>
 <script>window.LA_KLASSE="GLA25A";</script>
 <script src="core.js"></script>
+<script src="i18n.js"></script>
 <script>
 const FB = {
   1:"Die Abfallpyramide",
@@ -164,7 +173,7 @@ const Q = [
  o:["Abfall wird kompostiert","Abfall wird verbrannt, die Wärme gibt Strom","Abfall wird gepresst und so gelagert","Abfall wird gewaschen und neu verkauft"],a:1,
  e:"In der Kehrichtverbrennungsanlage (KVA) wird aus der Wärme Strom und Fernwärme."},
 {fb:1,lz:"L66",type:"mc",q:"Warum lohnt es sich für den Betrieb, möglichst weit oben in der Pyramide zu handeln?",
- o:["Es spart Geld für Mulden, Transport und Material","Weil die Mulden dann schöner aussehen","Weil die Kundschaft das immer verlangt","Weil es die Kundschaft auf jeder Baustelle verlangt"],a:0,
+ o:["Es spart Geld für Mulden, Transport und Material","Weil die Mulden dann schöner aussehen","Weil die Kundschaft das immer verlangt","Weil Recycling in der Schweiz verboten ist"],a:0,
  e:"Weniger Abfall spart Geld (Mulden, Transport, Einkauf) und schont die Umwelt."},
 
 // ---------- 2 Trennen & Wiederverwenden ----------
@@ -292,6 +301,35 @@ const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&l
 Q.forEach((q,k)=>q.id="q"+(k+1));
 const byId = Object.fromEntries(Q.map(q=>[q.id,q]));
 
+/* ---------- Sprache (DE / FR / AR) ---------- */
+const DE_UI={hello:"Hallo {n} 👋",start:"Test starten",newTest:"Neuer Test (10 neue Zufallsfragen)",hist:"Deine bisherigen Tests",test:"Test",
+ pos:"Frage {i} / {n}",right:"{n} richtig",next:"Weiter",showResult:"Resultat anzeigen",ok:"✅ Richtig!",no:"❌ Leider falsch. Richtig:",
+ byLz:"Nach Lernziel",wrong:"Das solltest du nochmals anschauen",yours:"Deine Antwort:",again:"Neuer Test mit 10 anderen Fragen",
+ saving:"Wird gespeichert …",saved:"✔ Resultat gespeichert",notSaved:"⚠ Konnte nicht gespeichert werden:",of:"{r} von {n} richtig",
+ v1:"Top, du bist Abfall-Profi! ♻️",v2:"Gut, nur noch wenige Lücken.",v3:"Einiges ist hängen geblieben – repetiere die Lücken unten.",v4:"Nochmals das Arbeitsblatt und die Lernapp anschauen und dann neu versuchen."};
+let LANG="de"; try{LANG=localStorage.getItem("abfall-checkout-lang")||"de";}catch(e){}
+if(LANG!=="de" && !(window.I18N&&I18N[LANG])) LANG="de";
+const DE_INTRO=$("intro").innerHTML;
+function t(k,v){let s=(LANG!=="de"&&I18N[LANG].ui[k])||DE_UI[k]||k; if(v) for(const x in v) s=s.replace("{"+x+"}",v[x]); return s;}
+function tq(q){ if(LANG==="de") return q; const k=Q.indexOf(q); const x=I18N[LANG].q[k]||{}; return {q:x.q||q.q,o:x.o||q.o,e:x.e||q.e,ctx:q.ctx?(x.ctx||q.ctx):""}; }
+function tFb(k){return LANG==="de"?FB[k]:I18N[LANG].fb[k];}
+function tLz(k){return LANG==="de"?LZ[k]:I18N[LANG].lz[k];}
+function tAns(q){const x=tq(q);return x.o[q.a];}
+function applyLang(){
+  const rtl=LANG==="ar";
+  ["start","quiz","result"].forEach(id=>{$(id).dir=rtl?"rtl":"ltr"; $(id).lang=LANG;});
+  document.querySelectorAll("#langs button").forEach(b=>b.classList.toggle("on",b.dataset.l===LANG));
+  $("intro").innerHTML=LANG==="de"?DE_INTRO:I18N[LANG].ui.intro;
+  $("histT").textContent=t("hist"); $("byLzT").textContent=t("byLz"); $("wrongT").textContent=t("wrong"); $("again").textContent=t("again");
+}
+document.querySelectorAll("#langs button").forEach(b=>b.onclick=()=>{
+  LANG=b.dataset.l; try{localStorage.setItem("abfall-checkout-lang",LANG);}catch(e){}
+  applyLang();
+  if(!$("start").classList.contains("hidden")) buildStart();
+  else if(!$("quiz").classList.contains("hidden")) rerender();
+  else if(!$("result").classList.contains("hidden")) drawResult();
+});
+
 function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
 function fmt(n,unit){if(unit==="CHF")return n.toFixed(2);const [a,b]=String(n).split(".");return a.replace(/\B(?=(\d{3})+(?!\d))/g," ")+(b?","+b:"");}
 function ansText(q){return q.type==="mc"?q.o[q.a]:(q.unit==="CHF"?"CHF "+fmt(q.ans,"CHF"):fmt(q.ans)+" "+q.unit);}
@@ -314,11 +352,12 @@ let set=[], i=0, right=0, log=[], answered=false, startedAt=null;
 function attempts(){const p=LA.getProgress(SLUG);return (p&&p.data&&p.data.attempts)||[];}
 
 function buildStart(){
-  $("hello").textContent="Hallo "+LA.user.name+" 👋";
+  $("langs").classList.remove("hidden"); applyLang();
+  $("hello").textContent=t("hello",{n:LA.user.name});
   const A=attempts();
   $("myHist").classList.toggle("hidden",!A.length);
-  $("myHistList").innerHTML=A.slice().reverse().map((a,k)=>'<div class="row"><span>Test '+(A.length-k)+' · '+dt(a.finished)+'</span><b><span class="sc '+cls(a.pct)+'">'+a.score+' / '+a.total+'</span></b></div>').join("");
-  $("go").textContent = A.length ? "Neuer Test (10 neue Zufallsfragen)" : "Test starten";
+  $("myHistList").innerHTML=A.slice().reverse().map((a,k)=>'<div class="row"><span>'+t("test")+' '+(A.length-k)+' · '+dt(a.finished)+'</span><b><span class="sc '+cls(a.pct)+'">'+a.score+' / '+a.total+'</span></b></div>').join("");
+  $("go").textContent = A.length ? t("newTest") : t("start");
   show("start");
 }
 
@@ -327,19 +366,33 @@ function startTest(){
   show("quiz"); render();
 }
 
+let curOrder=null;
 function render(){
-  const q=set[i]; answered=false;
-  $("pos").textContent="Frage "+(i+1)+" / "+set.length;
-  $("score").textContent=right+" richtig";
+  const q=set[i]; answered=false; curOrder=shuffle(q.o.map((t,k)=>k)); drawQ();
+}
+function rerender(){ // Sprache gewechselt: gleiche Frage, gleiche Reihenfolge, Zustand behalten
+  const q=set[i]; const was=answered; const last=log[log.length-1];
+  drawQ();
+  if(was && last && last.id===q.id){
+    document.querySelectorAll("#answers .btn").forEach(b=>{b.disabled=true;
+      if(+b.dataset.k===q.a) b.classList.add("ok"); else if(+b.dataset.k===last.k) b.classList.add("no");});
+    showFeedback(last.ok);
+  }
+}
+function drawQ(){
+  const q=set[i]; const x=tq(q);
+  $("pos").textContent=t("pos",{i:i+1,n:set.length});
+  $("score").textContent=t("right",{n:right});
   $("prog").style.width=(i/set.length*100)+"%";
-  $("tagFb").textContent=FB[q.fb]; $("tagLz").textContent=q.lz;
-  $("ctx").classList.toggle("hidden",!q.ctx); $("ctx").textContent=q.ctx||"";
-  $("qtext").textContent=q.q;
+  $("tagFb").textContent=tFb(q.fb); $("tagLz").textContent=q.lz;
+  $("ctx").classList.toggle("hidden",!q.ctx); $("ctx").textContent=x.ctx||"";
+  $("qtext").textContent=x.q;
+  $("qde").classList.toggle("hidden",LANG==="de"); $("qde").textContent=LANG==="de"?"":"🇨🇭 "+q.q;
   $("feedback").innerHTML=""; $("next").classList.add("hidden");
   const A=$("answers"); A.innerHTML="";
   if(q.type==="mc"){
-    shuffle(q.o.map((t,k)=>k)).forEach(k=>{
-      const b=document.createElement("button"); b.className="btn"; b.textContent=q.o[k]; b.dataset.k=k;
+    curOrder.forEach(k=>{
+      const b=document.createElement("button"); b.className="btn"; b.textContent=x.o[k]; b.dataset.k=k;
       b.onclick=()=>checkMc(k); A.appendChild(b);
     });
   } else {
@@ -350,20 +403,24 @@ function render(){
   }
 }
 
-function finishAnswer(ok, given){
+function finishAnswer(ok, given, k){
   answered=true; const q=set[i];
   if(ok) right++;
-  log.push({id:q.id, ok, given});
-  $("score").textContent=right+" richtig";
-  $("feedback").innerHTML='<div class="fb '+(ok?"ok":"no")+'"><b>'+(ok?"✅ Richtig!":"❌ Leider falsch. Richtig: "+esc(ansText(q)))+'</b>'+esc(q.e)+'</div>';
+  log.push({id:q.id, ok, given, k, lang:LANG});
+  $("score").textContent=t("right",{n:right});
+  showFeedback(ok);
+}
+function showFeedback(ok){
+  const q=set[i]; const x=tq(q);
+  $("feedback").innerHTML='<div class="fb '+(ok?"ok":"no")+'"><b>'+(ok?t("ok"):t("no")+" "+esc(tAns(q)))+'</b>'+esc(x.e)+'</div>';
   const nx=$("next"); nx.classList.remove("hidden");
-  nx.textContent= i<set.length-1?"Weiter":"Resultat anzeigen"; nx.focus();
+  nx.textContent= i<set.length-1?t("next"):t("showResult"); nx.focus();
 }
 function checkMc(k){
   if(answered) return; const q=set[i];
   document.querySelectorAll("#answers .btn").forEach(b=>{b.disabled=true;
     if(+b.dataset.k===q.a) b.classList.add("ok"); else if(+b.dataset.k===k) b.classList.add("no");});
-  finishAnswer(k===q.a, q.o[k]);
+  finishAnswer(k===q.a, q.o[k], k);
 }
 function checkNum(){
   if(answered) return; const q=set[i]; const inp=$("num");
@@ -376,30 +433,37 @@ function checkNum(){
 }
 $("next").onclick=()=>{ i++; if(i<set.length) render(); else result(); };
 
-async function result(){
+let saveState="saving", saveErr="";
+function drawResult(){
   const pct=Math.round(right/set.length*100);
   $("pct").textContent=pct+" %";
-  $("verdict").textContent=right+" von "+set.length+" richtig – "+(pct>=90?"Top, du bist Abfall-Profi! ♻️":pct>=70?"Gut, nur noch wenige Lücken.":pct>=50?"Einiges ist hängen geblieben – repetiere die Lücken unten.":"Nochmals das Arbeitsblatt und die Lernapp anschauen und dann neu versuchen.");
+  $("verdict").textContent=t("of",{r:right,n:set.length})+" – "+(pct>=90?t("v1"):pct>=70?t("v2"):pct>=50?t("v3"):t("v4"));
   const by=$("byLz"); by.innerHTML="";
   for(const k in LZ){
     const all=log.filter(x=>byId[x.id].lz===k); if(!all.length) continue;
-    by.innerHTML+='<div class="row"><span>'+LZ[k]+'</span><b>'+all.filter(x=>x.ok).length+' / '+all.length+'</b></div>';
+    by.innerHTML+='<div class="row"><span>'+esc(tLz(k))+'</span><b>'+all.filter(x=>x.ok).length+' / '+all.length+'</b></div>';
   }
   const wr=log.filter(x=>!x.ok);
   $("wrongBox").classList.toggle("hidden",!wr.length);
-  $("wrongList").innerHTML=wr.map(x=>{const q=byId[x.id];return '<div class="wrong">'+esc(q.q)+'<br><span class="g">Deine Antwort: '+esc(x.given)+'</span><br><span class="a">→ '+esc(ansText(q))+'</span></div>';}).join("");
-  $("saved").textContent="Wird gespeichert …";
+  $("wrongList").innerHTML=wr.map(x=>{const q=byId[x.id];const tx=tq(q);const g=(x.k!=null)?tx.o[x.k]:x.given;return '<div class="wrong">'+esc(tx.q)+'<br><span class="g">'+t("yours")+' '+esc(g)+'</span><br><span class="a">✔ '+esc(tAns(q))+'</span></div>';}).join("");
+  $("saved").textContent=saveState==="saving"?t("saving"):saveState==="ok"?t("saved"):t("notSaved")+" "+saveErr;
+}
+async function result(){
+  const pct=Math.round(right/set.length*100);
+  saveState="saving"; drawResult();
   show("result");
   const att={started:startedAt, finished:new Date().toISOString(), score:right, total:set.length, pct, answers:log};
   const A=attempts().concat([att]);
-  try{ await LA.saveProgress(SLUG,{pct, finished:true, attempts:A}); $("saved").textContent="✔ Resultat gespeichert"; }
-  catch(e){ $("saved").textContent="⚠ Konnte nicht gespeichert werden: "+e.message; }
+  try{ await LA.saveProgress(SLUG,{pct, finished:true, attempts:A}); saveState="ok"; }
+  catch(e){ saveState="err"; saveErr=e.message; }
+  $("saved").textContent=saveState==="ok"?t("saved"):t("notSaved")+" "+saveErr;
 }
 $("go").onclick=startTest;
 $("again").onclick=startTest;
 
 /* ---------- Lehrperson ---------- */
 async function teacherView(){
+  $("langs").classList.add("hidden");
   $("wrap").classList.add("wide");
   $("subline").textContent="Auswertung Klasse "+LA.klasse+" (nur diese Klasse)";
   const T=$("teacher"); show("teacher");
@@ -459,7 +523,7 @@ async function teacherView(){
     const k=+tr.dataset.k, d=$("det"+k), r=rows[k];
     if(!d.classList.contains("hidden")){d.classList.add("hidden");return;}
     d.firstElementChild.innerHTML=r.A.map((a,n)=>`<div style="margin-bottom:8px"><b>Versuch ${n+1}</b> · ${dt(a.finished)} · ${a.score}/${a.total}${n===0?" (gewertet)":""}`+
-      a.answers.map(x=>{const q=byId[x.id];return q?`<div class="it">${x.ok?"✅":"❌"} ${esc(q.q)}${x.ok?"":` <span class="small">– Antwort: «${esc(x.given)}», richtig: «${esc(ansText(q))}»</span>`}</div>`:"";}).join("")+'</div>').join("");
+      a.answers.map(x=>{const q=byId[x.id];return q?`<div class="it">${x.ok?"✅":"❌"} ${esc(q.q)}${x.lang&&x.lang!=="de"?` <span class="small">(🌐 ${x.lang.toUpperCase()})</span>`:""}${x.ok?"":` <span class="small">– Antwort: «${esc(x.given)}», richtig: «${esc(ansText(q))}»</span>`}</div>`:"";}).join("")+'</div>').join("");
     d.classList.remove("hidden");
   });
   $("rf").onclick=()=>location.reload();
