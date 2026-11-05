@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abfall trennen – Lernapp EBA</title>
+<style>
+  :root{--bg:#eef3ee;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--green-d:#245f39;--green-l:#d9efe0;--red:#b04a4a;--red-l:#f7dede;--yel:#c98a00;--yel-l:#fff0b8;--blue:#2b6a9a;--blue-l:#dcebf6;--line:#cfd9d2}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;-webkit-tap-highlight-color:transparent}
+  .wrap{max-width:640px;margin:0 auto;padding:16px 16px 48px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  a.back{color:var(--green);text-decoration:none;font-size:.95rem}
+  .pts{background:#fff;border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-weight:700;font-size:.9rem}
+  h1{font-size:1.5rem;margin:.6rem 0 .2rem}
+  h2{font-size:1.2rem;margin:0 0 .5rem}
+  .sub{color:var(--muted);margin:0 0 1rem}
+  .card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .tile{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:16px 12px;text-align:left;cursor:pointer;font-family:inherit;color:var(--ink);min-height:120px;display:flex;flex-direction:column;gap:4px}
+  .tile:hover{border-color:var(--green)}
+  .tile .ic{font-size:2rem}
+  .tile b{font-size:1rem}
+  .tile small{color:var(--muted);font-size:.8rem}
+  .tile .done{margin-top:auto;font-size:.78rem;font-weight:700;color:var(--green)}
+  .btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:52px;font-family:inherit}
+  .btn:hover{border-color:var(--green)}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green);text-align:center;font-weight:600}
+  .btn.secondary{text-align:center;font-weight:600}
+  .btn.ok{background:var(--green-l);border-color:var(--green)}
+  .btn.no{background:var(--red-l);border-color:var(--red)}
+  .btn:disabled{cursor:default}
+  .bar{height:8px;background:#dfe7e1;border-radius:6px;overflow:hidden;margin:6px 0 14px}
+  .bar>div{height:100%;background:var(--green);transition:width .3s}
+  .meta{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+  .q{font-size:1.1rem;font-weight:600;margin:10px 0 6px}
+  .fb{padding:12px 14px;border-radius:12px;margin-top:10px;font-size:.95rem}
+  .fb.ok{background:var(--green-l)} .fb.no{background:var(--red-l)}
+  .fb b{display:block;margin-bottom:4px}
+  .big{font-size:2.6rem;font-weight:700;text-align:center;margin:6px 0}
+  .hidden{display:none}
+  .small{font-size:.85rem;color:var(--muted)}
+  /* Pyramide */
+  .pyr{display:flex;flex-direction:column;align-items:center;gap:6px;margin:8px 0}
+  .lvl{border:none;border-radius:10px;color:#fff;font-weight:700;padding:12px 8px;text-align:center;cursor:pointer;font-family:inherit;font-size:.95rem;line-height:1.2}
+  .lvl small{display:block;font-weight:400;font-size:.75rem;opacity:.9}
+  .lvl.sel{outline:4px solid var(--ink);outline-offset:2px}
+  .info{background:#f5f7f5;border-left:4px solid var(--green);border-radius:8px;padding:12px;margin-top:10px}
+  .info ul{margin:.3rem 0 0;padding-left:1.2rem}
+  /* Sortieren */
+  .item{font-size:1.35rem;font-weight:700;text-align:center;padding:22px 12px;background:var(--yel-l);border-radius:14px;margin:8px 0 12px}
+  .item .e{font-size:2.6rem;display:block}
+  .bins{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .bin{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 8px;font-family:inherit;font-size:.9rem;cursor:pointer;min-height:58px;display:flex;align-items:center;gap:8px;text-align:left;color:var(--ink)}
+  .bin span{font-size:1.4rem}
+  .bin.ok{background:var(--green-l);border-color:var(--green)}
+  .bin.no{background:var(--red-l);border-color:var(--red)}
+  /* Ordnen */
+  .slot{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px dashed var(--line);border-radius:12px;margin:6px 0;min-height:50px;background:#fafcfa}
+  .slot .n{font-weight:700;width:26px;height:26px;border-radius:50%;background:var(--green-l);display:grid;place-items:center;font-size:.85rem;flex:none}
+  .slot.ok{border-style:solid;border-color:var(--green);background:var(--green-l)}
+  .slot.no{border-style:solid;border-color:var(--red);background:var(--red-l)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .chip{border:1.5px solid var(--green);background:#fff;color:var(--green-d);border-radius:22px;padding:10px 14px;font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer}
+  .case{background:#f5f7f5;border-radius:12px;padding:12px;font-size:.95rem;margin:8px 0}
+  .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--blue-l);color:var(--blue);margin-right:6px}
+  .tag.warn{background:var(--yel-l);color:#7a5600}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eef1ef}
+  .row:last-child{border:0}
+  @media (max-width:380px){.tiles,.bins{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="../">← Alle Apps</a>
+    <span class="pts" id="ptsBadge">⭐ 0</span>
+  </div>
+  <div id="app"></div>
+</div>
+
+<script>
+/* ---------- Daten ---------- */
+const LEVELS = [
+  {k:"vermeiden", t:"Vermeiden", s:"Gar keinen Abfall erzeugen", c:"#1f6e3d",
+   txt:"Das Beste: Der Abfall entsteht gar nicht erst.",
+   ex:["Material genau berechnen und nur so viel bestellen, wie gebraucht wird","Lieferung auf Mehrweg-Paletten, ohne viel Verpackung","Pflanzen in Mehrwegtöpfen oder Töpfe zurückgeben"]},
+  {k:"vermindern", t:"Vermindern", s:"Weniger Abfall erzeugen", c:"#3b8a4f",
+   txt:"Wenn Abfall nicht ganz vermeidbar ist: so wenig wie möglich.",
+   ex:["Platten gut planen, damit es wenig Verschnitt gibt","Grosse Gebinde statt viele kleine Packungen","Werkzeuge pflegen, damit sie lange halten"]},
+  {k:"wiederverwenden", t:"Wiederverwenden", s:"Kann ich das noch brauchen?", c:"#6aa244",
+   txt:"Material wird nochmals gleich oder für etwas anderes gebraucht.",
+   ex:["Alte Mauersteine für die Hintermauerung","Ganze Betonplatten oder Randsteine in den Werkhof nehmen","Sauberen Humus wieder einbauen"]},
+  {k:"recyceln", t:"Recyceln", s:"Mulde / Recyclingcenter", c:"#c19a1b",
+   txt:"Das Material wird sortenrein getrennt und zu neuem Rohstoff verarbeitet.",
+   ex:["Beton wird zu Recyclingkies","Metall wird eingeschmolzen","Karton wird zu neuem Papier","Grüngut wird zu Kompost"]},
+  {k:"energie", t:"Energetisch nutzen", s:"Kehrichtverbrennung (KVA)", c:"#d4762a",
+   txt:"Was nicht recycelt werden kann, wird verbrannt. Die Wärme gibt Strom und Fernwärme.",
+   ex:["Gemischter Kehricht","Verschmutzte Kunststoffe","Invasive Neophyten (nicht auf den Kompost!)"]},
+  {k:"deponie", t:"Deponieren", s:"Letzte Lösung", c:"#a84535",
+   txt:"Nur was gar nicht mehr verwertet werden kann, kommt auf die Deponie.",
+   ex:["Nicht verwertbarer Bauschutt","Ausbauasphalt mit sehr viel PAK (seit 2026: über 250 mg PAK/kg nicht mehr verwerten)"]}
+];
+
+const BINS = [
+  {k:"wieder", e:"🔁", t:"Werkhof / Wiederverwenden"},
+  {k:"bauschutt", e:"🧱", t:"Bauschutt mineralisch"},
+  {k:"holz", e:"🪵", t:"Altholz"},
+  {k:"metall", e:"🔩", t:"Metall"},
+  {k:"karton", e:"📦", t:"Papier / Karton"},
+  {k:"kunststoff", e:"🛍️", t:"Kunststoff / Folien"},
+  {k:"gruen", e:"🌿", t:"Grüngut"},
+  {k:"kehricht", e:"🔥", t:"Kehricht (KVA)"},
+  {k:"sonder", e:"☣️", t:"Sonderabfall"}
+];
+
+const ITEMS = [
+  {e:"🧱",t:"Betonbruch von einer alten Mauer",b:"bauschutt",x:"Sauberer Beton kommt in die Bauschuttmulde und wird zu Recyclingkies."},
+  {e:"🧱",t:"Backstein- und Ziegelreste",b:"bauschutt",x:"Mineralisch = Bauschutt. Nicht mit Holz oder Plastik mischen."},
+  {e:"🔩",t:"Armierungseisen",b:"metall",x:"Metall ist wertvoll und wird eingeschmolzen."},
+  {e:"🥫",t:"Alu-Getränkedosen vom Znüni",b:"metall",x:"Alu ist Metall und kann fast unendlich oft recycelt werden."},
+  {e:"🔧",t:"Kaputte Schaufel (nur das Blatt)",b:"metall",x:"Metallteil = Metallmulde."},
+  {e:"🪵",t:"Kaputte Holzpalette",b:"holz",x:"Altholz wird getrennt gesammelt und z. B. im Holzheizkraftwerk genutzt."},
+  {e:"🪵",t:"Alte Schaltafeln aus Holz",b:"holz",x:"Unbrauchbare Schaltafeln gehören ins Altholz."},
+  {e:"📦",t:"Kartonschachteln von einer Lieferung",b:"karton",x:"Karton flach falten, trocken halten und separat sammeln."},
+  {e:"🛍️",t:"Saubere Plastikfolie von Paletten",b:"kunststoff",x:"Saubere Folien können separat gesammelt und recycelt werden."},
+  {e:"🌱",t:"Leere Pflanztöpfe aus Kunststoff",b:"wieder",x:"Töpfe können wieder gebraucht oder an die Gärtnerei zurückgegeben werden."},
+  {e:"🌿",t:"Rasenschnitt und Laub",b:"gruen",x:"Grüngut wird kompostiert oder vergärt."},
+  {e:"🌳",t:"Heckenschnitt",b:"gruen",x:"Gehört ins Grüngut (Häckselplatz, Kompostierung)."},
+  {e:"🚫",t:"Japanknöterich (invasiver Neophyt)",b:"kehricht",x:"Invasive Neophyten NIE auf den Kompost! Sie gehören in die Kehrichtverbrennung."},
+  {e:"🗑️",t:"Verschmutzte Plastikbecher und Znüni-Abfall",b:"kehricht",x:"Verschmutzter Mischabfall kommt in den Kehricht (KVA)."},
+  {e:"🛤️",t:"Alte Eisenbahnschwellen (riechen nach Teeröl)",b:"sonder",x:"Mit Teeröl/Kreosot behandelt = Sonderabfall. Nicht zersägen, nicht verbrennen!"},
+  {e:"🏚️",t:"Alte Eternitplatten (vor 1990)",b:"sonder",x:"Können Asbest enthalten = Sonderabfall. Nicht zerbrechen!"},
+  {e:"🛢️",t:"Altöl vom Rasenmäher",b:"sonder",x:"Altöl ist Sonderabfall und darf nie in den Boden oder Abfluss."},
+  {e:"🧪",t:"Reste von Pflanzenschutzmitteln",b:"sonder",x:"Sonderabfall: zurück an die Verkaufsstelle oder an die Sonderabfall-Sammelstelle."},
+  {e:"🔋",t:"Alter Akku vom Laubbläser",b:"sonder",x:"Akkus und Batterien gehören zur Rücknahme bzw. zum Sonderabfall."},
+  {e:"🎨",t:"Farb- und Lackreste",b:"sonder",x:"Farben, Lacke und Lösungsmittel sind Sonderabfall."},
+  {e:"🪨",t:"Alte Natursteine aus dem Garten",b:"wieder",x:"Natursteine kann man wiederverwenden, z. B. für eine Hintermauerung."},
+  {e:"⬜",t:"Ganze, intakte Betonplatten",b:"wieder",x:"Intakte Platten in den Werkhof nehmen und wieder verwenden."},
+  {e:"➖",t:"Unbeschädigte Randsteine",b:"wieder",x:"Wiederverwenden ist besser als Recyceln."}
+];
+
+const SORT_PYR = [
+  {t:"Nur so viel Kies bestellen, wie berechnet",k:"vermeiden"},
+  {t:"Lieferant nimmt Paletten wieder mit",k:"vermeiden"},
+  {t:"Platten genau planen, wenig Verschnitt",k:"vermindern"},
+  {t:"Grosse Gebinde statt viele kleine",k:"vermindern"},
+  {t:"Alte Mauersteine für die Hintermauerung",k:"wiederverwenden"},
+  {t:"Ganze Betonplatten in den Werkhof",k:"wiederverwenden"},
+  {t:"Karton in die Kartonmulde",k:"recyceln"},
+  {t:"Betonbruch wird zu Recyclingkies",k:"recyceln"},
+  {t:"Grünschnitt wird kompostiert",k:"recyceln"},
+  {t:"Verschmutzter Kunststoff in die KVA",k:"energie"},
+  {t:"Neophyten in die Kehrichtverbrennung",k:"energie"},
+  {t:"Nicht verwertbarer Bauschutt",k:"deponie"}
+];
+
+const CASES = [
+  {t:"Die alten Eisenbahnschwellen",tag:"Gruppe 3",
+   s:"Beim Umbau kommen alte Eisenbahnschwellen zum Vorschein. Sie riechen stark nach Chemikalien. Ein Hilfsarbeiter will sie zersägen, damit sie leichter zu transportieren sind.",
+   steps:[
+    {q:"Warum riechen die Schwellen so?",o:["Sie sind mit Teeröl / Kreosot imprägniert","Das Holz ist verfault","Sie wurden frisch gestrichen"],a:0,
+     x:"Alte Eisenbahnschwellen sind meist mit Teeröl (Kreosot) behandelt. Teeröl enthält giftige und krebserregende Stoffe (PAK)."},
+    {q:"Darf man sie zersägen?",o:["Ja, dann sind sie leichter","Nein, dabei entstehen giftiger Staub und Dämpfe","Ja, aber nur draussen"],a:1,
+     x:"Beim Sägen werden Schadstoffe freigesetzt. Darum stoppt der Vorarbeiter die Aktion sofort."},
+    {q:"Wie werden sie richtig entsorgt?",o:["Im Cheminée verbrennen","In die Altholzmulde","Als Sonderabfall über einen bewilligten Entsorger"],a:2,
+     x:"Teeröl-Schwellen sind Sonderabfall. Ganz lassen, getrennt lagern, Vorgesetzte informieren und mit Begleitpapieren über einen bewilligten Entsorger abgeben. Niemals selber verbrennen!"}
+   ]},
+  {t:"Die alten Eternitplatten",tag:"Gruppe 4",
+   s:"Ein altes Vordach hat Eternitplatten mit Rissen. Ein Lernender will sie mit dem Hammer zerkleinern und mit dem Bauschutt mitgeben.",
+   steps:[
+    {q:"Was kann in alten Eternitplatten stecken?",o:["Asbest","Teeröl","Kupfer"],a:0,
+     x:"Faserzementplatten, die vor 1990 hergestellt wurden, können Asbest enthalten. In der Schweiz ist Asbest seit 1990 verboten."},
+    {q:"Warum darf man die Platten nicht zerschlagen?",o:["Weil sie dann schwerer werden","Weil Asbestfasern frei werden und eingeatmet werden können","Weil der Hammer kaputt geht"],a:1,
+     x:"Asbestfasern sind sehr fein. Eingeatmet können sie schwere Lungenkrankheiten und Krebs auslösen, oft erst nach vielen Jahren."},
+    {q:"Was ist der richtige Ablauf?",o:["Arbeit stoppen, abklären lassen, Platten ganz abbauen, verpacken und als Sonderabfall entsorgen","Platten zerkleinern und in die Bauschuttmulde","Platten im Garten vergraben"],a:0,
+     x:"Zuerst abklären (Fachperson / Suva-Vorgaben). Platten nicht brechen, ganz abbauen, staubdicht verpacken, beschriften und an eine bewilligte Annahmestelle bringen."}
+   ]},
+  {t:"Der alte Asphalt",tag:"Gruppe 5",
+   s:"Ein alter Gartenweg aus Asphalt soll weg. Ein Lernender will ihn aufbrechen, mit dem Aushub mischen und auf eine normale Deponie bringen.",
+   steps:[
+    {q:"Welcher Schadstoff kann in altem Asphalt sein?",o:["PAK (aus teerhaltigen Bindemitteln)","Asbest","Dünger"],a:0,
+     x:"Früher wurden teerhaltige Bindemittel verwendet. Diese enthalten PAK (polyzyklische aromatische Kohlenwasserstoffe), die giftig und krebserregend sind."},
+    {q:"Darf man den Asphalt mit dem Aushub mischen?",o:["Ja, so spart man Mulden","Nein, belastetes Material darf nie mit sauberem Material vermischt werden"],a:1,
+     x:"Durch das Vermischen wird sauberes Material verschmutzt. Das ist verboten und macht die Entsorgung viel teurer."},
+    {q:"Was gilt seit dem 1. Januar 2026?",o:["Jeder Asphalt darf wieder eingebaut werden","Asphalt mit mehr als 250 mg PAK/kg darf nicht mehr stofflich verwertet werden","Asphalt ist kein Abfall mehr"],a:1,
+     x:"Darum: Zuerst abklären lassen, wie stark der Asphalt belastet ist. Dann getrennt abführen und fachgerecht entsorgen."}
+   ]}
+];
+
+const QUIZ = [
+  {q:"Welche Stufe steht ganz oben in der Abfallpyramide?",o:["Recyceln","Vermeiden","Deponieren","Verbrennen"],a:1,x:"Vermeiden ist immer die beste Lösung."},
+  {q:"Welche Stufe ist die letzte Lösung?",o:["Wiederverwenden","Vermindern","Deponieren","Recyceln"],a:2,x:"Deponieren nur, wenn gar nichts anderes möglich ist."},
+  {q:"Was ist besser: Betonplatten wiederverwenden oder recyceln?",o:["Recyceln","Wiederverwenden","Beides gleich"],a:1,x:"Wiederverwenden steht in der Pyramide höher als Recyceln."},
+  {q:"Wohin gehören invasive Neophyten?",o:["Auf den Kompost","Ins Grüngut","In die Kehrichtverbrennung"],a:2,x:"Auf dem Kompost können sie sich weiter verbreiten."},
+  {q:"Warum ist sauberes Trennen wichtig?",o:["Damit die Mulde voller wird","Damit Material recycelt werden kann und die Entsorgung günstiger ist","Das ist egal"],a:1,x:"Gemischte Mulden sind teuer und werden von der Entsorgungsfirma beanstandet."},
+  {q:"Ein neuer Mitarbeiter wirft Beton, Grünschnitt und Eisen in die gleiche Mulde. Was passiert?",o:["Nichts","Die Entsorgungsfirma beanstandet die Mulde, es wird teurer","Die Mulde wird gratis geleert"],a:1,x:"Mischabfall kostet viel mehr als sortenreine Mulden."},
+  {q:"Was passiert mit Betonbruch in der Recyclinganlage?",o:["Er wird verbrannt","Er wird zu Recyclingkies gebrochen","Er wird ins Meer geworfen"],a:1,x:"Recyclingkies kann z. B. als Fundationsmaterial wieder eingebaut werden."},
+  {q:"Was macht die KVA aus dem Kehricht?",o:["Kompost","Strom und Fernwärme","Neues Plastik"],a:1,x:"Die Wärme aus der Verbrennung wird genutzt (energetische Verwertung)."},
+  {q:"Welches ist KEIN Sonderabfall?",o:["Altöl","Pflanzenschutzmittel-Reste","Sauberer Karton","Teeröl-Eisenbahnschwellen"],a:2,x:"Karton ist ein Wertstoff und wird recycelt."},
+  {q:"Du findest alte Eternitplatten. Was machst du zuerst?",o:["Zerschlagen","Arbeit stoppen und Vorgesetzte informieren","In die Bauschuttmulde werfen"],a:1,x:"Bei Verdacht auf Asbest: Stopp! Erst abklären lassen."},
+  {q:"Teeröl-Eisenbahnschwellen darf man …",o:["im Cheminée verbrennen","als Gartenbeet-Einfassung wieder einbauen","nur als Sonderabfall entsorgen"],a:2,x:"Sie enthalten giftige Stoffe und sind Sonderabfall."},
+  {q:"Was gehört zur Stufe «Vermeiden»?",o:["Karton in die Mulde","Nur so viel Material bestellen, wie man braucht","Abfall verbrennen"],a:1,x:"So entsteht gar kein Abfall."},
+  {q:"Wie lagert man Sonderabfälle im Betrieb?",o:["Offen neben der Grüngutmulde","Getrennt, angeschrieben, dicht verschlossen und geschützt","Im Pausenraum"],a:1,x:"Sonderabfälle nie mischen, immer kennzeichnen und sicher lagern."},
+  {q:"Was heisst PAK?",o:["Plastik-Abfall-Kübel","Polyzyklische aromatische Kohlenwasserstoffe","Papier und Karton"],a:1,x:"PAK sind giftige Stoffe, z. B. in altem Teer-Asphalt und Teeröl."},
+  {q:"Was kannst du mit sauberem Humus von der Baustelle machen?",o:["Wieder einbauen","In den Kehricht","Ins Altholz"],a:0,x:"Sauberer Boden ist wertvoll und wird wiederverwendet."},
+  {q:"Mehrere Mulden im Werkhof (Karton, Metall, Holz, Bauschutt …) bringen …",o:["nur mehr Arbeit","weniger Kosten und mehr Recycling","nichts"],a:1,x:"Gut getrennt = günstiger entsorgen und Rohstoffe sparen."}
+];
+
+/* ---------- Zustand ---------- */
+const KEY="abfalltrennung-eba-v1";
+let S={pts:0,done:{}};
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function addPts(n){S.pts+=n;save();badge();}
+function badge(){document.getElementById("ptsBadge").textContent="⭐ "+S.pts;}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const $app=document.getElementById("app");
+function h(html){$app.innerHTML=html;window.scrollTo(0,0);}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/* ---------- Start ---------- */
+const MODES=[
+  {k:"lernen",ic:"🔺",t:"Abfallpyramide",s:"Lerne die 6 Stufen",fn:()=>learn()},
+  {k:"ordnen",ic:"🪜",t:"Pyramide ordnen",s:"Bring die Stufen in die richtige Reihenfolge",fn:()=>order()},
+  {k:"sortieren",ic:"🚛",t:"Welche Mulde?",s:"Sortiere 10 Materialien",fn:()=>sortGame()},
+  {k:"stufe",ic:"🎯",t:"Welche Stufe?",s:"Ordne Beispiele der Pyramide zu",fn:()=>stufeGame()},
+  {k:"sonder",ic:"☣️",t:"Sonderabfall-Fälle",s:"Eisenbahnschwellen, Eternit, Asphalt",fn:()=>caseMenu()},
+  {k:"quiz",ic:"🏆",t:"Schlussquiz",s:"10 Zufallsfragen",fn:()=>quiz()}
+];
+function home(){
+  badge();
+  h(`<h1>♻️ Abfall trennen</h1>
+  <p class="sub">Vermindern, trennen, wiederverwerten und Sonderabfälle (L66–L68). Gärtner/in EBA, 2. Lehrjahr.</p>
+  <div class="tiles">${MODES.map((m,i)=>`<button class="tile" data-i="${i}"><span class="ic">${m.ic}</span><b>${m.t}</b><small>${m.s}</small>${S.done[m.k]?`<span class="done">✔ ${S.done[m.k]}</span>`:""}</button>`).join("")}</div>
+  <div class="card" style="margin-top:14px"><b>Tipp:</b> Starte mit der Abfallpyramide und mach am Schluss das Quiz. Für jede richtige Antwort gibt es Sterne ⭐.</div>
+  <button class="btn secondary small" id="reset">Fortschritt zurücksetzen</button>`);
+  $app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>MODES[+b.dataset.i].fn());
+  document.getElementById("reset").onclick=()=>{if(confirmReset()){S={pts:0,done:{}};save();home();}};
+}
+let resetArmed=false;
+function confirmReset(){ // ohne Browser-Dialog: zweimal tippen
+  const b=document.getElementById("reset");
+  if(!resetArmed){resetArmed=true;b.textContent="Nochmals tippen zum Bestätigen";setTimeout(()=>{resetArmed=false;if(b.isConnected)b.textContent="Fortschritt zurücksetzen";},3000);return false;}
+  resetArmed=false;return true;
+}
+function header(t){return `<h1>${t}</h1>`;}
+function backBtn(){return `<button class="btn secondary" onclick="home()">Zurück zur Übersicht</button>`;}
+
+/* ---------- Lernen ---------- */
+function learn(sel){
+  const widths=[38,50,62,74,86,98];
+  h(header("🔺 Die Abfallpyramide")+`<p class="sub">Von der besten (oben) zur schlechtesten Lösung (unten). Tippe auf eine Stufe.</p>
+  <div class="card"><div class="pyr">${LEVELS.map((l,i)=>`<button class="lvl ${sel===i?"sel":""}" data-i="${i}" style="width:${widths[i]}%;background:${l.c}">${i+1}. ${l.t}<small>${l.s}</small></button>`).join("")}</div>
+  ${sel!=null?`<div class="info" style="border-color:${LEVELS[sel].c}"><b>${sel+1}. ${LEVELS[sel].t}</b><br>${LEVELS[sel].txt}<ul>${LEVELS[sel].ex.map(e=>`<li>${e}</li>`).join("")}</ul></div>`:`<div class="info">Merke: <b>Zuerst vermeiden, dann vermindern, wiederverwenden, recyceln.</b> Erst wenn das nicht geht: verbrennen oder deponieren.</div>`}
+  </div>
+  <button class="btn primary" onclick="order()">Weiter: Pyramide ordnen →</button>${backBtn()}`);
+  $app.querySelectorAll(".lvl").forEach(b=>b.onclick=()=>{learn(+b.dataset.i);
+    if(!S.seen)S.seen={};S.seen[b.dataset.i]=1;if(Object.keys(S.seen).length===6&&!S.done.lernen){S.done.lernen="alle Stufen angeschaut";addPts(5);}save();});
+}
+
+/* ---------- Ordnen ---------- */
+function order(){
+  let placed=[]; const pool=shuffle(LEVELS.map((l,i)=>i));
+  function draw(){
+    const rest=pool.filter(i=>!placed.includes(i));
+    h(header("🪜 Pyramide ordnen")+`<p class="sub">Tippe die Stufen in der richtigen Reihenfolge an: zuerst die <b>beste</b> Lösung.</p>
+    <div class="card">${LEVELS.map((_,n)=>`<div class="slot" id="s${n}"><span class="n">${n+1}</span>${placed[n]!=null?LEVELS[placed[n]].t:""}</div>`).join("")}
+    <div class="chips">${rest.map(i=>`<button class="chip" data-i="${i}">${LEVELS[i].t}</button>`).join("")}</div>
+    ${placed.length?`<button class="btn secondary" id="undo">↩ Letzte zurücknehmen</button>`:""}
+    <div id="res"></div></div>${backBtn()}`);
+    $app.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{placed.push(+c.dataset.i);draw();if(placed.length===6)check();});
+    const u=document.getElementById("undo"); if(u&&placed.length<6)u.onclick=()=>{placed.pop();draw();}; else if(u) u.remove();
+  }
+  function check(){
+    let ok=0; placed.forEach((v,n)=>{const el=document.getElementById("s"+n);if(v===n){ok++;el.classList.add("ok");}else{el.classList.add("no");el.innerHTML+=` <span class="small">→ richtig: ${LEVELS[n].t}</span>`;}});
+    addPts(ok);
+    if(ok===6) S.done.ordnen="perfekt"; else if(!S.done.ordnen) S.done.ordnen=ok+"/6"; save();
+    document.getElementById("res").innerHTML=`<div class="fb ${ok===6?"ok":"no"}"><b>${ok===6?"Super, alles richtig! 🎉":ok+" von 6 richtig"}</b>${ok===6?"Du kennst die Abfallpyramide.":"Schau die Pyramide nochmals an und probiere es erneut."}</div>
+    <button class="btn primary" id="again">Nochmals</button><button class="btn secondary" onclick="sortGame()">Weiter: Welche Mulde? →</button>`;
+    document.getElementById("again").onclick=order;
+  }
+  draw();
+}
+
+/* ---------- Sortieren ---------- */
+function sortGame(){
+  const set=shuffle(ITEMS).slice(0,10); let i=0, ok=0;
+  function draw(){
+    const it=set[i];
+    h(header("🚛 Welche Mulde?")+`<div class="meta"><span>Material ${i+1} von ${set.length}</span><span>✔ ${ok}</span></div>
+    <div class="bar"><div style="width:${i/set.length*100}%"></div></div>
+    <div class="card"><div class="item"><span class="e">${it.e}</span>${esc(it.t)}</div>
+    <div class="bins">${BINS.map(b=>`<button class="bin" data-k="${b.k}"><span>${b.e}</span>${b.t}</button>`).join("")}</div><div id="fb"></div></div>${backBtn()}`);
+    $app.querySelectorAll(".bin").forEach(btn=>btn.onclick=()=>{
+      const right=btn.dataset.k===it.b;
+      $app.querySelectorAll(".bin").forEach(x=>{x.disabled=true;if(x.dataset.k===it.b)x.classList.add("ok");});
+      if(!right)btn.classList.add("no"); else {ok++;addPts(1);}
+      const bin=BINS.find(b=>b.k===it.b);
+      document.getElementById("fb").innerHTML=`<div class="fb ${right?"ok":"no"}"><b>${right?"Richtig!":"Falsch – richtig ist: "+bin.e+" "+bin.t}</b>${it.x}</div>
+      <button class="btn primary" id="next">${i<set.length-1?"Weiter →":"Auswertung"}</button>`;
+      document.getElementById("next").onclick=()=>{i++; i<set.length?draw():end();};
+      document.getElementById("next").scrollIntoView({behavior:"smooth",block:"center"});
+    });
+  }
+  function end(){
+    S.done.sortieren=Math.max(ok,parseInt(S.done.sortieren)||0)+"/10";save();
+    h(header("🚛 Welche Mulde?")+`<div class="card"><div class="big">${ok} / ${set.length}</div><p style="text-align:center">${ok>=9?"Top! Du trennst wie ein Profi. 💪":ok>=6?"Gut! Noch ein paar Fehler.":"Übe nochmals, das lohnt sich!"}</p></div>
+    <button class="btn primary" onclick="sortGame()">Neue Runde</button><button class="btn secondary" onclick="stufeGame()">Weiter: Welche Stufe? →</button>${backBtn()}`);
+  }
+  draw();
+}
+
+/* ---------- Welche Stufe ---------- */
+function stufeGame(){
+  const set=shuffle(SORT_PYR).slice(0,8); let i=0, ok=0;
+  function draw(){
+    const it=set[i];
+    h(header("🎯 Welche Stufe?")+`<div class="meta"><span>Beispiel ${i+1} von ${set.length}</span><span>✔ ${ok}</span></div>
+    <div class="bar"><div style="width:${i/set.length*100}%"></div></div>
+    <div class="card"><div class="item" style="font-size:1.15rem">${esc(it.t)}</div>
+    ${LEVELS.map(l=>`<button class="btn" data-k="${l.k}" style="border-left:8px solid ${l.c}">${l.t}</button>`).join("")}<div id="fb"></div></div>${backBtn()}`);
+    $app.querySelectorAll(".btn[data-k]").forEach(btn=>btn.onclick=()=>{
+      const right=btn.dataset.k===it.k;
+      $app.querySelectorAll(".btn[data-k]").forEach(x=>{x.disabled=true;if(x.dataset.k===it.k)x.classList.add("ok");});
+      if(!right)btn.classList.add("no"); else {ok++;addPts(1);}
+      const l=LEVELS.find(x=>x.k===it.k);
+      document.getElementById("fb").innerHTML=`<div class="fb ${right?"ok":"no"}"><b>${right?"Richtig!":"Richtig ist: "+l.t}</b>${l.txt}</div>
+      <button class="btn primary" id="next">${i<set.length-1?"Weiter →":"Auswertung"}</button>`;
+      document.getElementById("next").onclick=()=>{i++; i<set.length?draw():end();};
+      document.getElementById("next").scrollIntoView({behavior:"smooth",block:"center"});
+    });
+  }
+  function end(){
+    S.done.stufe=Math.max(ok,parseInt(S.done.stufe)||0)+"/8";save();
+    h(header("🎯 Welche Stufe?")+`<div class="card"><div class="big">${ok} / ${set.length}</div><p style="text-align:center">${ok>=7?"Sehr gut! 🎉":"Weiter üben!"}</p></div>
+    <button class="btn primary" onclick="stufeGame()">Neue Runde</button><button class="btn secondary" onclick="caseMenu()">Weiter: Sonderabfall-Fälle →</button>${backBtn()}`);
+  }
+  draw();
+}
+
+/* ---------- Sonderabfall-Fälle ---------- */
+function caseMenu(){
+  const d=S.cases||{};
+  h(header("☣️ Sonderabfall-Fälle")+`<p class="sub">Drei Fälle aus der Gruppenarbeit. Was ist richtig?</p>
+  ${CASES.map((c,i)=>`<button class="btn" data-i="${i}"><span class="tag warn">${c.tag}</span><b>${c.t}</b>${d[i]!=null?` <span class="small">✔ ${d[i]}/3</span>`:""}</button>`).join("")}
+  <div class="card" style="margin-top:12px"><b>Merke bei Sonderabfällen:</b><ul style="margin:.4rem 0 0;padding-left:1.2rem">
+  <li>Arbeit stoppen und Vorgesetzte informieren</li><li>Nicht zerkleinern, nicht verbrennen, nicht mischen</li>
+  <li>Getrennt, angeschrieben und sicher lagern</li><li>Schutzausrüstung tragen</li><li>Nur über bewilligte Entsorger / Sammelstellen abgeben</li></ul></div>${backBtn()}`);
+  $app.querySelectorAll(".btn[data-i]").forEach(b=>b.onclick=()=>runCase(+b.dataset.i));
+}
+function runCase(ci){
+  const c=CASES[ci]; let i=0, ok=0;
+  function draw(){
+    const st=c.steps[i]; const order=shuffle(st.o.map((_,k)=>k));
+    h(header("☣️ "+c.t)+`<div class="meta"><span>Frage ${i+1} von ${c.steps.length}</span><span>${c.tag}</span></div>
+    <div class="bar"><div style="width:${i/c.steps.length*100}%"></div></div>
+    <div class="card"><div class="case">${c.s}</div><div class="q">${st.q}</div>
+    ${order.map(k=>`<button class="btn" data-k="${k}">${st.o[k]}</button>`).join("")}<div id="fb"></div></div>
+    <button class="btn secondary" onclick="caseMenu()">Zurück zu den Fällen</button>`);
+    $app.querySelectorAll(".btn[data-k]").forEach(btn=>btn.onclick=()=>{
+      const right=+btn.dataset.k===st.a;
+      $app.querySelectorAll(".btn[data-k]").forEach(x=>{x.disabled=true;if(+x.dataset.k===st.a)x.classList.add("ok");});
+      if(!right)btn.classList.add("no"); else {ok++;addPts(2);}
+      document.getElementById("fb").innerHTML=`<div class="fb ${right?"ok":"no"}"><b>${right?"Richtig!":"Leider falsch."}</b>${st.x}</div>
+      <button class="btn primary" id="next">${i<c.steps.length-1?"Weiter →":"Fall abschliessen"}</button>`;
+      document.getElementById("next").onclick=()=>{i++; i<c.steps.length?draw():end();};
+      document.getElementById("next").scrollIntoView({behavior:"smooth",block:"center"});
+    });
+  }
+  function end(){
+    S.cases=S.cases||{}; S.cases[ci]=Math.max(ok,S.cases[ci]||0);
+    const n=Object.keys(S.cases).length; S.done.sonder=n+"/3 Fälle"; save();
+    caseMenu();
+  }
+  draw();
+}
+
+/* ---------- Quiz ---------- */
+function quiz(){
+  const set=shuffle(QUIZ).slice(0,10); let i=0, ok=0; const wrong=[];
+  function draw(){
+    const st=set[i]; const order=shuffle(st.o.map((_,k)=>k));
+    h(header("🏆 Schlussquiz")+`<div class="meta"><span>Frage ${i+1} von ${set.length}</span><span>✔ ${ok}</span></div>
+    <div class="bar"><div style="width:${i/set.length*100}%"></div></div>
+    <div class="card"><div class="q">${st.q}</div>${order.map(k=>`<button class="btn" data-k="${k}">${st.o[k]}</button>`).join("")}<div id="fb"></div></div>${backBtn()}`);
+    $app.querySelectorAll(".btn[data-k]").forEach(btn=>btn.onclick=()=>{
+      const right=+btn.dataset.k===st.a;
+      $app.querySelectorAll(".btn[data-k]").forEach(x=>{x.disabled=true;if(+x.dataset.k===st.a)x.classList.add("ok");});
+      if(!right){btn.classList.add("no");wrong.push(st);} else {ok++;addPts(2);}
+      document.getElementById("fb").innerHTML=`<div class="fb ${right?"ok":"no"}"><b>${right?"Richtig!":"Richtig ist: "+st.o[st.a]}</b>${st.x}</div>
+      <button class="btn primary" id="next">${i<set.length-1?"Weiter →":"Auswertung"}</button>`;
+      document.getElementById("next").onclick=()=>{i++; i<set.length?draw():end();};
+      document.getElementById("next").scrollIntoView({behavior:"smooth",block:"center"});
+    });
+  }
+  function end(){
+    S.done.quiz=Math.max(ok,parseInt(S.done.quiz)||0)+"/10"; save();
+    h(header("🏆 Schlussquiz")+`<div class="card"><div class="big">${ok} / ${set.length}</div>
+    <p style="text-align:center">${ok>=9?"Ausgezeichnet! Du bist Abfall-Profi. 🏅":ok>=7?"Gut gemacht! 👍":ok>=5?"Genügend – schau die Fehler an.":"Nochmals üben, du schaffst das!"}</p>
+    <p class="small" style="text-align:center">Gesamt-Sterne: ⭐ ${S.pts}</p></div>
+    ${wrong.length?`<div class="card"><h2>Das solltest du nochmals anschauen</h2>${wrong.map(w=>`<div class="row" style="display:block"><b>${w.q}</b><br><span style="color:var(--green)">✔ ${w.o[w.a]}</span></div>`).join("")}</div>`:""}
+    <button class="btn primary" onclick="quiz()">Neues Quiz</button>${backBtn()}`);
+  }
+  draw();
+}
+
+home();
+</script>
+</body>
+</html>
