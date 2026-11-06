@@ -110,13 +110,21 @@
   .opts button{font:inherit;font-weight:600;padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-height:46px}
   .opts button.on{background:var(--green);color:#fff;border-color:var(--green)}
   .medal{font-size:1.2rem;width:32px;display:inline-block}
+
+  /* Hintergrund-Collage Baumaschinen */
+  html{background:#eef3ee}
+  body{min-height:100vh;background:url(bg.svg) center center / cover no-repeat fixed}
+  @media (max-width:700px){body{background-size:auto 100vh;background-position:22% bottom}}
+  .head{background:rgba(255,255,255,.82);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border-radius:16px;padding:10px 16px 12px;margin:8px 0 4px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .head h1{margin:.2rem 0 .2rem}.head .sub{margin:0}
+  .top a.back{background:rgba(255,255,255,.85);padding:4px 10px;border-radius:20px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top"><a class="back" href="../">← Alle Apps</a><div class="who" id="who"></div></div>
-  <h1>🚜 Maschinen-Fotoquiz</h1>
-  <p class="sub">Fotos von Maschinen und Werkzeugen aus deinem Lehrbetrieb hochladen, richtig benennen – und dann das Klassenquiz spielen. Bis zu 20 Fotos pro Person, weniger ist auch ok. (L57)</p>
+  <div class="head"><h1>🚜 Maschinen-Fotoquiz</h1>
+  <p class="sub">Fotos von Maschinen und Werkzeugen aus deinem Lehrbetrieb hochladen, richtig benennen – und dann das Klassenquiz spielen. Bis zu 20 Fotos pro Person, weniger ist auch ok. (L57)</p></div>
   <div class="nav" id="nav">
     <button data-v="fotos" class="on">📷 Meine Fotos</button>
     <button data-v="quiz">🎮 Quiz</button>

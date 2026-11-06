@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6f1ea"/><stop offset="1" stop-color="#f3efe2"/>
+    </linearGradient>
+    <linearGradient id="yel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffcf3a"/><stop offset="1" stop-color="#f0a818"/>
+    </linearGradient>
+    <linearGradient id="ora" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff9a3c"/><stop offset="1" stop-color="#e5731b"/>
+    </linearGradient>
+    <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.6" fill="#2f7a4a" opacity=".10"/>
+    </pattern>
+
+    <!-- Raupenbagger -->
+    <symbol id="bagger" viewBox="0 0 300 200">
+      <rect x="20" y="150" width="170" height="36" rx="18" fill="#2e3532"/>
+      <g fill="#59605c"><circle cx="40" cy="168" r="11"/><circle cx="72" cy="168" r="8"/><circle cx="105" cy="168" r="8"/><circle cx="138" cy="168" r="8"/><circle cx="170" cy="168" r="11"/></g>
+      <rect x="40" y="136" width="130" height="16" rx="4" fill="#3b4340"/>
+      <path d="M30 136 L30 100 Q30 92 38 92 L150 92 L176 118 L176 136 Z" fill="url(#yel)" stroke="#b97b06" stroke-width="2"/>
+      <path d="M44 92 L44 50 Q44 44 50 44 L96 44 Q104 44 106 52 L114 92 Z" fill="url(#yel)" stroke="#b97b06" stroke-width="2"/>
+      <path d="M52 52 L96 52 L104 86 L52 86 Z" fill="#bfe3f2" stroke="#2e3532" stroke-width="2"/>
+      <rect x="20" y="102" width="14" height="30" rx="3" fill="#2e3532"/>
+      <path d="M150 112 L226 34 L240 46 L170 124 Z" fill="url(#yel)" stroke="#b97b06" stroke-width="2"/>
+      <path d="M226 34 L262 112 L248 118 L216 48 Z" fill="url(#yel)" stroke="#b97b06" stroke-width="2"/>
+      <line x1="170" y1="104" x2="222" y2="56" stroke="#9aa19d" stroke-width="5" stroke-linecap="round"/>
+      <path d="M244 112 L278 118 L270 150 Q252 156 238 140 Z" fill="#3b4340"/>
+      <path d="M270 150 l6 5 M262 153 l4 6 M254 152 l2 7" stroke="#3b4340" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="226" cy="40" r="6" fill="#2e3532"/><circle cx="160" cy="118" r="6" fill="#2e3532"/>
+    </symbol>
+
+    <!-- Raupendumper -->
+    <symbol id="dumper" viewBox="0 0 240 170">
+      <rect x="14" y="124" width="170" height="34" rx="17" fill="#2e3532"/>
+      <g fill="#59605c"><circle cx="32" cy="141" r="10"/><circle cx="66" cy="141" r="7"/><circle cx="100" cy="141" r="7"/><circle cx="134" cy="141" r="7"/><circle cx="166" cy="141" r="10"/></g>
+      <rect x="24" y="110" width="160" height="16" rx="4" fill="url(#ora)" stroke="#a9520e" stroke-width="2"/>
+      <path d="M70 110 L60 46 L196 46 L214 78 L176 110 Z" fill="url(#ora)" stroke="#a9520e" stroke-width="2"/>
+      <path d="M70 46 Q120 28 190 46" fill="#8a6a45"/>
+      <path d="M78 58 L190 58 M82 74 L198 74 M86 90 L190 90" stroke="#a9520e" stroke-width="2" opacity=".6"/>
+      <rect x="22" y="70" width="34" height="40" rx="4" fill="#3b4340"/>
+      <path d="M30 70 L30 38 M30 38 L52 38" stroke="#2e3532" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <circle cx="58" cy="38" r="5" fill="#2e3532"/>
+    </symbol>
+
+    <!-- Radlader -->
+    <symbol id="lader" viewBox="0 0 300 200">
+      <circle cx="70" cy="158" r="34" fill="#2e3532"/><circle cx="70" cy="158" r="15" fill="#9aa19d"/>
+      <circle cx="200" cy="158" r="34" fill="#2e3532"/><circle cx="200" cy="158" r="15" fill="#9aa19d"/>
+      <path d="M30 140 L30 104 Q30 96 38 96 L232 96 L240 140 Z" fill="url(#yel)" stroke="#b97b06" stroke-width="2"/>
+      <path d="M120 96 L124 40 Q125 34 131 34 L188 34 Q194 34 195 40 L200 96 Z" fill="url(#yel)" stroke="#b97b06" stroke-width="2"/>
+      <path d="M132 42 L186 42 L190 88 L130 88 Z" fill="#bfe3f2" stroke="#2e3532" stroke-width="2"/>
+      <rect x="40" y="70" width="12" height="28" rx="3" fill="#2e3532"/>
+      <path d="M226 100 L270 120 L264 134 L222 116 Z" fill="url(#yel)" stroke="#b97b06" stroke-width="2"/>
+      <path d="M258 96 L298 104 L292 158 L250 158 Q244 128 258 96 Z" fill="#3b4340"/>
+    </symbol>
+
+    <!-- Walze -->
+    <symbol id="walze" viewBox="0 0 260 170">
+      <rect x="150" y="96" width="92" height="64" rx="32" fill="#59605c" stroke="#2e3532" stroke-width="3"/>
+      <path d="M158 128 L236 128" stroke="#2e3532" stroke-width="2" opacity=".5"/>
+      <circle cx="56" cy="134" r="28" fill="#2e3532"/><circle cx="56" cy="134" r="11" fill="#9aa19d"/>
+      <path d="M24 112 L24 84 Q24 76 32 76 L160 76 L184 104 L184 116 L24 116 Z" fill="url(#ora)" stroke="#a9520e" stroke-width="2"/>
+      <path d="M60 76 L66 28 L132 28 L138 76 Z" fill="none" stroke="#2e3532" stroke-width="5" stroke-linejoin="round"/>
+      <rect x="58" y="22" width="84" height="10" rx="3" fill="url(#ora)"/>
+      <rect x="84" y="56" width="26" height="20" rx="4" fill="#3b4340"/>
+    </symbol>
+
+    <!-- Rüttelplatte -->
+    <symbol id="platte" viewBox="0 0 160 160">
+      <path d="M14 136 L140 136 L148 150 L10 150 Z" fill="#3b4340"/>
+      <rect x="28" y="96" width="96" height="40" rx="8" fill="url(#yel)" stroke="#b97b06" stroke-width="2"/>
+      <rect x="44" y="104" width="40" height="22" rx="4" fill="#2e3532"/>
+      <path d="M104 98 L132 20 M132 20 L150 22" stroke="#2e3532" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <rect x="140" y="12" width="16" height="16" rx="4" fill="#2e3532"/>
+    </symbol>
+
+    <!-- Schubkarre -->
+    <symbol id="karre" viewBox="0 0 180 120">
+      <path d="M40 30 L150 30 L130 74 L58 74 Z" fill="#2f7a4a" stroke="#1d5230" stroke-width="2"/>
+      <circle cx="140" cy="94" r="18" fill="#2e3532"/><circle cx="140" cy="94" r="6" fill="#9aa19d"/>
+      <path d="M8 46 L60 60 L130 74 L140 94 M60 74 L54 108" stroke="#2e3532" stroke-width="5" stroke-linecap="round" fill="none"/>
+    </symbol>
+
+    <!-- Schaufel + Spitzhacke -->
+    <symbol id="werkzeug" viewBox="0 0 140 160">
+      <g transform="rotate(-20 70 80)">
+        <rect x="64" y="10" width="8" height="100" rx="3" fill="#9b6b3d"/>
+        <path d="M50 106 L86 106 L82 146 Q68 156 54 146 Z" fill="#59605c" stroke="#2e3532" stroke-width="2"/>
+        <rect x="58" y="4" width="20" height="10" rx="4" fill="#2e3532"/>
+      </g>
+      <g transform="rotate(28 70 80)">
+        <rect x="66" y="30" width="7" height="120" rx="3" fill="#9b6b3d"/>
+        <path d="M24 34 Q70 14 116 34 L114 40 Q70 26 26 40 Z" fill="#59605c" stroke="#2e3532" stroke-width="2"/>
+      </g>
+    </symbol>
+
+    <!-- Verkehrskegel -->
+    <symbol id="kegel" viewBox="0 0 80 100">
+      <path d="M30 10 L50 10 L66 86 L14 86 Z" fill="url(#ora)"/>
+      <path d="M26 34 L54 34 L58 50 L22 50 Z M19 64 L61 64 L64 76 L16 76 Z" fill="#fff"/>
+      <rect x="6" y="86" width="68" height="10" rx="3" fill="#2e3532"/>
+    </symbol>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#sky)"/>
+  <rect width="1200" height="900" fill="url(#dots)"/>
+
+  <!-- Erdhügel -->
+  <path d="M0 760 Q200 690 420 740 T860 730 T1200 720 L1200 900 L0 900 Z" fill="#c9b48e" opacity=".55"/>
+  <path d="M0 820 Q260 770 560 812 T1200 800 L1200 900 L0 900 Z" fill="#a78a5c" opacity=".45"/>
+  <path d="M870 740 Q960 640 1060 740 Z" fill="#8f7146" opacity=".5"/>
+
+  <!-- Collage -->
+  <g opacity=".92">
+    <use href="#bagger" x="20" y="40" width="330" height="220" transform="rotate(-6 185 150)"/>
+    <use href="#dumper" x="860" y="60" width="280" height="200" transform="rotate(5 1000 160)"/>
+    <use href="#lader" x="760" y="560" width="380" height="250"/>
+    <use href="#walze" x="40" y="590" width="320" height="210"/>
+    <use href="#platte" x="420" y="640" width="150" height="150" transform="rotate(-4 495 715)"/>
+    <use href="#bagger" x="430" y="300" width="230" height="155" transform="scale(-1 1) translate(-1090 0) rotate(4 545 377)" opacity=".55"/>
+    <use href="#karre" x="1000" y="360" width="170" height="115" transform="rotate(-8 1085 417)"/>
+    <use href="#werkzeug" x="40" y="330" width="130" height="150" opacity=".8"/>
+    <use href="#kegel" x="610" y="720" width="60" height="76"/>
+    <use href="#kegel" x="680" y="738" width="48" height="60"/>
+    <use href="#dumper" x="600" y="40" width="190" height="135" transform="scale(-1 1) translate(-1390 0)" opacity=".5"/>
+    <use href="#platte" x="260" y="420" width="110" height="110" opacity=".5"/>
+    <use href="#lader" x="830" y="300" width="160" height="106" opacity=".45"/>
+  </g>
+</svg>
