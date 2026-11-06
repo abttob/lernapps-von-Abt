@@ -148,13 +148,14 @@ async function renderFotos(msg){
   v.innerHTML=`${msg||""}
   <div class="card">
     <h2>Fotos hochladen <span class="count">${mine.length}/${MAX}</span></h2>
-    <p class="small" style="margin:0 0 6px">Gib die <b>genaue Fachbezeichnung</b> ein, wie du sie bei einer Bestellung angeben würdest (z. B. «Raupendumper», «Minibagger 1,8 t», «Hartmetall-Setzer»). Keine Personen und keine Autonummern fotografieren.</p>
+    <p class="small" style="margin:0 0 6px">Gib die <b>genaue Fachbezeichnung</b> ein, wie du sie bei einer Bestellung angeben würdest (z. B. «Raupendumper», «Hartmetall-Setzer»). Bei Baumaschinen das <b>Gewicht in Tonnen</b> dazuschreiben (z. B. «Minibagger 1,8 t»). Keine Personen und keine Autonummern fotografieren.</p>
     ${left>0?`<label class="upl">📷 Foto aufnehmen oder auswählen<input type="file" id="file" accept="image/*" multiple></label>`:'<div class="msg ok">Du hast alle 20 Fotos hochgeladen. Super! Lösche ein Foto, wenn du ein anderes hochladen willst.</div>'}
     <div id="pend"></div>
   </div>
   <div class="card">
     <h2>${isT()?"Alle Fotos der Klasse ("+all.length+")":"Meine Fotos"}</h2>
     ${isT()?'<p class="small" style="margin:0 0 8px">Als Lehrperson kannst du Bezeichnungen korrigieren und unpassende Fotos löschen.</p>':''}
+    ${mine.length?'<button class="btn inline" id="delmine">🗑️ Alle meine Fotos löschen ('+mine.length+')</button>':''}${isT()&&all.length?'<button class="btn inline" id="delall">🗑️ Alle Fotos der Klasse löschen ('+all.length+')</button>':''}
     ${shown.length?'<div class="grid">'+shown.map(r=>`<div class="ph"><img src="${esc(r.data.url)}" alt="" loading="lazy"><div class="t">${esc(r.data.caption)}</div>${isT()?'<div class="o">von '+esc(r.owner_name)+'</div>':''}<div class="acts"><button data-e="${r.id}">✏️ Ändern</button><button data-d="${r.id}">🗑️ Löschen</button></div></div>`).join("")+'</div>':'<p class="small">Noch keine Fotos.</p>'}
   </div>`;
   const f=$("file");
@@ -164,6 +165,10 @@ async function renderFotos(msg){
   drawPending();
   v.querySelectorAll("[data-d]").forEach(b=>b.onclick=async()=>{if(!confirm("Foto wirklich löschen?"))return;b.disabled=true;
     try{await LA.remove(b.dataset.d);renderFotos('<div class="msg ok">Foto gelöscht.</div>')}catch(e){alert(e.message);b.disabled=false}});
+  const bulk=async(list,txt)=>{if(!confirm(txt))return;let n=0;v.querySelectorAll("button").forEach(x=>x.disabled=true);
+    try{for(const r of list){await LA.remove(r.id);n++}renderFotos('<div class="msg ok">'+n+' Foto(s) gelöscht.</div>')}catch(e){renderFotos('<div class="msg err">'+n+' gelöscht, dann Fehler: '+esc(e.message)+'</div>')}};
+  if($("delmine"))$("delmine").onclick=()=>bulk(mine,"Wirklich alle deine "+mine.length+" Fotos löschen?");
+  if($("delall"))$("delall").onclick=()=>{if(confirm("ACHTUNG: Alle "+all.length+" Fotos der ganzen Klasse löschen?"))bulk(all,"Ganz sicher? Das kann nicht rückgängig gemacht werden.")};
   v.querySelectorAll("[data-e]").forEach(b=>b.onclick=async()=>{const r=all.find(x=>x.id===b.dataset.e);
     const n=prompt("Genaue Bezeichnung:",r.data.caption);if(n==null||!n.trim())return;
     try{await LA.update(r.id,Object.assign({},r.data,{caption:n.trim()}));renderFotos('<div class="msg ok">Bezeichnung geändert.</div>')}catch(e){alert(e.message)}});
@@ -191,48 +196,92 @@ async function upload(){
 
 /* ---------- Quiz ---------- */
 let Q=null;
+/* Vergleich der eingetippten Bezeichnung: Gross/Klein, Umlaute, Bindestriche und kleine Tippfehler egal, Zahlen (Tonnen) müssen stimmen */
+const deU=s=>String(s||"").toLowerCase().replace(/ß/g,"ss").replace(/ä/g,"a").replace(/ö/g,"o").replace(/ü/g,"u").replace(/ae/g,"a").replace(/oe/g,"o").replace(/ue/g,"u");
+const nums=s=>(String(s||"").match(/\d+(?:[.,]\d+)?/g)||[]).map(x=>String(parseFloat(x.replace(",","."))));
+const letters=s=>deU(s).replace(/\d+(?:[.,]\d+)?/g," ").replace(/\b(t|to|tonnen|tonne|kg)\b/g," ").replace(/[^a-z]/g,"");
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=[...Array(n+1).keys()];for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+function check(input,right){
+  const li=letters(input),lr=letters(right),ni=nums(input).sort().join("|"),nr=nums(right).sort().join("|");
+  const tol=Math.max(1,Math.floor(lr.length/7));
+  const nameOk=li.length>0&&lev(li,lr)<=tol, numOk=ni===nr;
+  return {ok:nameOk&&numOk,nameOk,numOk,typo:nameOk&&li!==lr};
+}
+const ROOTS=["bagger","dumper","lader","walze","platte","stampfer","kran","traktor","maher","sage","frase","hacke","hacksler","blaser","schere","sense","setzer","hammer","schleifer","bohrer","pumpe","reiniger","vertikutierer","aerifizierer","anhanger","lastwagen","transporter","stapler","hubwagen","schubkarre"];
+function family(label){const l=letters(label);for(const r of ROOTS)if(l.includes(r))return r;
+  const w=deU(label).replace(/\d+(?:[.,]\d+)?/g," ").split(/[^a-z]+/).filter(x=>x.length>=4&&!["tonnen","tonne"].includes(x));return w.length?w[w.length-1]:l}
+const fmt=x=>String(x).replace(".",",");
+function variants(label,need,taken){
+  const n=nums(label);if(!n.length)return[];
+  const v=parseFloat(n[0]),out=[];
+  const cand=shuffle([0.8,1,1.5,1.8,2.5,2.7,3.5,5,6,7.5,8,10,12,14,16,20,25].filter(x=>Math.abs(x-v)>0.05)).sort((a,b)=>Math.abs(a-v)-Math.abs(b-v)).slice(0,8);
+  for(const c of shuffle(cand)){if(out.length>=need)break;
+    const t=label.replace(/\d+(?:[.,]\d+)?/,fmt(c));if(!taken.some(x=>key(x)===key(t)))out.push(t)}
+  return out}
+function buildItem(r,pool){
+  const fam=family(r.data.caption), same=pool.filter(x=>family(x.data.caption)===fam);
+  if(same.length>=3){
+    const right=r.data.caption.trim();
+    let opts=[...new Map(same.map(x=>[key(x.data.caption),x.data.caption.trim()])).values()].filter(l=>!check(l,right).ok);
+    opts=shuffle(opts).slice(0,3);
+    if(opts.length<3)opts=opts.concat(variants(right,3-opts.length,[right,...opts]));
+    if(opts.length>=1)return {r,type:"wahl",opts:shuffle([right,...opts])};
+  }
+  return {r,type:"tippen"};
+}
 async function renderQuizStart(){
   const v=$("view");v.innerHTML='<div class="card small">Lade Quiz …</div>';
   try{await loadAll()}catch(e){v.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return}
   const people=new Set(all.map(r=>r.owner)).size;
-  if(all.length<4){v.innerHTML='<div class="card"><h2>Noch zu wenig Fotos</h2><p>Für das Quiz braucht es mindestens 4 Fotos. Bisher: '+all.length+'. Lade zuerst Fotos hoch!</p></div>';return}
+  if(!all.length){v.innerHTML='<div class="card"><h2>Noch keine Fotos</h2><p>Lade zuerst Fotos hoch, dann entsteht das Quiz!</p></div>';return}
   let n=Math.min(10,all.length);
   v.innerHTML=`<div class="card"><h2>Klassenquiz</h2>
    <p>${all.length} Fotos von ${people} Person${people>1?"en":""}. Erkennst du die Maschinen und Werkzeuge?</p>
+   <p class="small">Du tippst die <b>genaue Bezeichnung</b> ein. Gibt es mehrere ähnliche Maschinen (z. B. 3 Bagger), wählst du die richtige Gewichtsklasse aus.</p>
    <div class="small">Anzahl Fragen</div>
    <div class="opts" id="cnt">${[10,20,all.length].filter((x,i,a)=>x<=all.length&&a.indexOf(x)===i).map(x=>`<button data-n="${x}" class="${x===n?"on":""}">${x===all.length?"Alle ("+x+")":x}</button>`).join("")}</div>
    <label style="display:flex;gap:8px;align-items:center;margin:4px 0 10px"><input type="checkbox" id="own" checked style="width:22px;height:22px"> Eigene Fotos weglassen</label>
    <button class="btn primary" id="go">▶️ Quiz starten</button></div>`;
   v.querySelectorAll("#cnt button").forEach(b=>b.onclick=()=>{n=+b.dataset.n;v.querySelectorAll("#cnt button").forEach(x=>x.classList.toggle("on",x===b))});
   $("go").onclick=()=>{let pool=all;if($("own").checked){const o=all.filter(r=>r.owner!==LA.user.id);if(o.length>=1)pool=o}
-    const items=shuffle(pool).slice(0,n);Q={items,i:0,right:0,wrong:[]};ask()};
-}
-function choicesFor(r){
-  const right=r.data.caption.trim();
-  const labels=[...new Map(all.map(x=>[key(x.data.caption),x.data.caption.trim()])).values()].filter(l=>key(l)!==key(right));
-  let wrong=shuffle(labels).slice(0,3);
-  for(const f of shuffle(FILL)){if(wrong.length>=3)break;if(key(f)!==key(right)&&!wrong.some(w=>key(w)===key(f)))wrong.push(f)}
-  return shuffle([right,...wrong]);
+    const items=shuffle(pool).slice(0,n).map(r=>buildItem(r,all));Q={items,i:0,right:0,wrong:[]};ask()};
 }
 function ask(){
-  const v=$("view"),r=Q.items[Q.i],ch=choicesFor(r);
+  const v=$("view"),it=Q.items[Q.i],r=it.r;
   v.innerHTML=`<div class="card">
    <div class="meta"><span>Frage ${Q.i+1} von ${Q.items.length}</span><span>✅ ${Q.right}</span></div>
    <div class="bar"><div style="width:${Q.i/Q.items.length*100}%"></div></div>
-   <div class="q">Wie heisst diese Maschine / dieses Werkzeug genau?</div>
+   <div class="q">${it.type==="wahl"?"Welche Maschine ist das genau? Achte auf die Gewichtsklasse!":"Wie heisst diese Maschine / dieses Werkzeug genau?"}</div>
    <img class="qimg" src="${esc(r.data.url)}" alt="Foto">
    <div class="who2">Foto von ${esc(r.owner_name)}</div>
-   <div id="ch">${ch.map((c,i)=>`<button class="btn" data-c="${i}">${esc(c)}</button>`).join("")}</div>
+   ${it.type==="wahl"?`<div id="ch">${it.opts.map((c,i)=>`<button class="btn" data-c="${i}">${esc(c)}</button>`).join("")}</div>`:
+   `<div class="numrow"><input id="ans" placeholder="Genaue Bezeichnung eintippen" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    <button class="btn primary" id="ok">Prüfen</button><button class="btn secondary" id="tip">💡 Tipp</button><div id="tipt" class="small"></div>`}
    <div id="fb"></div></div>`;
-  v.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
-    const pick=ch[+b.dataset.c],ok=key(pick)===key(r.data.caption);
-    v.querySelectorAll("[data-c]").forEach(x=>{x.disabled=true;if(key(ch[+x.dataset.c])===key(r.data.caption))x.classList.add("ok")});
-    if(ok)Q.right++;else{b.classList.add("no");Q.wrong.push({url:r.data.url,a:r.data.caption,g:pick})}
-    $("fb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"Richtig! 👍":"Leider falsch."}</b>${ok?"":"Richtig ist: <b style='display:inline'>"+esc(r.data.caption)+"</b>"}</div>
+  const right=r.data.caption.trim();
+  const finish=(ok,given,extra)=>{
+    if(ok)Q.right++;else Q.wrong.push({url:r.data.url,a:right,g:given||"(keine Antwort)"});
+    $("fb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"Richtig! 👍":"Leider falsch."}</b>${extra||""}${ok&&given&&key(given)===key(right)?"":"Richtig ist: <b style='display:inline'>"+esc(right)+"</b>"}</div>
       <button class="btn primary" id="nx">${Q.i+1<Q.items.length?"Weiter →":"Auswertung"}</button>`;
     $("nx").onclick=()=>{Q.i++;Q.i<Q.items.length?ask():done()};
-    $("nx").scrollIntoView({behavior:"smooth",block:"nearest"});
-  });
+    $("nx").scrollIntoView({behavior:"smooth",block:"nearest"});$("nx").focus();
+  };
+  if(it.type==="wahl"){
+    v.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
+      const pick=it.opts[+b.dataset.c],ok=key(pick)===key(right);
+      v.querySelectorAll("[data-c]").forEach(x=>{x.disabled=true;if(key(it.opts[+x.dataset.c])===key(right))x.classList.add("ok")});
+      if(!ok)b.classList.add("no");finish(ok,pick)});
+  }else{
+    const inp=$("ans");inp.focus();
+    let tips=0;$("tip").onclick=()=>{tips++;const l=right.length;$("tipt").textContent="Tipp: beginnt mit «"+right.slice(0,Math.min(l,tips*2))+"…», "+right.replace(/\s/g,"").length+" Zeichen"+(nums(right).length?", mit Zahl/Gewicht":"")};
+    const go=()=>{const g=inp.value.trim();if(!g){inp.focus();return}
+      const c=check(g,right);inp.disabled=true;$("ok").remove();$("tip").remove();
+      let extra="";
+      if(c.ok&&c.typo)extra="Achtung Schreibweise. ";
+      else if(!c.ok&&c.nameOk&&!c.numOk)extra=nums(right).length?"Die Maschine stimmt, aber das Gewicht / die Grösse nicht. ":"Die Maschine stimmt, aber ohne Zahl. ";
+      finish(c.ok,g,extra)};
+    $("ok").onclick=go;inp.addEventListener("keydown",e=>{if(e.key==="Enter")go()});
+  }
 }
 async function done(){
   const t=Q.items.length,pct=Math.round(Q.right/t*100);
