@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maschinen-Fotoquiz – GLA25A</title>
+<style>
+  :root{--bg:#eef3ee;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--green-d:#245f39;--green-l:#d9efe0;--red:#b04a4a;--red-l:#f7dede;--yel-l:#fff0b8;--blue:#2b6a9a;--blue-l:#dcebf6;--line:#cfd9d2}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+  .wrap{max-width:640px;margin:0 auto;padding:16px 16px 48px}
+  .wrap.wide{max-width:1100px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  a.back,.who a{color:var(--green);text-decoration:none;font-size:.95rem}
+  .who{display:flex;gap:10px;align-items:center;font-size:.9rem}
+  .who span{background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-weight:600}
+  h1{font-size:1.45rem;margin:.6rem 0 .2rem}
+  h2{font-size:1.15rem;margin:0 0 .5rem}
+  .sub{color:var(--muted);margin:0 0 1rem}
+  .card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+  .btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:52px;font-family:inherit}
+  .btn:hover{border-color:var(--green)}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green);text-align:center;font-weight:600}
+  .btn.secondary{text-align:center;font-weight:600}
+  .btn.inline{display:inline-block;width:auto;padding:8px 14px;min-height:42px;margin:4px 4px 4px 0;text-align:center;font-weight:600;font-size:.9rem}
+  .btn.ok{background:var(--green-l);border-color:var(--green)}
+  .btn.no{background:var(--red-l);border-color:var(--red)}
+  .btn:disabled{cursor:default}
+  .bar{height:8px;background:#dfe7e1;border-radius:6px;overflow:hidden;margin:6px 0 14px}
+  .bar>div{height:100%;background:var(--green);transition:width .3s}
+  .meta{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+  .tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:20px;background:var(--blue-l);color:var(--blue);margin-right:6px}
+  .q{font-size:1.1rem;font-weight:600;margin:10px 0 6px}
+  .ctx{font-size:.9rem;color:var(--muted);background:#f5f7f5;border-left:3px solid var(--line);padding:8px 10px;border-radius:6px;margin:8px 0}
+  .numrow{display:flex;gap:8px;align-items:center;margin:10px 0}
+  .numrow input{flex:1;font-size:1.15rem;padding:12px;border:1.5px solid var(--line);border-radius:12px;min-width:0}
+  .numrow span{font-weight:600;color:var(--muted)}
+  .fb{padding:12px 14px;border-radius:12px;margin-top:10px;font-size:.95rem}
+  .fb.ok{background:var(--green-l)} .fb.no{background:var(--red-l)}
+  .fb b{display:block;margin-bottom:4px}
+  .big{font-size:2.6rem;font-weight:700;text-align:center;margin:6px 0}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eef1ef}
+  .row:last-child{border:0}
+  .wrong{font-size:.9rem;border-bottom:1px solid #eef1ef;padding:10px 0}
+  .wrong:last-child{border:0}
+  .wrong .a{color:var(--green);font-weight:600}
+  .wrong .g{color:var(--red)}
+  .hidden{display:none}
+  .small{font-size:.85rem;color:var(--muted)}
+  /* Login-Overlay (aus core.js) */
+  .auth{position:fixed;inset:0;background:rgba(31,45,39,.55);display:grid;place-items:center;z-index:50;padding:1rem}
+  .auth .card{max-width:430px;width:100%;margin:0;max-height:94vh;overflow:auto}
+  .auth label{font-weight:600;font-size:.9rem}
+  .auth .fld{font:inherit;font-size:1.05rem;padding:12px;width:100%;border:1.5px solid var(--line);border-radius:12px;margin:.3rem 0 .8rem}
+  .auth .btn{text-align:center;background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+  .tabs{display:flex;gap:.5rem;margin-bottom:.8rem}
+  .tabs button{flex:1;font:inherit;font-weight:600;padding:.7rem;border-radius:12px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-height:48px}
+  .tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .msg{padding:.7rem .9rem;border-radius:12px;font-weight:600;margin:.4rem 0}
+  .msg.err{background:var(--red-l);color:#8a1f1b}
+  .banner{background:#fff3c0;border:2px dashed #e5b800;border-radius:12px;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem}
+  /* Lehrer-Auswertung */
+  .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;background:#fff}
+  th,td{border-bottom:1px solid #eef1ef;padding:8px 10px;text-align:left;white-space:nowrap}
+  th{background:#e7f1ea;font-size:.8rem;position:sticky;top:0}
+  td.n{text-align:center}
+  tr.click{cursor:pointer} tr.click:hover td{background:#f5faf6}
+  .sc{display:inline-block;min-width:48px;text-align:center;font-weight:700;border-radius:8px;padding:2px 6px}
+  .g0{background:#f1f1f1;color:#999}.g1{background:var(--red-l)}.g2{background:var(--yel-l)}.g3{background:var(--green-l)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+  .kpi{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .kpi b{display:block;font-size:1.6rem}
+  .kpi span{font-size:.8rem;color:var(--muted)}
+  .qbar{height:10px;border-radius:5px;background:#eef1ef;overflow:hidden;min-width:80px}
+  .qbar>div{height:100%}
+  td.wrap{white-space:normal;min-width:240px}
+  .det{background:#f7faf8;padding:10px 14px}
+  .det .it{padding:4px 0;font-size:.88rem;white-space:normal}
+  .langs{display:flex;gap:6px;margin:0 0 12px;flex-wrap:wrap}
+  .langs button{flex:1;min-width:90px;padding:10px 8px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:.95rem;font-weight:600;cursor:pointer;color:var(--ink)}
+  .langs button.on{background:var(--green);border-color:var(--green);color:#fff}
+  .deq{font-size:.85rem;color:var(--muted);margin:-2px 0 8px;direction:ltr;text-align:left}
+  [dir=rtl] .btn{text-align:right}
+  [dir=rtl] .ctx{border-left:0;border-right:3px solid var(--line)}
+  [dir=rtl] .meta,[dir=rtl] .row{direction:rtl}
+
+  .nav{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0 14px}
+  .nav button{font:inherit;font-weight:600;font-size:.92rem;padding:10px 6px;border-radius:12px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-height:52px}
+  .nav button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .ph{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+  .ph img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e5ece7;display:block}
+  .ph .t{padding:8px 10px;font-weight:600;font-size:.92rem;word-break:break-word}
+  .ph .o{padding:0 10px 6px;font-size:.78rem;color:var(--muted)}
+  .ph .acts{display:flex;gap:4px;padding:0 8px 8px;flex-wrap:wrap}
+  .ph .acts button{flex:1;font:inherit;font-size:.8rem;padding:6px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;min-height:36px}
+  .new{display:flex;gap:10px;align-items:flex-start;border:1.5px dashed var(--line);border-radius:12px;padding:10px;margin:8px 0;background:#fafcfa}
+  .new img{width:96px;height:72px;object-fit:cover;border-radius:8px;flex:none}
+  .new .f{flex:1;min-width:0}
+  .new input{width:100%;font:inherit;font-size:1.05rem;padding:10px;border:1.5px solid var(--line);border-radius:10px}
+  .new .x{background:none;border:0;font-size:1.3rem;cursor:pointer;color:var(--muted);padding:4px 8px}
+  .upl{display:block;text-align:center;padding:18px;border:2px dashed var(--green);border-radius:14px;background:var(--green-l);color:var(--green-d);font-weight:700;cursor:pointer;margin:8px 0}
+  .upl input{display:none}
+  .qimg{width:100%;max-height:52vh;object-fit:contain;background:#1f2d27;border-radius:12px;display:block}
+  .who2{font-size:.8rem;color:var(--muted);text-align:right;margin-top:4px}
+  .count{font-weight:700;color:var(--green-d)}
+  .msg.ok{background:var(--green-l);color:var(--green-d)}
+  .opts{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 12px}
+  .opts button{font:inherit;font-weight:600;padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-height:46px}
+  .opts button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .medal{font-size:1.2rem;width:32px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="../">← Alle Apps</a><div class="who" id="who"></div></div>
+  <h1>🚜 Maschinen-Fotoquiz</h1>
+  <p class="sub">Fotos von Maschinen und Werkzeugen aus deinem Lehrbetrieb hochladen, richtig benennen – und dann das Klassenquiz spielen. Bis zu 20 Fotos pro Person, weniger ist auch ok. (L57)</p>
+  <div class="nav" id="nav">
+    <button data-v="fotos" class="on">📷 Meine Fotos</button>
+    <button data-v="quiz">🎮 Quiz</button>
+    <button data-v="rang">🏆 Rangliste</button>
+  </div>
+  <div id="view"></div>
+</div>
+<script src="../belagsaufbau/assets/config.js"></script>
+<script>window.LA_KLASSE="GLA25A"; window.LA_FIXCODE=c=>/^gla25a$/i.test(c)?"GLA25A":c; window.LA_ICON="🚜";</script>
+<script src="core.js"></script>
+<script>
+const GRP="maschinen-GLA25A", CTX="maschinen", MAX=20, SLUG="maschinen-quiz";
+const $=id=>document.getElementById(id), esc=s=>LA.esc(s);
+const FILL=["Minibagger","Raddumper","Raupendumper","Rüttelplatte","Motorsense","Heckenschere","Laubbläser","Motorsäge","Vertikutierer","Rasenmäher","Motorhacke","Trennschleifer","Kompaktlader","Radlader","Stampfer","Häcksler"];
+let view="fotos", pending=[], all=[];
+const isT=()=>LA.user&&LA.user.role==="teacher";
+const key=s=>String(s||"").trim().toLowerCase().replace(/\s+/g," ");
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+async function loadAll(){all=(await LA.list("photo",{grp:GRP})).filter(r=>r.data&&r.data.ctx===CTX&&r.data.url);return all}
+document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>{view=b.dataset.v;document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("on",x===b));render()});
+function render(){({fotos:renderFotos,quiz:renderQuizStart,rang:renderRang})[view]()}
+
+/* ---------- Meine Fotos ---------- */
+async function renderFotos(msg){
+  const v=$("view");v.innerHTML='<div class="card small">Lade Fotos …</div>';
+  try{await loadAll()}catch(e){v.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return}
+  const mine=all.filter(r=>r.owner===LA.user.id), left=MAX-mine.length;
+  const shown=isT()?all:mine;
+  v.innerHTML=`${msg||""}
+  <div class="card">
+    <h2>Fotos hochladen <span class="count">${mine.length}/${MAX}</span></h2>
+    <p class="small" style="margin:0 0 6px">Gib die <b>genaue Fachbezeichnung</b> ein, wie du sie bei einer Bestellung angeben würdest (z. B. «Raupendumper», «Minibagger 1,8 t», «Hartmetall-Setzer»). Keine Personen und keine Autonummern fotografieren.</p>
+    ${left>0?`<label class="upl">📷 Foto aufnehmen oder auswählen<input type="file" id="file" accept="image/*" multiple></label>`:'<div class="msg ok">Du hast alle 20 Fotos hochgeladen. Super! Lösche ein Foto, wenn du ein anderes hochladen willst.</div>'}
+    <div id="pend"></div>
+  </div>
+  <div class="card">
+    <h2>${isT()?"Alle Fotos der Klasse ("+all.length+")":"Meine Fotos"}</h2>
+    ${isT()?'<p class="small" style="margin:0 0 8px">Als Lehrperson kannst du Bezeichnungen korrigieren und unpassende Fotos löschen.</p>':''}
+    ${shown.length?'<div class="grid">'+shown.map(r=>`<div class="ph"><img src="${esc(r.data.url)}" alt="" loading="lazy"><div class="t">${esc(r.data.caption)}</div>${isT()?'<div class="o">von '+esc(r.owner_name)+'</div>':''}<div class="acts"><button data-e="${r.id}">✏️ Ändern</button><button data-d="${r.id}">🗑️ Löschen</button></div></div>`).join("")+'</div>':'<p class="small">Noch keine Fotos.</p>'}
+  </div>`;
+  const f=$("file");
+  if(f)f.onchange=()=>{const room=MAX-mine.length-pending.length;const files=[...f.files].slice(0,Math.max(0,room));
+    if(f.files.length>room)alert("Du kannst noch "+Math.max(0,room)+" Foto(s) hochladen.");
+    files.forEach(fl=>pending.push({file:fl,url:URL.createObjectURL(fl),label:""}));f.value="";drawPending()};
+  drawPending();
+  v.querySelectorAll("[data-d]").forEach(b=>b.onclick=async()=>{if(!confirm("Foto wirklich löschen?"))return;b.disabled=true;
+    try{await LA.remove(b.dataset.d);renderFotos('<div class="msg ok">Foto gelöscht.</div>')}catch(e){alert(e.message);b.disabled=false}});
+  v.querySelectorAll("[data-e]").forEach(b=>b.onclick=async()=>{const r=all.find(x=>x.id===b.dataset.e);
+    const n=prompt("Genaue Bezeichnung:",r.data.caption);if(n==null||!n.trim())return;
+    try{await LA.update(r.id,Object.assign({},r.data,{caption:n.trim()}));renderFotos('<div class="msg ok">Bezeichnung geändert.</div>')}catch(e){alert(e.message)}});
+}
+function drawPending(){
+  const p=$("pend");if(!p)return;
+  if(!pending.length){p.innerHTML="";return}
+  p.innerHTML=pending.map((x,i)=>`<div class="new"><img src="${x.url}" alt=""><div class="f"><input data-i="${i}" placeholder="Genaue Bezeichnung" value="${esc(x.label)}" maxlength="60"></div><button class="x" data-x="${i}" title="Entfernen">✕</button></div>`).join("")+
+   `<div id="umsg"></div><button class="btn primary" id="up">⬆️ ${pending.length} Foto${pending.length>1?"s":""} hochladen</button>`;
+  p.querySelectorAll("input").forEach(inp=>inp.oninput=()=>pending[+inp.dataset.i].label=inp.value);
+  p.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{pending.splice(+b.dataset.x,1);drawPending()});
+  $("up").onclick=upload;
+}
+async function upload(){
+  const m=$("umsg");
+  if(pending.some(x=>x.label.trim().length<3)){m.innerHTML='<div class="msg err">Bitte bei jedem Foto eine Bezeichnung eingeben (mind. 3 Zeichen).</div>';return}
+  const mine=all.filter(r=>r.owner===LA.user.id).length;
+  if(mine+pending.length>MAX){m.innerHTML='<div class="msg err">Maximal '+MAX+' Fotos pro Person.</div>';return}
+  $("up").disabled=true;let n=0;
+  try{for(const x of pending.slice()){m.innerHTML='<div class="small">Lade hoch … '+(n+1)+'/'+pending.length+'</div>';
+      await LA.photo(x.file,CTX,GRP,x.label.trim());n++}
+    pending=[];renderFotos('<div class="msg ok">'+n+' Foto(s) hochgeladen. Sie sind jetzt im Klassenquiz! 🎉</div>')}
+  catch(e){pending=pending.slice(n);m.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';$("up").disabled=false}
+}
+
+/* ---------- Quiz ---------- */
+let Q=null;
+async function renderQuizStart(){
+  const v=$("view");v.innerHTML='<div class="card small">Lade Quiz …</div>';
+  try{await loadAll()}catch(e){v.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return}
+  const people=new Set(all.map(r=>r.owner)).size;
+  if(all.length<4){v.innerHTML='<div class="card"><h2>Noch zu wenig Fotos</h2><p>Für das Quiz braucht es mindestens 4 Fotos. Bisher: '+all.length+'. Lade zuerst Fotos hoch!</p></div>';return}
+  let n=Math.min(10,all.length);
+  v.innerHTML=`<div class="card"><h2>Klassenquiz</h2>
+   <p>${all.length} Fotos von ${people} Person${people>1?"en":""}. Erkennst du die Maschinen und Werkzeuge?</p>
+   <div class="small">Anzahl Fragen</div>
+   <div class="opts" id="cnt">${[10,20,all.length].filter((x,i,a)=>x<=all.length&&a.indexOf(x)===i).map(x=>`<button data-n="${x}" class="${x===n?"on":""}">${x===all.length?"Alle ("+x+")":x}</button>`).join("")}</div>
+   <label style="display:flex;gap:8px;align-items:center;margin:4px 0 10px"><input type="checkbox" id="own" checked style="width:22px;height:22px"> Eigene Fotos weglassen</label>
+   <button class="btn primary" id="go">▶️ Quiz starten</button></div>`;
+  v.querySelectorAll("#cnt button").forEach(b=>b.onclick=()=>{n=+b.dataset.n;v.querySelectorAll("#cnt button").forEach(x=>x.classList.toggle("on",x===b))});
+  $("go").onclick=()=>{let pool=all;if($("own").checked){const o=all.filter(r=>r.owner!==LA.user.id);if(o.length>=1)pool=o}
+    const items=shuffle(pool).slice(0,n);Q={items,i:0,right:0,wrong:[]};ask()};
+}
+function choicesFor(r){
+  const right=r.data.caption.trim();
+  const labels=[...new Map(all.map(x=>[key(x.data.caption),x.data.caption.trim()])).values()].filter(l=>key(l)!==key(right));
+  let wrong=shuffle(labels).slice(0,3);
+  for(const f of shuffle(FILL)){if(wrong.length>=3)break;if(key(f)!==key(right)&&!wrong.some(w=>key(w)===key(f)))wrong.push(f)}
+  return shuffle([right,...wrong]);
+}
+function ask(){
+  const v=$("view"),r=Q.items[Q.i],ch=choicesFor(r);
+  v.innerHTML=`<div class="card">
+   <div class="meta"><span>Frage ${Q.i+1} von ${Q.items.length}</span><span>✅ ${Q.right}</span></div>
+   <div class="bar"><div style="width:${Q.i/Q.items.length*100}%"></div></div>
+   <div class="q">Wie heisst diese Maschine / dieses Werkzeug genau?</div>
+   <img class="qimg" src="${esc(r.data.url)}" alt="Foto">
+   <div class="who2">Foto von ${esc(r.owner_name)}</div>
+   <div id="ch">${ch.map((c,i)=>`<button class="btn" data-c="${i}">${esc(c)}</button>`).join("")}</div>
+   <div id="fb"></div></div>`;
+  v.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
+    const pick=ch[+b.dataset.c],ok=key(pick)===key(r.data.caption);
+    v.querySelectorAll("[data-c]").forEach(x=>{x.disabled=true;if(key(ch[+x.dataset.c])===key(r.data.caption))x.classList.add("ok")});
+    if(ok)Q.right++;else{b.classList.add("no");Q.wrong.push({url:r.data.url,a:r.data.caption,g:pick})}
+    $("fb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"Richtig! 👍":"Leider falsch."}</b>${ok?"":"Richtig ist: <b style='display:inline'>"+esc(r.data.caption)+"</b>"}</div>
+      <button class="btn primary" id="nx">${Q.i+1<Q.items.length?"Weiter →":"Auswertung"}</button>`;
+    $("nx").onclick=()=>{Q.i++;Q.i<Q.items.length?ask():done()};
+    $("nx").scrollIntoView({behavior:"smooth",block:"nearest"});
+  });
+}
+async function done(){
+  const t=Q.items.length,pct=Math.round(Q.right/t*100);
+  const v=$("view");
+  v.innerHTML=`<div class="card"><h2>Auswertung</h2><div class="big">${Q.right}/${t}</div><p style="text-align:center;margin-top:0">${pct>=90?"Top, du kennst dich aus! 🏆":pct>=60?"Gut gemacht! 💪":"Weiter üben – die Fachbegriffe lohnen sich! 📚"}</p>
+   ${Q.wrong.length?'<h2>Das waren die falschen:</h2>'+Q.wrong.map(w=>`<div class="wrong" style="display:flex;gap:10px;align-items:center"><img src="${esc(w.url)}" style="width:80px;height:60px;object-fit:cover;border-radius:8px" alt=""><div>Richtig: <span class="a">${esc(w.a)}</span><br>Deine Antwort: <span class="g">${esc(w.g)}</span></div></div>`).join(""):""}
+   <button class="btn primary" id="again">🔁 Nochmals spielen</button><button class="btn secondary" id="rk">🏆 Zur Rangliste</button></div>`;
+  $("again").onclick=renderQuizStart;$("rk").onclick=()=>document.querySelector('#nav [data-v="rang"]').click();
+  try{await LA.add("maschinenquiz","GLA25A",{right:Q.right,total:t,pct});await LA.saveProgress(SLUG,{pct,finished:true})}catch(e){console.warn(e)}
+}
+
+/* ---------- Rangliste ---------- */
+async function renderRang(){
+  const v=$("view");v.innerHTML='<div class="card small">Lade Rangliste …</div>';
+  let res,ph;try{res=await LA.list("maschinenquiz",{grp:"GLA25A"});ph=await loadAll()}catch(e){v.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return}
+  const best={};res.forEach(r=>{const d=r.data||{};const b=best[r.owner];
+    if(!b||d.right>b.right||(d.right===b.right&&d.total<b.total))best[r.owner]={name:r.owner_name,right:d.right,total:d.total,pct:d.pct,runs:0};best[r.owner].runs=(best[r.owner].runs||0)+1});
+  const rows=Object.values(best).sort((a,b)=>b.right-a.right||b.pct-a.pct);
+  const cnt={};ph.forEach(p=>cnt[p.owner_name]=(cnt[p.owner_name]||0)+1);
+  const md=["🥇","🥈","🥉"];
+  v.innerHTML=`<div class="card"><h2>🏆 Beste Runde pro Person</h2>
+   ${rows.length?rows.map((r,i)=>`<div class="row"><span><span class="medal">${md[i]||(i+1)+"."}</span>${esc(r.name)}</span><span><b>${r.right}/${r.total}</b> <span class="small">(${r.runs}×)</span></span></div>`).join(""):'<p class="small">Noch niemand hat gespielt.</p>'}</div>
+   <div class="card"><h2>📷 Hochgeladene Fotos</h2>${Object.keys(cnt).length?Object.entries(cnt).sort((a,b)=>b[1]-a[1]).map(([n,c])=>`<div class="row"><span>${esc(n)}</span><b>${c}</b></div>`).join(""):'<p class="small">Noch keine Fotos.</p>'}</div>`;
+}
+
+LA.requireLogin().then(()=>{LA.who($("who"));render()});
+</script>
+</body>
+</html>

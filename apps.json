@@ -1,5 +1,11 @@
 [
   {
+    "slug": "maschinen-quiz",
+    "title": "Maschinen-Fotoquiz – GLA25A",
+    "description": "Login GLA25A: bis zu 20 eigene Fotos von Werkzeugen und Maschinen aus dem Lehrbetrieb hochladen und genau benennen (L57). Daraus entsteht automatisch ein Klassenquiz mit Rangliste. Lehrperson kann Bezeichnungen korrigieren und Fotos löschen.",
+    "added": "2026-11-06"
+  },
+  {
     "slug": "baugeraetefuehrer",
     "title": "Baugeräteführer Theorie – GLA25A",
     "description": "Alle 300 Fragen aus dem Fragenkatalog Baugeräteführer mit Login (Klasse GLA25A): nach Thema üben, Fehler wiederholen, Prüfung simulieren, Nachschlagen. Lehrerbereich mit Registrierungsdatum, Fortschritt und schwierigen Fragen.",
