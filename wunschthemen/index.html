@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wunschthemen – Blockkurs Galabau Kompetenzen</title>
+<meta name="theme-color" content="#E97132">
+<style>
+  :root{
+    --or:#E97132; --gr:#196B24; --lg:#4EA72E; --bl:#0F9ED5; --pu:#A02B93; --ye:#D9A400;
+    --ink:#262626; --mute:#6b6b6b; --line:#e6e2dc; --bg:#faf8f5; --card:#fff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Aptos,sans-serif}
+  a{color:inherit}
+  .wrap{max-width:720px;margin:0 auto;padding:16px 16px 120px}
+  .back{display:inline-block;font-size:14px;color:var(--mute);text-decoration:none;margin-bottom:10px}
+  header h1{font-size:26px;line-height:1.15;margin:0 0 6px}
+  header p{margin:0;color:var(--mute)}
+  .points{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 10px;margin:8px 0 6px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+  .dots{display:flex;gap:8px}
+  .dot{width:26px;height:26px;border-radius:50%;border:3px solid var(--or);background:var(--or);transition:.2s}
+  .dot.used{background:transparent;border-color:#d8cfc6}
+  .points b{font-size:17px}
+  .points small{display:block;color:var(--mute);font-size:13px}
+  .tools{display:flex;gap:8px;margin:12px 0}
+  .seg{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px;font-weight:600;font-size:14px;cursor:pointer}
+  .seg[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+  li.t{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 12px 12px 16px;display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;position:relative;overflow:hidden}
+  li.t::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--c,var(--or))}
+  li.t.mine{border-color:var(--or);box-shadow:0 0 0 2px #fbe3d6 inset}
+  .title{font-weight:700;font-size:17px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--pu);background:#f2dcef;border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+  .bar{grid-column:1/2;height:8px;border-radius:6px;background:#f0ece6;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--c,var(--or));border-radius:6px;transition:width .4s}
+  .meta{grid-column:1/2;font-size:13px;color:var(--mute)}
+  .meta .me{color:var(--or);font-weight:700}
+  .btns{grid-row:1/4;grid-column:2;display:flex;gap:8px;align-items:center}
+  button.pm{width:52px;height:52px;border-radius:50%;border:none;font-size:28px;font-weight:700;line-height:1;cursor:pointer;display:grid;place-items:center}
+  button.plus{background:var(--or);color:#fff}
+  button.minus{background:#f0ece6;color:var(--ink)}
+  button.pm:disabled{opacity:.3;cursor:default}
+  .add{margin-top:18px;background:#fff;border:1px dashed #cfc6bb;border-radius:14px;padding:14px}
+  .add h2{font-size:17px;margin:0 0 4px}
+  .add p{margin:0 0 10px;font-size:14px;color:var(--mute)}
+  .row{display:flex;gap:8px}
+  .row input{flex:1;min-width:0;font:inherit;padding:12px;border:1px solid #cfc6bb;border-radius:10px}
+  .row button{border:none;background:var(--gr);color:#fff;font-weight:700;border-radius:10px;padding:0 16px;font-size:15px;cursor:pointer}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;font-size:15px;max-width:90vw;transition:.25s;z-index:20}
+  .toast.on{transform:translateX(-50%) translateY(0)}
+  .err{background:#f8d7da;color:#842029;border-radius:10px;padding:10px 12px;margin:10px 0;display:none}
+  .foot{margin-top:22px;font-size:13px;color:var(--mute)}
+  /* ---------- Beamer ---------- */
+  body.beamer .wrap{max-width:1400px;padding:28px 40px}
+  body.beamer .student{display:none}
+  .beam{display:none}
+  body.beamer .beam{display:grid;grid-template-columns:1fr 320px;gap:36px;align-items:start}
+  .beam h1{font-size:44px;margin:0 0 4px}
+  .beam .sub{color:var(--mute);font-size:20px;margin-bottom:22px}
+  .rank{display:grid;gap:12px}
+  .rk{display:grid;grid-template-columns:44px 1fr 70px;align-items:center;gap:14px}
+  .rk .n{font-size:24px;font-weight:800;color:var(--mute);text-align:right}
+  .rk .lab{position:relative;height:54px;background:#f0ece6;border-radius:12px;overflow:hidden}
+  .rk .lab i{position:absolute;inset:0 auto 0 0;background:var(--c,var(--or));opacity:.32;border-radius:12px;transition:width .6s;border-right:6px solid var(--c)}
+  .rk .lab span{position:relative;display:flex;align-items:center;height:100%;padding:0 16px;font-size:22px;font-weight:700}
+  .rk .v{font-size:28px;font-weight:800;text-align:left}
+  .qr{background:#fff;border-radius:18px;padding:18px;text-align:center;border:1px solid var(--line)}
+  .qr img{width:100%;height:auto;display:block}
+  .qr b{display:block;font-size:20px;margin-top:8px}
+  .qr small{display:block;color:var(--mute);font-size:15px;word-break:break-all}
+  .total{margin-top:16px;font-size:18px;color:var(--mute);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back student" href="../">← Alle Apps</a>
+
+  <!-- ===== Lernende ===== -->
+  <div class="student">
+    <header>
+      <h1>Wunschthemen für den 4. Blockkurstag</h1>
+      <p>Du hast <b>3 Punkte</b>. Verteile sie auf die Themen, die dich am meisten interessieren. Du darfst auch mehrere Punkte auf ein Thema setzen.</p>
+    </header>
+    <div class="points" aria-live="polite">
+      <div class="dots" id="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <div><b id="rest">3 Punkte übrig</b><small id="hint">Tippe auf + bei einem Thema</small></div>
+    </div>
+    <div class="err" id="err"></div>
+    <div class="tools" role="group" aria-label="Sortierung">
+      <button class="seg" id="sortList" aria-pressed="true">Alle Themen</button>
+      <button class="seg" id="sortRank" aria-pressed="false">Rangliste</button>
+    </div>
+    <ul id="list"></ul>
+    <div class="add">
+      <h2>Eigenes Thema vorschlagen</h2>
+      <p>Fehlt dein Thema? Schreib es hier hinein. Danach können alle Punkte darauf vergeben.</p>
+      <form class="row" id="addForm" autocomplete="off">
+        <input id="addInput" maxlength="80" placeholder="z. B. Gartenteiche bauen" aria-label="Neues Thema">
+        <button type="submit">Hinzufügen</button>
+      </form>
+    </div>
+    <p class="foot">Die Abstimmung ist anonym. Die Themen mit den meisten Punkten bereitet die Lehrperson für den 4. Blockkurstag vor.</p>
+  </div>
+
+  <!-- ===== Beamer ===== -->
+  <div class="beam">
+    <div>
+      <h1>Wunschthemen 4. Blockkurstag</h1>
+      <div class="sub">Live-Resultat · jede Person hat 3 Punkte</div>
+      <div class="rank" id="rank"></div>
+    </div>
+    <div>
+      <div class="qr"><img src="qr.png" alt="QR-Code zur Abstimmung"><b>Jetzt abstimmen!</b><small>lernappsabt.vercel.app/wunschthemen</small></div>
+      <div class="total" id="total"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const URL_ = "https://bbgqfuyezgxdcjcncrel.supabase.co/rest/v1/rpc/";
+  const KEY = "sb_publishable_z0hjQLCnjFoV00YvPUK9lw_JH6iskSy";
+  const qs = new URLSearchParams(location.search);
+  const RUNDE = (qs.get("runde") || "blockkurs3-2026").slice(0, 40);
+  const BEAMER = qs.has("beamer");
+  const COLORS = ["#E97132","#196B24","#0F9ED5","#A02B93","#4EA72E","#D9A400"];
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  function geraetId(){
+    const k = "wunsch:geraet";
+    try { let v = localStorage.getItem(k); if (!v) { v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); localStorage.setItem(k, v); } return v; }
+    catch (e) { if (!window.__g) window.__g = String(Math.random()).slice(2) + Date.now(); return window.__g; }
+  }
+  const GERAET = geraetId();
+
+  async function rpc(fn, args){
+    const r = await fetch(URL_ + fn, { method: "POST", headers: { "apikey": KEY, "Content-Type": "application/json" }, body: JSON.stringify(args) });
+    const txt = await r.text();
+    let data = null; try { data = txt ? JSON.parse(txt) : null; } catch (e) {}
+    if (!r.ok) throw new Error(meldung((data && (data.message || data.hint)) || txt));
+    return data;
+  }
+  function meldung(m){
+    m = String(m || "");
+    if (/Alle 3 Punkte/i.test(m)) return "Du hast alle 3 Punkte vergeben. Nimm zuerst einen Punkt zurück (−).";
+    if (/Maximal 3 eigene/i.test(m)) return "Du kannst höchstens 3 eigene Themen vorschlagen.";
+    if (/Titel/i.test(m)) return "Das Thema braucht 2 bis 80 Zeichen.";
+    if (/Zu viele/i.test(m)) return "Es gibt schon sehr viele Themen.";
+    if (/fetch|network/i.test(m)) return "Keine Verbindung. Prüfe dein Internet.";
+    return "Das hat nicht geklappt. Versuche es nochmals.";
+  }
+
+  let themen = [], sortRank = false, busy = false, colorOf = {};
+  function toast(t){ const el = $("#toast"); el.textContent = t; el.classList.add("on"); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 2600); }
+  function showErr(t){ const e = $("#err"); e.textContent = t || ""; e.style.display = t ? "block" : "none"; }
+
+  function render(){
+    themen.forEach((t, i) => { if (!colorOf[t.id]) colorOf[t.id] = COLORS[Object.keys(colorOf).length % COLORS.length]; });
+    const used = themen.reduce((a, t) => a + (t.meine || 0), 0);
+    const rest = Math.max(0, 3 - used);
+    const max = Math.max(1, ...themen.map(t => t.punkte));
+    const total = themen.reduce((a, t) => a + t.punkte, 0);
+    if (BEAMER) {
+      const r = [...themen].sort((a, b) => b.punkte - a.punkte || a.titel.localeCompare(b.titel)).slice(0, 12);
+      $("#rank").innerHTML = r.map((t, i) => `<div class="rk" style="--c:${colorOf[t.id]}"><div class="n">${i + 1}</div><div class="lab"><i style="width:${t.punkte / max * 100}%"></i><span>${esc(t.titel)}${t.eigen ? " ✦" : ""}</span></div><div class="v">${t.punkte}</div></div>`).join("");
+      $("#total").textContent = total + (total === 1 ? " Punkt" : " Punkte") + " vergeben · ✦ = Vorschlag aus der Klasse";
+      return;
+    }
+    document.querySelectorAll("#dots .dot").forEach((d, i) => d.classList.toggle("used", i >= rest));
+    $("#rest").textContent = rest === 1 ? "1 Punkt übrig" : rest + " Punkte übrig";
+    $("#hint").textContent = rest ? "Tippe auf + bei einem Thema" : "Alle Punkte vergeben – mit − kannst du umverteilen";
+    const list = sortRank ? [...themen].sort((a, b) => b.punkte - a.punkte || a.titel.localeCompare(b.titel)) : themen;
+    $("#list").innerHTML = list.map(t => `
+      <li class="t${t.meine ? " mine" : ""}" style="--c:${colorOf[t.id]}">
+        <div class="title">${esc(t.titel)}${t.eigen ? '<span class="tag">Vorschlag</span>' : ""}</div>
+        <div class="bar"><i style="width:${t.punkte / max * 100}%"></i></div>
+        <div class="meta">${t.punkte} ${t.punkte === 1 ? "Punkt" : "Punkte"} total${t.meine ? ` · <span class="me">${t.meine} von dir</span>` : ""}</div>
+        <div class="btns">
+          <button class="pm minus" data-id="${t.id}" data-plus="0" aria-label="Punkt zurücknehmen: ${esc(t.titel)}" ${t.meine ? "" : "disabled"}>−</button>
+          <button class="pm plus" data-id="${t.id}" data-plus="1" aria-label="Punkt geben: ${esc(t.titel)}" ${rest ? "" : "disabled"}>+</button>
+        </div>
+      </li>`).join("");
+  }
+
+  async function laden(){
+    try { themen = (await rpc("wunsch_resultate", { p_runde: RUNDE, p_geraet: GERAET })) || []; showErr(""); render(); }
+    catch (e) { showErr(e.message); }
+  }
+
+  if (BEAMER) document.body.classList.add("beamer");
+  $("#list").addEventListener("click", async ev => {
+    const b = ev.target.closest("button.pm"); if (!b || b.disabled || busy) return;
+    busy = true; b.disabled = true;
+    const id = b.dataset.id, plus = b.dataset.plus === "1";
+    const t = themen.find(x => x.id === id);
+    if (t) { t.meine += plus ? 1 : -1; t.punkte += plus ? 1 : -1; render(); }
+    try { await rpc("wunsch_punkt", { p_runde: RUNDE, p_thema: id, p_geraet: GERAET, p_plus: plus }); }
+    catch (e) { toast(e.message); }
+    busy = false; laden();
+  });
+  $("#addForm").addEventListener("submit", async ev => {
+    ev.preventDefault();
+    const v = $("#addInput").value.trim();
+    if (v.length < 2) { toast("Bitte ein Thema eingeben."); return; }
+    try { await rpc("wunsch_thema_neu", { p_runde: RUNDE, p_titel: v, p_geraet: GERAET }); $("#addInput").value = ""; toast("Thema hinzugefügt – jetzt kannst du Punkte vergeben."); sortRank = false; setSort(); await laden(); }
+    catch (e) { toast(e.message); }
+  });
+  function setSort(){ $("#sortList").setAttribute("aria-pressed", String(!sortRank)); $("#sortRank").setAttribute("aria-pressed", String(sortRank)); render(); }
+  $("#sortList").onclick = () => { sortRank = false; setSort(); };
+  $("#sortRank").onclick = () => { sortRank = true; setSort(); };
+
+  (async () => {
+    try { await rpc("wunsch_start", { p_runde: RUNDE }); } catch (e) { showErr(e.message); }
+    await laden();
+    setInterval(() => { if (!busy && !document.hidden) laden(); }, BEAMER ? 3000 : 5000);
+  })();
+})();
+</script>
+</body>
+</html>
