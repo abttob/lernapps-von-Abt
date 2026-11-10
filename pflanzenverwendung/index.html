@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pflanzenverwendung üben – GLZ24A</title>
+<style>
+  :root{--bg:#eef3ee;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--green-d:#245f39;--green-l:#d9efe0;--red:#b04a4a;--red-l:#f7dede;--yel-l:#fff0b8;--blue:#2b6a9a;--blue-l:#dcebf6;--line:#cfd9d2}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+  .wrap{max-width:640px;margin:0 auto;padding:16px 16px 48px}
+  .wrap.wide{max-width:1100px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  a.back,.who a{color:var(--green);text-decoration:none;font-size:.95rem}
+  .who{display:flex;gap:10px;align-items:center;font-size:.9rem}
+  .who span{background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-weight:600}
+  h1{font-size:1.45rem;margin:.6rem 0 .2rem}
+  h2{font-size:1.15rem;margin:0 0 .5rem}
+  .sub{color:var(--muted);margin:0 0 1rem}
+  .card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+  .btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:52px;font-family:inherit}
+  .btn:hover{border-color:var(--green)}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green);text-align:center;font-weight:600}
+  .btn.secondary{text-align:center;font-weight:600}
+  .btn.inline{display:inline-block;width:auto;padding:8px 14px;min-height:42px;margin:4px 4px 4px 0;text-align:center;font-weight:600;font-size:.9rem}
+  .btn.ok{background:var(--green-l);border-color:var(--green)}
+  .btn.no{background:var(--red-l);border-color:var(--red)}
+  .btn:disabled{cursor:default}
+  .bar{height:8px;background:#dfe7e1;border-radius:6px;overflow:hidden;margin:6px 0 14px}
+  .bar>div{height:100%;background:var(--green);transition:width .3s}
+  .meta{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+  .tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:20px;background:var(--blue-l);color:var(--blue);margin-right:6px}
+  .q{font-size:1.1rem;font-weight:600;margin:10px 0 6px}
+  .ctx{font-size:.9rem;color:var(--muted);background:#f5f7f5;border-left:3px solid var(--line);padding:8px 10px;border-radius:6px;margin:8px 0}
+  .numrow{display:flex;gap:8px;align-items:center;margin:10px 0}
+  .numrow input{flex:1;font-size:1.15rem;padding:12px;border:1.5px solid var(--line);border-radius:12px;min-width:0}
+  .numrow span{font-weight:600;color:var(--muted)}
+  .fb{padding:12px 14px;border-radius:12px;margin-top:10px;font-size:.95rem}
+  .fb.ok{background:var(--green-l)} .fb.no{background:var(--red-l)}
+  .fb b{display:block;margin-bottom:4px}
+  .big{font-size:2.6rem;font-weight:700;text-align:center;margin:6px 0}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eef1ef}
+  .row:last-child{border:0}
+  .wrong{font-size:.9rem;border-bottom:1px solid #eef1ef;padding:10px 0}
+  .wrong:last-child{border:0}
+  .wrong .a{color:var(--green);font-weight:600}
+  .wrong .g{color:var(--red)}
+  .hidden{display:none}
+  .small{font-size:.85rem;color:var(--muted)}
+  /* Login-Overlay (aus core.js) */
+  .auth{position:fixed;inset:0;background:rgba(31,45,39,.55);display:grid;place-items:center;z-index:50;padding:1rem}
+  .auth .card{max-width:430px;width:100%;margin:0;max-height:94vh;overflow:auto}
+  .auth label{font-weight:600;font-size:.9rem}
+  .auth .fld{font:inherit;font-size:1.05rem;padding:12px;width:100%;border:1.5px solid var(--line);border-radius:12px;margin:.3rem 0 .8rem}
+  .auth .btn{text-align:center;background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+  .tabs{display:flex;gap:.5rem;margin-bottom:.8rem}
+  .tabs button{flex:1;font:inherit;font-weight:600;padding:.7rem;border-radius:12px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-height:48px}
+  .tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .msg{padding:.7rem .9rem;border-radius:12px;font-weight:600;margin:.4rem 0}
+  .msg.err{background:var(--red-l);color:#8a1f1b}
+  .banner{background:#fff3c0;border:2px dashed #e5b800;border-radius:12px;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem}
+  /* Lehrer-Auswertung */
+  .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;background:#fff}
+  th,td{border-bottom:1px solid #eef1ef;padding:8px 10px;text-align:left;white-space:nowrap}
+  th{background:#e7f1ea;font-size:.8rem;position:sticky;top:0}
+  td.n{text-align:center}
+  tr.click{cursor:pointer} tr.click:hover td{background:#f5faf6}
+  .sc{display:inline-block;min-width:48px;text-align:center;font-weight:700;border-radius:8px;padding:2px 6px}
+  .g0{background:#f1f1f1;color:#999}.g1{background:var(--red-l)}.g2{background:var(--yel-l)}.g3{background:var(--green-l)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+  .kpi{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .kpi b{display:block;font-size:1.6rem}
+  .kpi span{font-size:.8rem;color:var(--muted)}
+  .qbar{height:10px;border-radius:5px;background:#eef1ef;overflow:hidden;min-width:80px}
+  .qbar>div{height:100%}
+  td.wrap{white-space:normal;min-width:240px}
+  .det{background:#f7faf8;padding:10px 14px}
+  .det .it{padding:4px 0;font-size:.88rem;white-space:normal}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="top"><a class="back" href="../">← Alle Apps</a><div class="who" id="who"></div></div>
+  <h1>🌿 Pflanzenverwendung üben</h1>
+  <p class="sub" id="subline">Lebensbereiche, Geselligkeit, Gehölze und Winterbestimmung · Klasse GLZ24A</p>
+
+  <div id="loading" class="card">Lädt …</div>
+
+  <!-- Start (Lernende) -->
+  <div id="start" class="hidden">
+    <div class="card">
+      <h2 id="hello"></h2>
+      <p style="margin:.2rem 0 .6rem">Du erhältst <b>10 zufällige Fragen</b> aus allen Themen: Lebensbereiche der Stauden, Geselligkeit, Gehölze verwenden, Verwendungsfragen wie am QV und Gehölze im Winter. Nach jeder Antwort siehst du, ob es stimmt. <b>Üben, üben, üben:</b> Jede Runde gibt es neue Fragen. Dein Resultat wird gespeichert und deine Lehrperson sieht es.</p>
+      
+      <button class="btn primary" id="go">Test starten</button>
+    </div>
+    <div class="card hidden" id="myHist"><h2>Deine bisherigen Tests</h2><div id="myHistList"></div></div>
+  </div>
+
+  <!-- Quiz -->
+  <div id="quiz" class="hidden">
+    <div class="meta"><span id="pos"></span><span id="score"></span></div>
+    <div class="bar"><div id="prog"></div></div>
+    <div class="card">
+      <span class="tag" id="tagFb"></span><span class="tag" id="tagLz"></span>
+      <div class="ctx hidden" id="ctx"></div>
+      <div class="q" id="qtext"></div>
+      <div id="answers"></div>
+      <div id="feedback"></div>
+      <button class="btn primary hidden" id="next">Weiter</button>
+    </div>
+  </div>
+
+  <!-- Resultat -->
+  <div id="result" class="hidden">
+    <div class="card">
+      <div class="big" id="pct"></div>
+      <p style="text-align:center;margin:0" id="verdict"></p>
+      <p class="small" style="text-align:center;margin:.4rem 0 0" id="saved"></p>
+    </div>
+    <div class="card"><h2>Nach Thema</h2><div id="byLz"></div></div>
+    <div class="card" id="wrongBox"><h2>Das solltest du nochmals anschauen</h2><div id="wrongList"></div></div>
+    <button class="btn primary" id="again">Neuer Test mit 10 anderen Fragen</button>
+  </div>
+
+  <!-- Lehrer-Auswertung -->
+  <div id="teacher" class="hidden"></div>
+</div>
+
+<script src="../belagsaufbau/assets/config.js"></script>
+<script>window.LA_KLASSE="GLZ24A";</script>
+<script src="core.js"></script>
+<script>
+const FB = {
+  1:"Lebensbereiche Stauden",
+  2:"Geselligkeit",
+  3:"Gehölze verwenden",
+  4:"Verwendungsfragen (QV)",
+  5:"Gehölze im Winter"
+};
+const LZ = {
+  ST:"Stauden verwenden (L35)",
+  GH:"Gehölze verwenden (L35)",
+  WI:"Gehölze im Winter bestimmen"
+};
+
+const Q = [
+// ---------- 1 Lebensbereiche Stauden ----------
+{fb:1,lz:"ST",type:"mc",q:"Was versteht man unter einem «Lebensbereich»?",
+ o:["Eine Gruppe von Pflanzen mit gleichen oder ähnlichen Standortansprüchen","Das Gebiet, aus dem eine Pflanze ursprünglich stammt","Die Fläche, die eine ausgewachsene Pflanze benötigt","Die Zeit vom Austrieb bis zum Einziehen einer Staude"],a:0,
+ e:"Der Lebensbereich ist der Typ des Idealstandorts. Pflanzen desselben Lebensbereichs kann man gut miteinander kombinieren."},
+{fb:1,lz:"ST",type:"mc",q:"Wofür steht die Abkürzung «GR»?",
+ o:["Grünfläche","Gehölzrand","Gras und Rasen","Gartenrabatte"],a:1,
+ e:"GR = Gehölzrand: stärker belichtete Ränder von Baum- und Strauchgruppen und Hecken, wechselnde Lichtverhältnisse."},
+{fb:1,lz:"ST",type:"mc",q:"Was bedeutet die Ziffer bei «Fr2»?",
+ o:["frischer Boden","trockener Boden","feuchter bis nasser Boden","zweite Pflanzreihe"],a:1,
+ e:"1 = frisch, 2 = trocken, 3 = feucht bis nass. Fr2 ist also eine Freifläche mit trockenem Boden."},
+{fb:1,lz:"ST",type:"mc",q:"Nordseite eines Hauses, kühl, humos, Wurzelkonkurrenz durch grosse Bäume. Welcher Lebensbereich passt am besten?",
+ o:["Beet (B)","Steppenheide (SH)","Gehölz (G)","Freifläche (Fr)"],a:2,
+ e:"Die Nordseite von Wänden und Häusern entspricht am ehesten dem Lebensbereich Gehölz: kühl, schattig, humoser Boden."},
+{fb:1,lz:"ST",type:"mc",q:"Sommertrocken, vollsonnig, karger und kalkreicher Boden. Welcher Lebensbereich ist das?",
+ o:["Heide (H)","Steppenheide (SH)","Gehölzrand (GR)","Wasserrand (WR)"],a:1,
+ e:"Steppenheide: Blütenhöhepunkte im Frühling und Herbst, im Sommer dürfen die Pflanzen oberirdisch vertrocknen. Geringer Pflegeaufwand."},
+{fb:1,lz:"ST",type:"mc",q:"Saurer, sandiger und nährstoffarmer Boden, typisch ist die Besenheide (Calluna vulgaris). Welcher Lebensbereich?",
+ o:["Heide (H)","Steppenheide (SH)","Beet (B)","Matten (M)"],a:0,
+ e:"Die Heide wächst auf sauren, meist sandigen Böden. Die Steppenheide dagegen ist kalkreich."},
+{fb:1,lz:"ST",type:"mc",q:"Welcher Lebensbereich hat den höchsten Pflegeaufwand?",
+ o:["Steppenheide (SH)","Freifläche (Fr)","Gehölz (G)","Beet (B)"],a:3,
+ e:"Beetstauden brauchen offenen, humosen, nährstoffreichen Boden, der regelmässig gehackt wird. Es ist ein unnatürlicher Standort."},
+{fb:1,lz:"ST",type:"mc",q:"Verkehrsteiler und Pflanzflächen bei Bürogebäuden, offen und gut besonnt. Zu welchem Lebensbereich gehören sie?",
+ o:["Gehölzrand (GR)","Freifläche (Fr)","Alpinum (A)","Gehölz (G)"],a:1,
+ e:"Freiflächen sind offene, baum- und strauchfreie, gut besonnte Flächen."},
+{fb:1,lz:"ST",type:"mc",q:"Wasserstand zwischen 10 cm über und 10 cm unter der Erdoberfläche. Welche Zone ist das?",
+ o:["Sumpfzone (Wasserrand)","Schwimmblattzone (Wasser)","Gartenzone am Teich","Flachwasserzone mit 40–80 cm Wassertiefe"],a:0,
+ e:"Sumpfzone (WR): Hier wachsen z. B. Iris pseudacorus und Caltha palustris."},
+{fb:1,lz:"ST",type:"mc",q:"Zu welchem Lebensbereich gehören Seerosen (Nymphaea)?",
+ o:["Wasserrand (WR)","Wasser (W), Schwimmblattpflanzen","Feuchte Freifläche (Fr3)","Feuchtes Beet (B3)"],a:1,
+ e:"Seerosen wurzeln im Boden, ihre Blätter und Blüten liegen auf der Wasseroberfläche."},
+{fb:1,lz:"ST",type:"mc",q:"Was gehört zum Lebensbereich Steinanlagen (St)?",
+ o:["Felssteppe, Matten, Mauerkronen/Steinfugen, Alpinum","Beet, Freifläche, Heide, Steppenheide","Gehölz, Gehölzrand, Wasserrand, Wasser","Kies, Splitt, Sand, Schotter"],a:0,
+ e:"Steinanlagen sind Extremstandorte. Die Pflanzen sind meist langsamwüchsig und konkurrenzschwach."},
+{fb:1,lz:"ST",type:"mc",q:"Wie verhalten sich Waldgeophyten wie Galanthus nivalis oder Eranthis hyemalis?",
+ o:["Sie blühen im Hochsommer im Schatten der Bäume","Sie blühen vor dem Laubaustrieb und ziehen dann wieder ein","Sie sind immergrün und blühen im Winter","Sie brauchen volle Sonne und trockenen Boden"],a:1,
+ e:"Sie nutzen das Licht vor dem Laubaustrieb. Ab Mitte Mai ziehen sie sich in Zwiebeln, Knollen oder Rhizome zurück."},
+{fb:1,lz:"ST",type:"mc",q:"Feuchte, schattige Steinfugen auf der Nordseite einer Mauer: Für welche Pflanze ist das der ideale Standort?",
+ o:["Lavandula angustifolia","Asplenium scolopendrium (Hirschzungenfarn)","Sedum acre","Dianthus carthusianorum"],a:1,
+ e:"Der Hirschzungenfarn liebt die kühlen, feuchten Fugen auf der Nordseite."},
+{fb:1,lz:"ST",type:"mc",q:"Welche Pflanze ist typisch für die Steppenheide?",
+ o:["Dianthus carthusianorum (Karthäuser-Nelke)","Caltha palustris (Sumpfdotterblume)","Astilbe chinensis","Galium odoratum (Waldmeister)"],a:0,
+ e:"Typisch sind Nelken, Lavendel, Origanum vulgare, Aster amellus und das Federgras (Stipa pennata)."},
+
+// ---------- 2 Geselligkeit ----------
+{fb:2,lz:"ST",type:"mc",q:"Was bedeutet Geselligkeitsstufe I?",
+ o:["Einzeln oder in kleinen Gruppen (1–3, max. 5 Pflanzen), «solitär»","In Trupps von 3–10 Pflanzen","Gruppen von 10–20 Pflanzen","Vorwiegend grossflächig"],a:0,
+ e:"Stufe I: Einzelstellung, z. B. Cortaderia selloana, Aconitum napellus, Osmunda regalis."},
+{fb:2,lz:"ST",type:"mc",q:"Was bedeutet Geselligkeitsstufe II?",
+ o:["Einzelstellung","In kleinen Gruppen (Trupps, Tuffs) von 3–10 Pflanzen","Gruppen von 10–20 Pflanzen","Vorwiegend grossflächig"],a:1,
+ e:"Stufe II, z. B. Coreopsis verticillata, Geranium dalmaticum."},
+{fb:2,lz:"ST",type:"mc",q:"Was bedeutet Geselligkeitsstufe V?",
+ o:["Einzelstellung","Gruppen von 3–10 Pflanzen","Gruppen von 10–20 Pflanzen","Vorwiegend grossflächig"],a:3,
+ e:"Stufe V, z. B. Waldsteinia ternata, Vinca minor, Epimedium x versicolor."},
+{fb:2,lz:"ST",type:"mc",q:"Pampasgras (Cortaderia selloana): Welche Geselligkeitsstufe?",
+ o:["I","III","IV","V"],a:0,
+ e:"Grosse, auffällige Pflanzen werden einzeln gestellt (Stufe I)."},
+{fb:2,lz:"ST",type:"mc",q:"Wozu dienen die Geselligkeitsstufen nach Hansen und Müssel?",
+ o:["Sie geben an, wie gross die Pflanzen werden","Sie zeigen, in welcher Anordnung Stauden effektvoll und pflegeleicht wirken","Sie geben die Blütezeit an","Sie geben an, wie winterhart eine Staude ist"],a:1,
+ e:"Die Stufen I–V zeigen, ob eine Staude einzeln, in Gruppen oder flächig gepflanzt wird."},
+{fb:2,lz:"ST",type:"mc",q:"Eine halbschattige Böschung soll grossflächig und pflegeleicht begrünt werden. Welche Geselligkeitsstufe wählst du?",
+ o:["I","II","IV–V","Spielt keine Rolle"],a:2,
+ e:"Für Flächen nimmt man Stauden der Stufen IV–V, z. B. Waldsteinia ternata oder Geranium sanguineum."},
+
+// ---------- 3 Gehölze verwenden ----------
+{fb:3,lz:"GH",type:"mc",q:"Kennziffern nach Kiermeier: Wofür steht die 1. Ziffer?",
+ o:["Lebensraum des Gehölzes","Bodeneigenschaften","Klimatische Eigenschaften","Wuchsform"],a:0,
+ e:"1. Ziffer Lebensraum, 2. Boden, 3. Klima, 4. Wuchsform."},
+{fb:3,lz:"GH",type:"mc",q:"Kennziffern nach Kiermeier: Wofür steht die 4. Ziffer?",
+ o:["Frosthärte","Bodeneigenschaften","Lebensraum","Wuchsform"],a:3,
+ e:"Die 4. Ziffer gibt die Wuchsform an, z. B. 2 = mittelgrosser Baum, 4 = Grossstrauch, 9 = Klettergehölz."},
+{fb:3,lz:"GH",type:"mc",q:"Kennziffern nach Kiermeier: Wofür steht die 3. Ziffer?",
+ o:["Wuchsform","Klimatische Eigenschaften (Licht, Temperatur, Frosthärte)","Bodeneigenschaften (Feuchtigkeit, pH-Wert)","Blütezeit"],a:1,
+ e:"Die 3. Ziffer beschreibt das Klima: Licht, Temperatur und Frosthärte."},
+{fb:3,lz:"GH",type:"mc",q:"Ab welcher Höhe spricht man von einem Grossstrauch?",
+ o:["über 0,50 m","über 1,50 m","über 3,00 m","über 7,00 m"],a:2,
+ e:"Grossstrauch > 3 m, Normalstrauch > 1,5 m, Kleinstrauch > 0,5 m, kleiner Baum > 7 m."},
+{fb:3,lz:"GH",type:"mc",q:"Was unterscheidet einen Strauch von einem Baum?",
+ o:["Ein Strauch ist immer kleiner als 2 m","Ein Strauch wächst ohne Stamm, die Äste treiben aus dem Wurzelstock","Ein Strauch ist immer immergrün","Ein Strauch blüht, ein Baum nicht"],a:1,
+ e:"Ein Baum hat einen oder mehrere Stämme mit einer Krone. Ein Strauch treibt aus der Basis aus."},
+{fb:3,lz:"GH",type:"mc",q:"Welches Gehölz wächst basiton (treibt immer wieder aus der Basis aus)?",
+ o:["Corylus avellana (Hasel)","Fagus sylvatica (Buche)","Picea abies (Fichte)","Betula pendula (Hänge-Birke)"],a:0,
+ e:"Basiton wachsen z. B. Hasel, Hartriegel, Liguster und Spiraea."},
+{fb:3,lz:"GH",type:"mc",q:"Was bedeutet «Solitär» bei Gehölzen?",
+ o:["Ein Gehölz wird einzeln als Blickfang gesetzt","Ein Gehölz wird dicht in Reihe gepflanzt","Ein Gehölz bedeckt den Boden flächig","Ein Gehölz wird jedes Jahr auf den Stock gesetzt"],a:0,
+ e:"Ein Solitär steht frei und kommt mit Wuchsform, Blüte, Herbstfärbung oder Rinde voll zur Geltung."},
+{fb:3,lz:"GH",type:"mc",q:"Welches einheimische Gehölz eignet sich gut für eine Schnitthecke?",
+ o:["Carpinus betulus (Hainbuche)","Betula pendula (Hänge-Birke)","Prunus laurocerasus (Kirschlorbeer)","Buddleja davidii (Sommerflieder)"],a:0,
+ e:"Die Hainbuche ist einheimisch und sehr schnittverträglich. Kirschlorbeer und Sommerflieder sind nicht einheimisch und gelten als invasiv."},
+{fb:3,lz:"GH",type:"mc",q:"Welche Pflanze ist ein flachwachsendes, bodendeckendes Gehölz?",
+ o:["Juniperus communis 'Repanda'","Carpinus betulus","Corylus avellana","Acer campestre"],a:0,
+ e:"Weitere Beispiele: Taxus baccata 'Repandens', Arctostaphylos uva-ursi, Picea abies 'Nidiformis'."},
+{fb:3,lz:"GH",type:"mc",q:"Welche einheimische Kletterpflanze klettert selbständig mit Haftwurzeln?",
+ o:["Hedera helix (Efeu)","Parthenocissus quinquefolia (Wilder Wein)","Wisteria sinensis (Blauregen)","Clematis vitalba (Waldrebe)"],a:0,
+ e:"Efeu braucht keine Kletterhilfe. Parthenocissus haftet mit Haftscheiben und ist nicht einheimisch, Wisteria schlingt, Clematis rankt mit den Blattstielen."},
+
+// ---------- 4 Verwendungsfragen QV ----------
+{fb:4,lz:"ST",type:"mc",q:"Bepflanze eine sonnige, trockene Rabatte mit einer einheimischen Staude, die gelb blüht.",
+ o:["Helianthemum nummularium (Sonnenröschen)","Rudbeckia fulgida (Sonnenhut)","Trollius europaeus (Trollblume)","Coreopsis verticillata (Mädchenauge)"],a:0,
+ e:"Rudbeckia und Coreopsis stammen aus Nordamerika. Die Trollblume ist zwar einheimisch und gelb, braucht aber feuchten Boden."},
+{fb:4,lz:"ST",type:"mc",q:"Am Teichrand (Sumpfzone) soll eine einheimische, gelb blühende Staude wachsen.",
+ o:["Iris pseudacorus (Sumpf-Schwertlilie)","Pontederia cordata (Hechtkraut)","Lythrum salicaria (Blut-Weiderich)","Sedum acre (Scharfer Mauerpfeffer)"],a:0,
+ e:"Pontederia ist nicht einheimisch und blüht blau. Lythrum blüht purpur, Sedum acre gehört auf trockene Mauern."},
+{fb:4,lz:"ST",type:"mc",q:"Ein einheimischer, schattenverträglicher Bodendecker für unter Gehölze.",
+ o:["Galium odoratum (Waldmeister)","Sedum acre (Scharfer Mauerpfeffer)","Lavandula angustifolia (Lavendel)","Stachys byzantina (Woll-Ziest)"],a:0,
+ e:"Der Waldmeister gehört zum Lebensbereich Gehölz. Die anderen brauchen Sonne."},
+{fb:4,lz:"ST",type:"mc",q:"Vollsonnige, trockene Mauerkrone. Welche Pflanze passt?",
+ o:["Sedum acre (Scharfer Mauerpfeffer)","Hosta (Funkie)","Astilbe chinensis","Caltha palustris (Sumpfdotterblume)"],a:0,
+ e:"Mauerpfeffer erträgt mit seinen sukkulenten Blättern Hitze und Trockenheit."},
+{fb:4,lz:"GH",type:"mc",q:"Für eine naturnahe Hecke sind nur einheimische Sträucher gewünscht. Welche Auswahl passt?",
+ o:["Cornus sanguinea, Ligustrum vulgare, Viburnum lantana","Forsythia x intermedia, Weigela florida, Deutzia scabra","Prunus laurocerasus, Thuja occidentalis, Cotoneaster dammeri","Buddleja davidii, Mahonia aquifolium, Ligustrum ovalifolium"],a:0,
+ e:"Roter Hartriegel, Gewöhnlicher Liguster und Wolliger Schneeball sind einheimisch und wertvoll für Insekten und Vögel."},
+{fb:4,lz:"GH",type:"mc",q:"Gesucht ist ein einheimisches Gehölz, das schon im Vorfrühling (Februar/März) gelb blüht.",
+ o:["Cornus mas (Kornelkirsche)","Forsythia x intermedia (Forsythie)","Hamamelis x intermedia (Zaubernuss)","Mahonia aquifolium (Mahonie)"],a:0,
+ e:"Forsythie, Zaubernuss und Mahonie blühen auch gelb, sind aber nicht einheimisch."},
+{fb:4,lz:"ST",type:"mc",q:"In welchen Lebensbereich gehört der Lavendel (Lavandula angustifolia)?",
+ o:["Steppenheide (SH)","Gehölz (G)","Wasserrand (WR)","Feuchtes Beet (B3)"],a:0,
+ e:"Lavendel braucht einen sonnigen, trockenen, eher kargen Standort."},
+{fb:4,lz:"ST",type:"mc",q:"Am Gehölzrand (Südseite einer Hecke) sollen Stauden gepflanzt werden. Worauf musst du besonders achten?",
+ o:["Auf die Exposition (Ausrichtung) und die Wurzelkonkurrenz","Nur auf die Blütenfarbe","Darauf, dass der Boden immer nass ist","Darauf, dass nur Wasserpflanzen verwendet werden"],a:0,
+ e:"Der Süd- oder Südwestrand ist mit einer Freifläche vergleichbar, der Nordrand mit dem Lebensbereich Gehölz. Gehölze konkurrieren um Wasser und Nährstoffe."},
+
+// ---------- 5 Gehölze im Winter ----------
+{fb:5,lz:"WI",type:"mc",q:"Welches Gehölz hat gegenständige Knospen?",
+ o:["Fraxinus excelsior (Esche)","Fagus sylvatica (Buche)","Quercus robur (Stiel-Eiche)","Carpinus betulus (Hainbuche)"],a:0,
+ e:"Gegenständig sind z. B. Ahorn, Esche, Rosskastanie, Hartriegel, Holunder und Flieder."},
+{fb:5,lz:"WI",type:"mc",q:"Welche Farbe haben die Knospen der Esche (Fraxinus excelsior)?",
+ o:["schwarz","grün","rot und klebrig","weiss behaart"],a:0,
+ e:"Die schwarzen, gegenständigen Knospen machen die Esche im Winter gut erkennbar."},
+{fb:5,lz:"WI",type:"mc",q:"Welches Gehölz hat ein gekammertes Mark?",
+ o:["Juglans regia (Walnuss)","Sambucus nigra (Schwarzer Holunder)","Fagus sylvatica (Buche)","Acer platanoides (Spitz-Ahorn)"],a:0,
+ e:"Längs aufgeschnitten zeigt der Walnusstrieb viele kleine Kammern im Mark."},
+{fb:5,lz:"WI",type:"mc",q:"Woran unterscheidest du im Winter den Schwarzen (Sambucus nigra) vom Roten Holunder (S. racemosa)?",
+ o:["Am Mark: S. nigra weiss, S. racemosa braun","An der Knospenstellung: S. nigra wechselständig","An den Dornen: Nur S. racemosa hat Dornen","Gar nicht, im Winter sind sie gleich"],a:0,
+ e:"Mit dem Messer den Trieb anschneiden: weisses Mark beim Schwarzen, gelbbraunes Mark beim Roten Holunder."},
+{fb:5,lz:"WI",type:"mc",q:"Welche Aufgabe haben die Lentizellen?",
+ o:["Gasaustausch: Sie versorgen das lebende Gewebe im Spross mit Sauerstoff","Sie speichern Wasser für den Winter","Sie schützen die Knospen vor Frost","Sie bilden im Frühling die neuen Blätter"],a:0,
+ e:"Lentizellen sind Öffnungen in Rinde/Borke, gefüllt mit lockeren Korkzellen. Form, Farbe und Anordnung helfen beim Bestimmen."},
+{fb:5,lz:"WI",type:"mc",q:"Welches einheimische Gehölz hat an den Zweigen oft Korkleisten?",
+ o:["Acer campestre (Feld-Ahorn)","Betula pendula (Hänge-Birke)","Fagus sylvatica (Buche)","Prunus avium (Vogel-Kirsche)"],a:0,
+ e:"Feld-Ahorn (und Feld-Ulme) bilden oft Korkleisten an den jungen Zweigen."},
+{fb:5,lz:"WI",type:"mc",q:"Grosse, klebrige, rotbraune Knospen, gegenständig, grosse hufeisenförmige Blattnarben. Welches Gehölz ist das?",
+ o:["Aesculus hippocastanum (Rosskastanie)","Fraxinus excelsior (Esche)","Fagus sylvatica (Buche)","Juglans regia (Walnuss)"],a:0,
+ e:"Die Rosskastanie hat schildförmige bis hufeisenförmige Blattnarben mit gut sichtbaren Blattspuren."},
+{fb:5,lz:"WI",type:"mc",q:"Lange, schlanke, spitze, spindelförmige Knospen, wechselständig. Welches Gehölz?",
+ o:["Fagus sylvatica (Buche)","Aesculus hippocastanum (Rosskastanie)","Fraxinus excelsior (Esche)","Sambucus nigra (Schwarzer Holunder)"],a:0,
+ e:"Die Buche hat die typischen langen, zigarrenförmigen Knospen."},
+{fb:5,lz:"WI",type:"mc",q:"Am Triebende stehen mehrere Knospen in einer Ansammlung. Typisch für …",
+ o:["Quercus (Eiche)","Fraxinus (Esche)","Sambucus (Holunder)","Cornus (Hartriegel)"],a:0,
+ e:"Bei Eichen (und Kirschen) sammeln sich mehrere Knospen an der Terminalknospe."},
+{fb:5,lz:"WI",type:"mc",q:"Die Borke blättert in Platten ab und zeigt ein Fleckenmuster. Welcher Baum?",
+ o:["Platanus x hispanica (Platane)","Fagus sylvatica (Buche)","Carpinus betulus (Hainbuche)","Quercus robur (Stiel-Eiche)"],a:0,
+ e:"Die Platane hat zudem eine Blattnarbe, die den ganzen Trieb umläuft."},
+{fb:5,lz:"WI",type:"mc",q:"Was ist eine Terminalknospe (Endknospe)?",
+ o:["Die Knospe am Ende eines Triebes","Eine Knospe in der Blattachsel","Eine Knospe, die nie austreibt","Eine Knospe ohne Knospenschuppen"],a:0,
+ e:"Seitenknospen stehen in den Blattachseln an den Nodien. Die Endknospe schliesst den Trieb ab."},
+{fb:5,lz:"WI",type:"mc",q:"Rosen haben …",
+ o:["Stacheln: Auswüchse der Rinde, lassen sich leicht abbrechen","Dornen: umgewandelte Triebe, fest mit dem Holz verbunden","Dornen: umgewandelte Blätter","weder Dornen noch Stacheln"],a:0,
+ e:"Stacheln sitzen nur in der Rinde. Dornen sind umgewandelte Organe (z. B. Kurztriebe beim Weissdorn) und mit dem Holz verbunden."},
+{fb:5,lz:"WI",type:"mc",q:"Einheimischer Strauch, gegenständige Knospen, Triebe auf der Sonnenseite rot gefärbt. Welcher Strauch?",
+ o:["Cornus sanguinea (Roter Hartriegel)","Corylus avellana (Hasel)","Ligustrum vulgare (Liguster)","Viburnum lantana (Wolliger Schneeball)"],a:0,
+ e:"Der Rote Hartriegel ist im Winter an den rötlichen Trieben gut zu erkennen."},
+{fb:5,lz:"WI",type:"mc",q:"Weisse Rinde mit schwarzen Rissen. Welcher Baum?",
+ o:["Betula pendula (Hänge-Birke)","Fagus sylvatica (Buche)","Acer campestre (Feld-Ahorn)","Carpinus betulus (Hainbuche)"],a:0,
+ e:"Die Birke ist an der weissen Rinde schon von weitem erkennbar."},
+{fb:5,lz:"WI",type:"mc",q:"Welche Merkmale helfen dir beim Bestimmen von Gehölzen im Winter?",
+ o:["Knospen, Blattnarben, Rinde/Borke, Mark, Habitus, Fruchtstände","Nur die Blütenfarbe","Nur die Blattform","Nur die Höhe der Pflanze"],a:0,
+ e:"Dazu kommen Triebfarbe, Lentizellen, Korkleisten, Dornen/Stacheln und der Geruch."}
+];
+</script>
+<script>
+const SLUG = "pflanzenverwendung";
+const N_QUESTIONS = 10;
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+Q.forEach((q,k)=>q.id="q"+(k+1));
+const byId = Object.fromEntries(Q.map(q=>[q.id,q]));
+
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
+function fmt(n,unit){if(unit==="CHF")return n.toFixed(2);const [a,b]=String(n).split(".");return a.replace(/\B(?=(\d{3})+(?!\d))/g," ")+(b?","+b:"");}
+function ansText(q){return q.type==="mc"?q.o[q.a]:(q.unit==="CHF"?"CHF "+fmt(q.ans,"CHF"):fmt(q.ans)+" "+q.unit);}
+function show(id){["loading","start","quiz","result","teacher"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
+const dt = s => s?new Date(s).toLocaleString("de-CH",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"–";
+const cls = p => p==null?"g0":p>=80?"g3":p>=50?"g2":"g1";
+
+/* 10 zufällige Fragen: aus jedem Thema mindestens 1, Rest zufällig */
+function pickQuestions(){
+  const chosen=[];
+  for(const k in FB){ chosen.push(shuffle(Q.filter(q=>q.fb==k))[0]); }
+  const rest=shuffle(Q.filter(q=>!chosen.includes(q)));
+  while(chosen.length<N_QUESTIONS && rest.length) chosen.push(rest.pop());
+  return shuffle(chosen);
+}
+
+/* ---------- Lernende ---------- */
+let set=[], i=0, right=0, log=[], answered=false, startedAt=null;
+
+function attempts(){const p=LA.getProgress(SLUG);return (p&&p.data&&p.data.attempts)||[];}
+
+function buildStart(){
+  $("hello").textContent="Hallo "+LA.user.name+" 👋";
+  const A=attempts();
+  $("myHist").classList.toggle("hidden",!A.length);
+  $("myHistList").innerHTML=A.slice().reverse().map((a,k)=>'<div class="row"><span>Test '+(A.length-k)+' · '+dt(a.finished)+'</span><b><span class="sc '+cls(a.pct)+'">'+a.score+' / '+a.total+'</span></b></div>').join("");
+  $("go").textContent = A.length ? "Neuer Test (10 neue Zufallsfragen)" : "Test starten";
+  show("start");
+}
+
+function startTest(){
+  set=pickQuestions(); i=0; right=0; log=[]; startedAt=new Date().toISOString();
+  show("quiz"); render();
+}
+
+function render(){
+  const q=set[i]; answered=false;
+  $("pos").textContent="Frage "+(i+1)+" / "+set.length;
+  $("score").textContent=right+" richtig";
+  $("prog").style.width=(i/set.length*100)+"%";
+  $("tagFb").textContent=FB[q.fb]; $("tagLz").textContent=LZ[q.lz]||q.lz;
+  $("ctx").classList.toggle("hidden",!q.ctx); $("ctx").textContent=q.ctx||"";
+  $("qtext").textContent=q.q;
+  $("feedback").innerHTML=""; $("next").classList.add("hidden");
+  const A=$("answers"); A.innerHTML="";
+  if(q.type==="mc"){
+    shuffle(q.o.map((t,k)=>k)).forEach(k=>{
+      const b=document.createElement("button"); b.className="btn"; b.textContent=q.o[k]; b.dataset.k=k;
+      b.onclick=()=>checkMc(k); A.appendChild(b);
+    });
+  } else {
+    A.innerHTML='<div class="numrow"><input id="num" inputmode="decimal" autocomplete="off" placeholder="Zahl eingeben"><span>'+q.unit+'</span></div><button class="btn primary" id="chk">Prüfen</button>';
+    const inp=$("num"); inp.focus();
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter")checkNum();});
+    $("chk").onclick=checkNum;
+  }
+}
+
+function finishAnswer(ok, given){
+  answered=true; const q=set[i];
+  if(ok) right++;
+  log.push({id:q.id, ok, given});
+  $("score").textContent=right+" richtig";
+  $("feedback").innerHTML='<div class="fb '+(ok?"ok":"no")+'"><b>'+(ok?"✅ Richtig!":"❌ Leider falsch. Richtig: "+esc(ansText(q)))+'</b>'+esc(q.e)+'</div>';
+  const nx=$("next"); nx.classList.remove("hidden");
+  nx.textContent= i<set.length-1?"Weiter":"Resultat anzeigen"; nx.focus();
+}
+function checkMc(k){
+  if(answered) return; const q=set[i];
+  document.querySelectorAll("#answers .btn").forEach(b=>{b.disabled=true;
+    if(+b.dataset.k===q.a) b.classList.add("ok"); else if(+b.dataset.k===k) b.classList.add("no");});
+  finishAnswer(k===q.a, q.o[k]);
+}
+function checkNum(){
+  if(answered) return; const q=set[i]; const inp=$("num");
+  const raw=inp.value.trim().replace(/[\s']/g,"").replace(",",".");
+  if(raw===""||isNaN(+raw)){inp.focus();inp.style.borderColor="var(--red)";return;}
+  const v=+raw; const ok=Math.abs(v-q.ans)<=q.tol+1e-9;
+  inp.disabled=true; inp.style.borderColor=ok?"var(--green)":"var(--red)";
+  $("chk").classList.add("hidden");
+  finishAnswer(ok, inp.value.trim()+" "+q.unit);
+}
+$("next").onclick=()=>{ i++; if(i<set.length) render(); else result(); };
+
+async function result(){
+  const pct=Math.round(right/set.length*100);
+  $("pct").textContent=pct+" %";
+  $("verdict").textContent=right+" von "+set.length+" richtig – "+(pct>=90?"Top, sitzt! 🌱":pct>=70?"Gut, nur noch wenige Lücken.":pct>=50?"Einiges ist hängen geblieben – repetiere die Lücken unten.":"Lehrmittel C1 (Kap. 9 und 10) anschauen und dann neu versuchen.");
+  const by=$("byLz"); by.innerHTML="";
+  for(const k in LZ){
+    const all=log.filter(x=>byId[x.id].lz===k); if(!all.length) continue;
+    by.innerHTML+='<div class="row"><span>'+LZ[k]+'</span><b>'+all.filter(x=>x.ok).length+' / '+all.length+'</b></div>';
+  }
+  const wr=log.filter(x=>!x.ok);
+  $("wrongBox").classList.toggle("hidden",!wr.length);
+  $("wrongList").innerHTML=wr.map(x=>{const q=byId[x.id];return '<div class="wrong">'+esc(q.q)+'<br><span class="g">Deine Antwort: '+esc(x.given)+'</span><br><span class="a">→ '+esc(ansText(q))+'</span></div>';}).join("");
+  $("saved").textContent="Wird gespeichert …";
+  show("result");
+  const att={started:startedAt, finished:new Date().toISOString(), score:right, total:set.length, pct, answers:log};
+  const A=attempts().concat([att]);
+  try{ await LA.saveProgress(SLUG,{pct, finished:true, attempts:A}); $("saved").textContent="✔ Resultat gespeichert"; }
+  catch(e){ $("saved").textContent="⚠ Konnte nicht gespeichert werden: "+e.message; }
+}
+$("go").onclick=startTest;
+$("again").onclick=startTest;
+
+/* ---------- Lehrperson ---------- */
+async function teacherView(){
+  $("wrap").classList.add("wide");
+  $("subline").textContent="Auswertung Klasse "+LA.klasse+" (nur diese Klasse)";
+  const T=$("teacher"); show("teacher");
+  T.innerHTML='<div class="card">Lädt Resultate …</div>';
+  let profs, prog;
+  try{ [profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]); }
+  catch(e){ T.innerHTML='<div class="msg err">'+esc(e.message)+'</div>'; return; }
+  const P=Object.fromEntries(profs.map(p=>[p.id,p]));
+  const rows=prog.filter(r=>r.slug===SLUG && P[r.user_id] && P[r.user_id].role==="student" && P[r.user_id].klasse===LA.klasse)
+    .map(r=>{const A=(r.data&&r.data.attempts)||[];return {name:P[r.user_id].name, A, first:A[0], last:A[A.length-1], best:A.reduce((m,a)=>a.pct>m.pct?a:m,A[0]||{pct:0})};})
+    .filter(r=>r.A.length).sort((a,b)=>a.name.localeCompare(b.name,"de"));
+  const done=new Set(rows.map(r=>r.name));
+  const open=profs.filter(p=>p.role==="student" && p.klasse===LA.klasse && !done.has(p.name)).map(p=>p.name).sort((a,b)=>a.localeCompare(b,"de"));
+
+  // Statistik pro Frage (über ersten Versuch jeder Person)
+  const qs={}; rows.forEach(r=>r.first.answers.forEach(x=>{(qs[x.id]=qs[x.id]||{n:0,ok:0}); qs[x.id].n++; if(x.ok) qs[x.id].ok++;}));
+  const lzs={}; Object.entries(qs).forEach(([id,s])=>{const lz=byId[id]?byId[id].lz:"?";(lzs[lz]=lzs[lz]||{n:0,ok:0});lzs[lz].n+=s.n;lzs[lz].ok+=s.ok;});
+  const avg = rows.length ? Math.round(rows.reduce((s,r)=>s+r.first.pct,0)/rows.length) : null;
+
+  const qRows=Object.entries(qs).map(([id,s])=>({q:byId[id],...s,p:Math.round(s.ok/s.n*100)})).filter(x=>x.q).sort((a,b)=>a.p-b.p);
+
+  T.innerHTML=`
+  <div class="kpis">
+    <div class="kpi"><b>${rows.length}</b><span>Lernende mit Resultat</span></div>
+    <div class="kpi"><b>${avg==null?"–":avg+" %"}</b><span>Klassenschnitt (1. Versuch)</span></div>
+    ${Object.keys(LZ).map(k=>`<div class="kpi"><b>${lzs[k]?Math.round(lzs[k].ok/lzs[k].n*100)+" %":"–"}</b><span>${LZ[k]}</span></div>`).join("")}
+  </div>
+  <div class="card">
+    <h2>Resultate pro Lernende/r</h2>
+    <p class="small">Gewertet wird der <b>1. Versuch</b>. Weitere Versuche sind freiwilliges Üben (jedes Mal 10 neue Zufallsfragen). Auf eine Zeile tippen, um die einzelnen Antworten zu sehen.</p>
+    <div style="margin-bottom:8px"><button class="btn inline" id="csv">⬇ CSV exportieren</button><button class="btn inline" id="rf">🔄 Aktualisieren</button><a class="btn inline" href="?test=1" style="text-decoration:none;color:inherit">▶ Test selbst ausprobieren</a></div>
+    <div class="scroll"><table>
+      <tr><th>Name</th><th>1. Versuch</th><th>Datum</th><th>Bester</th><th>Letzter</th><th>Versuche</th></tr>
+      ${rows.map((r,k)=>`<tr class="click" data-k="${k}"><td><b>${esc(r.name)}</b></td>
+        <td class="n"><span class="sc ${cls(r.first.pct)}">${r.first.score}/${r.first.total}</span></td>
+        <td>${dt(r.first.finished)}</td>
+        <td class="n"><span class="sc ${cls(r.best.pct)}">${r.best.pct} %</span></td>
+        <td class="n"><span class="sc ${cls(r.last.pct)}">${r.last.pct} %</span></td>
+        <td class="n">${r.A.length}</td></tr>
+        <tr class="hidden" id="det${k}"><td colspan="6" class="det"></td></tr>`).join("") || '<tr><td colspan="6">Noch niemand hat den Test gelöst.</td></tr>'}
+    </table></div>
+    ${open.length?`<p class="small" style="margin-top:10px"><b>Registriert, aber noch kein Resultat (${open.length}):</b> ${open.map(esc).join(", ")}</p>`:""}
+  </div>
+  <div class="card">
+    <h2>Welche Fragen bereiten Mühe?</h2>
+    <p class="small">Anteil richtiger Antworten im 1. Versuch, schwierigste zuerst. Da jede Person andere Zufallsfragen erhält, ist «n» die Zahl der Lernenden, die diese Frage bekamen.</p>
+    <div class="scroll"><table>
+      <tr><th>Frage</th><th>Thema</th><th>Richtig</th><th></th><th>n</th></tr>
+      ${qRows.map(x=>`<tr><td class="wrap">${esc(x.q.q)}<br><span class="small">→ ${esc(ansText(x.q))}</span></td><td class="n">${x.q.fb}</td>
+        <td class="n"><span class="sc ${cls(x.p)}">${x.p} %</span></td>
+        <td><div class="qbar"><div style="width:${x.p}%;background:${x.p>=80?"var(--green)":x.p>=50?"#e5b800":"var(--red)"}"></div></div></td>
+        <td class="n">${x.n}</td></tr>`).join("") || '<tr><td colspan="5">Noch keine Daten.</td></tr>'}
+    </table></div>
+  </div>`;
+
+  T.querySelectorAll("tr.click").forEach(tr=>tr.onclick=()=>{
+    const k=+tr.dataset.k, d=$("det"+k), r=rows[k];
+    if(!d.classList.contains("hidden")){d.classList.add("hidden");return;}
+    d.firstElementChild.innerHTML=r.A.map((a,n)=>`<div style="margin-bottom:8px"><b>Versuch ${n+1}</b> · ${dt(a.finished)} · ${a.score}/${a.total}${n===0?" (gewertet)":""}`+
+      a.answers.map(x=>{const q=byId[x.id];return q?`<div class="it">${x.ok?"✅":"❌"} ${esc(q.q)}${x.ok?"":` <span class="small">– Antwort: «${esc(x.given)}», richtig: «${esc(ansText(q))}»</span>`}</div>`:"";}).join("")+'</div>').join("");
+    d.classList.remove("hidden");
+  });
+  $("rf").onclick=()=>location.reload();
+  $("csv").onclick=()=>{
+    const head=["Name","1. Versuch Punkte","1. Versuch %","Datum 1. Versuch","Bester %","Letzter %","Versuche"];
+    const lines=[head].concat(rows.map(r=>[r.name,r.first.score+"/"+r.first.total,r.first.pct,dt(r.first.finished),r.best.pct,r.last.pct,r.A.length]));
+    const csv=lines.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");
+    const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"})); a.download="pflanzenverwendung-resultate.csv"; a.click();
+  };
+}
+
+/* ---------- Start ---------- */
+LA.requireLogin().then(()=>{
+  LA.who($("who"));
+  if(LA.user.role==="teacher" && !/[?&]test=1/.test(location.search)) teacherView();
+  else buildStart();
+});
+</script>
+</body>
+</html>
