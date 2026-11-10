@@ -94,6 +94,7 @@
       <p style="margin:.2rem 0 .6rem">Du erhältst <b>10 zufällige Fragen</b> aus allen Themen: Lebensbereiche der Stauden, Geselligkeit, Gehölze verwenden, Verwendungsfragen wie am QV und Gehölze im Winter. Nach jeder Antwort siehst du, ob es stimmt. <b>Üben, üben, üben:</b> Jede Runde gibt es neue Fragen. Dein Resultat wird gespeichert und deine Lehrperson sieht es.</p>
       
       <button class="btn primary" id="go">Test starten</button>
+      <p class="small" style="margin:.6rem 0 0">❄️ Knospen mit Fotos üben: <a href="https://winterbestimmung.vercel.app/" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">App «Winterbestimmung Gehölze»</a> (Karteikarten und Bild-Quiz)</p>
     </div>
     <div class="card hidden" id="myHist"><h2>Deine bisherigen Tests</h2><div id="myHistList"></div></div>
   </div>
@@ -313,7 +314,48 @@ const Q = [
  e:"Die Birke ist an der weissen Rinde schon von weitem erkennbar."},
 {fb:5,lz:"WI",type:"mc",q:"Welche Merkmale helfen dir beim Bestimmen von Gehölzen im Winter?",
  o:["Knospen, Blattnarben, Rinde/Borke, Mark, Habitus, Fruchtstände","Nur die Blütenfarbe","Nur die Blattform","Nur die Höhe der Pflanze"],a:0,
- e:"Dazu kommen Triebfarbe, Lentizellen, Korkleisten, Dornen/Stacheln und der Geruch."}
+ e:"Dazu kommen Triebfarbe, Lentizellen, Korkleisten, Dornen/Stacheln und der Geruch."},
+// ---------- Ergänzungen: Winterschmuck, Verwendungsgruppen, Kernliste Winterbestimmung ----------
+{fb:3,lz:"GH",type:"mc",q:"Welche Anforderungen muss ein Strassenbaum vor allem erfüllen?",
+ o:["Stadtklima-, hitze- und salzverträglich, hoher Kronenansatz, bruchfest","Möglichst grosse, auffällige Früchte für die Passanten","Flach wurzelnd und schattenliebend","Schnell wachsend, aber nur 3–5 Jahre alt werdend"],a:0,
+ e:"Strassenbäume stehen an Extremstandorten: Hitze, Streusalz, verdichteter Boden und wenig Wurzelraum. Beispiele: Tilia cordata, Acer campestre."},
+{fb:3,lz:"GH",type:"mc",q:"Was ist «Winterschmuck»?",
+ o:["Zierwerte, die im Winter wirken: farbige Triebe, Rinde, Früchte, immergrünes Laub, Winterblüten","Lichterketten und Dekoration in Gehölzen","Alle Pflanzen, die im Winter blühen müssen","Pflanzen, die im Winter ins Haus geholt werden"],a:0,
+ e:"Beispiele: Cornus sanguinea (rote Triebe), Acer griseum (Zimtrinde), Rosa canina (Hagebutten), Hamamelis (Winterblüte)."},
+{fb:3,lz:"GH",type:"mc",q:"Welches Gehölz bietet im Winter eine auffällige, zimtbraune, abrollende Rinde?",
+ o:["Acer griseum (Zimt-Ahorn)","Carpinus betulus (Hainbuche)","Fagus sylvatica (Rot-Buche)","Ligustrum vulgare (Liguster)"],a:0,
+ e:"Der Zimt-Ahorn ist ein klassischer Rindenschmuck-Baum."},
+{fb:4,lz:"ST",type:"mc",q:"Warum schneidest du Stauden und Gräser mit Winterschmuck erst im Frühling zurück?",
+ o:["Struktur und Raureif bleiben sichtbar, Insekten überwintern in den Stängeln","Weil sie im Winter schneller wachsen","Weil Schnittwerkzeuge im Winter nicht erlaubt sind","Damit die Pflanze im Winter blüht"],a:0,
+ e:"Zudem bieten Samenstände Vogelfutter, und die alten Triebe schützen die Pflanze vor Frost und Nässe."},
+{fb:4,lz:"GH",type:"mc",q:"Kindergarten, Ostseite, humoser Boden: Gesucht ist ein ungiftiger Strauch mit Winterschmuck.",
+ o:["Corylus avellana 'Contorta' (Korkenzieher-Hasel)","Taxus baccata (Eibe)","Daphne mezereum (Seidelbast)","Euonymus europaeus (Pfaffenhütchen)"],a:0,
+ e:"Eibe, Seidelbast und Pfaffenhütchen sind giftig und haben bei Kindern nichts verloren. Die Korkenzieher-Hasel hat gedrehte Triebe und Kätzchen im Winter."},
+{fb:5,lz:"WI",type:"mc",q:"Welches einheimische Nadelgehölz wirft im Winter seine Nadeln ab?",
+ o:["Larix decidua (Europäische Lärche)","Picea abies (Fichte)","Abies alba (Weisstanne)","Taxus baccata (Eibe)"],a:0,
+ e:"Die Lärche ist im Winter kahl. Typisch sind die warzenförmigen Kurztriebe."},
+{fb:5,lz:"WI",type:"mc",q:"Woran unterscheidest du die Weisstanne (Abies alba) von der Fichte (Picea abies)?",
+ o:["Tanne: weiche Nadeln mit 2 weissen Streifen, Zapfen aufrecht; Fichte: stechend, Zapfen hängend","Tanne: Nadeln zu zweit; Fichte: Nadeln zu fünft","Tanne wirft im Winter die Nadeln ab, Fichte nicht","Es gibt keinen Unterschied, beides ist dasselbe"],a:0,
+ e:"Merksatz: «Fichten stechen, Tannen nicht». Die Fichtenzweige fühlen sich wegen der Nadelkissen raspelig an."},
+{fb:5,lz:"WI",type:"mc",q:"Knospen deutlich gestielt, im Winter hängen kleine verholzte Zäpfchen. Welches Gehölz?",
+ o:["Alnus glutinosa (Schwarz-Erle)","Fagus sylvatica (Rot-Buche)","Corylus avellana (Hasel)","Tilia cordata (Winter-Linde)"],a:0,
+ e:"Gestielte Knospen und die alten Erlenzäpfchen machen die Schwarz-Erle sicher bestimmbar."},
+{fb:5,lz:"WI",type:"mc",q:"Knospen ohne Knospenschuppen (nackt), dicht filzig behaart, gegenständig. Welcher Strauch?",
+ o:["Viburnum lantana (Wolliger Schneeball)","Viburnum opulus (Gemeiner Schneeball)","Ligustrum vulgare (Liguster)","Sambucus nigra (Schwarzer Holunder)"],a:0,
+ e:"Der Wollige Schneeball hat nackte, pelzige Knospen. Der Gemeine Schneeball hat glänzende rote Knospen mit 2 Schuppen."},
+{fb:5,lz:"WI",type:"mc",q:"Grüne, vierkantige Zweige mit Korkleisten, gegenständig. Welcher Strauch?",
+ o:["Euonymus europaeus (Pfaffenhütchen)","Cornus sanguinea (Roter Hartriegel)","Corylus avellana (Hasel)","Lonicera xylosteum (Rote Heckenkirsche)"],a:0,
+ e:"Achtung: Das Pfaffenhütchen ist giftig (v. a. die Früchte)."},
+{fb:5,lz:"WI",type:"mc",q:"Rinde mit waagrechten Lentizellenbändern, die sich ringförmig ablösen («Ringelborke»). Welcher Baum?",
+ o:["Prunus avium (Vogel-Kirsche)","Betula pendula (Hänge-Birke)","Fraxinus excelsior (Esche)","Quercus robur (Stiel-Eiche)"],a:0,
+ e:"Kirschen erkennt man im Winter auch an den büschelig gehäuften Knospen an Kurztrieben."},
+{fb:5,lz:"WI",type:"mc",q:"Was macht die Knospen vieler Gehölze im Winter widerstandsfähig?",
+ o:["Klebrige Harze, Behaarung und rote Schutzpigmente","Sie sind mit Wasser gefüllt","Sie wachsen im Winter besonders schnell","Sie werfen die Knospenschuppen im Herbst ab"],a:0,
+ e:"Harz schützt vor Frass, Pilzen und Verdunstung, Haare isolieren, rote Farbe schützt vor UV-Strahlung."},
+{fb:5,lz:"WI",type:"mc",q:"Wie gehst du vor, wenn dir ein Kunde im Dezember einen kahlen Zweig zum Bestimmen bringt?",
+ o:["Knospenstellung, Knospen, Blattnarben, Mark prüfen, dann mit Schlüssel bestimmen und mit Bildern rückprüfen","Sofort eine App fragen und das erste Resultat übernehmen","Warten, bis der Strauch im Frühling Blätter hat","Nur an der Rinde bestimmen"],a:0,
+ e:"Mehrere Zweige anschauen, Merkmale systematisch prüfen, mit dem Schnellbestimmungsschlüssel bestimmen und das Ergebnis rückprüfen."}
+
 ];
 </script>
 <script>
