@@ -77,55 +77,64 @@
   td.wrap{white-space:normal;min-width:240px}
   .det{background:#f7faf8;padding:10px 14px}
   .det .it{padding:4px 0;font-size:.88rem;white-space:normal}
+
+  .ctxbox{background:#f3f8f4;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0 12px}
+  .ctxbox div{margin:3px 0}
+  .lbl{font-weight:600;margin:12px 0 6px}
+  .plant{display:flex;gap:8px;align-items:center;margin:8px 0}
+  .plant span.n{font-weight:700;color:var(--muted);min-width:18px}
+  .plant input{flex:1;font-size:1.05rem;padding:12px;border:1.5px solid var(--line);border-radius:12px;min-width:0;font-family:inherit}
+  .chip{border-radius:10px;padding:8px 10px;margin:4px 0 8px 26px;font-size:.92rem}
+  .chip.ok{background:var(--green-l)} .chip.no{background:var(--red-l)} .chip.half{background:var(--yel-l)} .chip.unk{background:var(--blue-l)}
+  .examples{font-size:.9rem;color:var(--muted);margin-top:10px}
+  .lbbtn{display:block;width:100%;text-align:left;padding:11px 14px;margin:6px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:.98rem;cursor:pointer;font-family:inherit}
+  .lbbtn.sel{border-color:var(--blue);background:var(--blue-l)}
+  .lbbtn.ok{background:var(--green-l);border-color:var(--green)} .lbbtn.no{background:var(--red-l);border-color:var(--red)}
+  .tabs2{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tabs2 button{font:inherit;font-weight:600;padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer}
+  .tabs2 button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .chk{border-bottom:1px solid #eef1ef;padding:10px 0}
+  .chk input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;width:100%;margin:6px 0}
 </style>
 </head>
 <body>
 <div class="wrap" id="wrap">
   <div class="top"><a class="back" href="../">← Alle Apps</a><div class="who" id="who"></div></div>
   <h1>🌿 Pflanzenverwendung üben</h1>
-  <p class="sub" id="subline">Lebensbereiche, Geselligkeit, Gehölze und Winterbestimmung · Klasse GLZ24A</p>
-
+  <p class="sub" id="subline">Praxisfälle wie am QV · Klasse GLZ24A</p>
   <div id="loading" class="card">Lädt …</div>
 
-  <!-- Start (Lernende) -->
   <div id="start" class="hidden">
     <div class="card">
       <h2 id="hello"></h2>
-      <p style="margin:.2rem 0 .6rem">Du erhältst <b>10 zufällige Fragen</b> aus allen Themen: Lebensbereiche der Stauden, Geselligkeit, Gehölze verwenden, Verwendungsfragen wie am QV und Gehölze im Winter. Nach jeder Antwort siehst du, ob es stimmt. <b>Üben, üben, üben:</b> Jede Runde gibt es neue Fragen. Dein Resultat wird gespeichert und deine Lehrperson sieht es.</p>
-      
-      <button class="btn primary" id="go">Test starten</button>
-      <p class="small" style="margin:.6rem 0 0">❄️ Knospen mit Fotos üben: <a href="https://winterbestimmung.vercel.app/" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">App «Winterbestimmung Gehölze»</a> (Karteikarten und Bild-Quiz)</p>
+      <p style="margin:.2rem 0 .6rem">Jede Runde hat <b>6 Praxisfälle</b> und <b>4 Grundlagenfragen</b>. Bei den Praxisfällen analysierst du die Situation und <b>tippst die passenden Pflanzen selbst ein</b>, am besten botanisch (z. B. <i>Galium odoratum</i>). Rechtschreibfehler sind kein Problem.</p>
+      <ul class="small" style="margin:.2rem 0 .8rem;padding-left:1.2rem">
+        <li>✅ passt: 1 Punkt · 🟡 Gattung oder nur deutscher Name: ½ Punkt</li>
+        <li>❌ passt nicht: 0 Punkte · 🔎 unbekannt: deine Lehrperson prüft die Antwort</li>
+      </ul>
+      <button class="btn primary" id="go">Runde starten</button>
+      <p class="small" style="margin:.6rem 0 0">❄️ Knospen mit Fotos üben: <a href="https://winterbestimmung.vercel.app/" target="_blank" rel="noopener" style="color:var(--green);font-weight:600">App «Winterbestimmung Gehölze»</a></p>
     </div>
-    <div class="card hidden" id="myHist"><h2>Deine bisherigen Tests</h2><div id="myHistList"></div></div>
+    <div class="card hidden" id="myHist"><h2>Deine bisherigen Runden</h2><div id="myHistList"></div></div>
   </div>
 
-  <!-- Quiz -->
   <div id="quiz" class="hidden">
     <div class="meta"><span id="pos"></span><span id="score"></span></div>
     <div class="bar"><div id="prog"></div></div>
-    <div class="card">
-      <span class="tag" id="tagFb"></span><span class="tag" id="tagLz"></span>
-      <div class="ctx hidden" id="ctx"></div>
-      <div class="q" id="qtext"></div>
-      <div id="answers"></div>
-      <div id="feedback"></div>
-      <button class="btn primary hidden" id="next">Weiter</button>
-    </div>
+    <div class="card" id="qcard"></div>
   </div>
 
-  <!-- Resultat -->
   <div id="result" class="hidden">
     <div class="card">
       <div class="big" id="pct"></div>
       <p style="text-align:center;margin:0" id="verdict"></p>
       <p class="small" style="text-align:center;margin:.4rem 0 0" id="saved"></p>
     </div>
-    <div class="card"><h2>Nach Thema</h2><div id="byLz"></div></div>
+    <div class="card" id="pendBox"><h2>🔎 Deine Lehrperson prüft noch</h2><div id="pendList"></div></div>
     <div class="card" id="wrongBox"><h2>Das solltest du nochmals anschauen</h2><div id="wrongList"></div></div>
-    <button class="btn primary" id="again">Neuer Test mit 10 anderen Fragen</button>
+    <button class="btn primary" id="again">Neue Runde</button>
   </div>
 
-  <!-- Lehrer-Auswertung -->
   <div id="teacher" class="hidden"></div>
 </div>
 
@@ -133,21 +142,680 @@
 <script>window.LA_KLASSE="GLZ24A";</script>
 <script src="core.js"></script>
 <script>
-const FB = {
-  1:"Lebensbereiche Stauden",
-  2:"Geselligkeit",
-  3:"Gehölze verwenden",
-  4:"Verwendungsfragen (QV)",
-  5:"Gehölze im Winter"
-};
-const LZ = {
-  ST:"Stauden verwenden (L35)",
-  GH:"Gehölze verwenden (L35)",
-  WI:"Gehölze im Winter bestimmen"
-};
+/* Praxisfälle: Die Lernenden geben die Pflanzen frei ein.
+   ok = passt (Botanisch|deutsche Namen;…|kurze Begründung)
+   no = typischer Fehlgriff (Botanisch|deutsche Namen|warum nicht)
+   Ein Eintrag mit nur Gattung (z. B. "Epimedium") akzeptiert alle Arten der Gattung. */
+const CASES = [
+{id:"c01",lz:"ST",t:"Sonnige Rabatte, einheimisch und gelb",
+ s:["📍 Rabatte vor einem Bürogebäude, vollsonnig, Südseite","🌱 Durchlässiger, trockener, eher magerer Boden","✅ Die Kundin wünscht einheimische Stauden, die gelb blühen"],
+ q:"Nenne 2 passende Stauden.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["Fr2 / SH (Freifläche trocken, Steppenheide)","G1 (Gehölz, frischer Boden)","WR (Wasserrand)","B (Beet)"],a:0},
+ ok:["Helianthemum nummularium|Sonnenröschen;Gewöhnliches Sonnenröschen|einheimisch, gelb, liebt sonnige, trockene Standorte",
+ "Buphthalmum salicifolium|Ochsenauge;Weidenblättriges Ochsenauge|einheimisch, gelb, kalkhaltige, trockene Böden",
+ "Hypericum perforatum|Johanniskraut;Echtes Johanniskraut|einheimisch, gelb, sonnig und trocken",
+ "Verbascum nigrum|Schwarze Königskerze|einheimisch, gelb, sonnige, eher trockene Standorte",
+ "Verbascum thapsus|Kleinblütige Königskerze;Königskerze|einheimisch, gelb, Pionierpflanze trockener Standorte",
+ "Verbascum lychnitis|Mehlige Königskerze|einheimisch, gelb, trocken",
+ "Hippocrepis comosa|Hufeisenklee|einheimisch, gelb, Magerwiesen und Trockenrasen",
+ "Lotus corniculatus|Hornklee;Gewöhnlicher Hornklee|einheimisch, gelb, magere, sonnige Standorte",
+ "Anthyllis vulneraria|Wundklee|einheimisch, gelb, trockene Magerwiesen",
+ "Potentilla neumanniana|Frühlings-Fingerkraut|einheimisch, gelb, trocken und sonnig",
+ "Potentilla verna|Frühlings-Fingerkraut|einheimisch, gelb, trocken und sonnig",
+ "Hieracium pilosella|Kleines Habichtskraut|einheimisch, gelb, magere, trockene Standorte",
+ "Pilosella officinarum|Kleines Habichtskraut|einheimisch, gelb, magere, trockene Standorte",
+ "Sedum acre|Scharfer Mauerpfeffer|einheimisch, gelb, sehr trockenheitsverträglich",
+ "Primula veris|Frühlings-Schlüsselblume;Schlüsselblume|einheimisch, gelb, Magerwiesen",
+ "Inula hirta|Rauhaariger Alant|einheimisch, gelb, Trockenrasen",
+ "Inula conyzae|Dürrwurz|einheimisch, gelb, trockene Säume",
+ "Euphorbia cyparissias|Zypressen-Wolfsmilch|einheimisch, gelbgrün, trocken (giftig!)"],
+ no:["Trollius europaeus|Trollblume|einheimisch und gelb, braucht aber feuchten Boden",
+ "Caltha palustris|Sumpfdotterblume|gelb, wächst aber im Sumpf",
+ "Rudbeckia fulgida|Sonnenhut;Gewöhnlicher Sonnenhut|blüht gelb, stammt aber aus Nordamerika",
+ "Coreopsis verticillata|Mädchenauge|blüht gelb, stammt aber aus Nordamerika",
+ "Achillea filipendulina|Gold-Garbe;Goldgarbe|blüht gelb, stammt aber aus dem Kaukasus",
+ "Hemerocallis|Taglilie|nicht einheimisch",
+ "Oenothera biennis|Nachtkerze|Neophyt aus Nordamerika",
+ "Solidago canadensis|Kanadische Goldrute|invasiver Neophyt, darf nicht gepflanzt werden",
+ "Achillea millefolium|Gemeine Schafgarbe;Schafgarbe|einheimisch und trockenheitsverträglich, blüht aber weiss bis rosa",
+ "Lysimachia punctata|Punktierter Gilbweiderich|nicht einheimisch, braucht frischen bis feuchten Boden"]},
 
-const Q = [
-// ---------- 1 Lebensbereiche Stauden ----------
+{id:"c02",lz:"ST",t:"Nordseite eines Hauses",
+ s:["📍 Schmales Beet an der Nordseite eines Hauses, schattig","🌱 Humoser, frischer Boden, kühl","✅ Pflegeleicht, schöne Blattstrukturen"],
+ q:"Nenne 2 passende Stauden oder Farne.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["G1 / GR1 (Gehölz, Gehölzrand, frisch)","SH (Steppenheide)","St (Steinanlage)","Fr2 (Freifläche trocken)"],a:0},
+ ok:["Galium odoratum|Waldmeister|Gehölzstaude, Schatten, humoser Boden",
+ "Asarum europaeum|Haselwurz|wintergrüner Bodendecker für Schatten",
+ "Polystichum setiferum|Filziger Schildfarn;Borstiger Schildfarn|Farn für Schatten, wintergrün",
+ "Polystichum aculeatum|Gelappter Schildfarn|Farn für Schatten",
+ "Dryopteris filix-mas|Wurmfarn;Gewöhnlicher Wurmfarn|robuster Schattenfarn",
+ "Athyrium filix-femina|Frauenfarn|Schattenfarn für frische Böden",
+ "Matteuccia struthiopteris|Straussenfarn;Straussfarn|Farn für frische bis feuchte, schattige Lagen",
+ "Asplenium scolopendrium|Hirschzungenfarn;Hirschzunge|liebt kühle, schattige Lagen",
+ "Polygonatum multiflorum|Vielblütige Weisswurz;Salomonssiegel|Gehölzstaude für Schatten (giftig)",
+ "Polygonatum|Weisswurz;Salomonssiegel|Gehölzstaude für Schatten",
+ "Convallaria majalis|Maiglöckchen|Schatten, flächig (giftig!)",
+ "Anemone nemorosa|Buschwindröschen|Waldgeophyt, Schatten",
+ "Hepatica nobilis|Leberblümchen|Gehölzstaude, Schatten",
+ "Pulmonaria officinalis|Lungenkraut|Gehölzrand, Schatten",
+ "Pulmonaria|Lungenkraut|Gehölzrand, Schatten",
+ "Brunnera macrophylla|Kaukasus-Vergissmeinnicht|Gehölzrand, Schatten, schöne Blätter",
+ "Epimedium|Elfenblume|Bodendecker für Schatten",
+ "Hosta|Funkie|Blattschmuck für Schatten und frischen Boden",
+ "Astilbe|Prachtspiere|Gehölzrand, frisch bis feucht",
+ "Geranium macrorrhizum|Balkan-Storchschnabel|robust, auch Schatten",
+ "Waldsteinia ternata|Golderdbeere|Bodendecker, Halbschatten bis Schatten",
+ "Vinca minor|Kleines Immergrün|immergrüner Bodendecker für Schatten",
+ "Lamium galeobdolon|Goldnessel|Bodendecker für Schatten",
+ "Luzula sylvatica|Wald-Hainsimse|Gras für Schatten",
+ "Carex morrowii|Japan-Segge|wintergrünes Gras für Schatten",
+ "Helleborus niger|Christrose|Gehölzstaude (giftig)",
+ "Helleborus foetidus|Stinkende Nieswurz|Gehölzstaude (giftig)",
+ "Pachysandra terminalis|Ysander;Dickmännchen|immergrüner Bodendecker für Schatten",
+ "Tiarella cordifolia|Schaumblüte|Bodendecker für Schatten",
+ "Aruncus dioicus|Waldgeissbart;Geissbart|Gehölzrand, frisch",
+ "Bergenia cordifolia|Bergenie|wintergrün, auch Halbschatten",
+ "Alchemilla mollis|Frauenmantel|robust, auch Halbschatten",
+ "Heuchera|Purpurglöckchen|Blattschmuck für Halbschatten",
+ "Hakonechloa macra|Japanwaldgras|Gras für Halbschatten"],
+ no:["Lavandula angustifolia|Lavendel|braucht Sonne und trockenen Boden",
+ "Sedum acre|Scharfer Mauerpfeffer|braucht Sonne und Trockenheit",
+ "Salvia nemorosa|Steppen-Salbei|braucht Sonne",
+ "Helianthemum nummularium|Sonnenröschen|braucht Sonne",
+ "Dianthus carthusianorum|Karthäuser-Nelke|braucht Sonne und Trockenheit",
+ "Echinacea purpurea|Roter Sonnenhut|braucht Sonne",
+ "Stipa pennata|Federgras|braucht Sonne und Trockenheit",
+ "Rudbeckia fulgida|Sonnenhut|braucht Sonne"]},
+
+{id:"c03",lz:"ST",t:"Teichrand in der Sumpfzone",
+ s:["📍 Gartenteich, Uferbereich","🌱 Sumpfzone: Wasserstand 0–10 cm","✅ Nur einheimische Pflanzen"],
+ q:"Nenne 2 passende Pflanzen.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["WR (Wasserrand)","W (Wasser, Schwimmblattzone)","G (Gehölz)","Fr2 (Freifläche trocken)"],a:0},
+ ok:["Iris pseudacorus|Sumpf-Schwertlilie;Gelbe Schwertlilie|einheimisch, Sumpfzone",
+ "Caltha palustris|Sumpfdotterblume|einheimisch, Sumpfzone",
+ "Lythrum salicaria|Blut-Weiderich|einheimisch, Feucht- und Sumpfzone",
+ "Menyanthes trifoliata|Fieberklee|einheimisch, Sumpf- und Flachwasserzone",
+ "Typha minima|Zwerg-Rohrkolben|einheimisch, Sumpfzone",
+ "Typha angustifolia|Schmalblättriger Rohrkolben|einheimisch, Sumpf- bis Flachwasserzone (wüchsig)",
+ "Sparganium erectum|Ästiger Igelkolben|einheimisch, Sumpfzone",
+ "Alisma plantago-aquatica|Froschlöffel|einheimisch, Sumpfzone",
+ "Butomus umbellatus|Schwanenblume|einheimisch, Sumpf- bis Flachwasserzone",
+ "Mentha aquatica|Wasserminze|einheimisch, Sumpfzone",
+ "Veronica beccabunga|Bachbunge|einheimisch, Sumpfzone",
+ "Myosotis scorpioides|Sumpf-Vergissmeinnicht|einheimisch, Sumpfzone",
+ "Myosotis palustris|Sumpf-Vergissmeinnicht|einheimisch, Sumpfzone",
+ "Carex elata|Steife Segge|einheimisch, Sumpfzone",
+ "Carex pseudocyperus|Scheinzyper-Segge|einheimisch, Sumpfzone",
+ "Juncus effusus|Flatter-Binse|einheimisch, Sumpfzone",
+ "Juncus inflexus|Blaugrüne Binse|einheimisch, Sumpfzone",
+ "Equisetum fluviatile|Teich-Schachtelhalm|einheimisch, Sumpf- bis Flachwasserzone",
+ "Filipendula ulmaria|Mädesüss|einheimisch, Feuchtzone am Ufer",
+ "Lysimachia vulgaris|Gewöhnlicher Gilbweiderich|einheimisch, Feuchtzone",
+ "Lysimachia nummularia|Pfennigkraut|einheimisch, Feuchtzone",
+ "Eupatorium cannabinum|Wasserdost|einheimisch, Feuchtzone",
+ "Hippuris vulgaris|Tannenwedel|einheimisch, Sumpf- bis Flachwasserzone",
+ "Ranunculus lingua|Zungen-Hahnenfuss|einheimisch, Sumpfzone"],
+ no:["Pontederia cordata|Hechtkraut|nicht einheimisch (Amerika)",
+ "Nymphaea alba|Weisse Seerose|einheimisch, aber Schwimmblattpflanze im tieferen Wasser",
+ "Nymphaea|Seerose|Schwimmblattpflanze im tieferen Wasser",
+ "Acorus calamus|Kalmus|nicht einheimisch (Neophyt)",
+ "Zantedeschia aethiopica|Zimmerkalla|nicht einheimisch, nicht winterhart",
+ "Hosta|Funkie|nicht einheimisch, keine Sumpfpflanze",
+ "Lavandula angustifolia|Lavendel|braucht Trockenheit",
+ "Sedum acre|Scharfer Mauerpfeffer|braucht Trockenheit",
+ "Impatiens glandulifera|Drüsiges Springkraut|invasiver Neophyt"]},
+
+{id:"c04",lz:"GH",t:"Naturnahe Vogelschutzhecke",
+ s:["📍 Grenze zum Nachbarn, 15 m lang, sonnig bis halbschattig","🌱 Normaler Gartenboden","✅ Freiwachsend, 2–4 m hoch, nur einheimische Sträucher mit Früchten für Vögel"],
+ q:"Nenne 3 passende Sträucher.",n:3,
+ lb:{q:"Welche Verwendungsgruppe ist das?",o:["Freiwachsende Hecke","Schnitthecke","Bodendecker","Strassenbaum"],a:0},
+ ok:["Cornus sanguinea|Roter Hartriegel;Hartriegel|einheimisch, Beeren für Vögel",
+ "Cornus mas|Kornelkirsche;Tierlibaum|einheimisch, frühe Blüte, Früchte",
+ "Viburnum lantana|Wolliger Schneeball|einheimisch, Beeren für Vögel",
+ "Viburnum opulus|Gemeiner Schneeball;Gewöhnlicher Schneeball|einheimisch, rote Beeren",
+ "Crataegus monogyna|Eingriffeliger Weissdorn;Weissdorn|einheimisch, Vogelnährgehölz, Nistplatz",
+ "Crataegus laevigata|Zweigriffeliger Weissdorn|einheimisch, Vogelnährgehölz",
+ "Crataegus|Weissdorn|einheimisch, Vogelnährgehölz",
+ "Prunus spinosa|Schlehe;Schwarzdorn|einheimisch, Nistplatz und Früchte",
+ "Rosa canina|Hunds-Rose;Hundsrose;Heckenrose|einheimisch, Hagebutten",
+ "Rosa|Wildrose;Rose|einheimische Wildrosen tragen Hagebutten",
+ "Ligustrum vulgare|Gewöhnlicher Liguster;Liguster|einheimisch, Beeren im Winter",
+ "Lonicera xylosteum|Rote Heckenkirsche;Gewöhnliche Heckenkirsche|einheimisch, Beeren",
+ "Sambucus nigra|Schwarzer Holunder;Holunder|einheimisch, Beeren für Vögel",
+ "Sambucus racemosa|Roter Holunder;Trauben-Holunder|einheimisch, Beeren",
+ "Euonymus europaeus|Pfaffenhütchen|einheimisch, Früchte für Vögel (giftig für Menschen)",
+ "Rhamnus cathartica|Purgier-Kreuzdorn;Kreuzdorn|einheimisch, Beeren",
+ "Frangula alnus|Faulbaum|einheimisch, Beeren, Insektenweide",
+ "Corylus avellana|Hasel;Haselnuss|einheimisch, Nüsse",
+ "Sorbus aucuparia|Vogelbeere;Eberesche|einheimisch, Vogelnährgehölz",
+ "Amelanchier ovalis|Gewöhnliche Felsenbirne;Felsenmispel|einheimisch, Früchte",
+ "Berberis vulgaris|Gewöhnliche Berberitze;Sauerdorn|einheimisch, Früchte",
+ "Ribes alpinum|Alpen-Johannisbeere|einheimisch, Beeren",
+ "Malus sylvestris|Holzapfel|einheimisch, Früchte",
+ "Rubus fruticosus|Brombeere|einheimisch, Früchte und Nistplatz",
+ "Hippophae rhamnoides|Sanddorn|einheimisch, Früchte, sonnig",
+ "Carpinus betulus|Hainbuche;Weissbuche|einheimisch, Nistplatz (wenig Früchte für Vögel)"],
+ no:["Prunus laurocerasus|Kirschlorbeer|invasiv, in der Schweiz seit 2024 nicht mehr verkäuflich",
+ "Thuja occidentalis|Thuja;Lebensbaum|nicht einheimisch, ökologisch wenig wertvoll",
+ "Buddleja davidii|Sommerflieder;Schmetterlingsflieder|invasiv, nicht mehr verkäuflich",
+ "Forsythia|Forsythie;Goldglöckchen|nicht einheimisch, keine Früchte",
+ "Mahonia aquifolium|Mahonie|nicht einheimisch, invasiv",
+ "Ligustrum ovalifolium|Ovalblättriger Liguster|nicht einheimisch",
+ "Lonicera nitida|Heckenmyrte|nicht einheimisch",
+ "Photinia|Glanzmispel|nicht einheimisch",
+ "Chamaecyparis|Scheinzypresse|nicht einheimisch",
+ "Cotoneaster|Zwergmispel;Steinmispel|meist nicht einheimisch, einige Arten invasiv",
+ "Weigela|Weigelie|nicht einheimisch",
+ "Deutzia|Deutzie|nicht einheimisch",
+ "Philadelphus|Pfeifenstrauch;Falscher Jasmin|nicht einheimisch"]},
+
+{id:"c05",lz:"GH",t:"Immergrüne Schnitthecke als Sichtschutz",
+ s:["📍 Sitzplatz, Sichtschutz zum Nachbarn, sonnig bis halbschattig","🌱 Normaler Gartenboden","✅ Ganzjährig blickdicht, 1,8 m hoch, jährlich geschnitten"],
+ q:"Nenne 2 passende Heckenpflanzen.",n:2,
+ lb:{q:"Welche Verwendungsgruppe ist das?",o:["Schnitthecke","Freiwachsende Hecke","Solitär","Kletterpflanze"],a:0},
+ ok:["Taxus baccata|Eibe|einheimisch, immergrün, sehr schnittverträglich (giftig!)",
+ "Ilex aquifolium|Stechpalme|einheimisch, immergrün, schnittverträglich (Früchte giftig)",
+ "Ligustrum vulgare|Gewöhnlicher Liguster;Liguster|einheimisch, halbimmergrün, sehr schnittverträglich",
+ "Ligustrum vulgare 'Atrovirens'|Liguster Atrovirens|wintergrüne Sorte des einheimischen Ligusters",
+ "Buxus sempervirens|Buchs;Buchsbaum|immergrün, schnittverträglich (Achtung Buchsbaumzünsler)",
+ "Prunus lusitanica|Portugiesischer Kirschlorbeer|immergrün, schnittverträglich",
+ "Thuja occidentalis|Thuja;Lebensbaum|immergrün und schnittverträglich, ökologisch aber wenig wertvoll",
+ "Osmanthus × burkwoodii|Duftblüte|immergrün, schnittverträglich",
+ "Elaeagnus × ebbingei|Wintergrüne Ölweide|immergrün, schnittverträglich",
+ "Lonicera nitida|Heckenmyrte|immergrün, schnittverträglich",
+ "Photinia × fraseri|Glanzmispel|immergrün, schnittverträglich",
+ "Carpinus betulus|Hainbuche;Weissbuche|sehr schnittverträglich; das trockene Laub bleibt im Winter teilweise hängen",
+ "Fagus sylvatica|Rot-Buche;Buche|schnittverträglich; das trockene Laub bleibt im Winter hängen"],
+ no:["Prunus laurocerasus|Kirschlorbeer|invasiv, in der Schweiz seit 2024 nicht mehr verkäuflich",
+ "Forsythia|Forsythie|wirft das Laub ab, nicht blickdicht im Winter",
+ "Cornus sanguinea|Roter Hartriegel|wirft das Laub ab, eher für freiwachsende Hecken",
+ "Sambucus nigra|Schwarzer Holunder|wirft das Laub ab, nicht für Schnitthecken",
+ "Buddleja davidii|Sommerflieder|invasiv, nicht mehr verkäuflich",
+ "Betula pendula|Hänge-Birke;Birke|Baum, nicht für Schnitthecken",
+ "Rosa canina|Hunds-Rose|wirft das Laub ab, freiwachsend"]},
+
+{id:"c06",lz:"ST",t:"Südseitige Trockenmauer",
+ s:["📍 Natursteinmauer, voll nach Süden ausgerichtet, sehr heiss","🌱 Kaum Substrat in den Fugen und auf der Mauerkrone","✅ Polster und Rosetten, die Hitze und Trockenheit ertragen"],
+ q:"Nenne 2 passende Pflanzen für Mauerkrone oder Fugen.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["MK / SF trocken (Mauerkrone, Steinfugen)","WR (Wasserrand)","G (Gehölz)","B (Beet)"],a:0},
+ ok:["Sedum acre|Scharfer Mauerpfeffer|sukkulent, extrem trockenheitsverträglich",
+ "Sedum album|Weisser Mauerpfeffer|sukkulent, trocken",
+ "Sedum sexangulare|Milder Mauerpfeffer|sukkulent, trocken",
+ "Sedum|Mauerpfeffer;Fetthenne|sukkulent, trocken",
+ "Sempervivum tectorum|Dach-Hauswurz;Hauswurz|Rosetten, extrem trocken",
+ "Sempervivum arachnoideum|Spinnweben-Hauswurz|Rosetten, trocken",
+ "Sempervivum|Hauswurz|Rosetten, extrem trocken",
+ "Jovibarba|Fransenhauswurz|Rosetten, trocken",
+ "Thymus serpyllum|Sand-Thymian;Feld-Thymian|Polster, trocken und sonnig",
+ "Thymus praecox|Kriech-Thymian|Polster, trocken",
+ "Thymus vulgaris|Echter Thymian;Thymian|trocken und sonnig",
+ "Thymus|Thymian|Polster, trocken und sonnig",
+ "Dianthus gratianopolitanus|Pfingst-Nelke|Polster, Mauerkrone",
+ "Dianthus carthusianorum|Karthäuser-Nelke|trocken und sonnig",
+ "Aubrieta|Blaukissen|Polster für Mauern",
+ "Arabis caucasica|Gänsekresse|Polster für Mauern",
+ "Aurinia saxatilis|Steinkraut;Felsen-Steinkraut|Polster für Mauern",
+ "Alyssum saxatile|Steinkraut|Polster für Mauern",
+ "Iberis sempervirens|Schleifenblume|immergrünes Polster",
+ "Saponaria ocymoides|Kleines Seifenkraut|Polster, sonnig",
+ "Cerastium tomentosum|Filziges Hornkraut|Polster, sonnig und trocken",
+ "Phlox subulata|Polster-Phlox;Teppich-Phlox|Polster für Mauern",
+ "Helianthemum nummularium|Sonnenröschen|trocken und sonnig",
+ "Teucrium chamaedrys|Edel-Gamander|trocken, kalkhaltig",
+ "Globularia cordifolia|Herzblättrige Kugelblume|Polster, trocken",
+ "Saxifraga paniculata|Trauben-Steinbrech|Rosetten, Fugen",
+ "Erinus alpinus|Alpenbalsam|Fugen",
+ "Draba aizoides|Immergrünes Felsenblümchen|Fugen",
+ "Campanula portenschlagiana|Dalmatiner Glockenblume;Polster-Glockenblume|Polster für Mauerfugen",
+ "Campanula poscharskyana|Hängepolster-Glockenblume|Mauerfugen"],
+ no:["Asplenium scolopendrium|Hirschzungenfarn|braucht kühle, feuchte Fugen auf der Nordseite",
+ "Hosta|Funkie|braucht frischen, humosen Boden",
+ "Astilbe|Prachtspiere|braucht frischen bis feuchten Boden",
+ "Caltha palustris|Sumpfdotterblume|Sumpfpflanze",
+ "Galium odoratum|Waldmeister|Schattenpflanze",
+ "Phlox paniculata|Hohe Flammenblume|Beetstaude, braucht nährstoffreichen Boden"]},
+
+{id:"c07",lz:"ST",t:"Grossflächige Böschung im Halbschatten",
+ s:["📍 Böschung unter lichten Bäumen, 120 m², halbschattig","🌱 Humoser, frischer Boden","✅ Rasch geschlossen, pflegeleicht, unterdrückt Unkraut"],
+ q:"Nenne 2 passende Bodendecker.",n:2,
+ lb:{q:"Welche Geselligkeitsstufe wählst du?",o:["IV–V (flächig)","I (solitär)","II (Trupps von 3–10)","Spielt keine Rolle"],a:0},
+ ok:["Waldsteinia ternata|Golderdbeere;Teppich-Golderdbeere|flächig, wintergrün, Halbschatten",
+ "Vinca minor|Kleines Immergrün|immergrün, flächig",
+ "Geranium macrorrhizum|Balkan-Storchschnabel|flächig, robust, auch trocken",
+ "Geranium × cantabrigiense|Cambridge-Storchschnabel|flächig",
+ "Geranium sanguineum|Blut-Storchschnabel|flächig (eher sonnig)",
+ "Epimedium|Elfenblume|flächig, auch unter Gehölzen",
+ "Pachysandra terminalis|Ysander;Dickmännchen|immergrün, flächig",
+ "Hedera helix|Efeu|immergrün, flächig",
+ "Lamium galeobdolon|Goldnessel|flächig, Schatten",
+ "Lamium maculatum|Gefleckte Taubnessel|flächig, Halbschatten",
+ "Symphytum grandiflorum|Kleinblütiger Kaukasus-Beinwell;Teppich-Beinwell|flächig, Halbschatten",
+ "Ajuga reptans|Kriechender Günsel|flächig, frisch",
+ "Galium odoratum|Waldmeister|flächig, Schatten",
+ "Euonymus fortunei|Kletternder Spindelstrauch|immergrün, flächig",
+ "Lonicera pileata|Immergrüne Heckenkirsche;Böschungsmyrte|flächig, immergrün",
+ "Stephanandra incisa 'Crispa'|Kranzspiere|flächig auf Böschungen",
+ "Stephanandra incisa|Kranzspiere|flächig auf Böschungen",
+ "Hypericum calycinum|Johanniskraut;Immergrünes Johanniskraut|flächig, Halbschatten",
+ "Luzula sylvatica|Wald-Hainsimse|flächig, Schatten",
+ "Carex|Segge|viele Seggen bilden flächige Bestände",
+ "Brunnera macrophylla|Kaukasus-Vergissmeinnicht|flächig, Halbschatten",
+ "Pulmonaria|Lungenkraut|flächig, Halbschatten",
+ "Asarum europaeum|Haselwurz|flächig, Schatten",
+ "Tiarella cordifolia|Schaumblüte|flächig, Schatten"],
+ no:["Lavandula angustifolia|Lavendel|braucht volle Sonne, kein Bodendecker für Halbschatten",
+ "Cortaderia selloana|Pampasgras|Solitär (Geselligkeit I)",
+ "Paeonia lactiflora|Pfingstrose|Beetstaude, Einzelstellung",
+ "Delphinium|Rittersporn|Beetstaude, nicht flächig",
+ "Sedum acre|Scharfer Mauerpfeffer|braucht volle Sonne",
+ "Astilbe|Prachtspiere|braucht feuchten Boden, nicht pflegeleicht flächig"]},
+
+{id:"c08",lz:"ST",t:"Repräsentatives Beet beim Hauseingang",
+ s:["📍 Eingangsbereich einer Villa, vollsonnig","🌱 Tiefgründiger, nährstoffreicher, gut vorbereiteter Boden","✅ Prachtvolle Blüte, die Pflege ist gesichert"],
+ q:"Nenne 2 passende Beetstauden.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["B (Beet)","G (Gehölz)","H (Heide)","WR (Wasserrand)"],a:0},
+ ok:["Paeonia lactiflora|Pfingstrose;Edel-Pfingstrose|Leitstaude im Beet",
+ "Paeonia|Pfingstrose|Beetstaude",
+ "Phlox paniculata|Hohe Flammenblume;Flammenblume;Phlox|Beetstaude",
+ "Delphinium|Rittersporn|Leitstaude im Beet",
+ "Symphyotrichum novae-angliae|Raublatt-Aster|Beetstaude, Herbstblüher",
+ "Symphyotrichum novi-belgii|Glattblatt-Aster|Beetstaude, Herbstblüher",
+ "Aster novae-angliae|Raublatt-Aster|Beetstaude, Herbstblüher",
+ "Aster novi-belgii|Glattblatt-Aster|Beetstaude, Herbstblüher",
+ "Helenium|Sonnenbraut|Beetstaude",
+ "Rudbeckia fulgida|Sonnenhut|Beetstaude",
+ "Echinacea purpurea|Roter Sonnenhut;Scheinsonnenhut|Beetstaude",
+ "Achillea filipendulina|Goldgarbe|Beetstaude",
+ "Hemerocallis|Taglilie|Beetstaude",
+ "Iris barbata|Bart-Iris;Schwertlilie|Beetstaude",
+ "Iris germanica|Deutsche Schwertlilie;Bart-Iris|Beetstaude",
+ "Papaver orientale|Türkischer Mohn|Beetstaude",
+ "Monarda|Indianernessel|Beetstaude",
+ "Salvia nemorosa|Steppen-Salbei|Beetstaude",
+ "Leucanthemum × superbum|Sommer-Margerite|Beetstaude",
+ "Leucanthemum maximum|Sommer-Margerite|Beetstaude",
+ "Heliopsis helianthoides|Sonnenauge|Beetstaude",
+ "Campanula lactiflora|Doldige Glockenblume|Beetstaude",
+ "Campanula persicifolia|Pfirsichblättrige Glockenblume|auch im Beet",
+ "Anemone hupehensis|Herbst-Anemone|Beetstaude",
+ "Anemone × hybrida|Herbst-Anemone|Beetstaude",
+ "Lupinus|Lupine|Beetstaude",
+ "Veronica longifolia|Langblättriger Ehrenpreis|Beetstaude",
+ "Veronicastrum virginicum|Kandelaberehrenpreis|Beetstaude",
+ "Lychnis chalcedonica|Brennende Liebe|Beetstaude",
+ "Geranium|Storchschnabel|viele Arten passen ins Beet",
+ "Nepeta × faassenii|Katzenminze|Begleitstaude im Beet"],
+ no:["Galium odoratum|Waldmeister|Schattenpflanze für den Gehölzbereich",
+ "Asarum europaeum|Haselwurz|Schattenpflanze",
+ "Caltha palustris|Sumpfdotterblume|Sumpfpflanze",
+ "Iris pseudacorus|Sumpf-Schwertlilie|Sumpfpflanze",
+ "Solidago canadensis|Kanadische Goldrute|invasiver Neophyt, darf nicht gepflanzt werden",
+ "Sempervivum|Hauswurz|Steinanlage, keine Beetstaude"]},
+
+{id:"c09",lz:"GH",t:"Hausbaum für einen kleinen Garten",
+ s:["📍 Reihenhausgarten, 120 m², sonnig","🌱 Normaler Gartenboden","✅ Einheimischer Baum, höchstens ca. 10 m hoch, als Solitär mit Zierwert"],
+ q:"Nenne 2 passende Bäume.",n:2,
+ lb:{q:"Welche Verwendungsgruppe ist das?",o:["Solitär / Hausbaum (kleiner Baum)","Strassenbaum","Schnitthecke","Bodendecker"],a:0},
+ ok:["Sorbus aucuparia|Vogelbeere;Eberesche|einheimisch, 6–12 m, Blüte, Früchte, Herbstfärbung",
+ "Sorbus aria|Mehlbeere;Echte Mehlbeere|einheimisch, ca. 6–12 m, silbrige Blätter",
+ "Acer campestre|Feld-Ahorn;Feldahorn;Massholder|einheimisch, oft 6–12 m, gelbe Herbstfärbung",
+ "Malus sylvestris|Holzapfel;Wildapfel|einheimisch, 5–10 m, Blüte und Früchte",
+ "Crataegus monogyna|Eingriffeliger Weissdorn;Weissdorn|als kleiner Baum 5–8 m, Blüte, Früchte",
+ "Crataegus laevigata|Zweigriffeliger Weissdorn|als kleiner Baum, Blüte, Früchte",
+ "Cornus mas|Kornelkirsche;Tierlibaum|als Kleinbaum bis 8 m, Blüte im Februar, Früchte",
+ "Mespilus germanica|Mispel|3–6 m, Blüte, Früchte",
+ "Ilex aquifolium|Stechpalme|immergrün, als Baum bis ca. 10 m",
+ "Prunus mahaleb|Felsenkirsche;Steinweichsel|einheimisch, 4–10 m",
+ "Prunus padus|Traubenkirsche|einheimisch, oft 8–12 m, Blüte",
+ "Carpinus betulus 'Fastigiata'|Säulen-Hainbuche|schmale Form, platzsparend",
+ "Amelanchier ovalis|Gewöhnliche Felsenbirne|einheimisch, als Grossstrauch/Kleinbaum"],
+ no:["Fagus sylvatica|Rot-Buche;Buche|einheimisch, aber 30–40 m hoch",
+ "Quercus robur|Stiel-Eiche;Eiche|einheimisch, aber 30–40 m hoch",
+ "Acer pseudoplatanus|Berg-Ahorn|einheimisch, aber bis 30 m hoch",
+ "Tilia cordata|Winter-Linde;Linde|einheimisch, aber 20–30 m hoch",
+ "Betula pendula|Hänge-Birke;Birke|einheimisch, aber 20–25 m hoch",
+ "Prunus avium|Vogel-Kirsche;Kirschbaum|einheimisch, aber bis 20 m hoch",
+ "Fraxinus excelsior|Esche|zu gross, Eschentriebsterben",
+ "Acer palmatum|Fächer-Ahorn|nicht einheimisch",
+ "Magnolia|Magnolie|nicht einheimisch",
+ "Prunus serrulata|Japanische Blütenkirsche|nicht einheimisch",
+ "Juglans regia|Walnuss|zu gross (bis 25 m)"]},
+
+{id:"c10",lz:"GH",t:"Strassenbaum in der Innenstadt",
+ s:["📍 Baumreihe an einer Strasse in Basel, voll besonnt, Rückstrahlung","🌱 Verdichteter Boden, wenig Wurzelraum","✅ Im Winter gelangt Streusalz in die Baumscheibe"],
+ q:"Nenne 2 geeignete Bäume.",n:2,
+ lb:{q:"Welche Verwendungsgruppe ist das?",o:["Strassenbaum","Solitär im Hausgarten","Freiwachsende Hecke","Bodendecker"],a:0},
+ ok:["Tilia cordata|Winter-Linde|stadtverträglich (Sorten wie 'Greenspire')",
+ "Tilia tomentosa|Silber-Linde|hitze- und trockenheitsverträglich",
+ "Tilia × euchlora|Krim-Linde|stadtverträglich",
+ "Tilia|Linde|viele Linden sind gute Strassenbäume",
+ "Acer campestre|Feld-Ahorn|hitze- und salzverträglich ('Elsrijk')",
+ "Acer platanoides|Spitz-Ahorn|stadtverträglich",
+ "Platanus × hispanica|Platane;Ahornblättrige Platane|sehr stadtfest",
+ "Platanus × acerifolia|Platane|sehr stadtfest",
+ "Gleditsia triacanthos|Lederhülsenbaum;Gleditschie|hitze- und salzverträglich",
+ "Styphnolobium japonicum|Schnurbaum|hitzeverträglich",
+ "Sophora japonica|Schnurbaum|hitzeverträglich",
+ "Celtis australis|Zürgelbaum|hitze- und trockenheitsverträglich",
+ "Ginkgo biloba|Ginkgo;Fächerblattbaum|sehr stadtfest (nur männliche Bäume)",
+ "Pyrus calleryana|Chinesische Wildbirne|stadtverträglich ('Chanticleer')",
+ "Corylus colurna|Baum-Hasel|hitze- und trockenheitsverträglich",
+ "Ostrya carpinifolia|Hopfenbuche|hitzeverträglich",
+ "Fraxinus ornus|Blumen-Esche;Manna-Esche|hitzeverträglich",
+ "Quercus cerris|Zerr-Eiche|hitzeverträglich",
+ "Ulmus|Ulme|resistente Sorten ('Lobel', 'Resista') sind stadtfest",
+ "Liquidambar styraciflua|Amberbaum|stadtverträglich",
+ "Zelkova serrata|Japanische Zelkove|stadtverträglich",
+ "Alnus × spaethii|Purpur-Erle|stadtverträglich",
+ "Sorbus intermedia|Schwedische Mehlbeere|stadtverträglich",
+ "Carpinus betulus 'Fastigiata'|Säulen-Hainbuche|für enge Strassen",
+ "Koelreuteria paniculata|Blasenbaum|hitzeverträglich"],
+ no:["Fagus sylvatica|Rot-Buche;Buche|empfindlich gegen Hitze, Salz und Bodenverdichtung",
+ "Acer pseudoplatanus|Berg-Ahorn|salzempfindlich",
+ "Aesculus hippocastanum|Rosskastanie|salzempfindlich, Miniermotte",
+ "Betula pendula|Hänge-Birke;Birke|empfindlich gegen Hitze und Salz, kurzlebig",
+ "Picea abies|Fichte;Rottanne|Flachwurzler, nicht stadtfest",
+ "Abies alba|Weisstanne|nicht stadtfest",
+ "Salix|Weide|bruchgefährdet, braucht viel Wasser",
+ "Juglans regia|Walnuss|ungeeignet als Strassenbaum"]},
+
+{id:"c11",lz:"GH",t:"Kindergarten: Strauch mit Winterschmuck",
+ s:["📍 Spielwiese eines Kindergartens, halbschattig","🌱 Humoser, frischer Boden","✅ Ungiftig, auch im Winter attraktiv (Triebe, Kätzchen, Blüte, Früchte)"],
+ q:"Nenne 1 passenden Strauch.",n:1,
+ lb:{q:"Welche Anforderung ist hier am wichtigsten?",o:["Keine giftigen Pflanzen","Möglichst immergrün","Möglichst schnell wachsend","Möglichst stachelig"],a:0},
+ ok:["Corylus avellana|Hasel;Haselnuss;Korkenzieher-Hasel|ungiftig, Kätzchen im Winter, 'Contorta' mit gedrehten Trieben",
+ "Cornus mas|Kornelkirsche;Tierlibaum|ungiftig, gelbe Blüte ab Februar, essbare Früchte",
+ "Hamamelis × intermedia|Zaubernuss|ungiftig, blüht im Winter",
+ "Hamamelis|Zaubernuss|ungiftig, blüht im Winter",
+ "Salix purpurea|Purpur-Weide|ungiftig, rote Triebe, Kätzchen",
+ "Salix caprea|Sal-Weide|ungiftig, Kätzchen, Insektenweide",
+ "Salix daphnoides|Reif-Weide|ungiftig, bereifte Triebe",
+ "Salix|Weide|ungiftig, Kätzchen, farbige Triebe",
+ "Amelanchier ovalis|Felsenbirne|ungiftig, essbare Früchte",
+ "Rosa canina|Hunds-Rose|Hagebutten im Winter (Achtung Stacheln)"],
+ no:["Taxus baccata|Eibe|stark giftig",
+ "Ilex aquifolium|Stechpalme|giftige Früchte, stechende Blätter",
+ "Euonymus europaeus|Pfaffenhütchen|giftig",
+ "Daphne mezereum|Seidelbast|stark giftig",
+ "Viburnum opulus|Gemeiner Schneeball|Früchte roh giftig",
+ "Viburnum lantana|Wolliger Schneeball|Früchte giftig",
+ "Ligustrum vulgare|Liguster|Beeren giftig",
+ "Sambucus racemosa|Roter Holunder|Kerne giftig",
+ "Laburnum anagyroides|Goldregen|stark giftig",
+ "Cornus sanguinea|Roter Hartriegel|Früchte gelten als schwach giftig",
+ "Lonicera xylosteum|Rote Heckenkirsche|Beeren giftig",
+ "Pyracantha|Feuerdorn|Dornen, Früchte roh schwach giftig"]},
+
+{id:"c12",lz:"GH",t:"Nordwand begrünen ohne Kletterhilfe",
+ s:["📍 Garagenwand auf der Nordseite, schattig","🌱 Pflanzstreifen am Wandfuss","✅ Keine Kletterhilfe möglich, auch im Winter grün"],
+ q:"Nenne 1 passende Kletterpflanze.",n:1,
+ lb:{q:"Welchen Klettermechanismus braucht die Pflanze?",o:["Selbstklimmer (Haftwurzeln)","Schlinger","Blattstielranker","Spreizklimmer"],a:0},
+ ok:["Hedera helix|Efeu|Selbstklimmer mit Haftwurzeln, immergrün, schattenverträglich",
+ "Euonymus fortunei|Kletternder Spindelstrauch|klettert mit Haftwurzeln, immergrün"],
+ no:["Hydrangea anomala|Kletter-Hortensie|klettert mit Haftwurzeln, wirft aber das Laub ab",
+ "Hydrangea petiolaris|Kletter-Hortensie|klettert mit Haftwurzeln, wirft aber das Laub ab",
+ "Parthenocissus tricuspidata|Wilder Wein;Dreispitz-Jungfernrebe|Haftscheiben, wirft aber das Laub ab",
+ "Parthenocissus quinquefolia|Wilder Wein;Fünfblättrige Jungfernrebe|wirft das Laub ab, braucht teils Kletterhilfe",
+ "Parthenocissus|Wilder Wein|wirft das Laub ab",
+ "Clematis|Waldrebe|Blattstielranker, braucht Kletterhilfe",
+ "Wisteria sinensis|Blauregen|Schlinger, braucht Kletterhilfe",
+ "Lonicera|Geissblatt|Schlinger, braucht Kletterhilfe",
+ "Rosa|Kletterrose|Spreizklimmer, braucht Kletterhilfe",
+ "Vitis vinifera|Weinrebe|Ranker, braucht Kletterhilfe"]},
+
+{id:"c13",lz:"ST",t:"Sonniger Gehölzrand, insektenfreundlich",
+ s:["📍 Südseite einer Wildhecke, sonnig bis halbschattig","🌱 Humoser, eher trockener Boden","✅ Einheimische, insektenfreundliche Stauden"],
+ q:"Nenne 2 passende Stauden.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["GR2 / GR1 (Gehölzrand)","W (Wasser)","B (Beet)","A (Alpinum)"],a:0},
+ ok:["Geranium sanguineum|Blut-Storchschnabel|einheimisch, Gehölzrand, Insekten",
+ "Origanum vulgare|Dost;Wilder Majoran;Oregano|einheimisch, Bienenweide",
+ "Campanula persicifolia|Pfirsichblättrige Glockenblume|einheimisch, Gehölzrand",
+ "Campanula trachelium|Nesselblättrige Glockenblume|einheimisch, Gehölzrand",
+ "Digitalis grandiflora|Grossblütiger Fingerhut|einheimisch, Gehölzrand (giftig)",
+ "Digitalis lutea|Gelber Fingerhut|einheimisch, Gehölzrand (giftig)",
+ "Salvia glutinosa|Klebrige Salbei|einheimisch, Gehölzrand",
+ "Aquilegia vulgaris|Gewöhnliche Akelei;Akelei|einheimisch, Gehölzrand",
+ "Primula veris|Frühlings-Schlüsselblume|einheimisch",
+ "Knautia arvensis|Wiesen-Witwenblume|einheimisch, Insektenweide",
+ "Centaurea scabiosa|Skabiosen-Flockenblume|einheimisch, Insektenweide",
+ "Verbascum nigrum|Schwarze Königskerze|einheimisch, Insektenweide",
+ "Clinopodium vulgare|Wirbeldost|einheimisch, Gehölzrand",
+ "Stachys officinalis|Heil-Ziest;Betonie|einheimisch",
+ "Betonica officinalis|Heil-Ziest;Betonie|einheimisch",
+ "Silene nutans|Nickendes Leimkraut|einheimisch",
+ "Agrimonia eupatoria|Odermennig|einheimisch, Gehölzrand",
+ "Astrantia major|Grosse Sterndolde|einheimisch, Gehölzrand",
+ "Melittis melissophyllum|Immenblatt|einheimisch, Gehölzrand",
+ "Polygonatum odoratum|Salomonssiegel;Wohlriechende Weisswurz|einheimisch, Gehölzrand",
+ "Inula conyzae|Dürrwurz|einheimisch, Säume",
+ "Hypericum perforatum|Johanniskraut|einheimisch, Insekten",
+ "Salvia pratensis|Wiesen-Salbei|einheimisch, Insektenweide",
+ "Leucanthemum vulgare|Margerite;Wiesen-Margerite|einheimisch, Insektenweide",
+ "Malva moschata|Moschus-Malve|einheimisch, Insektenweide",
+ "Echium vulgare|Natternkopf|einheimisch, Insektenweide",
+ "Trifolium medium|Mittlerer Klee|einheimisch, Säume"],
+ no:["Echinacea purpurea|Roter Sonnenhut|insektenfreundlich, aber nicht einheimisch",
+ "Rudbeckia fulgida|Sonnenhut|nicht einheimisch",
+ "Nepeta × faassenii|Katzenminze|nicht einheimisch",
+ "Lavandula angustifolia|Lavendel|nicht einheimisch",
+ "Hosta|Funkie|nicht einheimisch, kaum Insektenwert",
+ "Solidago canadensis|Kanadische Goldrute|invasiver Neophyt"]},
+
+{id:"c14",lz:"ST",t:"Heisse Kiesfläche mit Steppenheide-Charakter",
+ s:["📍 Vorgarten in Pratteln, vollsonnig, Rückstrahlung vom Haus","🌱 Karger, kalkhaltiger, sehr durchlässiger Boden","✅ Sehr pflegeleicht, kein Giessen nach dem Anwachsen"],
+ q:"Nenne 2 passende Stauden oder Gräser.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["SH (Steppenheide)","G (Gehölz)","WR (Wasserrand)","B (Beet)"],a:0},
+ ok:["Dianthus carthusianorum|Karthäuser-Nelke|typisch für die Steppenheide",
+ "Stipa pennata|Federgras;Echtes Federgras|typisches Gras der Steppenheide",
+ "Stipa capillata|Haar-Pfriemengras|trockenes, kalkhaltiges Gras",
+ "Stipa|Federgras|Gräser für die Steppenheide",
+ "Lavandula angustifolia|Lavendel|sonnig, trocken, karg",
+ "Origanum vulgare|Dost|trocken und sonnig",
+ "Aster amellus|Berg-Aster|Herbstblüher der Steppenheide",
+ "Galatella linosyris|Goldhaar-Aster|Steppenheide",
+ "Aster linosyris|Goldhaar-Aster|Steppenheide",
+ "Pulsatilla vulgaris|Kuhschelle;Küchenschelle|kalkhaltige Trockenrasen (giftig)",
+ "Teucrium chamaedrys|Edel-Gamander|trocken, kalkhaltig",
+ "Thymus|Thymian|trocken und sonnig",
+ "Salvia nemorosa|Steppen-Salbei|trockenheitsverträglich",
+ "Salvia pratensis|Wiesen-Salbei|trocken, sonnig",
+ "Euphorbia cyparissias|Zypressen-Wolfsmilch|trocken (giftig)",
+ "Euphorbia polychroma|Gold-Wolfsmilch|trocken, sonnig",
+ "Globularia|Kugelblume|trocken, kalkhaltig",
+ "Carex humilis|Erd-Segge|Trockenrasen",
+ "Festuca ovina|Schaf-Schwingel|trockenes Gras",
+ "Festuca glauca|Blau-Schwingel|trockenes Gras",
+ "Festuca valesiaca|Walliser Schwingel|trockenes Gras",
+ "Sesleria|Blaugras|Kalk, trocken",
+ "Anthericum liliago|Astlose Graslilie|trocken, sonnig",
+ "Anthericum ramosum|Ästige Graslilie|trocken, sonnig",
+ "Helianthemum nummularium|Sonnenröschen|trocken, sonnig",
+ "Allium sphaerocephalon|Kugelköpfiger Lauch|trocken, sonnig",
+ "Erica carnea|Schneeheide|im Lehrmittel als Vertreter der Steppenheide",
+ "Sedum|Mauerpfeffer;Fetthenne|trockenheitsverträglich",
+ "Sempervivum|Hauswurz|trockenheitsverträglich",
+ "Perovskia|Blauraute|trocken, sonnig",
+ "Nepeta × faassenii|Katzenminze|trockenheitsverträglich",
+ "Achillea millefolium|Gemeine Schafgarbe;Schafgarbe|trocken, sonnig"],
+ no:["Astilbe|Prachtspiere|braucht frischen bis feuchten Boden",
+ "Hosta|Funkie|braucht Schatten und frischen Boden",
+ "Caltha palustris|Sumpfdotterblume|Sumpfpflanze",
+ "Phlox paniculata|Hohe Flammenblume|Beetstaude, braucht Wasser und Nährstoffe",
+ "Galium odoratum|Waldmeister|Schattenpflanze",
+ "Trollius europaeus|Trollblume|braucht feuchten Boden",
+ "Nassella tenuissima|Federgras 'Pony Tails'|kann sich stark ausbreiten (Neophyt)",
+ "Stipa tenuissima|Zartes Federgras|kann sich stark ausbreiten (Neophyt)"]},
+
+{id:"c15",lz:"GH",t:"Vorgarten mit farbigen Trieben im Winter",
+ s:["📍 Vorgarten, sonnig bis halbschattig, im Winter vom Wohnzimmer aus sichtbar","🌱 Frischer Gartenboden","✅ Strauch mit farbigen Trieben als Winterschmuck"],
+ q:"Nenne 1 passenden Strauch.",n:1,
+ lb:{q:"Was ist hier der Zierwert?",o:["Winterschmuck (Triebe)","Herbstfärbung","Blüte im Sommer","Duft"],a:0},
+ ok:["Cornus sanguinea|Roter Hartriegel|rote Triebe, z. B. 'Midwinter Fire'",
+ "Cornus alba|Weisser Hartriegel;Tatarischer Hartriegel|rote Triebe ('Sibirica')",
+ "Cornus sericea|Gelbholz-Hartriegel;Seidiger Hartriegel|gelbgrüne Triebe ('Flaviramea')",
+ "Cornus stolonifera|Gelbholz-Hartriegel|gelbgrüne Triebe ('Flaviramea')",
+ "Cornus|Hartriegel|farbige Triebe",
+ "Salix purpurea|Purpur-Weide|rötliche Triebe",
+ "Salix daphnoides|Reif-Weide|weiss bereifte Triebe",
+ "Salix alba 'Britzensis'|Rote Silber-Weide|orange-rote Triebe",
+ "Salix|Weide|farbige Triebe",
+ "Rubus cockburnianus|Himalaya-Brombeere|weiss bereifte Triebe",
+ "Kerria japonica|Ranunkelstrauch|grüne Triebe",
+ "Euonymus europaeus|Pfaffenhütchen|grüne Triebe mit Korkleisten",
+ "Acer palmatum 'Sango-kaku'|Korallen-Ahorn|korallenrote Triebe",
+ "Acer palmatum 'Sangokaku'|Korallen-Ahorn|korallenrote Triebe"],
+ no:["Forsythia|Forsythie|keine auffälligen Triebe",
+ "Ligustrum vulgare|Liguster|keine auffälligen Triebe",
+ "Philadelphus|Pfeifenstrauch|keine auffälligen Triebe",
+ "Weigela|Weigelie|keine auffälligen Triebe",
+ "Buddleja davidii|Sommerflieder|invasiv, nicht mehr verkäuflich"]},
+
+{id:"c16",lz:"GH",t:"Fruchtschmuck für Vögel im Winter",
+ s:["📍 Naturgarten, sonnig","🌱 Normaler Gartenboden","✅ Gehölz, dessen Früchte lange hängen bleiben und Vögeln im Winter Futter bieten"],
+ q:"Nenne 2 passende Gehölze.",n:2,
+ lb:{q:"Was ist hier der Zierwert?",o:["Fruchtschmuck","Rindenschmuck","Blattschmuck","Duft"],a:0},
+ ok:["Rosa canina|Hunds-Rose;Hagebutte;Heckenrose|Hagebutten bis in den Winter",
+ "Viburnum opulus|Gemeiner Schneeball|rote Früchte bis in den Winter",
+ "Ilex aquifolium|Stechpalme|rote Früchte, immergrün",
+ "Sorbus aucuparia|Vogelbeere;Eberesche|Früchte für Vögel",
+ "Crataegus monogyna|Weissdorn;Eingriffeliger Weissdorn|Früchte bis in den Winter",
+ "Crataegus|Weissdorn|Früchte für Vögel",
+ "Euonymus europaeus|Pfaffenhütchen|Früchte für Vögel",
+ "Malus|Zierapfel;Holzapfel|kleine Äpfel bleiben hängen",
+ "Ligustrum vulgare|Liguster|schwarze Beeren im Winter",
+ "Hedera helix|Efeu|Früchte im Spätwinter",
+ "Berberis vulgaris|Berberitze|Früchte bis in den Winter",
+ "Hippophae rhamnoides|Sanddorn|orange Früchte",
+ "Prunus spinosa|Schlehe|Früchte im Winter",
+ "Pyracantha|Feuerdorn|Früchte bis in den Winter",
+ "Cotoneaster|Zwergmispel;Steinmispel|rote Früchte (einige Arten invasiv!)",
+ "Callicarpa bodinieri|Schönfrucht|violette Früchte",
+ "Symphoricarpos|Schneebeere|weisse Früchte",
+ "Rosa rugosa|Kartoffel-Rose|grosse Hagebutten (kann verwildern)",
+ "Viburnum lantana|Wolliger Schneeball|Beeren",
+ "Sambucus nigra|Schwarzer Holunder|Beeren (eher im Herbst)",
+ "Cornus sanguinea|Roter Hartriegel|Beeren für Vögel"],
+ no:["Forsythia|Forsythie|keine Früchte",
+ "Buddleja davidii|Sommerflieder|invasiv",
+ "Prunus laurocerasus|Kirschlorbeer|invasiv, nicht mehr verkäuflich",
+ "Thuja occidentalis|Thuja|keine Früchte für Vögel",
+ "Philadelphus|Pfeifenstrauch|keine Früchte",
+ "Spiraea|Spierstrauch|keine Früchte"]},
+
+{id:"c17",lz:"GH",t:"Blühen mitten im Winter",
+ s:["📍 Eingangsbereich, halbschattig, im Winter oft begangen","🌱 Humoser Gartenboden","✅ Strauch, der zwischen Dezember und Februar blüht"],
+ q:"Nenne 1 passenden Strauch.",n:1,
+ lb:{q:"Was ist hier der Zierwert?",o:["Winterblüte","Herbstfärbung","Fruchtschmuck","Rinde"],a:0},
+ ok:["Hamamelis × intermedia|Zaubernuss|blüht im Januar/Februar",
+ "Hamamelis mollis|Chinesische Zaubernuss|blüht im Winter",
+ "Hamamelis|Zaubernuss|blüht im Winter",
+ "Jasminum nudiflorum|Winter-Jasmin|blüht gelb ab Dezember",
+ "Chimonanthus praecox|Winterblüte|duftende Blüten im Winter",
+ "Viburnum × bodnantense|Winter-Schneeball;Bodnant-Schneeball|blüht im Winter",
+ "Viburnum farreri|Duft-Schneeball|blüht im Winter",
+ "Lonicera × purpusii|Winter-Heckenkirsche|duftende Winterblüte",
+ "Cornus mas|Kornelkirsche|blüht ab Februar",
+ "Erica carnea|Schneeheide|blüht im Winter",
+ "Daphne mezereum|Seidelbast|blüht ab Februar (stark giftig)",
+ "Prunus subhirtella 'Autumnalis'|Winter-Kirsche|blüht im Winter",
+ "Sarcococca|Fleischbeere;Schleimbeere|duftende Winterblüte",
+ "Garrya elliptica|Becherkätzchen|Kätzchen im Winter"],
+ no:["Forsythia|Forsythie|blüht erst im März/April",
+ "Paeonia|Pfingstrose|blüht im Mai/Juni",
+ "Syringa vulgaris|Flieder|blüht im Mai",
+ "Philadelphus|Pfeifenstrauch|blüht im Juni",
+ "Buddleja davidii|Sommerflieder|blüht im Sommer, invasiv"]},
+
+{id:"c18",lz:"ST",t:"Unter einem grossen Baum: trocken und schattig",
+ s:["📍 Baumscheibe unter einer alten Buche, schattig","🌱 Trockener Boden, starke Wurzelkonkurrenz","✅ Flächige, pflegeleichte Unterpflanzung"],
+ q:"Nenne 2 passende Pflanzen.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["G2 (Gehölz, trockener Boden)","WR (Wasserrand)","SH (Steppenheide)","B (Beet)"],a:0},
+ ok:["Geranium macrorrhizum|Balkan-Storchschnabel|verträgt Trockenheit im Schatten",
+ "Epimedium|Elfenblume|verträgt Wurzeldruck und Trockenheit",
+ "Waldsteinia ternata|Golderdbeere|robuster Bodendecker",
+ "Vinca minor|Kleines Immergrün|immergrün, verträgt Wurzeldruck",
+ "Hedera helix|Efeu|verträgt Trockenheit im Schatten",
+ "Luzula sylvatica|Wald-Hainsimse|Gras für trockenen Schatten",
+ "Luzula nivea|Schnee-Hainsimse|Gras für Schatten",
+ "Carex sylvatica|Wald-Segge|Schatten",
+ "Polygonatum multiflorum|Vielblütige Weisswurz|Gehölzstaude",
+ "Lamium galeobdolon|Goldnessel|flächig, Schatten",
+ "Euphorbia amygdaloides|Mandelblättrige Wolfsmilch|trockener Schatten",
+ "Pachysandra terminalis|Ysander|immergrün, Schatten",
+ "Iris foetidissima|Stinkende Schwertlilie|trockener Schatten",
+ "Asarum europaeum|Haselwurz|Schatten",
+ "Galium odoratum|Waldmeister|Schatten (liebt eher frischen Boden)",
+ "Bergenia|Bergenie|robust, auch trocken",
+ "Cyclamen hederifolium|Herbst-Alpenveilchen|trockener Schatten unter Bäumen",
+ "Anemone nemorosa|Buschwindröschen|Waldgeophyt, nutzt das Frühlingslicht"],
+ no:["Hosta|Funkie|braucht frischen bis feuchten Boden",
+ "Astilbe|Prachtspiere|braucht feuchten Boden",
+ "Lavandula angustifolia|Lavendel|braucht Sonne",
+ "Sedum acre|Scharfer Mauerpfeffer|braucht Sonne",
+ "Phlox paniculata|Hohe Flammenblume|Beetstaude, braucht Sonne und Nährstoffe",
+ "Caltha palustris|Sumpfdotterblume|Sumpfpflanze"]},
+
+{id:"c19",lz:"ST",t:"Heidegarten",
+ s:["📍 Sonniger Hang im Garten","🌱 Saurer, sandiger, nährstoffarmer Boden","✅ Heidecharakter mit Zwergsträuchern"],
+ q:"Nenne 2 passende Pflanzen.",n:2,
+ lb:{q:"Welcher Lebensbereich passt?",o:["H (Heide)","SH (Steppenheide)","B (Beet)","WR (Wasserrand)"],a:0},
+ ok:["Calluna vulgaris|Besenheide|typisch für die Heide",
+ "Erica carnea|Schneeheide;Winterheide|Zwergstrauch der Heide",
+ "Erica × darleyensis|Englische Heide|Zwergstrauch der Heide",
+ "Erica tetralix|Glocken-Heide|feuchte Heide",
+ "Erica|Heide|Zwergstrauch der Heide",
+ "Vaccinium vitis-idaea|Preiselbeere|saurer Boden",
+ "Vaccinium myrtillus|Heidelbeere|saurer Boden",
+ "Juniperus communis|Gewöhnlicher Wacholder;Wacholder|typisch für die Heide",
+ "Genista pilosa|Behaarter Ginster|saure, magere Böden",
+ "Genista sagittalis|Flügelginster|magere Böden",
+ "Arnica montana|Arnika|saure Magerwiesen",
+ "Deschampsia flexuosa|Draht-Schmiele|Gras saurer Böden",
+ "Nardus stricta|Borstgras|saure Magerrasen",
+ "Thymus serpyllum|Sand-Thymian|sandige Böden",
+ "Gaultheria procumbens|Scheinbeere|saurer Boden",
+ "Cytisus scoparius|Besenginster|saure, sandige Böden"],
+ no:["Pulsatilla vulgaris|Kuhschelle|braucht kalkhaltigen Boden",
+ "Dianthus carthusianorum|Karthäuser-Nelke|eher kalkhaltige Trockenrasen",
+ "Lavandula angustifolia|Lavendel|bevorzugt kalkhaltige Böden",
+ "Phlox paniculata|Hohe Flammenblume|Beetstaude",
+ "Caltha palustris|Sumpfdotterblume|Sumpfpflanze",
+ "Hosta|Funkie|Schattenpflanze"]},
+
+{id:"c20",lz:"GH",t:"Bodendecker-Gehölz für eine sonnige Böschung",
+ s:["📍 Sonnige Böschung entlang einer Einfahrt","🌱 Durchlässiger, eher trockener Boden","✅ Flaches, dichtes Gehölz, das den Boden deckt"],
+ q:"Nenne 1 passendes Gehölz.",n:1,
+ lb:{q:"Welche Verwendungsgruppe ist das?",o:["Bodendecker","Strassenbaum","Schnitthecke","Kletterpflanze"],a:0},
+ ok:["Juniperus communis 'Repanda'|Kriech-Wacholder|flach, trockenheitsverträglich",
+ "Juniperus horizontalis|Kriech-Wacholder|flach, trockenheitsverträglich",
+ "Juniperus sabina|Sadebaum|flach, trocken (giftig)",
+ "Juniperus|Wacholder|flache Sorten sind gute Bodendecker",
+ "Taxus baccata 'Repandens'|Kissen-Eibe|flach (giftig)",
+ "Arctostaphylos uva-ursi|Echte Bärentraube|flach, trocken",
+ "Cotoneaster dammeri|Teppich-Zwergmispel|flach, dicht",
+ "Cotoneaster|Zwergmispel|flache Arten decken den Boden",
+ "Rosa|Bodendeckerrose|flache Rosensorten",
+ "Genista lydia|Lydischer Ginster|flach, sonnig, trocken",
+ "Cytisus × kewensis|Elfenbeinginster|flach, sonnig",
+ "Potentilla fruticosa|Fingerstrauch|niedrig, sonnig",
+ "Dasiphora fruticosa|Fingerstrauch|niedrig, sonnig",
+ "Stephanandra incisa 'Crispa'|Kranzspiere|flach, für Böschungen",
+ "Lonicera pileata|Böschungsmyrte|flach, dicht",
+ "Hypericum calycinum|Immergrünes Johanniskraut|flach, dicht",
+ "Symphoricarpos × chenaultii 'Hancock'|Bodendecker-Schneebeere|flach, dicht",
+ "Euonymus fortunei|Kletternder Spindelstrauch|flächig, immergrün",
+ "Dryas octopetala|Silberwurz|flach, sonnig"],
+ no:["Hedera helix|Efeu|deckt zwar, liebt aber eher Schatten",
+ "Carpinus betulus|Hainbuche|Baum, kein Bodendecker",
+ "Corylus avellana|Hasel|Grossstrauch, kein Bodendecker",
+ "Cornus sanguinea|Roter Hartriegel|aufrechter Strauch",
+ "Picea abies|Fichte|Baum"]}
+];
+
+
+/* Grundlagenfragen (Multiple Choice) */
+const FB = {1:"Lebensbereiche",2:"Geselligkeit",3:"Gehölze verwenden",4:"Verwendung allgemein",5:"Winterbestimmung allgemein"};
+const MC = [
 {fb:1,lz:"ST",type:"mc",q:"Was versteht man unter einem «Lebensbereich»?",
  o:["Eine Gruppe von Pflanzen mit gleichen oder ähnlichen Standortansprüchen","Das Gebiet, aus dem eine Pflanze ursprünglich stammt","Die Fläche, die eine ausgewachsene Pflanze benötigt","Die Zeit vom Austrieb bis zum Einziehen einer Staude"],a:0,
  e:"Der Lebensbereich ist der Typ des Idealstandorts. Pflanzen desselben Lebensbereichs kann man gut miteinander kombinieren."},
@@ -184,14 +852,6 @@ const Q = [
 {fb:1,lz:"ST",type:"mc",q:"Wie verhalten sich Waldgeophyten wie Galanthus nivalis oder Eranthis hyemalis?",
  o:["Sie blühen im Hochsommer im Schatten der Bäume","Sie blühen vor dem Laubaustrieb und ziehen dann wieder ein","Sie sind immergrün und blühen im Winter","Sie brauchen volle Sonne und trockenen Boden"],a:1,
  e:"Sie nutzen das Licht vor dem Laubaustrieb. Ab Mitte Mai ziehen sie sich in Zwiebeln, Knollen oder Rhizome zurück."},
-{fb:1,lz:"ST",type:"mc",q:"Feuchte, schattige Steinfugen auf der Nordseite einer Mauer: Für welche Pflanze ist das der ideale Standort?",
- o:["Lavandula angustifolia","Asplenium scolopendrium (Hirschzungenfarn)","Sedum acre","Dianthus carthusianorum"],a:1,
- e:"Der Hirschzungenfarn liebt die kühlen, feuchten Fugen auf der Nordseite."},
-{fb:1,lz:"ST",type:"mc",q:"Welche Pflanze ist typisch für die Steppenheide?",
- o:["Dianthus carthusianorum (Karthäuser-Nelke)","Caltha palustris (Sumpfdotterblume)","Astilbe chinensis","Galium odoratum (Waldmeister)"],a:0,
- e:"Typisch sind Nelken, Lavendel, Origanum vulgare, Aster amellus und das Federgras (Stipa pennata)."},
-
-// ---------- 2 Geselligkeit ----------
 {fb:2,lz:"ST",type:"mc",q:"Was bedeutet Geselligkeitsstufe I?",
  o:["Einzeln oder in kleinen Gruppen (1–3, max. 5 Pflanzen), «solitär»","In Trupps von 3–10 Pflanzen","Gruppen von 10–20 Pflanzen","Vorwiegend grossflächig"],a:0,
  e:"Stufe I: Einzelstellung, z. B. Cortaderia selloana, Aconitum napellus, Osmunda regalis."},
@@ -201,9 +861,6 @@ const Q = [
 {fb:2,lz:"ST",type:"mc",q:"Was bedeutet Geselligkeitsstufe V?",
  o:["Einzelstellung","Gruppen von 3–10 Pflanzen","Gruppen von 10–20 Pflanzen","Vorwiegend grossflächig"],a:3,
  e:"Stufe V, z. B. Waldsteinia ternata, Vinca minor, Epimedium x versicolor."},
-{fb:2,lz:"ST",type:"mc",q:"Pampasgras (Cortaderia selloana): Welche Geselligkeitsstufe?",
- o:["I","III","IV","V"],a:0,
- e:"Grosse, auffällige Pflanzen werden einzeln gestellt (Stufe I)."},
 {fb:2,lz:"ST",type:"mc",q:"Wozu dienen die Geselligkeitsstufen nach Hansen und Müssel?",
  o:["Sie geben an, wie gross die Pflanzen werden","Sie zeigen, in welcher Anordnung Stauden effektvoll und pflegeleicht wirken","Sie geben die Blütezeit an","Sie geben an, wie winterhart eine Staude ist"],a:1,
  e:"Die Stufen I–V zeigen, ob eine Staude einzeln, in Gruppen oder flächig gepflanzt wird."},
@@ -211,7 +868,7 @@ const Q = [
  o:["I","II","IV–V","Spielt keine Rolle"],a:2,
  e:"Für Flächen nimmt man Stauden der Stufen IV–V, z. B. Waldsteinia ternata oder Geranium sanguineum."},
 
-// ---------- 3 Gehölze verwenden ----------
+// ---------- 3 Gehölze verwenden ----------,
 {fb:3,lz:"GH",type:"mc",q:"Kennziffern nach Kiermeier: Wofür steht die 1. Ziffer?",
  o:["Lebensraum des Gehölzes","Bodeneigenschaften","Klimatische Eigenschaften","Wuchsform"],a:0,
  e:"1. Ziffer Lebensraum, 2. Boden, 3. Klima, 4. Wuchsform."},
@@ -227,329 +884,273 @@ const Q = [
 {fb:3,lz:"GH",type:"mc",q:"Was unterscheidet einen Strauch von einem Baum?",
  o:["Ein Strauch ist immer kleiner als 2 m","Ein Strauch wächst ohne Stamm, die Äste treiben aus dem Wurzelstock","Ein Strauch ist immer immergrün","Ein Strauch blüht, ein Baum nicht"],a:1,
  e:"Ein Baum hat einen oder mehrere Stämme mit einer Krone. Ein Strauch treibt aus der Basis aus."},
-{fb:3,lz:"GH",type:"mc",q:"Welches Gehölz wächst basiton (treibt immer wieder aus der Basis aus)?",
- o:["Corylus avellana (Hasel)","Fagus sylvatica (Buche)","Picea abies (Fichte)","Betula pendula (Hänge-Birke)"],a:0,
- e:"Basiton wachsen z. B. Hasel, Hartriegel, Liguster und Spiraea."},
 {fb:3,lz:"GH",type:"mc",q:"Was bedeutet «Solitär» bei Gehölzen?",
  o:["Ein Gehölz wird einzeln als Blickfang gesetzt","Ein Gehölz wird dicht in Reihe gepflanzt","Ein Gehölz bedeckt den Boden flächig","Ein Gehölz wird jedes Jahr auf den Stock gesetzt"],a:0,
  e:"Ein Solitär steht frei und kommt mit Wuchsform, Blüte, Herbstfärbung oder Rinde voll zur Geltung."},
-{fb:3,lz:"GH",type:"mc",q:"Welches einheimische Gehölz eignet sich gut für eine Schnitthecke?",
- o:["Carpinus betulus (Hainbuche)","Betula pendula (Hänge-Birke)","Prunus laurocerasus (Kirschlorbeer)","Buddleja davidii (Sommerflieder)"],a:0,
- e:"Die Hainbuche ist einheimisch und sehr schnittverträglich. Kirschlorbeer und Sommerflieder sind nicht einheimisch und gelten als invasiv."},
-{fb:3,lz:"GH",type:"mc",q:"Welche Pflanze ist ein flachwachsendes, bodendeckendes Gehölz?",
- o:["Juniperus communis 'Repanda'","Carpinus betulus","Corylus avellana","Acer campestre"],a:0,
- e:"Weitere Beispiele: Taxus baccata 'Repandens', Arctostaphylos uva-ursi, Picea abies 'Nidiformis'."},
-{fb:3,lz:"GH",type:"mc",q:"Welche einheimische Kletterpflanze klettert selbständig mit Haftwurzeln?",
- o:["Hedera helix (Efeu)","Parthenocissus quinquefolia (Wilder Wein)","Wisteria sinensis (Blauregen)","Clematis vitalba (Waldrebe)"],a:0,
- e:"Efeu braucht keine Kletterhilfe. Parthenocissus haftet mit Haftscheiben und ist nicht einheimisch, Wisteria schlingt, Clematis rankt mit den Blattstielen."},
-
-// ---------- 4 Verwendungsfragen QV ----------
-{fb:4,lz:"ST",type:"mc",q:"Bepflanze eine sonnige, trockene Rabatte mit einer einheimischen Staude, die gelb blüht.",
- o:["Helianthemum nummularium (Sonnenröschen)","Rudbeckia fulgida (Sonnenhut)","Trollius europaeus (Trollblume)","Coreopsis verticillata (Mädchenauge)"],a:0,
- e:"Rudbeckia und Coreopsis stammen aus Nordamerika. Die Trollblume ist zwar einheimisch und gelb, braucht aber feuchten Boden."},
-{fb:4,lz:"ST",type:"mc",q:"Am Teichrand (Sumpfzone) soll eine einheimische, gelb blühende Staude wachsen.",
- o:["Iris pseudacorus (Sumpf-Schwertlilie)","Pontederia cordata (Hechtkraut)","Lythrum salicaria (Blut-Weiderich)","Sedum acre (Scharfer Mauerpfeffer)"],a:0,
- e:"Pontederia ist nicht einheimisch und blüht blau. Lythrum blüht purpur, Sedum acre gehört auf trockene Mauern."},
-{fb:4,lz:"ST",type:"mc",q:"Ein einheimischer, schattenverträglicher Bodendecker für unter Gehölze.",
- o:["Galium odoratum (Waldmeister)","Sedum acre (Scharfer Mauerpfeffer)","Lavandula angustifolia (Lavendel)","Stachys byzantina (Woll-Ziest)"],a:0,
- e:"Der Waldmeister gehört zum Lebensbereich Gehölz. Die anderen brauchen Sonne."},
-{fb:4,lz:"ST",type:"mc",q:"Vollsonnige, trockene Mauerkrone. Welche Pflanze passt?",
- o:["Sedum acre (Scharfer Mauerpfeffer)","Hosta (Funkie)","Astilbe chinensis","Caltha palustris (Sumpfdotterblume)"],a:0,
- e:"Mauerpfeffer erträgt mit seinen sukkulenten Blättern Hitze und Trockenheit."},
-{fb:4,lz:"GH",type:"mc",q:"Für eine naturnahe Hecke sind nur einheimische Sträucher gewünscht. Welche Auswahl passt?",
- o:["Cornus sanguinea, Ligustrum vulgare, Viburnum lantana","Forsythia x intermedia, Weigela florida, Deutzia scabra","Prunus laurocerasus, Thuja occidentalis, Cotoneaster dammeri","Buddleja davidii, Mahonia aquifolium, Ligustrum ovalifolium"],a:0,
- e:"Roter Hartriegel, Gewöhnlicher Liguster und Wolliger Schneeball sind einheimisch und wertvoll für Insekten und Vögel."},
-{fb:4,lz:"GH",type:"mc",q:"Gesucht ist ein einheimisches Gehölz, das schon im Vorfrühling (Februar/März) gelb blüht.",
- o:["Cornus mas (Kornelkirsche)","Forsythia x intermedia (Forsythie)","Hamamelis x intermedia (Zaubernuss)","Mahonia aquifolium (Mahonie)"],a:0,
- e:"Forsythie, Zaubernuss und Mahonie blühen auch gelb, sind aber nicht einheimisch."},
-{fb:4,lz:"ST",type:"mc",q:"In welchen Lebensbereich gehört der Lavendel (Lavandula angustifolia)?",
- o:["Steppenheide (SH)","Gehölz (G)","Wasserrand (WR)","Feuchtes Beet (B3)"],a:0,
- e:"Lavendel braucht einen sonnigen, trockenen, eher kargen Standort."},
 {fb:4,lz:"ST",type:"mc",q:"Am Gehölzrand (Südseite einer Hecke) sollen Stauden gepflanzt werden. Worauf musst du besonders achten?",
  o:["Auf die Exposition (Ausrichtung) und die Wurzelkonkurrenz","Nur auf die Blütenfarbe","Darauf, dass der Boden immer nass ist","Darauf, dass nur Wasserpflanzen verwendet werden"],a:0,
  e:"Der Süd- oder Südwestrand ist mit einer Freifläche vergleichbar, der Nordrand mit dem Lebensbereich Gehölz. Gehölze konkurrieren um Wasser und Nährstoffe."},
 
-// ---------- 5 Gehölze im Winter ----------
-{fb:5,lz:"WI",type:"mc",q:"Welches Gehölz hat gegenständige Knospen?",
- o:["Fraxinus excelsior (Esche)","Fagus sylvatica (Buche)","Quercus robur (Stiel-Eiche)","Carpinus betulus (Hainbuche)"],a:0,
- e:"Gegenständig sind z. B. Ahorn, Esche, Rosskastanie, Hartriegel, Holunder und Flieder."},
-{fb:5,lz:"WI",type:"mc",q:"Welche Farbe haben die Knospen der Esche (Fraxinus excelsior)?",
- o:["schwarz","grün","rot und klebrig","weiss behaart"],a:0,
- e:"Die schwarzen, gegenständigen Knospen machen die Esche im Winter gut erkennbar."},
-{fb:5,lz:"WI",type:"mc",q:"Welches Gehölz hat ein gekammertes Mark?",
- o:["Juglans regia (Walnuss)","Sambucus nigra (Schwarzer Holunder)","Fagus sylvatica (Buche)","Acer platanoides (Spitz-Ahorn)"],a:0,
- e:"Längs aufgeschnitten zeigt der Walnusstrieb viele kleine Kammern im Mark."},
-{fb:5,lz:"WI",type:"mc",q:"Woran unterscheidest du im Winter den Schwarzen (Sambucus nigra) vom Roten Holunder (S. racemosa)?",
- o:["Am Mark: S. nigra weiss, S. racemosa braun","An der Knospenstellung: S. nigra wechselständig","An den Dornen: Nur S. racemosa hat Dornen","Gar nicht, im Winter sind sie gleich"],a:0,
- e:"Mit dem Messer den Trieb anschneiden: weisses Mark beim Schwarzen, gelbbraunes Mark beim Roten Holunder."},
-{fb:5,lz:"WI",type:"mc",q:"Welche Aufgabe haben die Lentizellen?",
- o:["Gasaustausch: Sie versorgen das lebende Gewebe im Spross mit Sauerstoff","Sie speichern Wasser für den Winter","Sie schützen die Knospen vor Frost","Sie bilden im Frühling die neuen Blätter"],a:0,
- e:"Lentizellen sind Öffnungen in Rinde/Borke, gefüllt mit lockeren Korkzellen. Form, Farbe und Anordnung helfen beim Bestimmen."},
-{fb:5,lz:"WI",type:"mc",q:"Welches einheimische Gehölz hat an den Zweigen oft Korkleisten?",
- o:["Acer campestre (Feld-Ahorn)","Betula pendula (Hänge-Birke)","Fagus sylvatica (Buche)","Prunus avium (Vogel-Kirsche)"],a:0,
- e:"Feld-Ahorn (und Feld-Ulme) bilden oft Korkleisten an den jungen Zweigen."},
-{fb:5,lz:"WI",type:"mc",q:"Grosse, klebrige, rotbraune Knospen, gegenständig, grosse hufeisenförmige Blattnarben. Welches Gehölz ist das?",
- o:["Aesculus hippocastanum (Rosskastanie)","Fraxinus excelsior (Esche)","Fagus sylvatica (Buche)","Juglans regia (Walnuss)"],a:0,
- e:"Die Rosskastanie hat schildförmige bis hufeisenförmige Blattnarben mit gut sichtbaren Blattspuren."},
-{fb:5,lz:"WI",type:"mc",q:"Lange, schlanke, spitze, spindelförmige Knospen, wechselständig. Welches Gehölz?",
- o:["Fagus sylvatica (Buche)","Aesculus hippocastanum (Rosskastanie)","Fraxinus excelsior (Esche)","Sambucus nigra (Schwarzer Holunder)"],a:0,
- e:"Die Buche hat die typischen langen, zigarrenförmigen Knospen."},
-{fb:5,lz:"WI",type:"mc",q:"Am Triebende stehen mehrere Knospen in einer Ansammlung. Typisch für …",
- o:["Quercus (Eiche)","Fraxinus (Esche)","Sambucus (Holunder)","Cornus (Hartriegel)"],a:0,
- e:"Bei Eichen (und Kirschen) sammeln sich mehrere Knospen an der Terminalknospe."},
-{fb:5,lz:"WI",type:"mc",q:"Die Borke blättert in Platten ab und zeigt ein Fleckenmuster. Welcher Baum?",
- o:["Platanus x hispanica (Platane)","Fagus sylvatica (Buche)","Carpinus betulus (Hainbuche)","Quercus robur (Stiel-Eiche)"],a:0,
- e:"Die Platane hat zudem eine Blattnarbe, die den ganzen Trieb umläuft."},
-{fb:5,lz:"WI",type:"mc",q:"Was ist eine Terminalknospe (Endknospe)?",
- o:["Die Knospe am Ende eines Triebes","Eine Knospe in der Blattachsel","Eine Knospe, die nie austreibt","Eine Knospe ohne Knospenschuppen"],a:0,
- e:"Seitenknospen stehen in den Blattachseln an den Nodien. Die Endknospe schliesst den Trieb ab."},
-{fb:5,lz:"WI",type:"mc",q:"Rosen haben …",
- o:["Stacheln: Auswüchse der Rinde, lassen sich leicht abbrechen","Dornen: umgewandelte Triebe, fest mit dem Holz verbunden","Dornen: umgewandelte Blätter","weder Dornen noch Stacheln"],a:0,
- e:"Stacheln sitzen nur in der Rinde. Dornen sind umgewandelte Organe (z. B. Kurztriebe beim Weissdorn) und mit dem Holz verbunden."},
-{fb:5,lz:"WI",type:"mc",q:"Einheimischer Strauch, gegenständige Knospen, Triebe auf der Sonnenseite rot gefärbt. Welcher Strauch?",
- o:["Cornus sanguinea (Roter Hartriegel)","Corylus avellana (Hasel)","Ligustrum vulgare (Liguster)","Viburnum lantana (Wolliger Schneeball)"],a:0,
- e:"Der Rote Hartriegel ist im Winter an den rötlichen Trieben gut zu erkennen."},
-{fb:5,lz:"WI",type:"mc",q:"Weisse Rinde mit schwarzen Rissen. Welcher Baum?",
- o:["Betula pendula (Hänge-Birke)","Fagus sylvatica (Buche)","Acer campestre (Feld-Ahorn)","Carpinus betulus (Hainbuche)"],a:0,
- e:"Die Birke ist an der weissen Rinde schon von weitem erkennbar."},
-{fb:5,lz:"WI",type:"mc",q:"Welche Merkmale helfen dir beim Bestimmen von Gehölzen im Winter?",
- o:["Knospen, Blattnarben, Rinde/Borke, Mark, Habitus, Fruchtstände","Nur die Blütenfarbe","Nur die Blattform","Nur die Höhe der Pflanze"],a:0,
- e:"Dazu kommen Triebfarbe, Lentizellen, Korkleisten, Dornen/Stacheln und der Geruch."},
-// ---------- Ergänzungen: Winterschmuck, Verwendungsgruppen, Kernliste Winterbestimmung ----------
+// ---------- 5 Gehölze im Winter ----------,
 {fb:3,lz:"GH",type:"mc",q:"Welche Anforderungen muss ein Strassenbaum vor allem erfüllen?",
  o:["Stadtklima-, hitze- und salzverträglich, hoher Kronenansatz, bruchfest","Möglichst grosse, auffällige Früchte für die Passanten","Flach wurzelnd und schattenliebend","Schnell wachsend, aber nur 3–5 Jahre alt werdend"],a:0,
  e:"Strassenbäume stehen an Extremstandorten: Hitze, Streusalz, verdichteter Boden und wenig Wurzelraum. Beispiele: Tilia cordata, Acer campestre."},
 {fb:3,lz:"GH",type:"mc",q:"Was ist «Winterschmuck»?",
  o:["Zierwerte, die im Winter wirken: farbige Triebe, Rinde, Früchte, immergrünes Laub, Winterblüten","Lichterketten und Dekoration in Gehölzen","Alle Pflanzen, die im Winter blühen müssen","Pflanzen, die im Winter ins Haus geholt werden"],a:0,
  e:"Beispiele: Cornus sanguinea (rote Triebe), Acer griseum (Zimtrinde), Rosa canina (Hagebutten), Hamamelis (Winterblüte)."},
-{fb:3,lz:"GH",type:"mc",q:"Welches Gehölz bietet im Winter eine auffällige, zimtbraune, abrollende Rinde?",
- o:["Acer griseum (Zimt-Ahorn)","Carpinus betulus (Hainbuche)","Fagus sylvatica (Rot-Buche)","Ligustrum vulgare (Liguster)"],a:0,
- e:"Der Zimt-Ahorn ist ein klassischer Rindenschmuck-Baum."},
 {fb:4,lz:"ST",type:"mc",q:"Warum schneidest du Stauden und Gräser mit Winterschmuck erst im Frühling zurück?",
  o:["Struktur und Raureif bleiben sichtbar, Insekten überwintern in den Stängeln","Weil sie im Winter schneller wachsen","Weil Schnittwerkzeuge im Winter nicht erlaubt sind","Damit die Pflanze im Winter blüht"],a:0,
  e:"Zudem bieten Samenstände Vogelfutter, und die alten Triebe schützen die Pflanze vor Frost und Nässe."},
-{fb:4,lz:"GH",type:"mc",q:"Kindergarten, Ostseite, humoser Boden: Gesucht ist ein ungiftiger Strauch mit Winterschmuck.",
- o:["Corylus avellana 'Contorta' (Korkenzieher-Hasel)","Taxus baccata (Eibe)","Daphne mezereum (Seidelbast)","Euonymus europaeus (Pfaffenhütchen)"],a:0,
- e:"Eibe, Seidelbast und Pfaffenhütchen sind giftig und haben bei Kindern nichts verloren. Die Korkenzieher-Hasel hat gedrehte Triebe und Kätzchen im Winter."},
-{fb:5,lz:"WI",type:"mc",q:"Welches einheimische Nadelgehölz wirft im Winter seine Nadeln ab?",
- o:["Larix decidua (Europäische Lärche)","Picea abies (Fichte)","Abies alba (Weisstanne)","Taxus baccata (Eibe)"],a:0,
- e:"Die Lärche ist im Winter kahl. Typisch sind die warzenförmigen Kurztriebe."},
-{fb:5,lz:"WI",type:"mc",q:"Woran unterscheidest du die Weisstanne (Abies alba) von der Fichte (Picea abies)?",
- o:["Tanne: weiche Nadeln mit 2 weissen Streifen, Zapfen aufrecht; Fichte: stechend, Zapfen hängend","Tanne: Nadeln zu zweit; Fichte: Nadeln zu fünft","Tanne wirft im Winter die Nadeln ab, Fichte nicht","Es gibt keinen Unterschied, beides ist dasselbe"],a:0,
- e:"Merksatz: «Fichten stechen, Tannen nicht». Die Fichtenzweige fühlen sich wegen der Nadelkissen raspelig an."},
-{fb:5,lz:"WI",type:"mc",q:"Knospen deutlich gestielt, im Winter hängen kleine verholzte Zäpfchen. Welches Gehölz?",
- o:["Alnus glutinosa (Schwarz-Erle)","Fagus sylvatica (Rot-Buche)","Corylus avellana (Hasel)","Tilia cordata (Winter-Linde)"],a:0,
- e:"Gestielte Knospen und die alten Erlenzäpfchen machen die Schwarz-Erle sicher bestimmbar."},
-{fb:5,lz:"WI",type:"mc",q:"Knospen ohne Knospenschuppen (nackt), dicht filzig behaart, gegenständig. Welcher Strauch?",
- o:["Viburnum lantana (Wolliger Schneeball)","Viburnum opulus (Gemeiner Schneeball)","Ligustrum vulgare (Liguster)","Sambucus nigra (Schwarzer Holunder)"],a:0,
- e:"Der Wollige Schneeball hat nackte, pelzige Knospen. Der Gemeine Schneeball hat glänzende rote Knospen mit 2 Schuppen."},
-{fb:5,lz:"WI",type:"mc",q:"Grüne, vierkantige Zweige mit Korkleisten, gegenständig. Welcher Strauch?",
- o:["Euonymus europaeus (Pfaffenhütchen)","Cornus sanguinea (Roter Hartriegel)","Corylus avellana (Hasel)","Lonicera xylosteum (Rote Heckenkirsche)"],a:0,
- e:"Achtung: Das Pfaffenhütchen ist giftig (v. a. die Früchte)."},
-{fb:5,lz:"WI",type:"mc",q:"Rinde mit waagrechten Lentizellenbändern, die sich ringförmig ablösen («Ringelborke»). Welcher Baum?",
- o:["Prunus avium (Vogel-Kirsche)","Betula pendula (Hänge-Birke)","Fraxinus excelsior (Esche)","Quercus robur (Stiel-Eiche)"],a:0,
- e:"Kirschen erkennt man im Winter auch an den büschelig gehäuften Knospen an Kurztrieben."},
+{fb:5,lz:"WI",type:"mc",q:"Welche Aufgabe haben die Lentizellen?",
+ o:["Gasaustausch: Sie versorgen das lebende Gewebe im Spross mit Sauerstoff","Sie speichern Wasser für den Winter","Sie schützen die Knospen vor Frost","Sie bilden im Frühling die neuen Blätter"],a:0,
+ e:"Lentizellen sind Öffnungen in Rinde/Borke, gefüllt mit lockeren Korkzellen. Form, Farbe und Anordnung helfen beim Bestimmen."},
+{fb:5,lz:"WI",type:"mc",q:"Was ist eine Terminalknospe (Endknospe)?",
+ o:["Die Knospe am Ende eines Triebes","Eine Knospe in der Blattachsel","Eine Knospe, die nie austreibt","Eine Knospe ohne Knospenschuppen"],a:0,
+ e:"Seitenknospen stehen in den Blattachseln an den Nodien. Die Endknospe schliesst den Trieb ab."},
+{fb:5,lz:"WI",type:"mc",q:"Rosen haben …",
+ o:["Stacheln: Auswüchse der Rinde, lassen sich leicht abbrechen","Dornen: umgewandelte Triebe, fest mit dem Holz verbunden","Dornen: umgewandelte Blätter","weder Dornen noch Stacheln"],a:0,
+ e:"Stacheln sitzen nur in der Rinde. Dornen sind umgewandelte Organe (z. B. Kurztriebe beim Weissdorn) und mit dem Holz verbunden."},
+{fb:5,lz:"WI",type:"mc",q:"Welche Merkmale helfen dir beim Bestimmen von Gehölzen im Winter?",
+ o:["Knospen, Blattnarben, Rinde/Borke, Mark, Habitus, Fruchtstände","Nur die Blütenfarbe","Nur die Blattform","Nur die Höhe der Pflanze"],a:0,
+ e:"Dazu kommen Triebfarbe, Lentizellen, Korkleisten, Dornen/Stacheln und der Geruch."},
+// ---------- Ergänzungen: Winterschmuck, Verwendungsgruppen, Kernliste Winterbestimmung ----------,
 {fb:5,lz:"WI",type:"mc",q:"Was macht die Knospen vieler Gehölze im Winter widerstandsfähig?",
  o:["Klebrige Harze, Behaarung und rote Schutzpigmente","Sie sind mit Wasser gefüllt","Sie wachsen im Winter besonders schnell","Sie werfen die Knospenschuppen im Herbst ab"],a:0,
  e:"Harz schützt vor Frass, Pilzen und Verdunstung, Haare isolieren, rote Farbe schützt vor UV-Strahlung."},
 {fb:5,lz:"WI",type:"mc",q:"Wie gehst du vor, wenn dir ein Kunde im Dezember einen kahlen Zweig zum Bestimmen bringt?",
  o:["Knospenstellung, Knospen, Blattnarben, Mark prüfen, dann mit Schlüssel bestimmen und mit Bildern rückprüfen","Sofort eine App fragen und das erste Resultat übernehmen","Warten, bis der Strauch im Frühling Blätter hat","Nur an der Rinde bestimmen"],a:0,
  e:"Mehrere Zweige anschauen, Merkmale systematisch prüfen, mit dem Schnellbestimmungsschlüssel bestimmen und das Ergebnis rückprüfen."}
-
 ];
 </script>
 <script>
-const SLUG = "pflanzenverwendung";
-const N_QUESTIONS = 10;
-const $ = id => document.getElementById(id);
-const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-Q.forEach((q,k)=>q.id="q"+(k+1));
-const byId = Object.fromEntries(Q.map(q=>[q.id,q]));
-
+const SLUG="pflanzenverwendung", N_CASES=6, N_MC=4, JKIND="pv-urteil";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+MC.forEach((q,k)=>q.id="m"+(k+1));
+const mcById=Object.fromEntries(MC.map(q=>[q.id,q]));
+const caseById=Object.fromEntries(CASES.map(c=>[c.id,c]));
 function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
-function fmt(n,unit){if(unit==="CHF")return n.toFixed(2);const [a,b]=String(n).split(".");return a.replace(/\B(?=(\d{3})+(?!\d))/g," ")+(b?","+b:"");}
-function ansText(q){return q.type==="mc"?q.o[q.a]:(q.unit==="CHF"?"CHF "+fmt(q.ans,"CHF"):fmt(q.ans)+" "+q.unit);}
 function show(id){["loading","start","quiz","result","teacher"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
-const dt = s => s?new Date(s).toLocaleString("de-CH",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"–";
-const cls = p => p==null?"g0":p>=80?"g3":p>=50?"g2":"g1";
+const dt=s=>s?new Date(s).toLocaleString("de-CH",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}):"–";
+const cls=p=>p==null?"g0":p>=80?"g3":p>=50?"g2":"g1";
 
-/* 10 zufällige Fragen: aus jedem Thema mindestens 1, Rest zufällig */
-function pickQuestions(){
-  const chosen=[];
-  for(const k in FB){ chosen.push(shuffle(Q.filter(q=>q.fb==k))[0]); }
-  const rest=shuffle(Q.filter(q=>!chosen.includes(q)));
-  while(chosen.length<N_QUESTIONS && rest.length) chosen.push(rest.pop());
-  return shuffle(chosen);
+/* ---------- Pflanzennamen erkennen ---------- */
+function nrm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\u00df/g,"ss")
+  .replace(/['‘’"«»„“].*?['‘’"«»„“]/g," ").replace(/×/g," ").replace(/[^a-z\s-]/g," ").replace(/-/g," ")
+  .split(/\s+/).filter(w=>w&&w!=="x"&&w!=="var"&&w!=="ssp"&&w!=="subsp"&&w!=="cv").join(" ");}
+function lev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array(n+1).fill(0).map((_,j)=>j);
+  for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];}
+const tol=l=>l<=4?0:l<=7?1:2;
+const near=(a,b)=>a===b||(Math.abs(a.length-b.length)<=2&&lev(a,b)<=tol(b.length));
+function parseEntry(str){const [b,d,why]=str.split("|");const bt=nrm(b).split(" ");return {b,names:(d||"").split(";").filter(Boolean),nn:(d||"").split(";").filter(Boolean).map(nrm),why:why||"",genus:bt[0],species:bt[1]||""};}
+const GLOBAL_NO=["Prunus laurocerasus|Kirschlorbeer|invasiver Neophyt, in der Schweiz seit 2024 nicht mehr verkäuflich",
+ "Buddleja davidii|Sommerflieder;Schmetterlingsflieder|invasiver Neophyt, nicht mehr verkäuflich",
+ "Solidago canadensis|Kanadische Goldrute|invasiver Neophyt, nicht pflanzen",
+ "Solidago gigantea|Spätblühende Goldrute|invasiver Neophyt, nicht pflanzen",
+ "Impatiens glandulifera|Drüsiges Springkraut|invasiver Neophyt, nicht pflanzen",
+ "Reynoutria japonica|Japanischer Staudenknöterich|invasiver Neophyt, nicht pflanzen",
+ "Fallopia japonica|Japanischer Staudenknöterich|invasiver Neophyt, nicht pflanzen",
+ "Ailanthus altissima|Götterbaum|invasiver Neophyt, nicht pflanzen",
+ "Rhus typhina|Essigbaum|invasiver Neophyt, nicht pflanzen",
+ "Robinia pseudoacacia|Robinie;Falsche Akazie|invasiver Neophyt, nicht pflanzen",
+ "Heracleum mantegazzianum|Riesen-Bärenklau|invasiver Neophyt, gefährlich",
+ "Lonicera japonica|Japanisches Geissblatt|invasiver Neophyt, nicht pflanzen",
+ "Lysichiton americanus|Gelbe Scheincalla|invasiver Neophyt, nicht pflanzen"];
+CASES.forEach(c=>{c.OK=c.ok.map(parseEntry);c.NO=c.no.concat(GLOBAL_NO).map(parseEntry);});
+function matchEntry(inp,e){
+  for(const n of e.nn){ if(n&&(inp===n||lev(inp,n)<=tol(n.length))) return "german"; }
+  const t=inp.split(" ");const gi=t.findIndex(w=>near(w,e.genus));
+  if(gi<0) return null;
+  if(!e.species) return "full";
+  if(t.slice(gi+1).some(w=>near(w,e.species))) return "full";
+  if(t.length===gi+1) return "genus";
+  return "othersp";
 }
+let JUDG={}; // key: caseId+"|"+norm -> {ok,note,id}
+function classify(text,c){
+  const n=nrm(text); if(!n) return {st:"empty",key:""};
+  const J=JUDG[c.id+"|"+n];
+  if(J) return {st:J.ok?"ok":"no",key:n,why:(J.note||(J.ok?"von der Lehrperson akzeptiert":"von der Lehrperson als unpassend beurteilt")),ref:J.ok?"Lehrperson":""};
+  let half=null,noGenus=null,other=null,gFull=null;
+  for(const e of c.OK){const m=matchEntry(n,e);
+    if(m==="full"&&!e.species){if(!gFull)gFull={st:"ok",key:n,ref:e.b,why:e.why};continue;}
+    if(m==="full") return {st:"ok",key:n,ref:e.b,why:e.why};
+    if(m==="german"&&!half) half={st:"half",key:n,ref:e.b,why:e.why,hint:"Nenne auch den botanischen Namen: "+e.b};
+    if(m==="genus"&&!half) half={st:"half",key:n,ref:e.b,why:e.why,hint:"Die Gattung stimmt. Nenne auch die Art, z. B. "+e.b};
+    if(m==="othersp"&&!other) other=e;}
+  for(const e of c.NO){const m=matchEntry(n,e);
+    if(m==="full"||m==="german") return {st:"no",key:n,ref:e.b,why:e.why};
+    if(m==="genus"&&!half&&!noGenus) noGenus={st:"no",key:n,ref:e.b,why:e.why};}
+  if(gFull) return gFull;
+  if(half) return half;
+  if(noGenus) return noGenus;
+  return {st:"unk",key:n,hint:other?"Die Gattung passt. Diese Art kennt die App nicht, deine Lehrperson prüft sie.":"Diese Pflanze kennt die App noch nicht, deine Lehrperson prüft sie."};
+}
+const PTS={ok:1,half:.5,no:0,dup:0,empty:0};
+function scoreAttempt(att){ // rechnet mit den aktuellen Beurteilungen der Lehrperson
+  let got=0,tot=0,pend=0;
+  att.items.forEach(it=>{
+    if(it.type==="mc"){tot++;if(it.ok)got++;return;}
+    tot++; if(it.lbOk) got++;
+    it.plants.forEach(p=>{let st=p.st;
+      if(st==="unk"){const J=JUDG[it.id+"|"+p.key];if(J)st=J.ok?"ok":"no";}
+      if(st==="unk"){pend++;return;} tot++; got+=PTS[st]||0;});
+  });
+  return {got,tot,pend,pct:tot?Math.round(got/tot*100):0};
+}
+async function loadJudg(){JUDG={};try{const L=await LA.list(JKIND);L.slice().reverse().forEach(r=>{if(r.data&&r.data.key)JUDG[r.grp+"|"+r.data.key]=Object.assign({id:r.id},r.data);});}catch(e){console.warn(e);}}
 
 /* ---------- Lernende ---------- */
-let set=[], i=0, right=0, log=[], answered=false, startedAt=null;
-
+let set=[],i=0,log=[],startedAt=null;
 function attempts(){const p=LA.getProgress(SLUG);return (p&&p.data&&p.data.attempts)||[];}
-
 function buildStart(){
   $("hello").textContent="Hallo "+LA.user.name+" 👋";
   const A=attempts();
   $("myHist").classList.toggle("hidden",!A.length);
-  $("myHistList").innerHTML=A.slice().reverse().map((a,k)=>'<div class="row"><span>Test '+(A.length-k)+' · '+dt(a.finished)+'</span><b><span class="sc '+cls(a.pct)+'">'+a.score+' / '+a.total+'</span></b></div>').join("");
-  $("go").textContent = A.length ? "Neuer Test (10 neue Zufallsfragen)" : "Test starten";
+  $("myHistList").innerHTML=A.slice().reverse().map((a,k)=>{const s=scoreAttempt(a);return '<div class="row"><span>Runde '+(A.length-k)+' · '+dt(a.finished)+(s.pend?' · 🔎 '+s.pend+' offen':'')+'</span><b><span class="sc '+cls(s.pct)+'">'+s.pct+' %</span></b></div>';}).join("");
+  $("go").textContent=A.length?"Neue Runde":"Runde starten";
   show("start");
 }
-
-function startTest(){
-  set=pickQuestions(); i=0; right=0; log=[]; startedAt=new Date().toISOString();
-  show("quiz"); render();
+function startRound(){
+  const cs=shuffle(CASES).slice(0,N_CASES).map(c=>({type:"case",c}));
+  const fbs=shuffle(Object.keys(FB));const ms=[];
+  for(const f of fbs){if(ms.length>=N_MC)break;const q=shuffle(MC.filter(q=>q.fb==f))[0];if(q)ms.push({type:"mc",q});}
+  set=shuffle(cs.concat(ms));i=0;log=[];startedAt=new Date().toISOString();show("quiz");render();
 }
-
-function render(){
-  const q=set[i]; answered=false;
-  $("pos").textContent="Frage "+(i+1)+" / "+set.length;
-  $("score").textContent=right+" richtig";
-  $("prog").style.width=(i/set.length*100)+"%";
-  $("tagFb").textContent=FB[q.fb]; $("tagLz").textContent=LZ[q.lz]||q.lz;
-  $("ctx").classList.toggle("hidden",!q.ctx); $("ctx").textContent=q.ctx||"";
-  $("qtext").textContent=q.q;
-  $("feedback").innerHTML=""; $("next").classList.add("hidden");
-  const A=$("answers"); A.innerHTML="";
-  if(q.type==="mc"){
-    shuffle(q.o.map((t,k)=>k)).forEach(k=>{
-      const b=document.createElement("button"); b.className="btn"; b.textContent=q.o[k]; b.dataset.k=k;
-      b.onclick=()=>checkMc(k); A.appendChild(b);
-    });
-  } else {
-    A.innerHTML='<div class="numrow"><input id="num" inputmode="decimal" autocomplete="off" placeholder="Zahl eingeben"><span>'+q.unit+'</span></div><button class="btn primary" id="chk">Prüfen</button>';
-    const inp=$("num"); inp.focus();
-    inp.addEventListener("keydown",e=>{if(e.key==="Enter")checkNum();});
-    $("chk").onclick=checkNum;
-  }
+function header(){$("pos").textContent="Aufgabe "+(i+1)+" / "+set.length;$("prog").style.width=(i/set.length*100)+"%";}
+function render(){header();const it=set[i];if(it.type==="mc")renderMc(it.q);else renderCase(it.c);}
+function nextBtn(){const b=document.createElement("button");b.className="btn primary";b.textContent=i<set.length-1?"Weiter":"Resultat anzeigen";b.onclick=()=>{i++;i<set.length?render():result();};$("qcard").appendChild(b);b.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function renderMc(q){
+  const C=$("qcard");C.innerHTML='<span class="tag">Grundlagen · '+esc(FB[q.fb])+'</span><div class="q">'+esc(q.q)+'</div><div id="ans"></div><div id="fb"></div>';
+  let done=false;
+  shuffle(q.o.map((t,k)=>k)).forEach(k=>{const b=document.createElement("button");b.className="btn";b.textContent=q.o[k];b.dataset.k=k;
+    b.onclick=()=>{if(done)return;done=true;const ok=k===q.a;
+      document.querySelectorAll("#ans .btn").forEach(x=>{x.disabled=true;if(+x.dataset.k===q.a)x.classList.add("ok");else if(+x.dataset.k===k)x.classList.add("no");});
+      $("fb").innerHTML='<div class="fb '+(ok?"ok":"no")+'"><b>'+(ok?"✅ Richtig!":"❌ Leider falsch. Richtig: "+esc(q.o[q.a]))+'</b>'+esc(q.e)+'</div>';
+      log.push({type:"mc",id:q.id,ok,given:q.o[k]});nextBtn();};
+    $("ans").appendChild(b);});
 }
-
-function finishAnswer(ok, given){
-  answered=true; const q=set[i];
-  if(ok) right++;
-  log.push({id:q.id, ok, given});
-  $("score").textContent=right+" richtig";
-  $("feedback").innerHTML='<div class="fb '+(ok?"ok":"no")+'"><b>'+(ok?"✅ Richtig!":"❌ Leider falsch. Richtig: "+esc(ansText(q)))+'</b>'+esc(q.e)+'</div>';
-  const nx=$("next"); nx.classList.remove("hidden");
-  nx.textContent= i<set.length-1?"Weiter":"Resultat anzeigen"; nx.focus();
+function renderCase(c){
+  const C=$("qcard");
+  C.innerHTML='<span class="tag">Praxisfall</span><div class="q">'+esc(c.t)+'</div>'+
+    '<div class="ctxbox">'+c.s.map(x=>'<div>'+esc(x)+'</div>').join("")+'</div>'+
+    '<div class="lbl">1. '+esc(c.lb.q)+'</div><div id="lbo"></div>'+
+    '<div class="lbl">2. '+esc(c.q)+' <span class="small">(botanischer Name, deutsch freiwillig)</span></div><div id="pl"></div>'+
+    '<button class="btn primary" id="chk">Prüfen</button><div id="cfb"></div>';
+  let lbSel=null;
+  shuffle(c.lb.o.map((t,k)=>k)).forEach(k=>{const b=document.createElement("button");b.className="lbbtn";b.textContent=c.lb.o[k];b.dataset.k=k;
+    b.onclick=()=>{if($("chk").disabled)return;lbSel=k;document.querySelectorAll("#lbo .lbbtn").forEach(x=>x.classList.toggle("sel",x===b));};$("lbo").appendChild(b);});
+  for(let n=0;n<c.n;n++){$("pl").insertAdjacentHTML("beforeend",'<div class="plant"><span class="n">'+(n+1)+'</span><input id="p'+n+'" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="z. B. Gattung Art"></div><div id="f'+n+'"></div>');}
+  $("p0").focus();
+  $("chk").onclick=()=>{
+    const vals=[...Array(c.n)].map((_,n)=>$("p"+n).value.trim());
+    if(lbSel===null||vals.some(v=>!v)){$("cfb").innerHTML='<div class="fb no"><b>Bitte zuerst alles ausfüllen.</b>Wähle den Lebensbereich bzw. die Verwendung und gib '+c.n+' Pflanze'+(c.n>1?'n':'')+' ein.</div>';return;}
+    $("chk").disabled=true;$("chk").classList.add("hidden");$("cfb").innerHTML="";
+    const lbOk=lbSel===c.lb.a;
+    document.querySelectorAll("#lbo .lbbtn").forEach(x=>{x.disabled=true;if(+x.dataset.k===c.lb.a)x.classList.add("ok");else if(+x.dataset.k===lbSel)x.classList.add("no");});
+    const seen=new Set();const plants=vals.map((v,n)=>{let r=classify(v,c);const id=r.ref&&r.st!=="unk"?r.ref:r.key;
+      if(seen.has(id)){r={st:"dup",key:r.key,hint:"Diese Pflanze hast du schon genannt."};}seen.add(id);
+      $("p"+n).disabled=true;
+      const lab={ok:"✅ Passt",half:"🟡 Halber Punkt",no:"❌ Passt nicht",unk:"🔎 Deine Lehrperson prüft",dup:"❌ Doppelt"}[r.st];
+      const cl={ok:"ok",half:"half",no:"no",unk:"unk",dup:"no"}[r.st];
+      $("f"+n).innerHTML='<div class="chip '+cl+'"><b>'+lab+'</b>'+(r.ref&&r.st!=="unk"&&r.ref!=="Lehrperson"?' · <i>'+esc(r.ref)+'</i>':'')+(r.why?': '+esc(r.why):'')+(r.hint?'<br>'+esc(r.hint):'')+'</div>';
+      return {text:v,st:r.st,key:r.key,ref:r.ref||""};});
+    const ex=shuffle(c.OK).slice(0,4).map(e=>'<i>'+esc(e.b)+'</i>'+(e.names[0]?' ('+esc(e.names[0])+')':'')).join(", ");
+    $("cfb").innerHTML='<div class="examples">💡 Weitere passende Pflanzen: '+ex+'</div>';
+    log.push({type:"case",id:c.id,lbOk,lbGiven:c.lb.o[lbSel],plants});
+    const s=scoreAttempt({items:log});$("score").textContent=s.got+" / "+s.tot+" Punkte";
+    nextBtn();
+  };
 }
-function checkMc(k){
-  if(answered) return; const q=set[i];
-  document.querySelectorAll("#answers .btn").forEach(b=>{b.disabled=true;
-    if(+b.dataset.k===q.a) b.classList.add("ok"); else if(+b.dataset.k===k) b.classList.add("no");});
-  finishAnswer(k===q.a, q.o[k]);
-}
-function checkNum(){
-  if(answered) return; const q=set[i]; const inp=$("num");
-  const raw=inp.value.trim().replace(/[\s']/g,"").replace(",",".");
-  if(raw===""||isNaN(+raw)){inp.focus();inp.style.borderColor="var(--red)";return;}
-  const v=+raw; const ok=Math.abs(v-q.ans)<=q.tol+1e-9;
-  inp.disabled=true; inp.style.borderColor=ok?"var(--green)":"var(--red)";
-  $("chk").classList.add("hidden");
-  finishAnswer(ok, inp.value.trim()+" "+q.unit);
-}
-$("next").onclick=()=>{ i++; if(i<set.length) render(); else result(); };
-
 async function result(){
-  const pct=Math.round(right/set.length*100);
-  $("pct").textContent=pct+" %";
-  $("verdict").textContent=right+" von "+set.length+" richtig – "+(pct>=90?"Top, sitzt! 🌱":pct>=70?"Gut, nur noch wenige Lücken.":pct>=50?"Einiges ist hängen geblieben – repetiere die Lücken unten.":"Lehrmittel C1 (Kap. 9 und 10) anschauen und dann neu versuchen.");
-  const by=$("byLz"); by.innerHTML="";
-  for(const k in LZ){
-    const all=log.filter(x=>byId[x.id].lz===k); if(!all.length) continue;
-    by.innerHTML+='<div class="row"><span>'+LZ[k]+'</span><b>'+all.filter(x=>x.ok).length+' / '+all.length+'</b></div>';
-  }
-  const wr=log.filter(x=>!x.ok);
-  $("wrongBox").classList.toggle("hidden",!wr.length);
-  $("wrongList").innerHTML=wr.map(x=>{const q=byId[x.id];return '<div class="wrong">'+esc(q.q)+'<br><span class="g">Deine Antwort: '+esc(x.given)+'</span><br><span class="a">→ '+esc(ansText(q))+'</span></div>';}).join("");
-  $("saved").textContent="Wird gespeichert …";
-  show("result");
-  const att={started:startedAt, finished:new Date().toISOString(), score:right, total:set.length, pct, answers:log};
+  const att={started:startedAt,finished:new Date().toISOString(),items:log};
+  const s=scoreAttempt(att);att.score=s.got;att.total=s.tot;att.pct=s.pct;
+  $("pct").textContent=s.pct+" %";
+  $("verdict").textContent=s.got+" von "+s.tot+" Punkten – "+(s.pct>=85?"Top, du kannst Pflanzen gezielt verwenden! 🌱":s.pct>=65?"Gut, nur noch wenige Lücken.":s.pct>=45?"Einiges sitzt – schau dir die Lücken unten an.":"Lehrmittel C1 (Kap. 9 und 10) anschauen und dann neu versuchen.");
+  const pend=[],wrong=[];
+  log.forEach(it=>{if(it.type==="mc"){if(!it.ok){const q=mcById[it.id];wrong.push(esc(q.q)+'<br><span class="g">Deine Antwort: '+esc(it.given)+'</span><br><span class="a">→ '+esc(q.o[q.a])+'</span>');}return;}
+    const c=caseById[it.id];
+    if(!it.lbOk) wrong.push('<b>'+esc(c.t)+'</b>: '+esc(c.lb.q)+'<br><span class="g">Deine Antwort: '+esc(it.lbGiven)+'</span><br><span class="a">→ '+esc(c.lb.o[c.lb.a])+'</span>');
+    it.plants.forEach(p=>{if(p.st==="unk")pend.push('<b>'+esc(c.t)+'</b>: '+esc(p.text));
+      if(p.st==="no"||p.st==="dup")wrong.push('<b>'+esc(c.t)+'</b>: <span class="g">'+esc(p.text)+'</span> passt nicht.');
+      if(p.st==="half")wrong.push('<b>'+esc(c.t)+'</b>: <span class="g">'+esc(p.text)+'</span> – vollständig botanisch: <span class="a">'+esc(p.ref)+'</span>');});});
+  $("pendBox").classList.toggle("hidden",!pend.length);$("pendList").innerHTML=pend.map(x=>'<div class="wrong">'+x+'</div>').join("");
+  $("wrongBox").classList.toggle("hidden",!wrong.length);$("wrongList").innerHTML=wrong.map(x=>'<div class="wrong">'+x+'</div>').join("");
+  $("saved").textContent="Wird gespeichert …";show("result");
   const A=attempts().concat([att]);
-  try{ await LA.saveProgress(SLUG,{pct, finished:true, attempts:A}); $("saved").textContent="✔ Resultat gespeichert"; }
-  catch(e){ $("saved").textContent="⚠ Konnte nicht gespeichert werden: "+e.message; }
+  try{await LA.saveProgress(SLUG,{pct:s.pct,finished:true,attempts:A});$("saved").textContent="✔ Resultat gespeichert";}
+  catch(e){$("saved").textContent="⚠ Konnte nicht gespeichert werden: "+e.message;}
 }
-$("go").onclick=startTest;
-$("again").onclick=startTest;
+$("go").onclick=startRound;$("again").onclick=startRound;
 
 /* ---------- Lehrperson ---------- */
+let TAB="res";
 async function teacherView(){
-  $("wrap").classList.add("wide");
-  $("subline").textContent="Auswertung Klasse "+LA.klasse+" (nur diese Klasse)";
-  const T=$("teacher"); show("teacher");
-  T.innerHTML='<div class="card">Lädt Resultate …</div>';
-  let profs, prog;
-  try{ [profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]); }
-  catch(e){ T.innerHTML='<div class="msg err">'+esc(e.message)+'</div>'; return; }
+  $("wrap").classList.add("wide");$("subline").textContent="Auswertung Klasse "+LA.klasse;
+  const T=$("teacher");show("teacher");T.innerHTML='<div class="card">Lädt Resultate …</div>';
+  let profs,prog;
+  try{await loadJudg();[profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);}catch(e){T.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return;}
   const P=Object.fromEntries(profs.map(p=>[p.id,p]));
-  const rows=prog.filter(r=>r.slug===SLUG && P[r.user_id] && P[r.user_id].role==="student" && P[r.user_id].klasse===LA.klasse)
-    .map(r=>{const A=(r.data&&r.data.attempts)||[];return {name:P[r.user_id].name, A, first:A[0], last:A[A.length-1], best:A.reduce((m,a)=>a.pct>m.pct?a:m,A[0]||{pct:0})};})
-    .filter(r=>r.A.length).sort((a,b)=>a.name.localeCompare(b.name,"de"));
-  const done=new Set(rows.map(r=>r.name));
-  const open=profs.filter(p=>p.role==="student" && p.klasse===LA.klasse && !done.has(p.name)).map(p=>p.name).sort((a,b)=>a.localeCompare(b,"de"));
-
-  // Statistik pro Frage (über ersten Versuch jeder Person)
-  const qs={}; rows.forEach(r=>r.first.answers.forEach(x=>{(qs[x.id]=qs[x.id]||{n:0,ok:0}); qs[x.id].n++; if(x.ok) qs[x.id].ok++;}));
-  const lzs={}; Object.entries(qs).forEach(([id,s])=>{const lz=byId[id]?byId[id].lz:"?";(lzs[lz]=lzs[lz]||{n:0,ok:0});lzs[lz].n+=s.n;lzs[lz].ok+=s.ok;});
-  const avg = rows.length ? Math.round(rows.reduce((s,r)=>s+r.first.pct,0)/rows.length) : null;
-
-  const qRows=Object.entries(qs).map(([id,s])=>({q:byId[id],...s,p:Math.round(s.ok/s.n*100)})).filter(x=>x.q).sort((a,b)=>a.p-b.p);
-
-  T.innerHTML=`
-  <div class="kpis">
-    <div class="kpi"><b>${rows.length}</b><span>Lernende mit Resultat</span></div>
-    <div class="kpi"><b>${avg==null?"–":avg+" %"}</b><span>Klassenschnitt (1. Versuch)</span></div>
-    ${Object.keys(LZ).map(k=>`<div class="kpi"><b>${lzs[k]?Math.round(lzs[k].ok/lzs[k].n*100)+" %":"–"}</b><span>${LZ[k]}</span></div>`).join("")}
-  </div>
-  <div class="card">
-    <h2>Resultate pro Lernende/r</h2>
-    <p class="small">Gewertet wird der <b>1. Versuch</b>. Weitere Versuche sind freiwilliges Üben (jedes Mal 10 neue Zufallsfragen). Auf eine Zeile tippen, um die einzelnen Antworten zu sehen.</p>
-    <div style="margin-bottom:8px"><button class="btn inline" id="csv">⬇ CSV exportieren</button><button class="btn inline" id="rf">🔄 Aktualisieren</button><a class="btn inline" href="?test=1" style="text-decoration:none;color:inherit">▶ Test selbst ausprobieren</a></div>
-    <div class="scroll"><table>
-      <tr><th>Name</th><th>1. Versuch</th><th>Datum</th><th>Bester</th><th>Letzter</th><th>Versuche</th></tr>
-      ${rows.map((r,k)=>`<tr class="click" data-k="${k}"><td><b>${esc(r.name)}</b></td>
-        <td class="n"><span class="sc ${cls(r.first.pct)}">${r.first.score}/${r.first.total}</span></td>
-        <td>${dt(r.first.finished)}</td>
-        <td class="n"><span class="sc ${cls(r.best.pct)}">${r.best.pct} %</span></td>
-        <td class="n"><span class="sc ${cls(r.last.pct)}">${r.last.pct} %</span></td>
-        <td class="n">${r.A.length}</td></tr>
-        <tr class="hidden" id="det${k}"><td colspan="6" class="det"></td></tr>`).join("") || '<tr><td colspan="6">Noch niemand hat den Test gelöst.</td></tr>'}
-    </table></div>
-    ${open.length?`<p class="small" style="margin-top:10px"><b>Registriert, aber noch kein Resultat (${open.length}):</b> ${open.map(esc).join(", ")}</p>`:""}
-  </div>
-  <div class="card">
-    <h2>Welche Fragen bereiten Mühe?</h2>
-    <p class="small">Anteil richtiger Antworten im 1. Versuch, schwierigste zuerst. Da jede Person andere Zufallsfragen erhält, ist «n» die Zahl der Lernenden, die diese Frage bekamen.</p>
-    <div class="scroll"><table>
-      <tr><th>Frage</th><th>Thema</th><th>Richtig</th><th></th><th>n</th></tr>
-      ${qRows.map(x=>`<tr><td class="wrap">${esc(x.q.q)}<br><span class="small">→ ${esc(ansText(x.q))}</span></td><td class="n">${x.q.fb}</td>
-        <td class="n"><span class="sc ${cls(x.p)}">${x.p} %</span></td>
-        <td><div class="qbar"><div style="width:${x.p}%;background:${x.p>=80?"var(--green)":x.p>=50?"#e5b800":"var(--red)"}"></div></div></td>
-        <td class="n">${x.n}</td></tr>`).join("") || '<tr><td colspan="5">Noch keine Daten.</td></tr>'}
-    </table></div>
-  </div>`;
-
-  T.querySelectorAll("tr.click").forEach(tr=>tr.onclick=()=>{
-    const k=+tr.dataset.k, d=$("det"+k), r=rows[k];
-    if(!d.classList.contains("hidden")){d.classList.add("hidden");return;}
-    d.firstElementChild.innerHTML=r.A.map((a,n)=>`<div style="margin-bottom:8px"><b>Versuch ${n+1}</b> · ${dt(a.finished)} · ${a.score}/${a.total}${n===0?" (gewertet)":""}`+
-      a.answers.map(x=>{const q=byId[x.id];return q?`<div class="it">${x.ok?"✅":"❌"} ${esc(q.q)}${x.ok?"":` <span class="small">– Antwort: «${esc(x.given)}», richtig: «${esc(ansText(q))}»</span>`}</div>`:"";}).join("")+'</div>').join("");
-    d.classList.remove("hidden");
-  });
-  $("rf").onclick=()=>location.reload();
-  $("csv").onclick=()=>{
-    const head=["Name","1. Versuch Punkte","1. Versuch %","Datum 1. Versuch","Bester %","Letzter %","Versuche"];
-    const lines=[head].concat(rows.map(r=>[r.name,r.first.score+"/"+r.first.total,r.first.pct,dt(r.first.finished),r.best.pct,r.last.pct,r.A.length]));
-    const csv=lines.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");
-    const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"})); a.download="pflanzenverwendung-resultate.csv"; a.click();
-  };
+  const rows=prog.filter(r=>r.slug===SLUG&&P[r.user_id]&&P[r.user_id].role==="student"&&P[r.user_id].klasse===LA.klasse)
+    .map(r=>{const A=((r.data&&r.data.attempts)||[]).filter(a=>a.items);return {name:P[r.user_id].name,A};}).filter(r=>r.A.length)
+    .map(r=>{const S=r.A.map(scoreAttempt);return Object.assign(r,{S,first:S[0],last:S[S.length-1],best:S.reduce((m,s)=>s.pct>m.pct?s:m,S[0])});})
+    .sort((a,b)=>a.name.localeCompare(b.name,"de"));
+  // offene und falsche Antworten sammeln
+  const open={},bad={};
+  rows.forEach(r=>r.A.forEach(a=>a.items.forEach(it=>{if(it.type!=="case")return;it.plants.forEach(p=>{
+    const k=it.id+"|"+p.key;
+    if(p.st==="unk"&&!JUDG[k]){(open[k]=open[k]||{cid:it.id,key:p.key,texts:new Set(),who:new Set()});open[k].texts.add(p.text);open[k].who.add(r.name);}
+    if(p.st==="no"){(bad[k]=bad[k]||{cid:it.id,text:p.text,n:0});bad[k].n++;}});})));
+  const openL=Object.values(open).sort((a,b)=>a.cid.localeCompare(b.cid));
+  const avg=rows.length?Math.round(rows.reduce((s,r)=>s+r.first.pct,0)/rows.length):null;
+  T.innerHTML=`<div class="kpis"><div class="kpi"><b>${rows.length}</b><span>Lernende mit Resultat</span></div>
+    <div class="kpi"><b>${avg==null?"–":avg+" %"}</b><span>Klassenschnitt (1. Runde)</span></div>
+    <div class="kpi"><b>${openL.length}</b><span>Antworten zu prüfen</span></div>
+    <div class="kpi"><b>${Object.keys(JUDG).length}</b><span>bereits beurteilt</span></div></div>
+    <div class="tabs2"><button data-t="res">Resultate</button><button data-t="chk">🔎 Zu prüfen (${openL.length})</button><button data-t="bad">Häufige Fehlgriffe</button><button data-t="jud">Beurteilt</button><a class="btn inline" href="?test=1" style="text-decoration:none;color:inherit;margin:0">▶ Selbst ausprobieren</a></div>
+    <div id="tcont"></div>`;
+  T.querySelectorAll(".tabs2 button").forEach(b=>{b.classList.toggle("on",b.dataset.t===TAB);b.onclick=()=>{TAB=b.dataset.t;teacherView();};});
+  const C=$("tcont");
+  if(TAB==="res"){
+    C.innerHTML=`<div class="card"><h2>Resultate pro Lernende/r</h2><p class="small">Gewertet wird die 1. Runde. Offene Antworten (🔎) zählen erst, wenn du sie beurteilt hast. Auf eine Zeile tippen für Details.</p>
+    <div style="margin-bottom:8px"><button class="btn inline" id="csv">⬇ CSV exportieren</button></div>
+    <div class="scroll"><table><tr><th>Name</th><th>1. Runde</th><th>Datum</th><th>Beste</th><th>Letzte</th><th>Runden</th><th>Offen</th></tr>
+    ${rows.map((r,k)=>`<tr class="click" data-k="${k}"><td><b>${esc(r.name)}</b></td><td class="n"><span class="sc ${cls(r.first.pct)}">${r.first.pct} %</span></td><td>${dt(r.A[0].finished)}</td>
+      <td class="n"><span class="sc ${cls(r.best.pct)}">${r.best.pct} %</span></td><td class="n"><span class="sc ${cls(r.last.pct)}">${r.last.pct} %</span></td><td class="n">${r.A.length}</td><td class="n">${r.S.reduce((s,x)=>s+x.pend,0)||""}</td></tr>
+      <tr class="hidden" id="det${k}"><td colspan="7" class="det"></td></tr>`).join("")||'<tr><td colspan="7">Noch keine Resultate.</td></tr>'}</table></div></div>`;
+    C.querySelectorAll("tr.click").forEach(tr=>tr.onclick=()=>{const k=+tr.dataset.k,d=$("det"+k),r=rows[k];
+      if(!d.classList.contains("hidden")){d.classList.add("hidden");return;}
+      d.firstElementChild.innerHTML=r.A.map((a,n)=>`<div style="margin-bottom:8px"><b>Runde ${n+1}</b> · ${dt(a.finished)} · ${r.S[n].pct} %`+a.items.map(it=>{
+        if(it.type==="mc"){const q=mcById[it.id];return q?`<div class="it">${it.ok?"✅":"❌"} ${esc(q.q)}</div>`:"";}
+        const c=caseById[it.id];return `<div class="it"><b>${esc(c?c.t:it.id)}</b> ${it.lbOk?"✅":"❌"} ${esc(it.lbGiven)} · `+it.plants.map(p=>{let st=p.st;const J=JUDG[it.id+"|"+p.key];if(st==="unk"&&J)st=J.ok?"ok":"no";return ({ok:"✅",half:"🟡",no:"❌",unk:"🔎",dup:"❌"}[st]||"")+" "+esc(p.text);}).join(", ")+`</div>`;}).join("")+`</div>`).join("");
+      d.classList.remove("hidden");});
+    $("csv").onclick=()=>{const L=[["Name","1. Runde %","Datum","Beste %","Letzte %","Runden"]].concat(rows.map(r=>[r.name,r.first.pct,dt(r.A[0].finished),r.best.pct,r.last.pct,r.A.length]));
+      const csv=L.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv"}));a.download="pflanzenverwendung-resultate.csv";a.click();};
+  }
+  if(TAB==="chk"){
+    C.innerHTML=`<div class="card"><h2>🔎 Unbekannte Pflanzen beurteilen</h2><p class="small">Diese Antworten kennt die App nicht. Dein Urteil gilt sofort für alle: Punkte werden nachgerechnet, und künftige Eingaben werden automatisch erkannt. Begründung optional – sie wird den Lernenden angezeigt.</p>
+      ${openL.map((o,k)=>{const c=caseById[o.cid];return `<div class="chk"><div class="small">${esc(c?c.t:o.cid)} · ${esc(c?c.q:"")}</div><b>${[...o.texts].map(esc).join(" / ")}</b> <span class="small">(${[...o.who].map(esc).join(", ")})</span>
+        <input id="note${k}" placeholder="Begründung (optional), z. B. «einheimisch, trockenheitsverträglich»"><button class="btn inline ok" data-k="${k}" data-ok="1">✅ Passt</button><button class="btn inline no" data-k="${k}" data-ok="0">❌ Passt nicht</button></div>`;}).join("")||'<p>Alles beurteilt. 👍</p>'}</div>`;
+    C.querySelectorAll("button[data-k]").forEach(b=>b.onclick=async()=>{const o=openL[+b.dataset.k];b.disabled=true;
+      try{await LA.add(JKIND,o.cid,{key:o.key,text:[...o.texts][0],ok:b.dataset.ok==="1",note:$("note"+b.dataset.k).value.trim()});teacherView();}catch(e){alert(e.message);b.disabled=false;}});
+  }
+  if(TAB==="bad"){
+    const L=Object.values(bad).sort((a,b)=>b.n-a.n).slice(0,40);
+    C.innerHTML=`<div class="card"><h2>Häufige Fehlgriffe</h2><p class="small">Gut für die Besprechung im Plenum.</p><div class="scroll"><table><tr><th>Praxisfall</th><th>Eingabe</th><th>Anzahl</th></tr>
+      ${L.map(x=>`<tr><td>${esc(caseById[x.cid]?caseById[x.cid].t:x.cid)}</td><td>${esc(x.text)}</td><td class="n">${x.n}</td></tr>`).join("")||'<tr><td colspan="3">Noch keine Daten.</td></tr>'}</table></div></div>`;
+  }
+  if(TAB==="jud"){
+    const L=Object.entries(JUDG);
+    C.innerHTML=`<div class="card"><h2>Bereits beurteilt</h2><div class="scroll"><table><tr><th>Praxisfall</th><th>Eingabe</th><th>Urteil</th><th>Begründung</th><th></th></tr>
+      ${L.map(([k,j])=>{const cid=k.split("|")[0];return `<tr><td>${esc(caseById[cid]?caseById[cid].t:cid)}</td><td>${esc(j.text)}</td><td>${j.ok?"✅ passt":"❌ passt nicht"}</td><td class="wrap">${esc(j.note||"")}</td><td><button class="btn inline" data-id="${j.id}">Löschen</button></td></tr>`;}).join("")||'<tr><td colspan="5">Noch nichts beurteilt.</td></tr>'}</table></div></div>`;
+    C.querySelectorAll("button[data-id]").forEach(b=>b.onclick=async()=>{if(!confirm("Urteil löschen?"))return;try{await LA.remove(b.dataset.id);teacherView();}catch(e){alert(e.message);}});
+  }
 }
 
 /* ---------- Start ---------- */
-LA.requireLogin().then(()=>{
-  LA.who($("who"));
-  if(LA.user.role==="teacher" && !/[?&]test=1/.test(location.search)) teacherView();
-  else buildStart();
+LA.requireLogin().then(async()=>{
+  LA.who($("who"));await loadJudg();
+  if(LA.user.role==="teacher"&&!/[?&]test=1/.test(location.search)) teacherView(); else buildStart();
 });
 </script>
 </body>
