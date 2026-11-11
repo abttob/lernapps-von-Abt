@@ -158,7 +158,6 @@
           <button class="btn" id="go">Mitspielen</button>
           <div class="err" id="err">${esc(err || "")}</div>
         </div>
-        <p class="muted center">Lehrperson: <a href="?beamer=1">Beamer-Ansicht starten</a></p>
       </div>`;
       $("#go").onclick = async () => {
         code = $("#c").value.replace(/\D/g, ""); name = $("#n").value.trim();
