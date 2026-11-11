@@ -195,7 +195,7 @@
 "id": 32,
 "lz": "L169",
 "q": "Was bedeutet Kiesgemisch 0/45?",
-"a": "Ein **Gemisch von 0 bis 45 mm** Korngrösse. Die erste Zahl ist das Kleinstkorn, die zweite das Grösstkorn.",
+"a": "Ein **Korngemisch vom Feinen (0) bis zum Nennwert 45 mm**. Die erste Zahl ist das Kleinstkorn, die zweite der Nennwert des Grösstkorns. Einzelne Körner dürfen grösser sein (Überkorn, meist bis ca. 63 mm, nie über 90 mm).",
 "img": "korngroesse.png"
 },
 {
