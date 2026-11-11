@@ -157,6 +157,7 @@ function pins(){
 /* ---------- MULTI: Lernpfad aus Stufen ---------- */
 function multi(){
  const st=CFG.stages;let si=0,res=[];
+ try{const j=parseInt(new URLSearchParams(location.search).get('stufe'),10);if(j>=1&&j<=st.length&&LA.user&&LA.user.role==='teacher')si=j-1}catch(e){}
  function next(){
   if(si>=st.length){HOOK=null;$('#stg').innerHTML='';const S=res.reduce((a,r)=>a+r[1],0),T=res.reduce((a,r)=>a+r[2],0);
    const rows=res.map(r=>`<tr><td>${r[0]}</td><td><b>${r[2]?r[1]+' / '+r[2]:'–'}</b></td></tr>`).join('');
