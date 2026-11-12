@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Die grosse Lager-Show – L57 & L59</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gelb:#FFC400; --schwarz:#14151a; --dunkel:#1f2129; --karte:#2a2d38; --weiss:#fff;
+  --gruen:#21c36b; --rot:#ff4d4d; --blau:#3b8cff; --lila:#a259ff; --orange:#ff8a1f;
+  --A:#e8453c; --B:#2f7df6; --C:#f5b400; --D:#1fb35c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Nunito',system-ui,sans-serif;background:var(--schwarz);color:var(--weiss);overflow:hidden;font-weight:800}
+h1,h2,h3,.bungee{font-family:'Bungee','Arial Black',Impact,sans-serif;font-weight:400;letter-spacing:.5px}
+button{font-family:inherit;font-weight:900;cursor:pointer;border:none}
+.stripes{height:18px;background:repeating-linear-gradient(-45deg,var(--gelb) 0 28px,var(--schwarz) 28px 56px)}
+.screen{position:absolute;inset:0;display:none;flex-direction:column}
+.screen.on{display:flex}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;gap:12px}
+.topbar a{color:#aaa;text-decoration:none;font-size:16px}
+.iconbtns{display:flex;gap:8px}
+.iconbtns button{background:var(--karte);color:#fff;border-radius:10px;padding:8px 12px;font-size:18px}
+.iconbtns button:hover{background:#3a3e4d}
+
+/* START */
+#start{align-items:center;justify-content:flex-start;overflow:auto}
+.logo{text-align:center;margin-top:2vh}
+.logo h1{font-size:clamp(34px,6.2vw,92px);color:var(--gelb);text-shadow:5px 5px 0 #000,0 0 40px rgba(255,196,0,.35);line-height:1.02}
+.logo .sub{font-size:clamp(16px,1.8vw,26px);color:#ddd;margin-top:10px}
+.logo .lz{display:inline-block;margin-top:12px;background:var(--karte);border-radius:999px;padding:6px 18px;font-size:clamp(13px,1.2vw,18px);color:#bbb}
+.wobble{display:inline-block;animation:wob 2.4s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.setup{background:var(--dunkel);border-radius:22px;padding:22px 26px;margin:2.5vh auto;width:min(980px,94vw);border:3px solid #333}
+.setup h3{color:var(--gelb);font-size:22px;margin-bottom:12px}
+.anzahl{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.anzahl button{background:var(--karte);color:#fff;font-size:24px;width:58px;height:58px;border-radius:14px}
+.anzahl button.sel{background:var(--gelb);color:#000}
+.teamlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.teamrow{display:flex;align-items:center;gap:10px;background:var(--karte);border-radius:14px;padding:10px 12px;border-left:10px solid}
+.teamrow .emo{font-size:34px;cursor:pointer;user-select:none}
+.teamrow input{flex:1;background:transparent;border:none;border-bottom:2px dashed #555;color:#fff;font:inherit;font-size:20px;padding:4px;min-width:0}
+.teamrow input:focus{outline:none;border-color:var(--gelb)}
+.bigbtn{display:block;margin:18px auto 0;background:var(--gelb);color:#000;font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(22px,2.4vw,34px);padding:16px 44px;border-radius:18px;box-shadow:0 7px 0 #a37d00;transition:transform .08s}
+.bigbtn:active{transform:translateY(5px);box-shadow:0 2px 0 #a37d00}
+.hint{color:#999;font-size:15px;margin-top:10px;text-align:center}
+.resume{background:var(--blau);color:#fff;box-shadow:0 7px 0 #1e4f9e}
+
+/* BOARD */
+#board .boardwrap{flex:1;padding:6px 22px 8px;display:flex;flex-direction:column;min-height:0}
+.turn{text-align:center;font-size:clamp(18px,2vw,30px);margin:2px 0 10px}
+.turn b{padding:2px 14px;border-radius:10px;color:#000}
+.grid{flex:1;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:auto repeat(5,1fr);gap:10px;min-height:0}
+.cat{background:var(--gelb);color:#000;border-radius:12px;padding:8px 6px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(11px,1.15vw,19px);line-height:1.15;min-height:70px}
+.cat .ce{font-size:clamp(22px,2.3vw,36px);line-height:1}
+.tile{background:linear-gradient(160deg,#2f3343,#23262f);border:3px solid #3a3f52;border-radius:14px;color:var(--gelb);font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(24px,3.4vw,54px);display:flex;align-items:center;justify-content:center;transition:transform .12s,background .12s;text-shadow:3px 3px 0 #000}
+.tile:hover{transform:scale(1.05);background:#3a3f52;border-color:var(--gelb)}
+.tile.done{background:#191a20;border-color:#22242c;color:#3a3d48;text-shadow:none;cursor:default;transform:none;font-size:clamp(18px,2vw,30px)}
+.boardfoot{display:flex;justify-content:center;gap:12px;margin-top:10px}
+.smallbtn{background:var(--karte);color:#fff;border-radius:12px;padding:10px 18px;font-size:17px}
+.smallbtn.gold{background:var(--gelb);color:#000}
+
+/* SCORES */
+.scores{display:flex;gap:10px;padding:10px 22px 14px;justify-content:center;flex-wrap:wrap}
+.score{flex:1;max-width:260px;min-width:150px;background:var(--dunkel);border-radius:16px;padding:8px 12px;display:flex;align-items:center;gap:10px;border-bottom:7px solid;position:relative;transition:transform .2s}
+.score.active{transform:translateY(-6px);box-shadow:0 0 0 3px var(--gelb)}
+.score .se{font-size:34px}
+.score .sn{font-size:clamp(13px,1.1vw,18px);line-height:1.1;color:#ddd}
+.score .sp{font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(22px,2.2vw,36px)}
+.plus{position:absolute;right:10px;top:-26px;font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:28px;color:var(--gruen);animation:up 1.4s forwards;pointer-events:none}
+.plus.neg{color:var(--rot)}
+@keyframes up{0%{opacity:0;transform:translateY(10px)}20%{opacity:1}100%{opacity:0;transform:translateY(-40px)}}
+
+/* QUESTION */
+#frage .qwrap{flex:1;display:flex;flex-direction:column;padding:8px 4vw 6px;min-height:0}
+.qhead{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.qcat{font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(16px,1.7vw,26px);color:var(--gelb)}
+.qpts{font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(20px,2.2vw,34px);background:var(--gelb);color:#000;padding:4px 18px;border-radius:12px}
+.badge{font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(14px,1.4vw,22px);padding:4px 14px;border-radius:12px;background:var(--lila)}
+.timer{position:relative;width:clamp(70px,7vw,110px);height:clamp(70px,7vw,110px);flex:none}
+.timer svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer .tn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(24px,2.6vw,40px)}
+.timer.hurry .tn{color:var(--rot);animation:pulse .5s infinite}
+@keyframes pulse{50%{transform:scale(1.25)}}
+.qtext{font-size:clamp(24px,3.3vw,54px);line-height:1.18;text-align:center;margin:2.2vh 0 2.6vh;font-weight:900}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;max-height:46vh;min-height:0}
+.answers.tf{grid-template-columns:1fr 1fr}
+.ans{border-radius:18px;display:flex;align-items:center;gap:16px;padding:12px 20px;font-size:clamp(18px,2.3vw,36px);line-height:1.15;transition:opacity .3s,transform .3s,filter .3s;text-align:left;color:#fff;text-shadow:1px 1px 0 rgba(0,0,0,.4)}
+.ans .let{font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(26px,3vw,50px);background:rgba(0,0,0,.25);border-radius:12px;min-width:1.6em;text-align:center;flex:none}
+.ans.A{background:var(--A)}.ans.B{background:var(--B)}.ans.C{background:var(--C);color:#1a1a1a;text-shadow:none}.ans.D{background:var(--D)}
+.ans.wrong{opacity:.18;filter:grayscale(1);transform:scale(.96)}
+.ans.right{transform:scale(1.04);box-shadow:0 0 0 6px #fff,0 0 50px rgba(255,255,255,.6)}
+.ans.right::after{content:'✔';margin-left:auto;font-size:1.3em}
+.explain{display:none;margin-top:14px;background:var(--dunkel);border-left:8px solid var(--gruen);border-radius:12px;padding:12px 18px;font-size:clamp(16px,1.6vw,25px);line-height:1.3}
+.explain .fun{display:block;color:var(--gelb);margin-top:6px}
+.qfoot{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.qfoot .lbl{font-size:clamp(15px,1.4vw,22px);color:#ccc}
+.tbtn{border-radius:14px;padding:10px 16px;font-size:clamp(15px,1.4vw,22px);background:var(--karte);color:#fff;border:4px solid transparent;display:flex;align-items:center;gap:8px}
+.tbtn.on{background:var(--gruen);border-color:#fff}
+.go{background:var(--gelb);color:#000;border-radius:14px;padding:12px 26px;font-size:clamp(17px,1.6vw,26px);font-family:'Bungee','Arial Black',Impact,sans-serif}
+.go.blue{background:var(--blau);color:#fff}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:50;text-align:center;padding:4vw}
+#splash.on{display:flex;animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
+#splash .big{font-size:clamp(90px,14vw,220px);line-height:1}
+#splash h2{font-size:clamp(40px,6vw,96px);text-shadow:5px 5px 0 #000}
+#splash p{font-size:clamp(20px,2.4vw,38px);margin-top:14px;max-width:1100px}
+
+/* FINALE */
+#finale .fwrap{flex:1;padding:10px 4vw;display:flex;flex-direction:column;align-items:center;overflow:auto}
+.fwrap h2{color:var(--gelb);font-size:clamp(30px,4.4vw,70px);text-shadow:4px 4px 0 #000;text-align:center}
+.fwrap .intro{font-size:clamp(18px,2vw,30px);text-align:center;max-width:1200px;margin:10px 0 20px;color:#ddd}
+.bets{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.bet{background:var(--dunkel);border-radius:16px;padding:14px;min-width:200px;text-align:center;border-bottom:7px solid}
+.bet .se{font-size:40px}
+.bet input{width:140px;font:inherit;font-size:30px;text-align:center;border-radius:10px;border:none;padding:6px;margin-top:8px}
+.bet .max{color:#999;font-size:15px;margin-top:4px}
+
+/* PODIUM */
+#ende .podwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2vh}
+.podwrap h2{color:var(--gelb);font-size:clamp(34px,5vw,80px);text-shadow:4px 4px 0 #000}
+.podium{display:flex;align-items:flex-end;gap:2vw;margin-top:4vh}
+.pod{display:flex;flex-direction:column;align-items:center;width:clamp(140px,16vw,250px)}
+.pod .pe{font-size:clamp(50px,6vw,96px);animation:wob 1.6s infinite}
+.pod .pn{font-size:clamp(16px,1.7vw,26px);text-align:center;margin:6px 0}
+.pod .pp{font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(20px,2.2vw,34px);color:var(--gelb)}
+.pod .block{width:100%;border-radius:14px 14px 0 0;display:flex;align-items:flex-start;justify-content:center;font-family:'Bungee','Arial Black',Impact,sans-serif;font-size:clamp(40px,5vw,80px);color:#000;padding-top:10px}
+.rest{margin-top:20px;font-size:22px;color:#bbb;text-align:center}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+.kbd{position:fixed;bottom:6px;right:12px;color:#555;font-size:12px}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<!-- START -->
+<section class="screen on" id="start">
+  <div class="stripes" style="width:100%"></div>
+  <div class="topbar" style="width:100%"><a href="../">← Alle Apps</a><div class="iconbtns"><button onclick="toggleFS()" title="Vollbild (F)">⛶</button><button id="sndBtn" onclick="toggleSound()" title="Ton (M)">🔊</button></div></div>
+  <div class="logo">
+    <div style="font-size:clamp(46px,6vw,90px)"><span class="wobble">🚜</span> <span class="wobble" style="animation-delay:.3s">⛽</span> <span class="wobble" style="animation-delay:.6s">🔋</span> <span class="wobble" style="animation-delay:.9s">🧯</span></div>
+    <h1>Die grosse<br>Lager-Show</h1>
+    <div class="sub">Werkzeuge, Maschinen &amp; Lagerung von Materialien – wer räumt am meisten ab?</div>
+    <div class="lz">L57 Werkzeuge &amp; Maschinen · L59 Lagerung · Ordner Kapitel E, S. 341–350</div>
+  </div>
+  <div class="setup">
+    <h3>1 · Wie viele Teams?</h3>
+    <div class="anzahl" id="anzahl"></div>
+    <h3>2 · Teamnamen (anklicken zum Ändern, Emoji antippen zum Wechseln)</h3>
+    <div class="teamlist" id="teamlist"></div>
+    <button class="bigbtn" onclick="startGame()">Show starten! 🎬</button>
+    <button class="bigbtn resume" id="resumeBtn" style="display:none" onclick="resumeGame()">Letztes Spiel fortsetzen ↺</button>
+    <p class="hint">So geht's: Ein Team wählt ein Feld. <b>Alle Teams</b> antworten gleichzeitig (Finger hoch: 1 = A, 2 = B, 3 = C, 4 = D – oder auf Zettel schreiben). Wer richtig liegt, kassiert die Punkte. Achtung: Auf dem Brett verstecken sich Spezialfelder! 😈</p>
+  </div>
+</section>
+
+<!-- BOARD -->
+<section class="screen" id="board">
+  <div class="stripes"></div>
+  <div class="topbar"><a href="../">← Alle Apps</a><h2 class="bungee" style="color:var(--gelb);font-size:clamp(18px,2vw,30px)">Die grosse Lager-Show</h2><div class="iconbtns"><button onclick="toggleFS()">⛶</button><button class="sndBtn" onclick="toggleSound()">🔊</button><button onclick="if(confirm('Spiel wirklich abbrechen und neu starten?'))newGame()" title="Neues Spiel">🏠</button></div></div>
+  <div class="boardwrap">
+    <div class="turn" id="turn"></div>
+    <div class="grid" id="grid"></div>
+    <div class="boardfoot"><button class="smallbtn" onclick="nextTurn(true)">Team überspringen ⏭</button><button class="smallbtn gold" onclick="goFinale()">Direkt zum Finale 🏁</button></div>
+  </div>
+  <div class="scores" id="scores1"></div>
+</section>
+
+<!-- FRAGE -->
+<section class="screen" id="frage">
+  <div class="stripes"></div>
+  <div class="qwrap">
+    <div class="qhead">
+      <div><div class="qcat" id="qcat"></div><div id="qbadge" style="margin-top:6px"></div></div>
+      <div class="timer" id="timer"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke="#333" stroke-width="10" fill="none"/><circle id="tring" cx="50" cy="50" r="44" stroke="#FFC400" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="0"/></svg><div class="tn" id="tnum">30</div></div>
+      <div class="qpts" id="qpts"></div>
+    </div>
+    <div class="qtext" id="qtext"></div>
+    <div class="answers" id="answers"></div>
+    <div class="explain" id="explain"></div>
+    <div class="qfoot" id="qfoot"></div>
+  </div>
+  <div class="scores" id="scores2"></div>
+</section>
+
+<!-- FINALE -->
+<section class="screen" id="finale">
+  <div class="stripes"></div>
+  <div class="fwrap" id="fwrap"></div>
+  <div class="scores" id="scores3"></div>
+</section>
+
+<!-- ENDE -->
+<section class="screen" id="ende">
+  <div class="stripes"></div>
+  <div class="podwrap">
+    <h2>🏆 Siegerehrung 🏆</h2>
+    <div class="podium" id="podium"></div>
+    <div class="rest" id="rest"></div>
+    <div style="display:flex;gap:12px;margin-top:24px"><button class="go" onclick="newGame()">Neue Show 🔁</button><a class="go blue" style="text-decoration:none" href="../">Alle Apps</a></div>
+  </div>
+</section>
+
+<div id="splash"></div>
+<div class="kbd" id="kbd">Tasten: Leertaste = weiter/auflösen · 1–5 = Team richtig · T = Timer · F = Vollbild · M = Ton</div>
+
+<script>
+/* ================== FRAGEN (Ordner Kap. E S. 341–350, Folien & Dossier 12.11.2026) ================== */
+const CATS = [
+ {e:'🚜', n:'Maschinen-Profi', q:[
+  {q:'Wie heisst diese Maschine mit Fachbegriff? Kleines Raupenfahrzeug mit Mulde, transportiert Kies und Erde.',
+   a:['Raupendumper (Motorgarette)','Rüttelplatte','Kleintraktor','Raupenbagger'],
+   x:'Richtig ist «Raupendumper» bzw. «Motorgarette» (im Ordner auch Motorladekipper).',
+   f:'«Das gelbe Ding mit der Wanne» reicht leider nicht für eine Bestellung. 😅'},
+  {q:'Warum ist es wichtig, Fachbegriffe und genaue Bezeichnungen zu kennen?',
+   a:['Um korrekt bestellen zu können und die richtige Maschine auf der Baustelle zu haben','Weil es auf Instagram besser aussieht','Damit der Chef denkt, man habe studiert','Ist eigentlich egal – Bagger ist Bagger'],
+   x:'Nur so kann man korrekt bestellen, hat die richtige Maschine auf der Baustelle und versteht Offerten und Aufträge. Darum: immer so genau wie möglich angeben!',
+   f:'Bagger ist eben NICHT Bagger: 1.5 t oder 25 t ist ein kleiner Unterschied … 🦖'},
+  {q:'Welches ist eine korrekte, vollständige Maschinenbezeichnung?',
+   a:['Radbagger, 7.5 t','Der grosse gelbe Bagger','Bagger, mittel','Baggi vom Chef'],
+   x:'Fachbegriff + Zusatzangabe (Tonnen, Grösse, m³ …). Beispiel aus dem Unterricht: «Radbagger, 7.5 Tonnen».',
+   f:'«Baggi vom Chef» ist süss – aber im Lieferschein nicht so hilfreich. 🐣'},
+  {q:'Auf der Baustelle sagen alle «Flex». Wie heisst das Gerät korrekt?',
+   a:['Winkelschleifer','Trennflexer','Schleifbohrer','Steinhobel'],
+   x:'Korrekt: «Winkelschleifer» (für Steine im Ordner auch Handsteinfräse / Trennscheibe). «Flex» ist ein Markenname, kein Fachbegriff.',
+   f:'Sagen wir ja auch nicht «Tempo» zum Taschentuch … ah, doch. Aber nicht im Fachgespräch! 🤧'},
+  {q:'Mit welcher Maschine werden Gräben, Unterbau und Fundation für Wege und Plätze verdichtet?',
+   a:['Vibrostampfer / Plattenvibrator','Bodenfräse','Vertikutiergerät','Topfmaschine'],
+   x:'Vibrostampfer und Plattenvibrator verdichten (Antrieb: Zweitakt oder Diesel). Die Bodenfräse lockert, der Vertikutierer regeneriert Rasen, die Topfmaschine füllt Töpfe.',
+   f:'Mit der Topfmaschine verdichten? Dann gibt\'s halt einen sehr festen Blumentopf. 🪴'}
+ ]},
+ {e:'🔧', n:'Werkzeug & Wartung', q:[
+  {q:'Wie heisst die Reinigung und Kontrolle der Maschinen nach jedem Einsatz?',
+   a:['Tagesparkdienst','Feierabend-Wellness','Maschinen-Spa','Wochenputz'],
+   x:'«Tagesparkdienst»: Verschmutzungen entfernen, auf Schäden kontrollieren, Betriebsstoffe nachfüllen.',
+   f:'Gurkenmaske für den Rasenmäher ist optional. 🥒'},
+  {q:'Wie heisst dieses Werkzeug? Meisselartig, mit Hartmetallschneide, wird mit dem Fäustel geschlagen, um Natursteine zu bearbeiten.',
+   a:['Hartmetall-Setzer','Steinlöffel','Spitzhacke','Fugenkratzer'],
+   x:'Richtig ist «Hartmetall-Setzer» – ein Beispiel aus dem heutigen Input.',
+   f:'Steinlöffel gibt\'s nur in der Steinsuppe. 🥣'},
+  {q:'Eine Maschine ist defekt. Was machst du?',
+   a:['Am separat bezeichneten Ort abstellen und eine Reparaturetikette anbringen','Zurück ins Regal, merkt eh keiner','Mit Klebeband flicken und weiterarbeiten','Dem nächsten Lernenden geben'],
+   x:'Defekte Maschinen kommen an einen dafür bezeichneten Ort. Die Reparaturetikette beschreibt Abteilung, Person und die Art der Störung.',
+   f:'Panzertape repariert vieles – aber keine Motorsäge. 🙈'},
+  {q:'Warum darf man Benzinmotoren nie in geschlossenen Räumen laufen lassen?',
+   a:['Die Abgase enthalten Kohlenmonoxid – geruchlos und tödlich','Weil es zu laut ist','Weil der Raum zu warm wird','Weil der Motor sonst mehr Benzin braucht'],
+   x:'Abgase enthalten Kohlenmonoxid (CO): ein geruchloses, tödliches Giftgas. Wartung nur bei ausgeschaltetem Motor!',
+   f:'Man riecht es nicht, man sieht es nicht – darum: raus an die frische Luft! 🌬️'},
+  {q:'Warum ist der Hochdruckreiniger zum Reinigen der Bodenfräse ungeeignet?',
+   a:['Er kann Schäden am Getriebe verursachen und die Maschine rostet','Er hat zu wenig Druck','Das Wasser ist zu teuer','Die Messer werden davon stumpf'],
+   x:'Hochdruck schadet dem Getriebe und lässt Teile rosten. Darum von Hand reinigen – mit Handschuhen, Messerwelle blockiert, Fräsgang eingelegt.',
+   f:'Die Bodenfräse will kein Spa mit 150 bar. 💦'}
+ ]},
+ {e:'⛽', n:'Treibstoff & Tanken', q:[
+  {q:'In welchem Behälter lagerst du Benzin?',
+   a:['Handelsüblicher, gekennzeichneter Kanister','Leere PET-Flasche vom Eistee','Offener Eimer','Giesskanne'],
+   x:'Nur handelsübliche Kanister – auf keinen Fall Getränkeflaschen! Kanister über einer Auffangwanne lagern.',
+   f:'Eistee-Flasche mit Benzin = Lebensgefahr für den durstigen Kollegen. 🥤❌'},
+  {q:'Was gilt beim Betanken von Maschinen?',
+   a:['Striktes Rauchverbot, Tankdeckel danach fest zuschrauben','Rauchen ist ok, wenn man vorsichtig ist','Motor laufen lassen, geht schneller','Überlaufen lassen, damit er sicher voll ist'],
+   x:'Beim Tanken gilt striktes Rauchverbot. Tankdeckel nach dem Betanken fest zuschrauben. Für Kleinmaschinen Kombikanister mit Sicherheitseinfüllstutzen verwenden.',
+   f:'Zigi beim Tanken: Die kürzeste Karriere im GaLaBau. 🚬🔥'},
+  {q:'Benzin läuft beim Tanken auf der Baustelle aus. Was brauchst du sofort?',
+   a:['Ölbindemittel – und Unfall ggf. dem Amt für Gewässerschutz melden','Einen Gartenschlauch zum Wegspülen','Sand drüber und vergessen','Ein Feuerzeug zum Abbrennen'],
+   x:'Geeignetes Ölwehrmaterial (Ölbindemittel) muss bereitstehen. Ausgelaufenes sofort binden und als Sonderabfall entsorgen. Unfälle dem Amt für Gewässerschutz melden.',
+   f:'Wegspülen = Grundwasser mit Benzin-Aroma. Nein danke! 🐟'},
+  {q:'Welcher Treibstoff gehört in einen Zweitaktmotor (z. B. Motorsäge, Motorsense)?',
+   a:['Gerätebenzingemisch (Alkylatbenzin + synthetisches Öl)','Diesel','Heizöl','Gerätebenzin ohne Öl'],
+   x:'Zweitakter brauchen Gerätebenzingemisch. Reines Gerätebenzin ist für Viertakter (z. B. Rasenmäher), Diesel für Dieselmotoren. Falsch getankt = grosser Motorschaden!',
+   f:'Heizöl in der Motorsäge: warm wird\'s – aber nur dem Chef. 😤'},
+  {q:'Wie viel Benzin und Sonderkraftstoff darf maximal im Arbeitsraum gelagert werden?',
+   a:['Bis 100 Liter','Bis 20 Liter','Bis 500 Liter','Bis 2000 Liter'],
+   x:'Im Arbeitsraum: bis 100 l Benzin/Sonderkraftstoff und max. 2000 l Diesel oder Öle – in Behältern mit Gefahrensymbolen. Auch in Mannschaftswagen: Benzin max. 100 l.',
+   f:'2000 Liter gilt für Diesel und Öle – Benzin ist viel gefährlicher! 💥'}
+ ]},
+ {e:'🔋', n:'Akku-Akademie', q:[
+  {q:'Womit lädst du einen Akku auf?',
+   a:['Mit dem Ladegerät des jeweiligen Herstellers','Mit irgendeinem, Hauptsache der Stecker passt','Mit dem Handy-Ladekabel','An der Autobatterie'],
+   x:'Laden nur mit dem Ladegerät des jeweiligen Herstellers. Akku nicht überladen (Ladezeit beachten).',
+   f:'Das Handy-Kabel lädt deinen Akku in ca. 3 Jahren. 🐌'},
+  {q:'In welchem Temperaturbereich lagert man Akkus in der Regel?',
+   a:['Zwischen −10 und +50 °C, am besten trocken','Zwischen −40 und +80 °C','Nur genau bei 0 °C','Egal, Akkus sind robust'],
+   x:'In der Regel liegt die Lagertemperatur zwischen −10 und +50 °C – vorzugsweise in trockenen, isolierten Lager- oder Kellerräumen.',
+   f:'Im Sommer auf dem Armaturenbrett wird\'s locker über 50 °C … 🔥'},
+  {q:'Was passiert, wenn ein Akku in der direkten Sonne liegt?',
+   a:['Gefahr von Überhitzung und Brand','Er lädt sich mit Sonnenenergie auf','Er hält länger','Gar nichts'],
+   x:'Bei falscher Lagerung, z. B. in direkter Sonne, besteht die Gefahr der Überhitzung und somit eines Brandes.',
+   f:'Akkus sind keine Solarzellen und keine Eidechsen. 🦎☀️'},
+  {q:'Wie wird ein Akku gemäss Ordner magaziniert?',
+   a:['Aufgeladen, sauber und unbeschädigt','Komplett leer gefahren','Noch nass vom Einsatz','Im Auto auf der Hutablage'],
+   x:'Akkus aufgeladen magazinieren, reinigen, nicht beschädigen, vor Nässe und Sonne schützen.',
+   f:'Nasser Akku im Lager = schlechte Überraschung am Montagmorgen. 😬'},
+  {q:'Ein Akku wurde den ganzen Winter nicht gebraucht. Was machst du?',
+   a:['Den Ladezustand kontrollieren','Wegwerfen, der ist sicher kaputt','Gar nichts, einfach einsetzen','In den Gefrierschrank legen'],
+   x:'Wenn Akkus längere Zeit nicht gebraucht werden: Ladezustand kontrollieren. Beschädigte Akkus nicht mehr verwenden.',
+   f:'Akkus im Gefrierschrank? Neben den Glacés? Lieber nicht. 🍦'}
+ ]},
+ {e:'🌱', n:'Dünger, Samen & PSM', q:[
+  {q:'Wie lagerst du Düngersäcke richtig?',
+   a:['Trocken, zugebunden und auf Paletten','Draussen im Regen, Dünger mag Wasser','Direkt auf dem feuchten Boden','Offen, damit sie lüften'],
+   x:'Dünger trocken lagern, optimal auf Paletten (kein Kontakt mit Wasser, kein Kondenswasser). Angebrochene Säcke gut verschliessen, sonst verklumpt er.',
+   f:'Feuchter Dünger wird zu Beton – nur ohne Statik. 🧱'},
+  {q:'Wo und wie werden Pflanzenschutzmittel gelagert?',
+   a:['In einem abgeschlossenen, belüfteten Raum oder Schrank – getrennt von Lebens- und Futtermitteln','Im Znüni-Kühlschrank','Offen im Werkzeugregal','Im Pausenraum, da ist es warm'],
+   x:'PSM in einem abgeschlossenen, belüfteten, kühlen und trockenen Raum lagern – getrennt von Arbeitsräumen und immer getrennt von Lebens-, Futter- und Heilmitteln. Auffangwannen verhindern Umweltschäden.',
+   f:'Neben dem Joghurt? Das wäre das letzte Znüni. ☠️🥛'},
+  {q:'Warum lagert man Herbizide getrennt von anderen Pflanzenschutzmitteln?',
+   a:['Wegen der Verwechslungsgefahr','Weil sie sich nicht mögen','Damit sie schneller wirken','Wegen des Geruchs'],
+   x:'Strikte Trennung von Herbiziden und anderen PSM wegen Verwechslungsgefahr – sonst ist plötzlich das ganze Rosenbeet weg.',
+   f:'Herbizid statt Fungizid auf die Rosen … tschüss, Rosen! 🥀'},
+  {q:'Wie lagerst du Rasensamen?',
+   a:['Möglichst trocken, kühl und dunkel','Warm und feucht im Gewächshaus','In der Sonne, damit sie fit bleiben','Im offenen Sack draussen'],
+   x:'Trocken, kühl und dunkel – so wird ein frühzeitiger Keimprozess verhindert.',
+   f:'Sonst hast du statt Samen einen Rasenteppich im Sack. 🌾'},
+  {q:'Was kann passieren, wenn Dünger feucht wird?',
+   a:['Er entwickelt Wärme – Schwelbrandgefahr!','Er wirkt doppelt so gut','Er wird zu Kompost','Er löst sich harmlos auf'],
+   x:'Verschiedene Dünger entwickeln Wärme, sobald Feuchtigkeit dazukommt (Schwelbrandgefahr). Dichte Verpackung und trockene Räume sind wichtig. Kein Kontakt mit Säuren, Laugen, PSM oder Treibstoffen!',
+   f:'Schon manches feuchte Düngerlager ist abgebrannt – kein Witz. 🔥'}
+ ]},
+ {e:'🕵️', n:'Stimmt oder Mumpitz?', tf:true, q:[
+  {q:'Gasflaschen lagert man am besten im Keller – da ist es schön kühl.',
+   c:1, x:'Mumpitz! Gasflaschen gehören ins Freie: gut belüftet und abschliessbar. Niemals im Keller oder mit anderen brennbaren Stoffen.',
+   f:'Gas ist schwerer als Luft und sammelt sich im Keller. Bumm. 💣'},
+  {q:'Flüssigdünger muss frostfrei gelagert werden.',
+   c:0, x:'Stimmt! Sonst flocken die Nährsalze aus. Lagerung im verstärkten Kunststofftank mit Auffangwanne.',
+   f:'Dünger-Slush mag keine Pflanze. 🧊'},
+  {q:'Das Gewächshaus ist ein idealer Ort für das Düngerlager.',
+   c:1, x:'Mumpitz! Völlig ungeeignet sind Gewächshäuser (Luftfeuchtigkeit, Temperatur), Heizräume und Maschinenräume. Gut: ein geschlossener Raum, z. B. Gerätehalle.',
+   f:'Feucht + warm + Dünger = Klumpen-Party. 🎉🧱'},
+  {q:'In unmittelbarer Nähe der Zugangstür zum Lagerraum muss ein geprüfter Handfeuerlöscher hängen (z. B. Schaumlöscher, mind. 9 kg Inhalt).',
+   c:0, x:'Stimmt! Dazu: Lagerraum ausreichend belüftet, Rauchverbot, Hinweis auf Brand- und Explosionsgefahr bei den Zugängen.',
+   f:'Ein Feuerlöscher hinter 30 Säcken im hintersten Eck zählt nicht. 🧯'},
+  {q:'Düngerreste darf man in die Kanalisation leeren, wenn man genug Wasser nachspült.',
+   c:1, x:'Mumpitz! Düngerreste immer aufbrauchen, nicht in die Kanalisation, nicht in Gewässer. Evtl. an den Lieferanten zurückgeben. Leere Verpackungen in den Kehricht.',
+   f:'Die Fische im Rhein sagen: «Danke, wir sind schon gross genug.» 🐟'}
+ ]}
+];
+const FINAL = {q:'Wie viel Diesel oder Öle sind im Arbeitsraum maximal zulässig?',
+  a:['100 Liter','500 Liter','2000 Liter','10 000 Liter'], c:2,
+  x:'Im Arbeitsraum: bis 100 l Benzin und Sonderkraftstoff, aber max. 2000 l Diesel oder Öle – immer über Auffangwannen und mit Gefahrensymbolen.',
+  f:'Benzin 100 l, Diesel 2000 l – Benzin ist viel leichter entzündlich!'};
+
+const SPECIALS = [
+  {k:'double', e:'⚡', t:'DOPPELTE PUNKTE!', p:'Diese Frage zählt doppelt – für alle Teams!', bg:'linear-gradient(135deg,#ff8a1f,#ff4d4d)'},
+  {k:'double', e:'⚡', t:'DOPPELTE PUNKTE!', p:'Diese Frage zählt doppelt – für alle Teams!', bg:'linear-gradient(135deg,#ff8a1f,#ff4d4d)'},
+  {k:'steal', e:'🦝', t:'KLAU-KARTE!', p:'Antwortet das wählende Team richtig, klaut es zusätzlich 100 Punkte vom Leader!', bg:'linear-gradient(135deg,#7b2ff7,#3b8cff)'},
+  {k:'solo', e:'🎯', t:'SOLO-FRAGE!', p:'Nur das wählende Team darf antworten – dafür gibt\'s 1.5-fache Punkte. Die anderen: Klappe zu! 🤐', bg:'linear-gradient(135deg,#21c36b,#0f8a6a)'},
+  {k:'panne', e:'💥', t:'PANNE!', p:'Benzinkanister in der Sonne vergessen! Das wählende Team verliert 50 Punkte … aber die Frage gibt\'s trotzdem!', bg:'linear-gradient(135deg,#444,#111)'}
+];
+
+const COLORS=['#ff4d4d','#3b8cff','#21c36b','#ffb000','#a259ff'];
+const EMOJIS=['🚜','🦺','⛽','🔋','🧯','🪓','🌱','🐿️','🦔','🐌','🦖','🤠','🔥','🧤','🪴'];
+const DEFNAMES=['Die Raupendumper','Hartmetall-Setzer','Akku-Rocker','Team Auffangwanne','Die Schwelbrände'];
+const DEFEMO=['🚜','🪓','🔋','🧯','🔥'];
+const LET=['A','B','C','D'];
+
+let S=null; // state
+let setupN=3, setupTeams=DEFNAMES.map((n,i)=>({n,e:DEFEMO[i]}));
+let cur=null, timerId=null, tLeft=30, revealed=false, chosen=new Set(), sound=true;
+
+/* ---------- Speicher ---------- */
+function save(){try{localStorage.setItem('lagershow',JSON.stringify(S))}catch(e){}}
+function load(){try{return JSON.parse(localStorage.getItem('lagershow'))}catch(e){return null}}
+
+/* ---------- Setup ---------- */
+function renderSetup(){
+  const a=document.getElementById('anzahl');
+  a.innerHTML=[2,3,4,5].map(n=>`<button class="${n===setupN?'sel':''}" onclick="setupN=${n};renderSetup()">${n}</button>`).join('')+'<span style="color:#999;margin-left:8px">bei 15 Lernenden: 3 Teams à 5 oder 5 Teams à 3</span>';
+  document.getElementById('teamlist').innerHTML=setupTeams.slice(0,setupN).map((t,i)=>`
+   <div class="teamrow" style="border-color:${COLORS[i]}"><span class="emo" onclick="cycleEmo(${i})">${t.e}</span>
+   <input value="${t.n.replace(/"/g,'&quot;')}" maxlength="22" oninput="setupTeams[${i}].n=this.value"></div>`).join('');
+  const old=load(); document.getElementById('resumeBtn').style.display=(old&&!old.over)?'block':'none';
+}
+function cycleEmo(i){const k=EMOJIS.indexOf(setupTeams[i].e);setupTeams[i].e=EMOJIS[(k+1)%EMOJIS.length];renderSetup();blip(600,.05)}
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function startGame(){
+  initAudio();
+  const teams=setupTeams.slice(0,setupN).map((t,i)=>({n:t.n.trim()||('Team '+(i+1)),e:t.e,c:COLORS[i],p:0}));
+  const slots=shuffle([...Array(30).keys()]).slice(0,SPECIALS.length);
+  const special={}; slots.forEach((s,i)=>special[s]=i);
+  S={teams,done:[],special,turn:0,over:false};
+  save(); showBoard(); jingle();
+}
+function resumeGame(){initAudio();S=load();showBoard()}
+function newGame(){stopTimer();try{localStorage.removeItem('lagershow')}catch(e){};S=null;show('start');renderSetup()}
+
+/* ---------- Screens ---------- */
+function show(id){var k=document.getElementById('kbd');if(k)k.style.display=id==='start'?'block':'none';document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+function renderScores(id,hl){
+  const max=Math.max(...S.teams.map(t=>t.p));
+  document.getElementById(id).innerHTML=S.teams.map((t,i)=>`
+   <div class="score ${hl&&i===S.turn?'active':''}" id="${id}-${i}" style="border-color:${t.c}">
+    <span class="se">${t.e}</span><div><div class="sn">${esc(t.n)} ${t.p===max&&max>0?'👑':''}</div><div class="sp">${t.p}</div></div></div>`).join('');
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function showBoard(){
+  show('board');
+  const t=S.teams[S.turn];
+  document.getElementById('turn').innerHTML=`${t.e} <b style="background:${t.c}">${esc(t.n)}</b> wählt ein Feld!`;
+  let h=CATS.map(c=>`<div class="cat"><span class="ce">${c.e}</span>${c.n}</div>`).join('');
+  for(let r=0;r<5;r++)for(let c=0;c<6;c++){const id=c*5+r;const d=S.done.includes(id);
+    h+=`<button class="tile ${d?'done':''}" ${d?'disabled':''} onclick="pick(${id})">${d?'✓':(r+1)*100}</button>`}
+  document.getElementById('grid').innerHTML=h;
+  renderScores('scores1',true);
+  if(S.done.length>=30)setTimeout(goFinale,600);
+}
+function nextTurn(render){S.turn=(S.turn+1)%S.teams.length;save();if(render){blip(400,.05);showBoard()}}
+
+/* ---------- Frage ---------- */
+function pick(id){
+  const c=Math.floor(id/5), r=id%5, cat=CATS[c], qq=cat.q[r];
+  let opts;
+  if(cat.tf) opts=[{t:'👍 Stimmt!',ok:qq.c===0},{t:'🤪 Mumpitz!',ok:qq.c===1}];
+  else opts=shuffle(qq.a.map((t,i)=>({t,ok:i===0})));
+  cur={id,cat,qq,opts,pts:(r+1)*100,sp:null,chooser:S.turn};
+  const spi=S.special[id];
+  if(spi!==undefined){cur.sp=SPECIALS[spi];splashSpecial(cur.sp,()=>openQ())}
+  else openQ();
+}
+function splashSpecial(sp,cb){
+  const s=document.getElementById('splash');
+  s.style.background=sp.bg;
+  s.innerHTML=`<div class="big">${sp.e}</div><h2 class="bungee">${sp.t}</h2><p>${sp.p}</p><button class="go" style="margin-top:30px" id="spgo">Weiter ➜</button>`;
+  s.classList.add('on'); fanfare(sp.k);
+  if(sp.k!=='panne')confetti(120);
+  const go=()=>{s.classList.remove('on');document.removeEventListener('keydown',kh);cb()};
+  const kh=e=>{if(e.code==='Space'||e.code==='Enter'){e.preventDefault();e.stopImmediatePropagation();go()}};
+  document.getElementById('spgo').onclick=go;
+  setTimeout(()=>document.addEventListener('keydown',kh,{capture:true}),300);
+  if(sp.k==='panne'){addPts(S.turn,-50);save()}
+}
+function openQ(){
+  revealed=false; chosen=new Set();
+  show('frage');
+  const {cat,qq,opts}=cur;
+  let mult=cur.sp?.k==='double'?2:cur.sp?.k==='solo'?1.5:1;
+  cur.award=Math.round(cur.pts*mult);
+  document.getElementById('qcat').textContent=cat.e+' '+cat.n;
+  document.getElementById('qpts').textContent=cur.award+' P';
+  const t=S.teams[cur.chooser];
+  document.getElementById('qbadge').innerHTML=(cur.sp&&cur.sp.k!=='panne'?`<span class="badge">${cur.sp.e} ${cur.sp.t}</span> `:'')+`<span style="color:#aaa;font-size:clamp(13px,1.2vw,18px)">gewählt von ${t.e} ${esc(t.n)}</span>`;
+  document.getElementById('qtext').textContent=qq.q;
+  const A=document.getElementById('answers');
+  A.className='answers'+(cat.tf?' tf':'');
+  A.style.maxHeight=cat.tf?'30vh':'46vh';
+  A.innerHTML=opts.map((o,i)=>`<div class="ans ${cat.tf?(i?'A':'D'):LET[i]}"><span class="let">${cat.tf?(i+1):LET[i]}</span><span>${esc(o.t)}</span></div>`).join('');
+  document.getElementById('explain').style.display='none';
+  document.getElementById('qfoot').innerHTML=`<button class="go" onclick="reveal()">Auflösen 🔍</button><button class="smallbtn" onclick="toggleTimer()">⏯ Timer</button><button class="smallbtn" onclick="backToBoard(false)">✖ Abbrechen</button>`;
+  renderScores('scores2',false);
+  startTimer(cat.tf?20:30);
+}
+function startTimer(sec){
+  stopTimer(); tLeft=sec; const total=sec; const ring=document.getElementById('tring'), num=document.getElementById('tnum'), box=document.getElementById('timer');
+  const draw=()=>{num.textContent=tLeft;ring.style.strokeDashoffset=276.5*(1-tLeft/total);ring.style.stroke=tLeft<=5?'#ff4d4d':'#FFC400';box.classList.toggle('hurry',tLeft<=5&&tLeft>0)};
+  draw();
+  timerId=setInterval(()=>{tLeft--;draw();if(tLeft<=5&&tLeft>0)blip(880,.06);if(tLeft<=0){stopTimer();buzz();}},1000);
+  cur.tdraw=draw;
+}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null}}
+function toggleTimer(){if(revealed)return;if(timerId)stopTimer();else if(tLeft>0){const d=cur.tdraw;timerId=setInterval(()=>{tLeft--;d();if(tLeft<=5&&tLeft>0)blip(880,.06);if(tLeft<=0){stopTimer();buzz()}},1000)}}
+
+function reveal(){
+  if(revealed)return; revealed=true; stopTimer(); document.getElementById('timer').classList.remove('hurry');
+  drum(()=>{
+    const els=document.querySelectorAll('#answers .ans');
+    cur.opts.forEach((o,i)=>els[i].classList.add(o.ok?'right':'wrong'));
+    ding();
+    const ex=document.getElementById('explain');
+    ex.innerHTML=`💡 ${esc(cur.qq.x)}<span class="fun">${esc(cur.qq.f)}</span>`; ex.style.display='block';
+    const solo=cur.sp?.k==='solo';
+    const teamsAllowed=S.teams.map((t,i)=>i).filter(i=>!solo||i===cur.chooser);
+    document.getElementById('qfoot').innerHTML=`<span class="lbl">Wer lag richtig?</span>`+
+      teamsAllowed.map(i=>{const t=S.teams[i];return `<button class="tbtn" id="tb${i}" onclick="toggleTeam(${i})" style="border-color:${t.c}">${t.e} ${esc(t.n)} <small style="opacity:.6">[${i+1}]</small></button>`}).join('')+
+      `<button class="go blue" onclick="award()">Punkte verteilen ✔</button>`;
+  });
+}
+function toggleTeam(i){
+  if(!revealed||!document.getElementById('tb'+i))return;
+  chosen.has(i)?chosen.delete(i):chosen.add(i);
+  const b=document.getElementById('tb'+i); b.classList.toggle('on',chosen.has(i)); b.style.borderColor=chosen.has(i)?'#fff':S.teams[i].c;
+  blip(chosen.has(i)?700:350,.05);
+}
+function addPts(i,p){
+  S.teams[i].p=Math.max(0,S.teams[i].p+p);
+  ['scores1','scores2','scores3'].forEach(id=>{const el=document.getElementById(id+'-'+i);if(el){el.querySelector('.sp').textContent=S.teams[i].p;const f=document.createElement('div');f.className='plus'+(p<0?' neg':'');f.textContent=(p>0?'+':'')+p;el.appendChild(f);setTimeout(()=>f.remove(),1500)}});
+}
+function award(){
+  chosen.forEach(i=>addPts(i,cur.award));
+  if(cur.sp?.k==='steal'&&chosen.has(cur.chooser)){
+    const others=S.teams.map((t,i)=>i).filter(i=>i!==cur.chooser);
+    const leader=others.sort((a,b)=>S.teams[b].p-S.teams[a].p)[0];
+    if(leader!==undefined&&S.teams[leader].p>0){const amt=Math.min(100,S.teams[leader].p);addPts(leader,-amt);addPts(cur.chooser,amt);}
+  }
+  if(chosen.size){applause();confetti(chosen.size===S.teams.length?60:140)} else sadTrombone();
+  setTimeout(()=>backToBoard(true),chosen.size?1500:1200);
+}
+function backToBoard(done){
+  stopTimer(); document.getElementById('qfoot').innerHTML='';
+  if(done){S.done.push(cur.id);nextTurn(false)}
+  save(); cur=null; showBoard();
+}
+
+/* ---------- Finale ---------- */
+let fin=null;
+function goFinale(){
+  stopTimer(); document.getElementById('qfoot').innerHTML=''; revealed=false; show('finale'); fin={bets:S.teams.map(()=>0),stage:'bet'};
+  jingle();
+  renderFinale();
+}
+function renderFinale(){
+  const w=document.getElementById('fwrap');
+  if(fin.stage==='bet'){
+    w.innerHTML=`<div style="font-size:clamp(60px,8vw,120px)">🎰</div><h2>Finale: Alles oder nichts!</h2>
+     <p class="intro">Jedes Team setzt geheim einen Teil seiner Punkte (auf Zettel schreiben!). Richtig = Einsatz dazu. Falsch = Einsatz weg. Thema: <b style="color:var(--gelb)">⛽ Lagermengen im Arbeitsraum</b></p>
+     <div class="bets">${S.teams.map((t,i)=>`<div class="bet" style="border-color:${t.c}"><div class="se">${t.e}</div><div>${esc(t.n)}</div><input type="number" min="0" max="${t.p}" step="50" value="0" id="bet${i}"><div class="max">max. ${t.p}</div></div>`).join('')}</div>
+     <button class="go" style="margin-top:24px" onclick="lockBets()">Einsätze fix – Frage zeigen! 🎬</button>`;
+  } else {
+    w.innerHTML=`<h2 style="font-size:clamp(22px,2.6vw,40px)">🎰 Finalfrage</h2><div class="qtext" style="margin:2vh 0">${esc(FINAL.q)}</div>
+     <div class="answers" id="fans" style="width:100%;max-height:34vh;min-height:24vh">${FINAL.a.map((a,i)=>`<div class="ans ${LET[i]}"><span class="let">${LET[i]}</span><span>${esc(a)}</span></div>`).join('')}</div>
+     <div class="explain" id="fex" style="width:100%"></div>
+     <div class="qfoot" id="ffoot"><button class="go" onclick="finReveal()">Auflösen 🔍</button></div>`;
+  }
+  renderScores('scores3',false);
+}
+function lockBets(){
+  fin.bets=S.teams.map((t,i)=>{let v=parseInt(document.getElementById('bet'+i).value)||0;return Math.max(0,Math.min(t.p,v))});
+  fin.stage='q'; renderFinale();
+}
+function finReveal(){
+  drum(()=>{
+    document.querySelectorAll('#fans .ans').forEach((e,i)=>e.classList.add(i===FINAL.c?'right':'wrong'));ding();
+    const ex=document.getElementById('fex');ex.innerHTML=`💡 ${esc(FINAL.x)}<span class="fun">${esc(FINAL.f)}</span>`;ex.style.display='block';
+    chosen=new Set();
+    document.getElementById('ffoot').innerHTML=`<span class="lbl">Wer lag richtig?</span>`+S.teams.map((t,i)=>`<button class="tbtn" id="tb${i}" onclick="revealed=true;toggleTeam(${i})" style="border-color:${t.c}">${t.e} ${esc(t.n)} <small style="opacity:.6">(Einsatz ${fin.bets[i]})</small></button>`).join('')+`<button class="go blue" onclick="finAward()">Abrechnen 🏁</button>`;
+    revealed=true;
+  });
+}
+function finAward(){
+  S.teams.forEach((t,i)=>{if(fin.bets[i])addPts(i,chosen.has(i)?fin.bets[i]:-fin.bets[i])});
+  S.over=true; save(); setTimeout(showEnd,1600);
+}
+function showEnd(){
+  show('ende');
+  const r=S.teams.map((t,i)=>({...t})).sort((a,b)=>b.p-a.p);
+  const order=[1,0,2].filter(i=>r[i]);const h={0:'34vh',1:'24vh',2:'17vh'};const bg={0:'#FFC400',1:'#c9d1d9',2:'#d98c4a'};
+  document.getElementById('podium').innerHTML=order.map(i=>`<div class="pod"><div class="pe">${r[i].e}</div><div class="pn">${esc(r[i].n)}</div><div class="pp">${r[i].p} P</div><div class="block" style="height:${h[i]};background:${bg[i]}">${i+1}</div></div>`).join('');
+  document.getElementById('rest').innerHTML=r.slice(3).map((t,i)=>`${i+4}. ${t.e} ${esc(t.n)} – ${t.p} P`).join(' &nbsp;·&nbsp; ');
+  fanfare('win'); confetti(400); setTimeout(()=>confetti(300),1200);
+}
+
+/* ---------- Tastatur ---------- */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  const scr=document.querySelector('.screen.on').id;
+  if(e.key==='f'||e.key==='F'){toggleFS();return}
+  if(e.key==='m'||e.key==='M'){toggleSound();return}
+  if(scr==='frage'){
+    if(e.code==='Space'||e.code==='Enter'){e.preventDefault();revealed?award():reveal()}
+    else if(e.key==='t'||e.key==='T')toggleTimer();
+    else if(/^[1-5]$/.test(e.key))toggleTeam(+e.key-1);
+  } else if(scr==='finale'&&/^[1-5]$/.test(e.key)&&revealed){toggleTeam(+e.key-1)}
+});
+function toggleFS(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
+function toggleSound(){sound=!sound;document.querySelectorAll('#sndBtn,.sndBtn').forEach(b=>b.textContent=sound?'🔊':'🔇')}
+
+/* ---------- Sound (WebAudio, keine Dateien) ---------- */
+let AC=null;
+function initAudio(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
+function tone(f,d,type='square',vol=.12,when=0,slide){if(!sound||!AC)return;try{const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,AC.currentTime+when);if(slide)o.frequency.exponentialRampToValueAtTime(slide,AC.currentTime+when+d);g.gain.setValueAtTime(vol,AC.currentTime+when);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+when+d);o.connect(g).connect(AC.destination);o.start(AC.currentTime+when);o.stop(AC.currentTime+when+d+.02)}catch(e){}}
+function blip(f,d){tone(f,d,'square',.06)}
+function ding(){[880,1320].forEach((f,i)=>tone(f,.35,'triangle',.18,i*.12))}
+function buzz(){tone(140,.7,'sawtooth',.15)}
+function jingle(){[523,659,784,1046].forEach((f,i)=>tone(f,.2,'square',.09,i*.12));tone(1046,.5,'triangle',.12,.5)}
+function applause(){[660,880,990,1320].forEach((f,i)=>tone(f,.15,'square',.07,i*.07))}
+function sadTrombone(){[392,370,349].forEach((f,i)=>tone(f,.35,'sawtooth',.09,i*.38));tone(330,.9,'sawtooth',.09,1.14,300)}
+function fanfare(k){if(k==='panne'){tone(600,.6,'sawtooth',.12,0,80);tone(90,.6,'square',.15,.4)}else if(k==='win'){[523,523,523,698,880,784,1046].forEach((f,i)=>tone(f,.25,'square',.09,i*.16))}else{[392,523,659,784,659,784].forEach((f,i)=>tone(f,.13,'square',.09,i*.09))}}
+function drum(cb){if(!sound||!AC){cb();return}for(let i=0;i<12;i++)tone(120+i*8,.05,'triangle',.12,i*.06);setTimeout(cb,750)}
+
+/* ---------- Konfetti ---------- */
+const cv=document.getElementById('confetti'),cx=cv.getContext('2d');let parts=[],anim=null;
+function confetti(n){cv.width=innerWidth;cv.height=innerHeight;const cols=['#FFC400','#ff4d4d','#3b8cff','#21c36b','#a259ff','#fff'];
+ for(let i=0;i<n;i++)parts.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.4,vx:(Math.random()-.5)*6,vy:2+Math.random()*5,r:Math.random()*6.28,vr:(Math.random()-.5)*.3,s:6+Math.random()*9,c:cols[i%cols.length]});
+ if(!anim)loop()}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.r+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});
+ parts=parts.filter(p=>p.y<cv.height+30);anim=parts.length?requestAnimationFrame(loop):(cx.clearRect(0,0,cv.width,cv.height),null)}
+
+renderSetup();
+</script>
+</body>
+</html>
