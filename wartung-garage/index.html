@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service-Garage – Wartung, Ordnung & Sauberkeit (GLA25A)</title>
+<style>
+:root{--bg:#eef3ee;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--green-l:#d9efe0;--lime:#98c723;--red:#b04a4a;--red-l:#f7dede;--yel:#e5b800;--yel-l:#fff0b8;--blue:#2b6a9a;--blue-l:#dcebf6;--line:#cfd9d2;--black:#222}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+.wrap{max-width:680px;margin:0 auto;padding:14px 14px 60px}.wrap.wide{max-width:1200px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+a.back,.who a{color:var(--green);text-decoration:none;font-size:.95rem}
+.who{display:flex;gap:10px;align-items:center;font-size:.9rem}.who span{background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-weight:600}
+h1{font-size:1.45rem;margin:.6rem 0 .2rem}h2{font-size:1.15rem;margin:0 0 .5rem}
+.sub{color:var(--muted);margin:0 0 1rem}
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+.btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:52px;font-family:inherit}
+.btn:hover{border-color:var(--green)}
+.btn.primary{background:var(--green);color:#fff;border-color:var(--green);text-align:center;font-weight:600}
+.btn.inline{display:inline-block;width:auto;padding:8px 14px;min-height:42px;margin:4px 4px 4px 0;text-align:center;font-weight:600;font-size:.9rem}
+.btn.ok{background:var(--green-l);border-color:var(--green)}.btn.no{background:var(--red-l);border-color:var(--red)}
+.btn:disabled{cursor:default}
+.hidden{display:none!important}.small{font-size:.85rem;color:var(--muted)}
+.niv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.niv button{font:inherit;border:2px solid var(--line);border-radius:14px;background:#fff;padding:10px 6px;cursor:pointer;min-height:76px}
+.niv button b{display:block;font-size:1.05rem}.niv button span{font-size:.75rem;color:var(--muted)}
+.niv button.on{border-color:var(--ink);box-shadow:0 0 0 3px rgba(0,0,0,.08);background:#fafcfa}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px}
+.d1{background:#2e9d4a}.d2{background:#2b6a9a}.d3{background:#222;transform:rotate(45deg);border-radius:2px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;position:relative;min-height:118px;font:inherit;text-align:left;color:var(--ink)}
+.tile:hover{border-color:var(--green)}.tile .ic{font-size:1.9rem}.tile b{display:block;margin:4px 0 2px}.tile span{font-size:.8rem;color:var(--muted)}
+.tile .st{position:absolute;top:10px;right:10px;font-size:.75rem;font-weight:700;border-radius:20px;padding:2px 8px;background:#eef1ef;color:var(--muted)}
+.tile .st.done{background:var(--green-l);color:var(--green)}
+.tile.wide{grid-column:1/-1;min-height:auto;display:flex;gap:12px;align-items:center}
+.tile.esc{background:linear-gradient(135deg,#1f2d27,#2f4a3a);color:#fff;border:0}.tile.esc span{color:#cfe3d6}
+.tile.chk{background:var(--yel-l);border-color:var(--yel)}
+.bar{height:8px;background:#dfe7e1;border-radius:6px;overflow:hidden;margin:6px 0 12px}.bar>div{height:100%;background:var(--green);transition:width .3s}
+.meta{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:20px;background:var(--blue-l);color:var(--blue);margin-right:6px}
+.q{font-size:1.1rem;font-weight:600;margin:10px 0 6px}
+.fb{padding:12px 14px;border-radius:12px;margin-top:10px;font-size:.95rem}.fb.ok{background:var(--green-l)}.fb.no{background:var(--red-l)}.fb b{display:block;margin-bottom:4px}
+.big{font-size:2.6rem;font-weight:700;text-align:center;margin:6px 0}
+.row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #eef1ef}.row:last-child{border:0}
+.stamp{border:3px dashed var(--green);border-radius:16px;padding:14px;text-align:center;margin:10px 0;background:#f6fbf7}
+.stamp .code{font-size:2rem;font-weight:800;letter-spacing:.15em;color:var(--green)}
+/* Sortieren */
+.sortcard{font-size:1.15rem;font-weight:600;text-align:center;padding:26px 14px;border-radius:16px;background:#fff;border:2px solid var(--line);margin:8px 0 12px;min-height:110px;display:grid;place-items:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.two .btn{text-align:center;font-weight:700}
+/* Reihenfolge */
+.seq .btn{display:flex;gap:10px;align-items:center}.seq .num{min-width:30px;height:30px;border-radius:50%;background:#eef1ef;display:grid;place-items:center;font-weight:700}
+.seq .btn.sel .num{background:var(--green);color:#fff}
+/* Suchbild */
+.sb{position:relative;border-radius:12px;overflow:hidden;border:2px solid var(--line);touch-action:manipulation;cursor:crosshair}
+.found{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.found span{font-size:.8rem;background:var(--red-l);border-radius:20px;padding:3px 9px}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:92%;width:560px;padding:12px 16px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:60;font-size:.95rem}
+.toast.ok{background:#fff;border-left:6px solid var(--red)}.toast.fine{background:#fff;border-left:6px solid var(--green)}
+/* Escape */
+.escape{background:#16221c;color:#e8f2ec;border-radius:16px;padding:16px;margin-bottom:14px}
+.escape h2{color:#fff}.escape .small{color:#a9c2b3}
+.locks{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0}
+.lock{background:#24342b;border-radius:12px;padding:8px 4px;text-align:center;font-size:1.4rem;cursor:pointer;border:2px solid transparent}
+.lock small{display:block;font-size:.65rem;color:#a9c2b3}.lock.open{background:#2f7a4a}.lock.cur{border-color:var(--lime)}
+.timer{font-variant-numeric:tabular-nums;font-size:1.6rem;font-weight:800;color:var(--lime)}
+.codein{display:flex;gap:8px;margin:10px 0}.codein input{flex:1;min-width:0;font-size:1.4rem;padding:12px;border-radius:12px;border:2px solid #3b5446;background:#0f1914;color:#fff;letter-spacing:.2em;text-transform:uppercase;font-weight:700}
+.codein button{font:inherit;font-weight:700;border:0;border-radius:12px;background:var(--lime);color:#16221c;padding:0 18px;cursor:pointer}
+.hint{background:#24342b;border-radius:10px;padding:10px 12px;margin:6px 0;font-size:.92rem}
+.shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* Login-Overlay (core.js) */
+.auth{position:fixed;inset:0;background:rgba(31,45,39,.55);display:grid;place-items:center;z-index:50;padding:1rem}
+.auth .card{max-width:430px;width:100%;margin:0;max-height:94vh;overflow:auto}
+.auth label{font-weight:600;font-size:.9rem}.auth .fld{font:inherit;font-size:1.05rem;padding:12px;width:100%;border:1.5px solid var(--line);border-radius:12px;margin:.3rem 0 .8rem}
+.auth .btn{text-align:center;background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+.tabs{display:flex;gap:.5rem;margin-bottom:.8rem}.tabs button{flex:1;font:inherit;font-weight:600;padding:.7rem;border-radius:12px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-height:48px}
+.tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.msg{padding:.7rem .9rem;border-radius:12px;font-weight:600;margin:.4rem 0}.msg.err{background:var(--red-l);color:#8a1f1b}
+.banner{background:#fff3c0;border:2px dashed #e5b800;border-radius:12px;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem}
+input.fld2{font:inherit;font-size:1.05rem;padding:12px;width:100%;border:1.5px solid var(--line);border-radius:12px;margin:.3rem 0 .6rem}
+/* Lehrer */
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;background:#fff}
+th,td{border-bottom:1px solid #eef1ef;padding:7px 9px;text-align:left;white-space:nowrap}th{background:#e7f1ea;font-size:.78rem;position:sticky;top:0}
+td.n{text-align:center}td.wr{white-space:normal;min-width:240px}
+.sc{display:inline-block;min-width:44px;text-align:center;font-weight:700;border-radius:8px;padding:2px 6px}
+.g0{background:#f1f1f1;color:#999}.g1{background:var(--red-l)}.g2{background:var(--yel-l)}.g3{background:var(--green-l)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)}.kpi b{display:block;font-size:1.6rem}.kpi span{font-size:.8rem;color:var(--muted)}
+.race{display:grid;gap:10px}.team{background:#16221c;color:#fff;border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center}
+.team .rk{font-size:1.6rem;font-weight:800;color:var(--lime);text-align:center}.team .tl{font-size:1.5rem;letter-spacing:4px}
+.beamer{font-size:1.25rem}.beamer .team{font-size:1.3rem}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+ <div class="top"><a class="back" href="../">← Alle Apps</a><div class="who" id="who"></div></div>
+ <h1>🔧 Service-Garage</h1>
+ <p class="sub" id="subline">Wartung, Ordnung & Sauberkeit · L58 · L61 · L62 · Klasse GLA25A</p>
+ <div id="loading" class="card">Lädt …</div>
+
+ <!-- Start -->
+ <div id="home" class="hidden">
+  <div class="card">
+   <h2 id="hello"></h2>
+   <p class="small" style="margin:.2rem 0 .6rem">Wähle dein Niveau. Du kannst es jederzeit wechseln.</p>
+   <div class="niv" id="niv">
+    <button data-n="1"><b><i class="dot d1"></i>Basis</b><span>3 Antworten, Tipps</span></button>
+    <button data-n="2"><b><i class="dot d2"></i>Standard</b><span>4 Antworten</span></button>
+    <button data-n="3"><b><i class="dot d3"></i>Profi</b><span>schwer, mit Zeit</span></button>
+   </div>
+  </div>
+  <div class="tiles" id="tiles"></div>
+ </div>
+
+ <!-- Quiz (Pannen-Doktor & Checkout) -->
+ <div id="quiz" class="hidden">
+  <div class="meta"><span id="pos"></span><span id="score"></span></div>
+  <div class="bar"><div id="prog"></div></div>
+  <div class="card">
+   <span class="tag" id="tagA"></span><span class="tag" id="tagB"></span>
+   <div class="q" id="qtext"></div>
+   <div id="answers"></div><div id="feedback"></div>
+   <button class="btn primary hidden" id="next">Weiter</button>
+  </div>
+  <button class="btn" id="qback">← Zurück zur Garage</button>
+ </div>
+
+ <!-- Sortieren -->
+ <div id="sort" class="hidden">
+  <div class="meta"><span id="spos"></span><span id="sscore"></span></div>
+  <div class="bar"><div id="sprog"></div></div>
+  <div class="card">
+   <h2>🧽 Tagesparkdienst oder Service?</h2>
+   <p class="small" style="margin:0">Tagesparkdienst = nach <b>jedem</b> Einsatz, macht das Team selbst. Service = in Abständen (z. B. 1× pro Jahr oder nach Betriebsstunden), oft in der Werkstatt.</p>
+   <div class="sortcard" id="scard"></div>
+   <div class="two"><button class="btn" id="sA">🧽 Tagesparkdienst</button><button class="btn" id="sB">🛠️ Service / Werkstatt</button></div>
+   <div id="sfb"></div><button class="btn primary hidden" id="snext">Weiter</button>
+  </div>
+  <button class="btn" onclick="home()">← Zurück zur Garage</button>
+ </div>
+
+ <!-- Reihenfolge -->
+ <div id="seq" class="hidden">
+  <div class="card">
+   <span class="tag" id="seqTag"></span>
+   <h2 id="seqT"></h2>
+   <p class="small" id="seqI">Tippe die Schritte in der richtigen Reihenfolge an. Nochmals tippen = zurücknehmen.</p>
+   <div class="seq" id="seqList"></div>
+   <div id="seqFb"></div>
+   <button class="btn primary" id="seqChk">Prüfen</button>
+   <button class="btn primary hidden" id="seqNext">Nächste Aufgabe</button>
+  </div>
+  <button class="btn" onclick="home()">← Zurück zur Garage</button>
+ </div>
+
+ <!-- Suchbild -->
+ <div id="such" class="hidden">
+  <div class="card">
+   <div class="meta"><span id="suchInfo"></span><span id="suchTime"></span></div>
+   <h2>🔍 Chaos im Werkhof</h2>
+   <p class="small" style="margin:0 0 8px">Finde die <b>8 Fehler</b> (Gefahr, Unordnung, schlechte Wartung). Tippe direkt ins Bild.</p>
+   <div class="sb" id="sbBox"></div>
+   <div class="found" id="sbFound"></div>
+   <button class="btn hidden" id="sbHint">💡 Tipp: Wo ist noch ein Fehler?</button>
+   <div id="sbEnd"></div>
+  </div>
+  <button class="btn" onclick="home()">← Zurück zur Garage</button>
+ </div>
+
+ <!-- Ergebnis Training -->
+ <div id="res" class="hidden"><div class="card" id="resBox"></div><button class="btn primary" onclick="home()">Zurück zur Garage</button></div>
+
+ <!-- Escape -->
+ <div id="esc" class="hidden"></div>
+
+ <!-- Lehrer -->
+ <div id="teacher" class="hidden"></div>
+</div>
+<div id="toast" class="toast hidden"></div>
+
+<script src="../belagsaufbau/assets/config.js"></script>
+<script>window.LA_KLASSE="GLA25A"; window.LA_FIXCODE=c=>/^gla25a$/i.test(c)?"GLA25A":c;</script>
+<script src="core.js"></script>
+<script src="suchbild.js"></script>
+<script>
+/* =================== INHALTE =================== */
+const LZ={L58:"L58 Warum warten?",L61:"L61 Wie warten?",L62:"L62 Ordnung & Sauberkeit"};
+/* lv 1 = Basis, 2 = Standard, 3 = Profi. Richtige Antwort steht immer an erster Stelle (wird gemischt). */
+const MC=[
+{lv:1,lz:"L58",q:"Warum wartet man Maschinen regelmässig?",o:["Damit sie sicher und zuverlässig laufen","Damit sie schöner glänzen","Weil es die Kundschaft so will","Damit man weniger arbeiten muss"],e:"Wartung heisst: mehr Sicherheit, weniger Ausfälle, längere Lebensdauer."},
+{lv:1,lz:"L58",q:"Was passiert mit einer Maschine, die nie gewartet wird?",o:["Sie fällt im dümmsten Moment aus","Sie wird mit der Zeit schneller","Sie braucht weniger Treibstoff","Nichts, Maschinen sind wartungsfrei"],e:"Ausfälle passieren meistens dann, wenn man das Gerät am dringendsten braucht."},
+{lv:1,lz:"L58",q:"Ein stumpfes Rasenmähermesser …",o:["reisst die Halme, die Spitzen werden braun","schneidet sauberer","spart Benzin","macht den Rasen dichter"],e:"Ausgefranste Halme trocknen an den Spitzen aus und werden leichter krank."},
+{lv:2,lz:"L58",q:"Wie spart gute Wartung Geld?",o:["Weniger teure Reparaturen und keine Ausfallzeiten","Weil Ersatzteile dann gratis sind","Weil man keine Versicherung braucht","Weil die Maschine beim Kauf billiger ist"],e:"Eine kaputte Maschine auf der Baustelle kostet Reparatur UND Arbeitszeit vom ganzen Team."},
+{lv:2,lz:"L58",q:"Warum ist Wartung auch ein Sicherheitsthema?",o:["Defekte Schutzeinrichtungen und lose Teile führen zu Unfällen","Weil Wartung die Arbeitszeit verlängert","Weil gewartete Maschinen lauter sind","Sicherheit hat nichts mit Wartung zu tun"],e:"Lose Messer, defekte Bremsen oder Schutzbügel sind gefährlich."},
+{lv:2,lz:"L58",q:"Was macht der Sicherheitsbügel («Totmannschalter») am Rasenmäher?",o:["Er stoppt Motor bzw. Messer, wenn man loslässt","Er startet den Motor schneller","Er regelt die Schnitthöhe","Er schaltet das Licht ein"],e:"Vor dem Start prüfen und nie überbrücken!"},
+{lv:3,lz:"L58",q:"Was ist die Folge einer stumpfen Motorsägekette?",o:["Man braucht mehr Kraft, ermüdet schneller und Motor und Schiene verschleissen stärker","Sie schneidet sicherer, weil sie langsamer ist","Sie braucht weniger Kettenöl","Sie ist leiser und darum besser"],e:"Feines Sägemehl statt Späne = Kette stumpf. Schärfen!"},
+{lv:3,lz:"L58",q:"Warum ist Wartung auch gut für die Umwelt?",o:["Gut eingestellte Motoren brauchen weniger Treibstoff und stossen weniger Abgase aus","Weil Altöl im Boden abgebaut wird","Weil man mehr Ersatzteile kauft","Wartung hat keinen Einfluss auf die Umwelt"],e:"Ein verstopfter Luftfilter lässt den Motor «fett» laufen: mehr Verbrauch, mehr Abgase."},
+{lv:3,lz:"L58",q:"Dein Chef sagt: «Wartung kostet nur Zeit.» Bestes Gegenargument?",o:["Ein Ausfall auf der Baustelle kostet mehr Zeit: Team wartet, Ersatzgerät holen, Termin verschoben","Wartung macht Spass","Die Maschine ist sonst beleidigt","Der Hersteller kontrolliert es ja sowieso"],e:"Ein paar Minuten Tagesparkdienst sparen Stunden Ausfall."},
+{lv:1,lz:"L61",q:"Was ist der «Tagesparkdienst»?",o:["Pflege nach jedem Einsatz: reinigen, kontrollieren, auftanken","Ölwechsel einmal im Jahr in der Werkstatt","Die Maschine am Abend parkieren","Eine neue Maschine kaufen"],e:"Tagesparkdienst = was ich nach dem Gebrauch mache."},
+{lv:1,lz:"L61",q:"Was machst du VOR Arbeiten am Rasenmähermesser?",o:["Motor abstellen und Zündkerzenstecker abziehen","Motor laufen lassen, damit man das Messer sieht","Den Tank ganz füllen","Den Grasfangkorb montieren"],e:"So kann der Motor nicht aus Versehen anspringen."},
+{lv:1,lz:"L61",q:"Wie kippst du einen Benzin-Rasenmäher zum Reinigen?",o:["Mit Luftfilter und Vergaser nach oben","Mit dem Luftfilter nach unten","Auf den Kopf stellen","Egal wie"],e:"Sonst läuft Öl oder Benzin in den Luftfilter. Im Zweifel: Betriebsanleitung."},
+{lv:1,lz:"L61",q:"Wie pflegst du die Messer der Heckenschere nach der Arbeit?",o:["Bürsten, Harz lösen, danach mit Pflegeöl einsprühen","Mit dem Hochdruckreiniger abspritzen","Gar nicht, das Harz schützt","Mit Erde abreiben"],e:"Sauber und geölt klemmt nichts und es rostet nicht."},
+{lv:2,lz:"L61",q:"Was gehört NICHT zum Tagesparkdienst, sondern zum Service?",o:["Zündkerze ersetzen","Grasreste entfernen","Treibstoff nachfüllen","Sichtkontrolle auf Schäden"],e:"Zündkerze, Ölwechsel, Filter ersetzen: in Abständen nach Betriebsanleitung."},
+{lv:2,lz:"L61",q:"Was kontrollierst du beim 4-Takt-Rasenmäher vor dem Start?",o:["Ölstand, Treibstoff, Messer und Sicherheitsbügel","Nur die Farbe","Reifendruck und Licht","Nur ob der Korb leer ist"],e:"Kurzer Check vor jedem Einsatz."},
+{lv:2,lz:"L61",q:"Wann machst du den Tagesparkdienst am besten?",o:["Nach dem Einsatz, dann ist das Gerät morgen wieder bereit","Erst wenn es kaputt ist","Am Morgen auf der Baustelle","Nur im Winter"],e:"Schmutz löst sich frisch besser, und am Morgen geht es sofort los."},
+{lv:2,lz:"L61",q:"Was gehört in ein Wartungsprotokoll?",o:["Datum, Gerät, Arbeiten, Betriebsstunden, Mängel, Visum","Nur der Name des Geräts","Der Kaufpreis","Das Wetter"],e:"So sieht jede/r, was wann von wem gemacht wurde."},
+{lv:2,lz:"L61",q:"Du entdeckst einen Riss im Mähmesser. Was tust du?",o:["Gerät stilllegen, kennzeichnen, Vorgesetzte informieren","Weiterarbeiten, bis es bricht","Mit Klebeband flicken","Nichts sagen"],e:"Ein brechendes Messer wird zum Geschoss."},
+{lv:2,lz:"L61",q:"Warum reinigt oder ersetzt man den Luftfilter?",o:["Damit der Motor genug saubere Luft bekommt","Damit er schöner aussieht","Damit weniger Öl nötig ist","Weil er sonst rostet"],e:"Verstopfter Filter = wenig Leistung, schwarzer Rauch, hoher Verbrauch."},
+{lv:3,lz:"L61",q:"Was gehört zum Tagesparkdienst der Motorsäge?",o:["Schwertnut und Ölbohrung reinigen, Kette prüfen, Kettenöl nachfüllen","Kolben ausbauen","Vergaser neu einstellen","Kurbelwelle schmieren"],e:"Ohne Kettenöl läuft die Kette heiss und verschleisst."},
+{lv:3,lz:"L61",q:"Warum tankt man Kleingeräte oft mit Gerätebenzin (Alkylatbenzin)?",o:["Es ist weniger schädlich für Gesundheit und Umwelt und lange lagerfähig","Weil es billiger ist als normales Benzin","Weil es mehr Leistung gibt","Weil es nicht brennbar ist"],e:"Es enthält kaum Benzol und Aromaten. Brennbar ist es trotzdem!"},
+{lv:3,lz:"L61",q:"Warum keinen Hochdruckreiniger auf Motor und Lager richten?",o:["Wasser drückt in Lager und Elektrik, Fett wird ausgewaschen","Weil das Wasser zu warm ist","Weil der Lack dann zu stark glänzt","Das ist erlaubt und ideal"],e:"Lieber Bürste, Spachtel, Druckluft und ein Lappen."},
+{lv:3,lz:"L61",q:"Ein Akku-Gerät wird gereinigt. Was machst du zuerst?",o:["Akku entfernen","Mit Wasser abspritzen","Akku voll laden","Schalter mit Klebeband blockieren"],e:"Ohne Akku kann das Gerät nicht anlaufen."},
+{lv:3,lz:"L61",q:"Was bringt ein Wartungsplan mit klarer Verantwortung im Betrieb?",o:["Niemand vergisst etwas, man sieht wer was wann gemacht hat","Mehr Papier","Die Maschinen laufen schneller","Man braucht keine Betriebsanleitung mehr"],e:"Ein Gerät, eine verantwortliche Person, ein Protokoll."},
+{lv:1,lz:"L62",q:"Warum gehört jedes Werkzeug an seinen festen Platz?",o:["Man findet es schnell und sieht sofort, wenn etwas fehlt","Damit die Wand schön aussieht","Weil es sonst rostet","Damit niemand es benutzt"],e:"Ordnung = kein Suchen = Zeit gespart."},
+{lv:1,lz:"L62",q:"Ein Rechen liegt mit den Zinken nach oben am Boden. Das Problem?",o:["Verletzungsgefahr, wenn man darauf tritt","Er trocknet schneller","Es gibt kein Problem","Er rostet weniger"],e:"Aufhängen oder Zinken nach unten."},
+{lv:1,lz:"L62",q:"Warum müssen Werkzeuge nach der Arbeit sauber sein?",o:["Sie halten länger, funktionieren besser und übertragen keine Krankheiten","Wegen der Farbe","Damit sie leichter sind","Weil die Kundschaft sie anschaut"],e:"Schmutz hält Feuchtigkeit: Rost. Pflanzensaft kann Krankheiten tragen."},
+{lv:2,lz:"L62",q:"Warum desinfiziert man Schnittwerkzeuge?",o:["Damit Krankheiten nicht von Pflanze zu Pflanze übertragen werden","Damit sie schärfer werden","Damit sie nicht rosten","Gegen Insekten"],e:"Vor allem beim Schnitt kranker Pflanzen."},
+{lv:2,lz:"L62",q:"Womit desinfizierst du eine Schere zwischen zwei Pflanzen?",o:["Mit Alkohol (z. B. 70 %) oder einem Desinfektionsmittel","Mit Wasser","Mit Motoröl","Mit Benzin"],e:"Einsprühen oder eintauchen, kurz einwirken lassen."},
+{lv:2,lz:"L62",q:"Bei welcher gefährlichen Krankheit ist Desinfizieren besonders wichtig?",o:["Feuerbrand (Kernobst, Cotoneaster, Feuerdorn …)","Blattläuse","Moos im Rasen","Frostschaden"],e:"Feuerbrand ist eine Bakterienkrankheit und wird auch über Werkzeuge verschleppt."},
+{lv:2,lz:"L62",q:"Wie wirken ein aufgeräumter Werkhof und Lieferwagen auf die Kundschaft?",o:["Professionell und vertrauenswürdig","Langweilig","Teuer","Das ist egal"],e:"Ordnung ist auch Werbung für den Betrieb."},
+{lv:3,lz:"L62",q:"Im Werkhof ist Öl ausgelaufen. Was ist richtig?",o:["Ölbindemittel streuen, aufnehmen und als Sonderabfall entsorgen","Mit Wasser in den Schacht spülen","Mit Erde zudecken","Liegen lassen, es verdunstet"],e:"Öl darf nie in den Schacht oder in den Boden."},
+{lv:3,lz:"L62",q:"Was heisst «Ordnung spart Zeit» ganz konkret?",o:["Kein Suchen, Material vollständig auf der Baustelle, keine Leerfahrten","Man darf früher Feierabend machen","Man braucht weniger Werkzeuge","Gar nichts"],e:"Eine vergessene Schaufel = eine Fahrt zurück in den Werkhof."},
+{lv:3,lz:"L62",q:"Welche Regel gilt für die Ladung im Lieferwagen?",o:["Werkzeug und Material sichern, damit nichts rutscht","Alles lose auf die Ladefläche","Benzinkanister in die Fahrerkabine","Die Motorsäge auf den Beifahrersitz"],e:"Ungesicherte Ladung wird beim Bremsen gefährlich."}
+];
+MC.forEach((q,k)=>q.id="m"+(k+1));
+const MCby=Object.fromEntries(MC.map(q=>[q.id,q]));
+
+const SORT=[
+["Grasreste unter dem Mähdeck entfernen","T"],["Heckenscherenmesser reinigen und ölen","T"],["Treibstoff nachfüllen","T"],["Sichtkontrolle auf Schäden","T"],
+["Kettenöl der Motorsäge nachfüllen","T"],["Schere nach dem Schnitt kranker Pflanzen desinfizieren","T"],["Grasfangkorb leeren und reinigen","T"],["Schaufel und Spaten von Erde befreien","T"],
+["Motoröl wechseln","S"],["Zündkerze ersetzen","S"],["Luftfilter ersetzen","S"],["Mähmesser schleifen und auswuchten lassen","S"],
+["Vergaser einstellen","S"],["Hydrauliköl am Bagger wechseln","S"],["Gerät für den Winter einlagern (Tank leeren, konservieren)","S"],["Grosser Jahresservice mit Kontrolle aller Teile","S"]
+];
+
+const SEQ=[
+{lv:1,t:"Tagesparkdienst Heckenschere",s:["Motor abstellen bzw. Akku entfernen","Grobes Schnittgut mit der Bürste entfernen","Harz mit Harzlöser entfernen","Messer und Gerät auf Schäden kontrollieren","Messer mit Pflegeöl einsprühen","Messerschutz aufsetzen und trocken versorgen"],tip:"Grob vor fein: Zuerst sichern, dann putzen, dann kontrollieren, dann schützen."},
+{lv:2,t:"Rasenmäher nach dem Einsatz",s:["Motor abstellen und abkühlen lassen","Zündkerzenstecker abziehen","Grasfangkorb leeren","Mäher kippen: Luftfilter/Vergaser nach oben","Gehäuse unten mit Spachtel und Bürste reinigen","Messer kontrollieren (scharf, fest, keine Risse)","Sauber und trocken versorgen"],alt:[[0,1,3,4,5,2,6],[0,2,1,3,4,5,6]],tip:"Sicherheit zuerst. Der Korb kann vor oder nach dem Reinigen geleert werden."},
+{lv:3,t:"Defekt entdeckt – was nun?",s:["Arbeit sofort stoppen, Motor abstellen","Gerät sichern (Zündkerzenstecker ab bzw. Akku raus)","Gerät kennzeichnen: «Defekt – nicht benutzen»","Vorgesetzte/n informieren","Mangel im Wartungsprotokoll eintragen","Reparatur durch Fachperson bzw. Werkstatt"],alt:[[0,1,2,4,3,5]],tip:"Zuerst Gefahr stoppen, dann sichern, dann melden."}
+];
+
+/* Escape-Rätsel: Codes passen zu den gedruckten Rätselkarten */
+const ESC=[
+{id:"r1",ic:"🩺",t:"Pannen-Doktor",code:["MOTOR"],
+ txt:"Auf eurem Tisch liegen 5 Symptom-Karten (1–5) und 7 Diagnose-Karten mit Buchstaben. Ordnet jedem Symptom die richtige Diagnose zu. Die Buchstaben in der Reihenfolge 1–5 ergeben den Code.",
+ hints:["Zwei Diagnose-Karten passen zu keinem Symptom (Akku leer, Reifendruck).","Symptom 3: Feines Sägemehl statt Späne heisst, die Kette ist stumpf.","Der Code ist ein Bauteil, das in jedem Rasenmäher steckt."],
+ bonus:{q:"Profi-Bonus: Welche Diagnose braucht eine Fachperson oder die Werkstatt?",o:["Vergaser verharzt (Symptom 1)","Messer mit Pflegeöl einsprühen","Grasreste wegbürsten"]}},
+{id:"r2",ic:"✂️",t:"Heckenscheren-Pflege",code:["471936"],
+ txt:"6 Schritt-Karten zum Tagesparkdienst der Heckenschere, jede mit einer Zahl. Legt sie in die richtige Reihenfolge. Die Zahlen von oben nach unten ergeben den 6-stelligen Code.",
+ hints:["Der erste Schritt ist immer: Gerät sichern (Motor aus / Akku raus).","Grob vor fein: Bürste vor Harzlöser.","Ölen und Messerschutz kommen ganz am Schluss."],
+ bonus:{q:"Profi-Bonus: Warum kontrolliert man erst NACH dem Reinigen auf Schäden?",o:["Weil man Risse erst am sauberen Messer sieht","Weil Öl die Risse füllt","Weil es schneller geht"]}},
+{id:"r3",ic:"🔍",t:"Chaos im Werkhof",code:["36"],
+ txt:"Im Suchbild (A3) hat jedes Objekt eine gelbe Nummer. Findet alle Fehler (Gefahr, Unordnung, schlechte Wartung). Zählt die Nummern der Fehler zusammen: Das ist der Code.",
+ hints:["Es sind genau 8 Fehler.","In Ordnung sind: Lochwand, Erste Hilfe, Wartungsplan, Ölbindemittel, Desinfektion, Schaufel.","Die 6 Objekte, die in Ordnung sind, haben die Nummern 9 bis 14."],
+ bonus:{q:"Profi-Bonus: Was macht ihr zuerst mit der Öllache?",o:["Ölbindemittel streuen und aufnehmen","Mit Wasser wegspülen","Mit Sand zudecken und vergessen"]}},
+{id:"r4",ic:"📋",t:"Wartungsprotokoll-Detektiv",code:["FIT"],
+ txt:"Heute ist der 19.11.2026. Im Wartungsprotokoll stehen 6 Geräte mit Buchstaben. Welche Geräte sind ÜBERFÄLLIG? Ihre Buchstaben von oben nach unten ergeben den Code.",
+ hints:["«Jährlich» heisst: spätestens 12 Monate nach dem letzten Service.","Bei der Bodenfräse zählen die Betriebsstunden, nicht das Datum.","Es sind 3 Geräte überfällig. Der Code ist ein englisches Wort für «in Form»."],
+ bonus:{q:"Profi-Bonus: Was fehlt in diesem Protokoll?",o:["Das Visum (wer hat es gemacht?)","Die Farbe des Geräts","Der Kaufpreis"]}},
+{id:"r5",ic:"🧴",t:"Hygiene & Ordnung",code:["SAUBER"],
+ txt:"6 Fragen auf der Rätselkarte, jede Antwort hat einen Buchstaben. Die Buchstaben der richtigen Antworten von Frage 1 bis 6 ergeben den Code.",
+ hints:["Desinfiziert wird mit Alkohol.","Die gefährliche Bakterienkrankheit an Kernobst und Cotoneaster heisst Feuerbrand.","Der Code beschreibt, wie Werkzeug nach der Arbeit sein muss."],
+ bonus:{q:"Profi-Bonus: Wann desinfizierst du die Schere bei Feuerbrand-Verdacht?",o:["Nach jedem Schnitt bzw. zwischen jeder Pflanze","Einmal am Abend","Nie, Feuerbrand ist harmlos"]}}
+];
+const FINAL="361"; // Zahlenschloss der Schatzkiste (optional)
+
+/* =================== GRUNDLAGEN =================== */
+const SLUG="wartung-garage";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>String(s).trim().toUpperCase().replace(/Ä/g,"AE").replace(/Ö/g,"OE").replace(/Ü/g,"UE").replace(/[^A-Z0-9]/g,"");
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
+const SCREENS=["loading","home","quiz","sort","seq","such","res","esc","teacher"];
+function show(id){SCREENS.forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
+const dt=s=>s?new Date(s).toLocaleString("de-CH",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"–";
+const cls=p=>p==null?"g0":p>=80?"g3":p>=50?"g2":"g1";
+const NIV={1:"Basis",2:"Standard",3:"Profi"};
+let toastT;function toast(html,kind){const t=$("toast");t.className="toast "+(kind||"ok");t.innerHTML=html;clearTimeout(toastT);toastT=setTimeout(()=>t.classList.add("hidden"),3800);}
+
+/* Zustand pro Person: wird in progress.data gespeichert */
+let S={niveau:2,mods:{},escape:null,checkout:[]};
+function loadState(){const p=LA.getProgress(SLUG);if(p&&p.data){S=Object.assign(S,{niveau:p.data.niveau||2,mods:p.data.mods||{},escape:p.data.escape||null,checkout:p.data.checkout||[]});}}
+function overall(){const m=["pannen","sort","seq","such"].filter(k=>S.mods[k]&&S.mods[k].best>=80).length;return Math.round((m+(S.checkout.length?1:0))/5*100);}
+async function save(){S.ts=new Date().toISOString();try{await LA.saveProgress(SLUG,{pct:overall(),niveau:S.niveau,mods:S.mods,escape:S.escape,checkout:S.checkout,ts:S.ts});}catch(e){toast("⚠ Konnte nicht speichern: "+esc(e.message));}}
+function modDone(k,pct,extra){const m=S.mods[k]||{best:0,runs:0};m.best=Math.max(m.best,pct);m.runs++;m.last=pct;m.niv=S.niveau;m.at=new Date().toISOString();Object.assign(m,extra||{});S.mods[k]=m;save();}
+function stampCode(k){return {pannen:"DOC",sort:"OEL",seq:"KEY",such:"EYE"}[k]+"-"+(S.niveau===3?"P":S.niveau===2?"S":"B");}
+
+/* =================== HOME =================== */
+function home(){
+ stopTimers();
+ $("hello").textContent="Hallo "+LA.user.name+" 👋";
+ document.querySelectorAll("#niv button").forEach(b=>b.classList.toggle("on",+b.dataset.n===S.niveau));
+ const st=k=>{const m=S.mods[k];return m?`<span class="st ${m.best>=80?"done":""}">${m.best>=80?"✓ ":""}${m.best} %</span>`:'<span class="st">offen</span>';};
+ const esd=S.escape?Object.keys(S.escape.solved||{}).length:0;
+ $("tiles").innerHTML=`
+ <button class="tile" data-go="pannen">${st("pannen")}<div class="ic">🩺</div><b>Pannen-Doktor</b><span>Was ist kaputt? Warum warten? (L58/L61)</span></button>
+ <button class="tile" data-go="sort">${st("sort")}<div class="ic">🧽</div><b>Tagesparkdienst oder Service?</b><span>Blitz-Sortieren (L61)</span></button>
+ <button class="tile" data-go="seq">${st("seq")}<div class="ic">🔢</div><b>Schritt für Schritt</b><span>Richtige Reihenfolge (L61)</span></button>
+ <button class="tile" data-go="such">${st("such")}<div class="ic">🔍</div><b>Chaos im Werkhof</b><span>Suchbild: 8 Fehler (L62)</span></button>
+ <button class="tile wide esc" data-go="esc"><div class="ic">🔐</div><div><b>Escape: Die defekte Baustelle</b><span>${esd?esd+" / 5 Schlösser offen":"Nur wenn deine Lehrperson es freigibt. Ein Gerät pro Team."}</span></div></button>
+ <button class="tile wide chk" data-go="checkout"><div class="ic">✅</div><div><b>Checkout (Exit-Ticket)</b><span>${S.checkout.length?"Gelöst: "+S.checkout[0].score+" / "+S.checkout[0].total+" · nochmals üben möglich":"8 Fragen am Schluss · deine Lehrperson sieht das Resultat"}</span></div></button>`;
+ document.querySelectorAll("#tiles .tile").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
+ show("home");
+}
+document.querySelectorAll("#niv button").forEach(b=>b.onclick=()=>{S.niveau=+b.dataset.n;save();home();});
+
+/* =================== MC-QUIZ (Pannen-Doktor & Checkout) =================== */
+let Qset=[],qi=0,qright=0,qlog=[],qmode="",qanswered=false,qorder=[];
+function poolFor(n){return n===1?MC.filter(q=>q.lv===1).concat(shuffle(MC.filter(q=>q.lv===2)).slice(0,3)):n===2?MC.filter(q=>q.lv<=2):MC.filter(q=>q.lv>=2);}
+function pickBalanced(pool,N){const out=[];Object.keys(LZ).forEach(lz=>out.push(...shuffle(pool.filter(q=>q.lz===lz)).slice(0,Math.floor(N/3))));const rest=shuffle(pool.filter(q=>!out.includes(q)));while(out.length<N&&rest.length)out.push(rest.pop());return shuffle(out);}
+function startQuiz(mode){qmode=mode;Qset=pickBalanced(poolFor(S.niveau),mode==="checkout"?8:10);qi=0;qright=0;qlog=[];show("quiz");drawQ();}
+function drawQ(){
+ const q=Qset[qi];qanswered=false;
+ let idx=q.o.map((_,k)=>k);if(S.niveau===1)idx=[0,...shuffle(idx.slice(1)).slice(0,2)];qorder=shuffle(idx);
+ $("pos").textContent=(qmode==="checkout"?"✅ Checkout · ":"🩺 Pannen-Doktor · ")+"Frage "+(qi+1)+" / "+Qset.length;
+ $("score").textContent=qright+" richtig";$("prog").style.width=(qi/Qset.length*100)+"%";
+ $("tagA").textContent=LZ[q.lz];$("tagB").textContent=NIV[S.niveau];
+ $("qtext").textContent=q.q;$("feedback").innerHTML="";$("next").classList.add("hidden");
+ $("answers").innerHTML="";qorder.forEach(k=>{const b=document.createElement("button");b.className="btn";b.textContent=q.o[k];b.dataset.k=k;b.onclick=()=>pickQ(k);$("answers").appendChild(b);});
+}
+function pickQ(k){if(qanswered)return;qanswered=true;const q=Qset[qi];const ok=k===0;if(ok)qright++;
+ qlog.push({id:q.id,ok,k});
+ document.querySelectorAll("#answers .btn").forEach(b=>{b.disabled=true;if(+b.dataset.k===0)b.classList.add("ok");else if(+b.dataset.k===k)b.classList.add("no");});
+ $("feedback").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"✅ Richtig!":"❌ Leider falsch. Richtig: "+esc(q.o[0])}</b>${esc(q.e)}</div>`;
+ $("score").textContent=qright+" richtig";const n=$("next");n.classList.remove("hidden");n.textContent=qi<Qset.length-1?"Weiter":"Resultat";n.focus();}
+$("next").onclick=()=>{qi++;if(qi<Qset.length)drawQ();else endQuiz();};
+$("qback").onclick=()=>home();
+function endQuiz(){
+ const pct=Math.round(qright/Qset.length*100);
+ if(qmode==="checkout"){S.checkout.push({at:new Date().toISOString(),niv:S.niveau,score:qright,total:Qset.length,pct,answers:qlog});save();}
+ else modDone("pannen",pct);
+ const wr=qlog.filter(x=>!x.ok).map(x=>MCby[x.id]);
+ const byLz=Object.keys(LZ).map(lz=>{const a=qlog.filter(x=>MCby[x.id].lz===lz);return a.length?`<div class="row"><span>${LZ[lz]}</span><b>${a.filter(x=>x.ok).length} / ${a.length}</b></div>`:"";}).join("");
+ $("resBox").innerHTML=`<div class="big">${pct} %</div><p style="text-align:center;margin:0">${qright} von ${Qset.length} richtig – ${pct>=90?"Top, du bist Wartungs-Profi! 🏆":pct>=70?"Gut, nur noch kleine Lücken.":pct>=50?"Einiges sitzt – repetiere die Lücken.":"Nochmals das Dossier anschauen und neu versuchen."}</p>
+ ${qmode!=="checkout"&&pct>=80?`<div class="stamp">🎟️ Posten-Code für deinen Stempelpass<div class="code">${stampCode("pannen")}</div><span class="small">Zeig das deiner Lehrperson.</span></div>`:""}
+ ${qmode==="checkout"?`<p class="small" style="text-align:center">${S.checkout.length===1?"✔ Dein Checkout ist gespeichert. Gewertet wird dieser erste Versuch.":"✔ Gespeichert (Übungsversuch – gewertet bleibt dein erster Versuch)."}</p>`:""}
+ <h2 style="margin-top:12px">Nach Lernziel</h2>${byLz}
+ ${wr.length?`<h2 style="margin-top:12px">Das solltest du nochmals anschauen</h2>`+wr.map(q=>`<div class="row" style="display:block"><span>${esc(q.q)}</span><br><b style="color:var(--green)">✔ ${esc(q.o[0])}</b></div>`).join(""):""}`;
+ show("res");
+}
+
+/* =================== SORTIEREN =================== */
+let Sset=[],si=0,sright=0,sdone=false,stimer=null;
+function startSort(){const n=S.niveau===1?10:S.niveau===2?14:16;const T=shuffle(SORT.filter(x=>x[1]==="T")),V=shuffle(SORT.filter(x=>x[1]==="S"));Sset=shuffle(T.slice(0,Math.ceil(n/2)).concat(V.slice(0,Math.floor(n/2))));si=0;sright=0;show("sort");drawSort();}
+function drawSort(){sdone=false;const [t]=Sset[si];$("spos").textContent="Karte "+(si+1)+" / "+Sset.length+(S.niveau===3?" · ⏱ 6 s":"");$("sscore").textContent=sright+" richtig";$("sprog").style.width=(si/Sset.length*100)+"%";
+ $("scard").textContent=t;$("sfb").innerHTML="";$("snext").classList.add("hidden");["sA","sB"].forEach(id=>{$(id).disabled=false;$(id).className="btn";});
+ clearTimeout(stimer);if(S.niveau===3)stimer=setTimeout(()=>{if(!sdone)answerSort(null);},6000);}
+function answerSort(c){if(sdone)return;sdone=true;clearTimeout(stimer);const r=Sset[si][1];const ok=c===r;if(ok)sright++;
+ $(r==="T"?"sA":"sB").classList.add("ok");if(c&&!ok)$(c==="T"?"sA":"sB").classList.add("no");["sA","sB"].forEach(id=>$(id).disabled=true);
+ $("sfb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"✅ Richtig!":c?"❌ Falsch.":"⏱ Zu langsam!"}</b>${r==="T"?"Das macht man nach jedem Einsatz selbst.":"Das macht man in Abständen nach Betriebsanleitung, oft in der Werkstatt."}</div>`;
+ $("sscore").textContent=sright+" richtig";$("snext").classList.remove("hidden");$("snext").textContent=si<Sset.length-1?"Weiter":"Resultat";}
+$("sA").onclick=()=>answerSort("T");$("sB").onclick=()=>answerSort("S");
+$("snext").onclick=()=>{si++;if(si<Sset.length)drawSort();else{const pct=Math.round(sright/Sset.length*100);modDone("sort",pct);trainRes("sort",pct,sright+" von "+Sset.length+" Karten richtig sortiert.");}};
+function trainRes(k,pct,txt){$("resBox").innerHTML=`<div class="big">${pct} %</div><p style="text-align:center">${txt}</p>${pct>=80?`<div class="stamp">🎟️ Posten-Code für deinen Stempelpass<div class="code">${stampCode(k)}</div><span class="small">Zeig das deiner Lehrperson.</span></div>`:`<p class="small" style="text-align:center">Ab 80 % gibt es den Posten-Code. Versuch es nochmals!</p>`}`;show("res");}
+
+/* =================== REIHENFOLGE =================== */
+let seqTasks=[],sqi=0,sqPick=[],sqScore=0,sqOrder=[];
+function startSeq(){seqTasks=S.niveau===1?[SEQ[0]]:S.niveau===2?[SEQ[0],SEQ[1]]:[SEQ[1],SEQ[2]];sqi=0;sqScore=0;show("seq");drawSeq();}
+function drawSeq(){const T=seqTasks[sqi];sqPick=[];sqOrder=shuffle(T.s.map((_,k)=>k));$("seqTag").textContent="Aufgabe "+(sqi+1)+" / "+seqTasks.length+" · "+NIV[S.niveau];$("seqT").textContent=T.t;
+ $("seqFb").innerHTML=S.niveau===1?`<div class="fb ok" style="background:var(--blue-l)"><b>💡 Tipp</b>${esc(T.tip)}</div>`:"";$("seqChk").classList.remove("hidden");$("seqNext").classList.add("hidden");drawSeqList();}
+function drawSeqList(locked){const T=seqTasks[sqi];$("seqList").innerHTML=sqOrder.map(k=>{const p=sqPick.indexOf(k);return `<button class="btn ${p>=0?"sel":""}" data-k="${k}" ${locked?"disabled":""}><span class="num">${p>=0?p+1:""}</span>${esc(T.s[k])}</button>`;}).join("");
+ document.querySelectorAll("#seqList .btn").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;const p=sqPick.indexOf(k);if(p>=0)sqPick.splice(p,1);else sqPick.push(k);drawSeqList();});}
+$("seqChk").onclick=()=>{const T=seqTasks[sqi];if(sqPick.length<T.s.length){toast("Bitte zuerst alle "+T.s.length+" Schritte antippen.","fine");return;}
+ const okOrders=[T.s.map((_,k)=>k)].concat(T.alt||[]);const ok=okOrders.some(o=>o.every((v,i)=>v===sqPick[i]));
+ let right=0;sqPick.forEach((v,i)=>{if(v===i)right++;});const part=ok?1:right/T.s.length;sqScore+=part;
+ drawSeqList(true);
+ $("seqFb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"✅ Perfekt, die Reihenfolge stimmt!":"❌ Noch nicht ganz. "+right+" von "+T.s.length+" am richtigen Platz."}</b>${ok?esc(T.tip):"Richtig ist:<ol style='margin:.3rem 0 0 1.1rem;padding:0'>"+T.s.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ol>"}</div>`;
+ $("seqChk").classList.add("hidden");$("seqNext").classList.remove("hidden");$("seqNext").textContent=sqi<seqTasks.length-1?"Nächste Aufgabe":"Resultat";};
+$("seqNext").onclick=()=>{sqi++;if(sqi<seqTasks.length)drawSeq();else{const pct=Math.round(sqScore/seqTasks.length*100);modDone("seq",pct);trainRes("seq",pct,"Reihenfolgen: "+pct+" % richtig.");}};
+
+/* =================== SUCHBILD =================== */
+let sbFound=[],sbWrong=0,sbStart=0,sbTick=null;
+function startSuch(){sbFound=[];sbWrong=0;sbStart=Date.now();show("such");$("sbBox").innerHTML=SUCHBILD.svg({numbers:false});$("sbEnd").innerHTML="";
+ $("sbHint").classList.toggle("hidden",S.niveau!==1);drawSuch();
+ const svg=$("sbBox").querySelector("svg");svg.addEventListener("click",ev=>{const pt=svg.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());tapSuch(p.x,p.y);});
+ clearInterval(sbTick);sbTick=setInterval(drawSuchTime,500);}
+function drawSuchTime(){const s=Math.floor((Date.now()-sbStart)/1000);$("suchTime").textContent=S.niveau===3?"⏱ "+Math.max(0,90-s)+" s":"⏱ "+s+" s";if(S.niveau===3&&s>=90&&sbFound.length<8)endSuch(true);}
+function drawSuch(){$("suchInfo").textContent="Gefunden: "+sbFound.length+" / 8"+(sbWrong?" · Fehlklicks: "+sbWrong:"");
+ $("sbFound").innerHTML=sbFound.map(n=>`<span>❗ ${esc(SUCHBILD.SPOTS.find(s=>s.n===n).t)}</span>`).join("");}
+function mark(s,color){const g=$("sbBox").querySelector("#marks");const [x,y,r]=s.c[0];g.insertAdjacentHTML("beforeend",`<circle cx="${x}" cy="${y}" r="${Math.min(r,46)}" fill="none" stroke="${color}" stroke-width="5"/>`);}
+function tapSuch(x,y){if(sbFound.length>=8)return;const s=SUCHBILD.hit(x,y);if(!s)return;
+ if(s.err){if(sbFound.includes(s.n)){toast("Den hast du schon: "+esc(s.t),"fine");return;}sbFound.push(s.n);mark(s,"#d32f2f");toast("<b>❗ "+esc(s.t)+"</b><br>"+esc(s.e),"ok");drawSuch();if(sbFound.length===8)endSuch(false);}
+ else{sbWrong++;toast("<b>👍 "+esc(s.t)+"</b><br>"+esc(s.e),"fine");drawSuch();}}
+$("sbHint").onclick=()=>{const s=SUCHBILD.SPOTS.find(x=>x.err&&!sbFound.includes(x.n));if(!s)return;const g=$("sbBox").querySelector("#marks");const [x,y]=s.c[0];g.insertAdjacentHTML("beforeend",`<circle cx="${x}" cy="${y}" r="70" fill="rgba(255,225,77,.35)" stroke="#e5b800" stroke-width="3" stroke-dasharray="8 6"/>`);};
+function endSuch(timeout){clearInterval(sbTick);const sec=Math.round((Date.now()-sbStart)/1000);const pct=Math.max(0,Math.round(sbFound.length/8*100)-sbWrong*3);
+ SUCHBILD.SPOTS.filter(s=>s.err&&!sbFound.includes(s.n)).forEach(s=>mark(s,"#e5b800"));
+ modDone("such",pct,{sec});
+ $("sbEnd").innerHTML=`<div class="fb ${pct>=80?"ok":"no"}"><b>${timeout?"⏱ Zeit abgelaufen! ":"🎉 Alle 8 Fehler gefunden! "}${pct} % · ${sec} s</b>${timeout?"Gelb markiert sind die Fehler, die du nicht gefunden hast.":"Fehlklicks kosten je 3 %."}</div>${pct>=80?`<div class="stamp">🎟️ Posten-Code<div class="code">${stampCode("such")}</div></div>`:""}<button class="btn primary" onclick="startSuch()">Nochmals spielen</button>`;}
+
+/* =================== ESCAPE =================== */
+let escTick=null,curR=0;
+function stopTimers(){clearInterval(escTick);clearInterval(sbTick);clearTimeout(stimer);}
+function escTime(){const E=S.escape;if(!E)return 0;const end=E.done?new Date(E.done).getTime():Date.now();return Math.round((end-new Date(E.start).getTime())/1000)+(E.pen||0);}
+const mmss=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+function startEscape(){
+ show("esc");stopTimers();
+ if(!S.escape){
+  $("esc").innerHTML=`<div class="escape"><h2>🔐 Die defekte Baustelle</h2>
+  <p>Montag, 07.00 Uhr. Die Kundin der Villa Sonnhalde wartet. Doch im Werkhof herrscht Chaos: Der Rasenmäher springt nicht an, die Heckenschere klemmt und der Werkzeugschrank ist mit 5 Schlössern gesichert. Knackt alle 5 Codes, bevor die Kundin anruft!</p>
+  <p class="small">Ein Gerät pro Team. Tipps kosten +2 Minuten, ein falscher Code +30 Sekunden. Profi-Bonusfragen geben −1 Minute.</p>
+  <label class="small">Teamname</label><input class="fld2" id="tName" maxlength="24" placeholder="z. B. Die Ölwechsler">
+  <label class="small">Wer ist im Team? (Vornamen)</label><input class="fld2" id="tMem" maxlength="80" placeholder="z. B. Ali, Lea, Timo">
+  <button class="btn primary" id="tGo">⏱ Start – die Uhr läuft!</button></div>`;
+  $("tGo").onclick=()=>{const n=$("tName").value.trim(),m=$("tMem").value.trim();if(!n){$("tName").focus();return;}S.escape={team:n,members:m,start:new Date().toISOString(),solved:{},hints:{},wrong:{},bonus:{},pen:0};save();startEscape();};
+  $("esc").insertAdjacentHTML("beforeend",'<button class="btn" onclick="home()">← Zurück zur Garage</button>');return;}
+ const E=S.escape;curR=ESC.findIndex(r=>!E.solved[r.id]);if(curR<0)curR=0;drawEscape();
+ escTick=setInterval(()=>{const t=$("escT");if(t)t.textContent=mmss(escTime());},1000);
+}
+function drawEscape(){
+ const E=S.escape,R=ESC[curR],open=Object.keys(E.solved).length,h=E.hints[R.id]||0;
+ if(open===5&&E.done){$("esc").innerHTML=`<div class="escape" style="text-align:center"><div style="font-size:3rem">🏆</div><h2>Werkhof gerettet, Team ${esc(E.team)}!</h2><p>Eure Zeit: <span class="timer">${mmss(escTime())}</span></p><p>Codes: MOTOR · 471936 · 36 · FIT · SAUBER</p><div class="stamp" style="background:#24342b;border-color:var(--lime)">🔓 Zahlenschloss der Schatzkiste<div class="code" style="color:var(--lime)">${FINAL}</div></div><p class="small">Jetzt: Dossier bzw. To-do-Liste weiterbearbeiten.</p></div><button class="btn" onclick="home()">← Zurück zur Garage</button>`;return;}
+ $("esc").innerHTML=`<div class="escape">
+  <div class="meta" style="color:#a9c2b3"><span>Team ${esc(E.team)}</span><span class="timer" id="escT">${mmss(escTime())}</span></div>
+  <div class="locks">${ESC.map((r,k)=>`<div class="lock ${E.solved[r.id]?"open":""} ${k===curR?"cur":""}" data-k="${k}">${E.solved[r.id]?"🔓":"🔒"}<small>${k+1} ${r.ic}</small></div>`).join("")}</div>
+  <h2>${R.ic} Rätsel ${curR+1}: ${R.t}</h2>
+  <p style="margin:.3rem 0">${esc(R.txt)}</p>
+  ${E.solved[R.id]?`<div class="hint">✅ Gelöst! Code: <b>${R.code[0]}</b></div>${E.bonus[R.id]==null?bonusHtml(R):`<div class="hint">${E.bonus[R.id]?"⭐ Bonus richtig: −1 Minute":"Bonus leider falsch."}</div>`}`:
+  `<div class="codein"><input id="cIn" autocomplete="off" placeholder="Code"><button id="cGo">Öffnen</button></div>
+   ${R.hints.slice(0,h).map((x,i)=>`<div class="hint">💡 Tipp ${i+1}: ${esc(x)}</div>`).join("")}
+   ${h<3?`<button class="btn" id="hBtn" style="background:#24342b;color:#fff;border-color:#3b5446">💡 Tipp ${h+1} holen (+2 Min.)</button>`:""}`}
+  ${E.solved[R.id]&&open<5?`<button class="btn primary" id="nxR">Nächstes Schloss →</button>`:""}
+ </div><button class="btn" onclick="home()">← Zurück zur Garage</button>`;
+ document.querySelectorAll(".lock").forEach(l=>l.onclick=()=>{curR=+l.dataset.k;drawEscape();});
+ if($("cGo")){const go=()=>tryCode(R);$("cGo").onclick=go;$("cIn").addEventListener("keydown",e=>{if(e.key==="Enter")go();});$("cIn").focus();}
+ if($("hBtn"))$("hBtn").onclick=()=>{E.hints[R.id]=h+1;E.pen=(E.pen||0)+120;save();drawEscape();};
+ if($("nxR"))$("nxR").onclick=()=>{curR=ESC.findIndex(r=>!E.solved[r.id]);drawEscape();};
+ document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{const ok=+b.dataset.b===0;E.bonus[R.id]=ok;if(ok)E.pen=(E.pen||0)-60;save();drawEscape();});
+}
+function bonusHtml(R){if(S.niveau<2)return"";const idx=shuffle(R.bonus.o.map((_,k)=>k));return `<div class="hint"><b>⭐ ${esc(R.bonus.q)}</b>${idx.map(k=>`<button class="btn" data-b="${k}" style="background:#24342b;color:#fff;border-color:#3b5446;margin:6px 0">${esc(R.bonus.o[k])}</button>`).join("")}</div>`;}
+function tryCode(R){const E=S.escape;const v=norm($("cIn").value);if(!v)return;
+ if(R.code.map(norm).includes(v)){E.solved[R.id]=new Date().toISOString();if(Object.keys(E.solved).length===5)E.done=new Date().toISOString();save();toast("<b>🔓 Schloss "+(curR+1)+" ist offen!</b>","fine");drawEscape();}
+ else{E.wrong[R.id]=(E.wrong[R.id]||0)+1;E.pen=(E.pen||0)+30;save();const i=$("cIn");i.classList.remove("shake");void i.offsetWidth;i.classList.add("shake");i.value="";toast("❌ Falscher Code (+30 s)");}}
+
+const GO={pannen:()=>startQuiz("pannen"),sort:startSort,seq:startSeq,such:startSuch,esc:startEscape,checkout:()=>startQuiz("checkout")};
+
+/* =================== LEHRPERSON =================== */
+const BEAMER=/[?&]beamer=1/.test(location.search);
+let tTick=null;
+async function teacherView(){
+ $("wrap").classList.add("wide");if(BEAMER)$("wrap").classList.add("beamer");
+ $("subline").innerHTML=BEAMER?"🏁 Escape-Rennen live":"Live-Übersicht Klasse "+esc(LA.klasse)+` · <a href="?beamer=1">🏁 Escape-Rennen für den Beamer</a> · <a href="?test=1">▶ selbst ausprobieren</a>`;
+ show("teacher");await drawTeacher();clearInterval(tTick);tTick=setInterval(drawTeacher,BEAMER?8000:15000);
+}
+async function drawTeacher(){
+ const T=$("teacher");let profs,prog;
+ try{[profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);}catch(e){T.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return;}
+ const P=Object.fromEntries(profs.map(p=>[p.id,p]));
+ const studs=profs.filter(p=>p.role==="student"&&p.klasse===LA.klasse);
+ const rec=Object.fromEntries(prog.filter(r=>r.slug===SLUG&&P[r.user_id]).map(r=>[r.user_id,r]));
+ /* Escape-Rennen */
+ const teams=Object.values(rec).map(r=>({name:P[r.user_id].name,E:r.data&&r.data.escape})).filter(x=>x.E).map(x=>{const E=x.E;const end=E.done?new Date(E.done).getTime():Date.now();return{...x,open:Object.keys(E.solved||{}).length,time:Math.round((end-new Date(E.start).getTime())/1000)+(E.pen||0),hints:Object.values(E.hints||{}).reduce((a,b)=>a+b,0)};})
+  .sort((a,b)=>b.open-a.open||a.time-b.time);
+ const race=`<div class="card"><h2>🏁 Escape-Rennen</h2>${teams.length?`<div class="race">${teams.map((t,k)=>`<div class="team"><div class="rk">${t.E.done?["🥇","🥈","🥉"][k]||k+1:k+1}</div><div><b>${esc(t.E.team)}</b> <span class="small" style="color:#a9c2b3">${esc(t.E.members||t.name)}</span><div class="tl">${ESC.map(r=>t.E.solved&&t.E.solved[r.id]?"🔓":"🔒").join("")}</div></div><div style="text-align:right"><span class="timer">${mmss(t.time)}</span><div class="small" style="color:#a9c2b3">💡 ${t.hints} · ${t.E.done?"FERTIG":t.open+"/5"}</div></div></div>`).join("")}</div>`:'<p class="small">Noch kein Team gestartet.</p>'}</div>`;
+ if(BEAMER){T.innerHTML=race+`<p class="small">Aktualisiert alle 8 Sekunden · <a href="?">zur Übersicht</a></p>`;return;}
+ const rows=studs.map(p=>{const r=rec[p.id];const d=(r&&r.data)||{};return{name:p.name,d,at:r&&r.updated_at};}).sort((a,b)=>a.name.localeCompare(b.name,"de"));
+ const cell=m=>m?`<span class="sc ${cls(m.best)}">${m.best} %</span>`:'<span class="sc g0">–</span>';
+ const withCo=rows.filter(r=>r.d.checkout&&r.d.checkout.length);
+ const avg=withCo.length?Math.round(withCo.reduce((s,r)=>s+r.d.checkout[0].pct,0)/withCo.length):null;
+ const active=rows.filter(r=>r.at&&Date.now()-new Date(r.at).getTime()<10*60000).length;
+ /* schwierige Fragen (1. Checkout-Versuch) */
+ const qs={};withCo.forEach(r=>r.d.checkout[0].answers.forEach(x=>{(qs[x.id]=qs[x.id]||{n:0,ok:0});qs[x.id].n++;if(x.ok)qs[x.id].ok++;}));
+ const qRows=Object.entries(qs).map(([id,s])=>({q:MCby[id],...s,p:Math.round(s.ok/s.n*100)})).filter(x=>x.q).sort((a,b)=>a.p-b.p).slice(0,8);
+ const lzS={};withCo.forEach(r=>r.d.checkout[0].answers.forEach(x=>{const lz=MCby[x.id]&&MCby[x.id].lz;if(!lz)return;(lzS[lz]=lzS[lz]||{n:0,ok:0});lzS[lz].n++;if(x.ok)lzS[lz].ok++;}));
+ T.innerHTML=`<div class="kpis">
+  <div class="kpi"><b>${active}</b><span>gerade aktiv (10 Min.)</span></div>
+  <div class="kpi"><b>${withCo.length} / ${rows.length}</b><span>Checkout gelöst</span></div>
+  <div class="kpi"><b>${avg==null?"–":avg+" %"}</b><span>Schnitt Checkout (1. Versuch)</span></div>
+  ${Object.keys(LZ).map(k=>`<div class="kpi"><b>${lzS[k]?Math.round(lzS[k].ok/lzS[k].n*100)+" %":"–"}</b><span>${LZ[k]}</span></div>`).join("")}</div>
+  <div class="card"><h2>👀 Wer steht wo?</h2><p class="small">Aktualisiert sich alle 15 Sekunden. Posten gilt ab 80 % als erledigt (dann erhält die Person einen Posten-Code für den Stempelpass).</p>
+  <div style="margin-bottom:8px"><button class="btn inline" id="csv">⬇ CSV</button><button class="btn inline" onclick="drawTeacher()">🔄 Jetzt aktualisieren</button></div>
+  <div class="scroll"><table><tr><th>Name</th><th>Niveau</th><th>🩺 Pannen</th><th>🧽 Sortieren</th><th>🔢 Reihenfolge</th><th>🔍 Suchbild</th><th>🔐 Escape</th><th>✅ Checkout (1.)</th><th>Zuletzt aktiv</th></tr>
+  ${rows.map(r=>{const d=r.d,m=d.mods||{},co=d.checkout&&d.checkout[0],E=d.escape;return`<tr><td><b>${esc(r.name)}</b></td><td>${d.niveau?'<i class="dot d'+d.niveau+'"></i>'+NIV[d.niveau]:"–"}</td><td class="n">${cell(m.pannen)}</td><td class="n">${cell(m.sort)}</td><td class="n">${cell(m.seq)}</td><td class="n">${cell(m.such)}</td><td class="n">${E?(Object.keys(E.solved||{}).length+"/5"+(E.done?" 🏆":"")):"–"}</td><td class="n">${co?`<span class="sc ${cls(co.pct)}">${co.score}/${co.total}</span> <span class="small">${NIV[co.niv]||""}</span>`:'<span class="sc g0">offen</span>'}</td><td>${dt(r.at)}</td></tr>`;}).join("")||'<tr><td colspan="9">Noch keine Lernenden registriert.</td></tr>'}
+  </table></div></div>
+  ${race}
+  <div class="card"><h2>🤔 Welche Fragen bereiten Mühe? (Checkout, 1. Versuch)</h2><div class="scroll"><table><tr><th>Frage</th><th>LZ</th><th>Richtig</th><th>n</th></tr>
+  ${qRows.map(x=>`<tr><td class="wr">${esc(x.q.q)}<br><span class="small">→ ${esc(x.q.o[0])}</span></td><td>${x.q.lz}</td><td class="n"><span class="sc ${cls(x.p)}">${x.p} %</span></td><td class="n">${x.n}</td></tr>`).join("")||'<tr><td colspan="4">Noch keine Daten.</td></tr>'}</table></div></div>`;
+ $("csv").onclick=()=>{const L=[["Name","Niveau","Pannen","Sortieren","Reihenfolge","Suchbild","Escape","Checkout 1. Versuch","Checkout %"]].concat(rows.map(r=>{const d=r.d,m=d.mods||{},co=d.checkout&&d.checkout[0];return[r.name,NIV[d.niveau]||"",m.pannen?m.pannen.best:"",m.sort?m.sort.best:"",m.seq?m.seq.best:"",m.such?m.such.best:"",d.escape?Object.keys(d.escape.solved||{}).length+"/5":"",co?co.score+"/"+co.total:"",co?co.pct:""];}));
+  const csv=L.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"}));a.download="service-garage-GLA25A.csv";a.click();};
+}
+
+/* =================== START =================== */
+LA.requireLogin().then(()=>{
+ LA.who($("who"));loadState();
+ if(LA.user.role==="teacher"&&!/[?&]test=1/.test(location.search))teacherView();
+ else home();
+});
+</script>
+</body>
+</html>
