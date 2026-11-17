@@ -49,7 +49,7 @@ const Sup={
  demo:false,sb:null,
  async init(){
   if(!window.supabase){await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';s.onload=ok;s.onerror=()=>no(new Error('Supabase konnte nicht geladen werden.'));document.head.appendChild(s)})}
-  Sup.sb=window.supabase.createClient(C.url,C.key,{auth:{persistSession:true,autoRefreshToken:true}});
+  Sup.sb=window.supabase.createClient(C.url,C.key,{auth:{persistSession:true,autoRefreshToken:true,lock:async(n,t,fn)=>await fn()}});
  },
  err(e){const m=(e&&e.message)||String(e);
   if(/Klassencode|Database error saving new user/i.test(m))return new Error('Klassencode falsch. Bitte bei der Lehrperson nachfragen.');

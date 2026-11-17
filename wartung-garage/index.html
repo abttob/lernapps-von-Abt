@@ -178,6 +178,10 @@ td.n{text-align:center}td.wr{white-space:normal;min-width:240px}
 </div>
 <div id="toast" class="toast hidden"></div>
 
+<script>/* Sicherung: falls die Anmeldung haengt */
+setTimeout(()=>{const l=document.getElementById("loading");if(!l||l.classList.contains("hidden")||document.querySelector(".auth"))return;
+l.innerHTML='<b>Das Laden dauert zu lange.</b><br><span class="small">Meist hilft neu laden. Falls nicht: neu anmelden.</span><button class="btn primary" onclick="location.reload()">🔄 Neu laden</button><button class="btn" onclick="try{Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){};location.reload()">🔑 Neu anmelden</button>';},8000);
+</script>
 <script src="../belagsaufbau/assets/config.js"></script>
 <script>window.LA_KLASSE="GLA25A"; window.LA_FIXCODE=c=>/^gla25a$/i.test(c)?"GLA25A":c;</script>
 <script src="core.js"></script>
