@@ -126,7 +126,7 @@ const LA={demo:DEMO,klasse:KL,esc,norm,$,store,resizeImage,uuid,user:null,prog:{
   const d=Object.assign({},old,o,{best,stage,runs:(old.runs||0)+(o.finished?1:0),last:o.pct});
   const pct=o.progressPct!=null?Math.max(old.pct||0,o.progressPct):best;d.pct=pct;
   LA.prog[slug]={slug,pct,data:d,updated_at:new Date().toISOString()};
-  try{await B.progressSave(LA.user.id,slug,pct,d)}catch(e){console.warn(e)}},
+  try{await B.progressSave(LA.user.id,slug,pct,d)}catch(e){console.warn(e);if(o.finished)throw e}},
  getProgress(slug){return LA.prog[slug]||null},
  allProgress:()=>B.progressAll(),profiles:()=>B.profiles(),
  /* gemeinsame Einträge */

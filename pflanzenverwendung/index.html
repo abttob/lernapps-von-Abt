@@ -90,6 +90,9 @@
   .lbbtn{display:block;width:100%;text-align:left;padding:11px 14px;margin:6px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:.98rem;cursor:pointer;font-family:inherit}
   .lbbtn.sel{border-color:var(--blue);background:var(--blue-l)}
   .lbbtn.ok{background:var(--green-l);border-color:var(--green)} .lbbtn.no{background:var(--red-l);border-color:var(--red)}
+  .live td{vertical-align:middle}.st{display:inline-block;border-radius:8px;padding:2px 8px;font-weight:600;font-size:.85rem;white-space:nowrap}
+  .st.run{background:var(--green-l)}.st.done{background:#e6effa}.st.ready{background:var(--yel-l)}.st.off{background:#f1f1f1;color:#888}
+  .newb{font-size:.72rem;background:var(--yel-l);border-radius:6px;padding:1px 5px;margin-left:4px}
   .tabs2{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
   .tabs2 button{font:inherit;font-weight:600;padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer}
   .tabs2 button.on{background:var(--green);color:#fff;border-color:var(--green)}
@@ -1002,6 +1005,7 @@ async function loadJudg(){JUDG={};try{const L=await LA.list(JKIND);L.slice().rev
 
 /* ---------- Lernende ---------- */
 let set=[],i=0,log=[],startedAt=null;
+function ping(state,extra){if(!LA.user||LA.user.role!=="student")return;LA.saveProgress(SLUG,Object.assign({live:{state,step:i,of:set.length||0,at:new Date().toISOString()}},extra||{})).catch(e=>console.warn(e));}
 function attempts(){const p=LA.getProgress(SLUG);return (p&&p.data&&p.data.attempts)||[];}
 function buildStart(){
   $("hello").textContent="Hallo "+LA.user.name+" 👋";
@@ -1009,17 +1013,17 @@ function buildStart(){
   $("myHist").classList.toggle("hidden",!A.length);
   $("myHistList").innerHTML=A.slice().reverse().map((a,k)=>{const s=scoreAttempt(a);return '<div class="row"><span>Runde '+(A.length-k)+' · '+dt(a.finished)+(s.pend?' · 🔎 '+s.pend+' offen':'')+'</span><b><span class="sc '+cls(s.pct)+'">'+s.pct+' %</span></b></div>';}).join("");
   $("go").textContent=A.length?"Neue Runde":"Runde starten";
-  show("start");
+  show("start");ping("ready");
 }
 function startRound(){
   const cs=shuffle(CASES).slice(0,N_CASES).map(c=>({type:"case",c}));
   const fbs=shuffle(Object.keys(FB));const ms=[];
   for(const f of fbs){if(ms.length>=N_MC)break;const q=shuffle(MC.filter(q=>q.fb==f))[0];if(q)ms.push({type:"mc",q});}
-  set=shuffle(cs.concat(ms));i=0;log=[];startedAt=new Date().toISOString();show("quiz");render();
+  set=shuffle(cs.concat(ms));i=0;log=[];startedAt=new Date().toISOString();show("quiz");render();ping("run");
 }
 function header(){$("pos").textContent="Aufgabe "+(i+1)+" / "+set.length;$("prog").style.width=(i/set.length*100)+"%";}
 function render(){header();const it=set[i];if(it.type==="mc")renderMc(it.q);else renderCase(it.c);}
-function nextBtn(){const b=document.createElement("button");b.className="btn primary";b.textContent=i<set.length-1?"Weiter":"Resultat anzeigen";b.onclick=()=>{i++;i<set.length?render():result();};$("qcard").appendChild(b);b.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function nextBtn(){const b=document.createElement("button");b.className="btn primary";b.textContent=i<set.length-1?"Weiter":"Resultat anzeigen";b.onclick=()=>{i++;if(i<set.length){render();ping("run");}else result();};$("qcard").appendChild(b);b.scrollIntoView({behavior:"smooth",block:"nearest"});}
 function renderMc(q){
   const C=$("qcard");C.innerHTML='<span class="tag">Grundlagen · '+esc(FB[q.fb])+'</span><div class="q">'+esc(q.q)+'</div><div id="ans"></div><div id="fb"></div>';
   let done=false;
@@ -1078,13 +1082,37 @@ async function result(){
   $("wrongBox").classList.toggle("hidden",!wrong.length);$("wrongList").innerHTML=wrong.map(x=>'<div class="wrong">'+x+'</div>').join("");
   $("saved").textContent="Wird gespeichert …";show("result");
   const A=attempts().concat([att]);
-  try{await LA.saveProgress(SLUG,{pct:s.pct,finished:true,attempts:A});$("saved").textContent="✔ Resultat gespeichert";}
+  try{await LA.saveProgress(SLUG,{pct:s.pct,finished:true,attempts:A,live:{state:"done",step:set.length,of:set.length,at:new Date().toISOString(),pct:s.pct}});$("saved").textContent="✔ Resultat gespeichert";}
   catch(e){$("saved").textContent="⚠ Konnte nicht gespeichert werden: "+e.message;}
 }
 $("go").onclick=startRound;$("again").onclick=startRound;
 
 /* ---------- Lehrperson ---------- */
-let TAB="res";
+let TAB="res",liveTimer=null;
+const ago=s=>{const m=Math.round((Date.now()-new Date(s))/60000);return m<1?"gerade eben":m<60?"vor "+m+" Min.":m<1440?"vor "+Math.round(m/60)+" Std.":dt(s);};
+function liveRows(profs,prog){
+  const mine=profs.filter(p=>p.role==="student"&&p.klasse===LA.klasse);
+  const PG=Object.fromEntries(prog.filter(r=>r.slug===SLUG).map(r=>[r.user_id,r]));
+  const today=new Date().toDateString();
+  return mine.map(p=>{const r=PG[p.id],L=r&&r.data&&r.data.live,A=((r&&r.data&&r.data.attempts)||[]).filter(a=>a.items);
+    const min=L?(Date.now()-new Date(L.at))/60000:1e9;let st,ord,txt;
+    if(L&&L.state==="run"&&min<15){st="run";ord=0;txt="🟢 arbeitet · Aufgabe "+Math.min(L.step+1,L.of)+"/"+L.of;}
+    else if(L&&L.state==="ready"&&min<15){st="ready";ord=1;txt="🟡 angemeldet, noch nicht gestartet";}
+    else if(A.length){st="done";ord=2;const S=scoreAttempt(A[A.length-1]);txt="✅ fertig · "+S.pct+" %"+(A.length>1?" ("+A.length+" Runden)":"");}
+    else if(L){st="off";ord=3;txt=L.state==="run"?"⏸ abgebrochen bei Aufgabe "+(L.step+1)+"/"+L.of:"⚪ war in der App";}
+    else{st="off";ord=4;txt="⚪ App noch nicht geöffnet";}
+    return {name:p.name,isNew:new Date(p.created_at).toDateString()===today,created:p.created_at,st,ord,txt,at:L?L.at:(r?r.updated_at:null)};})
+   .sort((a,b)=>a.ord-b.ord||a.name.localeCompare(b.name,"de"));
+}
+function liveHtml(L){
+  const n=k=>L.filter(x=>x.st===k).length;
+  return `<div class="card live"><h2>👥 Wer ist da? <span class="small" style="font-weight:400">· aktualisiert ${new Date().toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit",second:"2-digit"})} (automatisch alle 15 s)</span></h2>
+   <p class="small"><b>${L.length}</b> registriert · <b>${n("run")}</b> arbeiten gerade · <b>${n("ready")}</b> angemeldet · <b>${n("done")}</b> fertig. «neu» = heute registriert (evtl. Doppelkonto, wenn jemand das Passwort vergessen hat).</p>
+   <div class="scroll"><table><tr><th>Name</th><th>Status</th><th>Letzte Aktivität</th></tr>
+   ${L.map(x=>`<tr><td><b>${esc(x.name)}</b>${x.isNew?'<span class="newb">neu</span>':''}</td><td><span class="st ${x.st}">${esc(x.txt)}</span></td><td>${x.at?ago(x.at):"–"}</td></tr>`).join("")||'<tr><td colspan="3">Noch niemand in dieser Klasse registriert.</td></tr>'}</table></div></div>`;
+}
+async function refreshLive(){const box=$("liveBox");if(!box||TAB!=="res"||$("teacher").classList.contains("hidden"))return;
+  try{const [profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);box.innerHTML=liveHtml(liveRows(profs,prog));}catch(e){console.warn(e);}}
 async function teacherView(){
   $("wrap").classList.add("wide");$("subline").textContent="Auswertung Klasse "+LA.klasse;
   const T=$("teacher");show("teacher");T.innerHTML='<div class="card">Lädt Resultate …</div>';
@@ -1111,8 +1139,10 @@ async function teacherView(){
     <div id="tcont"></div>`;
   T.querySelectorAll(".tabs2 button").forEach(b=>{b.classList.toggle("on",b.dataset.t===TAB);b.onclick=()=>{TAB=b.dataset.t;teacherView();};});
   const C=$("tcont");
+  clearInterval(liveTimer);
   if(TAB==="res"){
-    C.innerHTML=`<div class="card"><h2>Resultate pro Lernende/r</h2><p class="small">Gewertet wird die 1. Runde. Offene Antworten (🔎) zählen erst, wenn du sie beurteilt hast. Auf eine Zeile tippen für Details.</p>
+    liveTimer=setInterval(refreshLive,15000);
+    C.innerHTML=`<div id="liveBox">${liveHtml(liveRows(profs,prog))}</div><div class="card"><h2>Resultate pro Lernende/r</h2><p class="small">Gewertet wird die 1. Runde. Offene Antworten (🔎) zählen erst, wenn du sie beurteilt hast. Auf eine Zeile tippen für Details.</p>
     <div style="margin-bottom:8px"><button class="btn inline" id="csv">⬇ CSV exportieren</button></div>
     <div class="scroll"><table><tr><th>Name</th><th>1. Runde</th><th>Datum</th><th>Beste</th><th>Letzte</th><th>Runden</th><th>Offen</th></tr>
     ${rows.map((r,k)=>`<tr class="click" data-k="${k}"><td><b>${esc(r.name)}</b></td><td class="n"><span class="sc ${cls(r.first.pct)}">${r.first.pct} %</span></td><td>${dt(r.A[0].finished)}</td>
