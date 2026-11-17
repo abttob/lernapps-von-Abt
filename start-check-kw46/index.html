@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start-Check: Was weisst du noch? – Werkzeuge, Maschinen & Lagerung (GLA25A)</title>
+<style>
+:root{--bg:#14151a;--card:#20232c;--card2:#2a2e3a;--ink:#f3f5f2;--muted:#a7b0aa;--lime:#98c723;--gelb:#ffc400;--gruen:#21c36b;--rot:#ff5a5a;--blau:#4da3ff;--line:#363b48}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.4}
+.wrap{max-width:640px;margin:0 auto;padding:12px 14px 50px}.wrap.wide{max-width:1250px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}
+.top a{color:var(--lime);text-decoration:none}
+.who{display:flex;gap:10px;align-items:center}.who span{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-weight:700}.who a{color:var(--muted)}
+.stripes{height:10px;border-radius:6px;background:repeating-linear-gradient(-45deg,var(--lime) 0 18px,#14151a 18px 36px);margin:8px 0 12px}
+h1{font-size:1.6rem;margin:.4rem 0 .2rem;letter-spacing:.5px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+.sub{color:var(--muted);margin:0 0 1rem}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+.btn{display:block;width:100%;text-align:left;padding:15px 16px;margin:9px 0;border:2px solid var(--line);border-radius:14px;background:var(--card2);font-size:1.03rem;color:var(--ink);cursor:pointer;min-height:56px;font-family:inherit;font-weight:600;transition:transform .08s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--lime);color:#14151a;border-color:var(--lime);text-align:center;font-weight:800;font-size:1.15rem}
+.btn.ok{background:#173d2a;border-color:var(--gruen)}.btn.no{background:#4a1d1d;border-color:var(--rot)}
+.btn:disabled{cursor:default}
+.hidden{display:none!important}
+.small{font-size:.85rem;color:var(--muted)}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-weight:800;font-size:.95rem}
+.pill.fire{border-color:var(--gelb);color:var(--gelb)}
+.timer{height:12px;background:#2c303b;border-radius:8px;overflow:hidden;margin:4px 0 12px}
+.timer>div{height:100%;background:linear-gradient(90deg,var(--gruen),var(--gelb),var(--rot));transition:width .25s linear}
+.tag{display:inline-block;font-size:.75rem;font-weight:800;padding:3px 9px;border-radius:20px;background:#2f3b20;color:var(--lime);margin-bottom:6px}
+.q{font-size:1.2rem;font-weight:800;margin:6px 0 4px}
+.fb{padding:12px 14px;border-radius:14px;margin-top:10px;font-size:.98rem}
+.fb.ok{background:#173d2a;border:1px solid var(--gruen)}.fb.no{background:#3d1b1b;border:1px solid var(--rot)}
+.fb b{display:block;margin-bottom:3px}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.6);font-size:2.6rem;font-weight:900;color:var(--gelb);opacity:0;pointer-events:none;text-shadow:0 4px 18px rgba(0,0,0,.6);z-index:40;white-space:nowrap}
+.pop.go{animation:pop .9s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}25%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-110%) scale(1)}}
+.kiste{display:flex;flex-wrap:wrap;gap:4px;font-size:1.5rem;min-height:2rem;margin:4px 0}
+.big{font-size:3rem;font-weight:900;text-align:center;margin:4px 0;color:var(--lime)}
+.rank{text-align:center;font-size:1.4rem;font-weight:900;margin:4px 0 10px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}
+.rules li{margin:5px 0}
+/* Login (core.js) */
+.auth{position:fixed;inset:0;background:rgba(0,0,0,.65);display:grid;place-items:center;z-index:50;padding:1rem}
+.auth .card{max-width:430px;width:100%;margin:0;max-height:94vh;overflow:auto;background:#fff;color:#1f2d27}
+.auth label{font-weight:700;font-size:.9rem}.auth .fld{font:inherit;font-size:1.05rem;padding:12px;width:100%;border:1.5px solid #cfd9d2;border-radius:12px;margin:.3rem 0 .8rem}
+.auth .btn{text-align:center;background:#2f7a4a;color:#fff;border-color:#2f7a4a}
+.tabs{display:flex;gap:.5rem;margin-bottom:.8rem}.tabs button{flex:1;font:inherit;font-weight:700;padding:.7rem;border-radius:12px;border:1.5px solid #cfd9d2;background:#fff;cursor:pointer;min-height:48px}
+.tabs button.on{background:#2f7a4a;color:#fff;border-color:#2f7a4a}
+.msg{padding:.7rem .9rem;border-radius:12px;font-weight:700;margin:.4rem 0}.msg.err{background:#f7dede;color:#8a1f1b}
+.banner{background:#fff3c0;border:2px dashed #e5b800;border-radius:12px;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem;color:#1f2d27}
+/* Lehrperson */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.kpi b{display:block;font-size:1.7rem}.kpi span{font-size:.8rem;color:var(--muted)}
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;white-space:nowrap}th{background:#262b36;font-size:.78rem;position:sticky;top:0}
+td.n{text-align:center}td.wr{white-space:normal;min-width:260px}
+.sc{display:inline-block;min-width:48px;text-align:center;font-weight:800;border-radius:8px;padding:2px 6px}
+.g0{background:#2a2e3a;color:#777}.g1{background:#4a1d1d;color:#ffb3b3}.g2{background:#4a3d10;color:#ffe08a}.g3{background:#173d2a;color:#9ff0c0}
+.lb{display:grid;gap:10px}
+.lbr{display:grid;grid-template-columns:60px 1fr auto;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 16px}
+.lbr .m{font-size:2rem;text-align:center}.lbr b{font-size:1.3rem}.lbr .p{font-size:1.6rem;font-weight:900;color:var(--lime)}
+.beamer h1{font-size:2.6rem}.beamer .lbr b{font-size:1.9rem}.beamer .lbr .p{font-size:2.2rem}.beamer .kpi b{font-size:2.4rem}
+.prog{height:18px;background:#2c303b;border-radius:10px;overflow:hidden}.prog>div{height:100%;background:var(--lime)}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+ <div class="top"><a href="../">← Alle Apps</a><div class="who" id="who"></div></div>
+ <div class="stripes"></div>
+ <h1>🧰 Start-Check: Was weisst du noch?</h1>
+ <p class="sub" id="subline">Rückblick 12.11.2026 · Werkzeuge & Maschinen (L57) · Lagerung (L59) · Pflanzen (L12)</p>
+
+ <div id="loading" class="card">Lädt …</div>
+
+ <div id="intro" class="card hidden">
+  <h2 id="hello"></h2>
+  <ul class="rules small" style="color:var(--ink);padding-left:1.1rem">
+   <li><b>12 Fragen</b> zu letzter Woche, für jede hast du <b>25 Sekunden</b> ⏱</li>
+   <li>Richtig = <b>100 Punkte</b> + Tempo-Bonus bis 50 ⚡</li>
+   <li>3× richtig hintereinander = <b>Serie 🔥</b> (+25 pro Frage)</li>
+   <li>Für jede richtige Antwort kommt ein Werkzeug in deine Kiste 🧰</li>
+   <li>Nur der <b>erste Versuch</b> zählt für die Rangliste.</li>
+  </ul>
+  <button class="btn primary" id="go">🚀 Los geht's!</button>
+  <p class="small hidden" id="already"></p>
+ </div>
+
+ <div id="quiz" class="hidden">
+  <div class="hud"><span class="pill" id="pos"></span><span class="pill fire hidden" id="streak"></span><span class="pill" id="pts"></span></div>
+  <div class="timer"><div id="tbar" style="width:100%"></div></div>
+  <div class="card">
+   <span class="tag" id="tag"></span>
+   <div class="q" id="qtext"></div>
+   <div id="answers"></div>
+   <div id="feedback"></div>
+   <button class="btn primary hidden" id="next">Weiter</button>
+  </div>
+  <div class="small">Deine Werkzeugkiste:</div><div class="kiste" id="kiste"></div>
+ </div>
+
+ <div id="res" class="hidden"><div class="card" id="resBox"></div></div>
+ <div id="teacher" class="hidden"></div>
+</div>
+<div class="pop" id="pop"></div>
+
+<script src="../belagsaufbau/assets/config.js"></script>
+<script>window.LA_KLASSE="GLA25A"; window.LA_FIXCODE=c=>/^gla25a$/i.test(c)?"GLA25A":c;</script>
+<script src="core.js"></script>
+<script>
+/* Inhalte aus dem Unterricht vom 12.11.2026 (Dossier L57/L59, Ordner Kap. E S. 341–349, Lager-Show, Pflanzenverwendung) */
+const LZ={L57:"L57 Werkzeuge & Maschinen",L59:"L59 Lagerung",L12:"L12 Pflanzen"};
+const Q=[
+{id:"q1",lz:"L57",q:"Auf der Baustelle sagen alle «Flex». Wie heisst das Gerät korrekt?",o:["Winkelschleifer","Trennflexer","Schleifbohrer","Steinhobel"],e:"«Flex» ist ein Markenname. Fachbegriff: Winkelschleifer."},
+{id:"q2",lz:"L57",q:"Welches ist eine korrekte, vollständige Maschinenbezeichnung?",o:["Radbagger, 7.5 t","Der grosse gelbe Bagger","Bagger, mittel","Baggi vom Chef"],e:"Fachbegriff + Zusatzangabe (Tonnen, Grösse, m³). Nur so kann man richtig bestellen."},
+{id:"q3",lz:"L57",q:"Kleines Raupenfahrzeug mit Mulde, transportiert Kies und Erde. Wie heisst es?",o:["Raupendumper (Motorgarette)","Rüttelplatte","Kleintraktor","Raupenbagger"],e:"Raupendumper bzw. Motorgarette."},
+{id:"q4",lz:"L57",q:"Womit verdichtet man Gräben und den Unterbau von Wegen und Plätzen?",o:["Vibrostampfer / Plattenvibrator","Bodenfräse","Vertikutiergerät","Topfmaschine"],e:"Vibrostampfer und Plattenvibrator verdichten. Die Bodenfräse lockert."},
+{id:"q5",lz:"L59",q:"In welchem Behälter lagerst du Benzin?",o:["Im handelsüblichen, gekennzeichneten Kanister","In einer leeren PET-Flasche","In einem offenen Eimer","In der Giesskanne"],e:"Nur gekennzeichnete Kanister, am besten über einer Auffangwanne. Nie in Getränkeflaschen!"},
+{id:"q6",lz:"L59",q:"Was gehört in einen Zweitaktmotor (z. B. Motorsäge, Motorsense)?",o:["Gerätebenzingemisch (Alkylatbenzin + Öl)","Diesel","Heizöl","Gerätebenzin ohne Öl"],e:"Zweitakter brauchen Gemisch. Falsch getankt = Motorschaden."},
+{id:"q7",lz:"L59",q:"Womit lädst du einen Akku auf?",o:["Mit dem Ladegerät des Herstellers","Mit irgendeinem, Hauptsache der Stecker passt","Mit dem Handy-Ladekabel","An der Autobatterie"],e:"Nur das passende Ladegerät des Herstellers, nicht überladen."},
+{id:"q8",lz:"L59",q:"Ein Akku liegt den ganzen Tag in der prallen Sonne. Was droht?",o:["Überhitzung und Brand","Er lädt sich mit Sonnenenergie auf","Er hält länger","Gar nichts"],e:"Akkus kühl und trocken lagern, nie in der Sonne."},
+{id:"q9",lz:"L59",q:"Wie lagerst du Düngersäcke richtig?",o:["Trocken, gut verschlossen und auf Paletten","Draussen im Regen","Direkt auf dem feuchten Boden","Offen, damit sie lüften"],e:"Feuchtigkeit lässt Dünger verklumpen. Angebrochene Säcke gut verschliessen."},
+{id:"q10",lz:"L59",q:"Wo gehören Pflanzenschutzmittel hin?",o:["In einen abgeschlossenen, belüfteten Raum oder Schrank, getrennt von Lebensmitteln","In den Znüni-Kühlschrank","Offen ins Werkzeugregal","In den warmen Pausenraum"],e:"Abgeschlossen, belüftet, beschriftet, getrennt von Lebens- und Futtermitteln."},
+{id:"q11",lz:"L12",q:"Welche Pflanze eignet sich als Bodendecker für Fugen?",o:["Thymus serpyllum (Sand-Thymian)","Miscanthus sinensis (Chinaschilf)","Taxus baccata (Eibe)","Rosa canina (Hundsrose)"],e:"Sand-Thymian bleibt flach, ist trittverträglich und wächst in Fugen."},
+{id:"q12",lz:"L12",q:"Wann schneidet man Ziergräser wie das Chinaschilf zurück?",o:["Im Frühling, vor dem Neuaustrieb","Im Herbst, gleich nach der Blüte","Im Hochsommer","Nie"],e:"Im Winter schützen die Halme die Pflanze und sehen schön aus. Rückschnitt im Frühling."}
+];
+const SLUG="start-check-kw46", TIME=25;
+const TOOLS=["🔨","🪛","🔧","🪚","🧰","⛏️","🪣","🧯","🔋","⛽","🌱","🌾"];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const SC=["loading","intro","quiz","res","teacher"];
+function show(id){SC.forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
+function pop(t){const p=$("pop");p.textContent=t;p.classList.remove("go");void p.offsetWidth;p.classList.add("go");}
+const cls=p=>p==null?"g0":p>=80?"g3":p>=50?"g2":"g1";
+const title=p=>p>=90?"🥇 Werkhof-Chef/in":p>=70?"🥈 Vorarbeiter/in":p>=50?"🥉 Profi in Ausbildung":"🌱 Lehrling – du holst auf!";
+
+let order=[],qi=0,pts=0,streak=0,right=0,log=[],t0=0,tick=null,locked=false;
+function intro(){
+ $("hello").textContent="Hallo "+LA.user.name+" 👋";
+ const p=LA.getProgress(SLUG);
+ if(p&&p.data&&p.data.first){$("already").classList.remove("hidden");$("already").textContent="Du hast schon gespielt: "+p.data.first.pts+" Punkte. Ein neuer Versuch ist Training und zählt nicht für die Rangliste.";$("go").textContent="🔁 Nochmals üben";}
+ show("intro");
+}
+$("go").onclick=()=>{order=shuffle(Q);qi=0;pts=0;streak=0;right=0;log=[];$("kiste").innerHTML="";show("quiz");drawQ();};
+function drawQ(){
+ const q=order[qi];locked=false;
+ $("pos").textContent="Frage "+(qi+1)+" / "+order.length;$("pts").textContent=pts+" Pkt.";
+ $("streak").classList.toggle("hidden",streak<3);$("streak").textContent="🔥 Serie "+streak;
+ $("tag").textContent=LZ[q.lz];$("qtext").textContent=q.q;$("feedback").innerHTML="";$("next").classList.add("hidden");
+ $("answers").innerHTML="";shuffle(q.o.map((_,k)=>k)).forEach(k=>{const b=document.createElement("button");b.className="btn";b.textContent=q.o[k];b.dataset.k=k;b.onclick=()=>answer(k);$("answers").appendChild(b);});
+ t0=Date.now();clearInterval(tick);$("tbar").style.width="100%";
+ tick=setInterval(()=>{const left=TIME-(Date.now()-t0)/1000;$("tbar").style.width=Math.max(0,left/TIME*100)+"%";if(left<=0)answer(-1);},200);
+}
+function answer(k){
+ if(locked)return;locked=true;clearInterval(tick);
+ const q=order[qi],ok=k===0,sec=Math.min(TIME,(Date.now()-t0)/1000);
+ let gain=0;
+ if(ok){right++;streak++;gain=100+Math.round(50*(1-sec/TIME))+(streak>=3?25:0);pts+=gain;$("kiste").insertAdjacentHTML("beforeend","<span>"+TOOLS[(right-1)%TOOLS.length]+"</span>");pop(streak>=3?"🔥 +"+gain:"+"+gain);}
+ else{streak=0;}
+ log.push({id:q.id,ok,sec:Math.round(sec)});
+ document.querySelectorAll("#answers .btn").forEach(b=>{b.disabled=true;if(+b.dataset.k===0)b.classList.add("ok");else if(+b.dataset.k===k)b.classList.add("no");});
+ $("feedback").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"✅ Richtig! +"+gain:k<0?"⏱ Zeit abgelaufen!":"❌ Leider falsch."}</b>${ok?"":"Richtig: <b style='display:inline'>"+esc(q.o[0])+"</b><br>"}${esc(q.e)}</div>`;
+ $("pts").textContent=pts+" Pkt.";$("streak").classList.toggle("hidden",streak<3);$("streak").textContent="🔥 Serie "+streak;
+ const n=$("next");n.classList.remove("hidden");n.textContent=qi<order.length-1?"Weiter ➜":"🏁 Resultat";n.focus();
+}
+$("next").onclick=()=>{qi++;if(qi<order.length)drawQ();else finish();};
+async function finish(){
+ const pct=Math.round(right/Q.length*100);
+ const byLz={};Object.keys(LZ).forEach(l=>{const a=log.filter(x=>Q.find(q=>q.id===x.id).lz===l);byLz[l]={n:a.length,ok:a.filter(x=>x.ok).length};});
+ const run={pts,right,total:Q.length,pct,byLz,log,at:new Date().toISOString()};
+ const old=LA.getProgress(SLUG),first=old&&old.data&&old.data.first?old.data.first:run;
+ const runs=((old&&old.data&&old.data.runs)||0)+1;
+ try{await LA.saveProgress(SLUG,{pct:first.pct,first,last:run,runs});}catch(e){}
+ const wrong=log.filter(x=>!x.ok).map(x=>Q.find(q=>q.id===x.id));
+ $("resBox").innerHTML=`<div class="big">${pts} Pkt.</div><div class="rank">${title(pct)}</div>
+  <p style="text-align:center;margin:0 0 10px">${right} von ${Q.length} richtig</p>
+  <div class="kiste" style="justify-content:center">${$("kiste").innerHTML}</div>
+  ${Object.keys(LZ).map(l=>`<div class="row"><span>${LZ[l]}</span><b>${byLz[l].ok} / ${byLz[l].n}</b></div>`).join("")}
+  ${runs>1?`<p class="small">Trainingsrunde. Für die Rangliste zählt dein 1. Versuch: ${first.pts} Pkt.</p>`:`<p class="small">✔ Gespeichert. Schau auf den Beamer: Wo stehst du? 👀</p>`}
+  ${wrong.length?"<h2 style='margin-top:12px'>Nochmals anschauen</h2>"+wrong.map(q=>`<div class="row" style="display:block">${esc(q.q)}<br><b style="color:var(--lime)">✔ ${esc(q.o[0])}</b></div>`).join(""):""}
+  <div class="card" style="margin-top:14px;text-align:center;background:#2f3b20;border-color:var(--lime)"><b>📵 Jetzt: Handy in die Handy-Garage!</b><br><span class="small">Die Lehrperson erklärt die neue Regel.</span></div>`;
+ show("res");
+}
+
+/* ---------- Lehrperson ---------- */
+const BEAMER=/[?&]beamer=1/.test(location.search);let tT=null;
+async function teacher(){
+ $("wrap").classList.add("wide");if(BEAMER)$("wrap").classList.add("beamer");
+ $("subline").innerHTML=BEAMER?"🏆 Live-Rangliste · Rückblick 12.11.2026":`Live-Übersicht Klasse ${esc(LA.klasse)} · <a href="?beamer=1" style="color:var(--lime)">🏆 Rangliste für den Beamer</a> · <a href="?test=1" style="color:var(--lime)">▶ selbst ausprobieren</a>`;
+ show("teacher");await draw();clearInterval(tT);tT=setInterval(draw,BEAMER?5000:12000);
+}
+async function draw(){
+ let profs,prog;try{[profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);}catch(e){$("teacher").innerHTML='<div class="card">⚠ '+esc(e.message)+'</div>';return;}
+ const P=Object.fromEntries(profs.map(p=>[p.id,p]));
+ const studs=profs.filter(p=>p.role==="student"&&p.klasse===LA.klasse);
+ const rec=Object.fromEntries(prog.filter(r=>r.slug===SLUG&&P[r.user_id]).map(r=>[r.user_id,r]));
+ const rows=studs.map(p=>({name:p.name,f:rec[p.id]&&rec[p.id].data&&rec[p.id].data.first,runs:rec[p.id]&&rec[p.id].data&&rec[p.id].data.runs,at:rec[p.id]&&rec[p.id].updated_at}));
+ const done=rows.filter(r=>r.f);
+ const avg=done.length?Math.round(done.reduce((s,r)=>s+r.f.pct,0)/done.length):null;
+ const lz={};Object.keys(LZ).forEach(l=>{let n=0,ok=0;done.forEach(r=>{n+=r.f.byLz[l].n;ok+=r.f.byLz[l].ok;});lz[l]=n?Math.round(ok/n*100):null;});
+ const qs=Q.map(q=>{let n=0,ok=0;done.forEach(r=>r.f.log.forEach(x=>{if(x.id===q.id){n++;if(x.ok)ok++;}}));return{q,n,p:n?Math.round(ok/n*100):null};}).filter(x=>x.n).sort((a,b)=>a.p-b.p);
+ const top=done.slice().sort((a,b)=>b.f.pts-a.f.pts).slice(0,5);
+ const kpis=`<div class="kpis"><div class="kpi"><b>${done.length} / ${rows.length}</b><span>fertig</span><div class="prog"><div style="width:${rows.length?done.length/rows.length*100:0}%"></div></div></div>
+  <div class="kpi"><b>${avg==null?"–":avg+" %"}</b><span>Klassenschnitt</span></div>
+  ${Object.keys(LZ).map(l=>`<div class="kpi"><b>${lz[l]==null?"–":lz[l]+" %"}</b><span>${LZ[l]}</span></div>`).join("")}</div>`;
+ const lb=`<div class="card"><h2>🏆 Top 5</h2><div class="lb">${top.map((r,i)=>`<div class="lbr"><div class="m">${["🥇","🥈","🥉","4","5"][i]}</div><b>${esc(r.name)}</b><span class="p">${r.f.pts}</span></div>`).join("")||'<p class="small">Noch niemand fertig …</p>'}</div></div>`;
+ const hard=qs.length?`<div class="card"><h2>🤔 Schwierigste Fragen</h2>${qs.slice(0,BEAMER?2:5).map(x=>`<div class="row"><span>${esc(x.q.q)}<br><span class="small">✔ ${esc(x.q.o[0])}</span></span><span class="sc ${cls(x.p)}">${x.p} %</span></div>`).join("")}</div>`:"";
+ if(BEAMER){$("teacher").innerHTML=kpis+lb+hard;return;}
+ rows.sort((a,b)=>(b.f?b.f.pts:-1)-(a.f?a.f.pts:-1)||a.name.localeCompare(b.name,"de"));
+ $("teacher").innerHTML=kpis+`<div class="card"><h2>👀 Alle Lernenden (1. Versuch)</h2><div class="scroll"><table><tr><th>Name</th><th>Punkte</th><th>Richtig</th>${Object.keys(LZ).map(l=>`<th>${LZ[l]}</th>`).join("")}<th>Versuche</th><th>Zuletzt</th></tr>
+  ${rows.map(r=>r.f?`<tr><td><b>${esc(r.name)}</b></td><td class="n">${r.f.pts}</td><td class="n"><span class="sc ${cls(r.f.pct)}">${r.f.right}/${r.f.total}</span></td>${Object.keys(LZ).map(l=>{const b=r.f.byLz[l];const p=b.n?Math.round(b.ok/b.n*100):null;return`<td class="n"><span class="sc ${cls(p)}">${b.ok}/${b.n}</span></td>`;}).join("")}<td class="n">${r.runs||1}</td><td>${new Date(r.at).toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit"})}</td></tr>`
+   :`<tr><td>${esc(r.name)}</td><td colspan="${4+Object.keys(LZ).length}" class="small">noch nicht gespielt</td></tr>`).join("")||'<tr><td>Noch keine Lernenden registriert.</td></tr>'}</table></div></div>`+lb+hard;
+}
+
+LA.requireLogin().then(()=>{LA.who($("who"));if(LA.user.role==="teacher"&&!/[?&]test=1/.test(location.search))teacher();else intro();});
+</script>
+</body>
+</html>
