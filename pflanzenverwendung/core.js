@@ -41,6 +41,8 @@ const Local={
  async recList(kind,f){let R=store.get('la:rec',[]).filter(r=>r.kind===kind);if(f&&f.grp)R=R.filter(r=>r.grp===f.grp);if(f&&f.owner)R=R.filter(r=>r.owner===f.owner);return R.sort((a,b)=>b.created_at.localeCompare(a.created_at))},
  async recUpdate(id,data){const R=store.get('la:rec',[]);const r=R.find(x=>x.id===id);if(r){r.data=data;store.set('la:rec',R)}},
  async recDelete(id){store.set('la:rec',store.get('la:rec',[]).filter(r=>r.id!==id))},
+ async adminSetPw(id,pw){const U=store.get('la:users',{});const u=Object.values(U).find(x=>x.id===id&&x.role==='student');if(!u)throw new Error('Nur Konten von Lernenden.');if(String(pw).length<6)throw new Error('Das Passwort braucht mindestens 6 Zeichen.');u.pw=btoa(unescape(encodeURIComponent(pw)));store.set('la:users',U)},
+ async adminDelete(id){const U=store.get('la:users',{});const k=Object.keys(U).find(k=>U[k].id===id&&U[k].role==='student');if(!k)throw new Error('Nur Konten von Lernenden.');delete U[k];store.set('la:users',U);try{localStorage.removeItem('la:prog:'+id)}catch(e){}},
  async photoAdd(me,blob,ctx,grp,caption){const url=await blobToDataURL(await resizeImage(blob,560,.7));return Local.recAdd(me,'photo',grp,{url,ctx,caption})}
 };
 
@@ -84,6 +86,8 @@ const Sup={
  async recDelete(id){const {data}=await Sup.sb.from('records').select('data').eq('id',id).maybeSingle();
   if(data&&data.data&&data.data.path)await Sup.sb.storage.from('photos').remove([data.data.path]);
   const {error}=await Sup.sb.from('records').delete().eq('id',id);if(error)throw Sup.err(error)},
+ async adminSetPw(id,pw){const {error}=await Sup.sb.rpc('admin_set_password',{p_user:id,p_pw:pw});if(error)throw Sup.err(error)},
+ async adminDelete(id){const {error}=await Sup.sb.rpc('admin_delete_user',{p_user:id});if(error)throw Sup.err(error)},
  async photoAdd(me,blob,ctx,grp,caption){const b=await resizeImage(blob,1280,.8);const path=me.id+'/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.jpg';
   const {error}=await Sup.sb.storage.from('photos').upload(path,b,{contentType:'image/jpeg'});if(error)throw Sup.err(error);
   const url=Sup.sb.storage.from('photos').getPublicUrl(path).data.publicUrl;return Sup.recAdd(me,'photo',grp,{url,path,ctx,caption})}
@@ -129,6 +133,8 @@ const LA={demo:DEMO,klasse:KL,esc,norm,$,store,resizeImage,uuid,user:null,prog:{
   try{await B.progressSave(LA.user.id,slug,pct,d)}catch(e){console.warn(e);if(o.finished)throw e}},
  getProgress(slug){return LA.prog[slug]||null},
  allProgress:()=>B.progressAll(),profiles:()=>B.profiles(),
+ /* Lehrperson: Konten von Lernenden verwalten */
+ adminSetPw:(id,pw)=>B.adminSetPw(id,pw),adminDelete:id=>B.adminDelete(id),
  /* gemeinsame Einträge */
  add:(kind,grp,data)=>B.recAdd(LA.user,kind,grp,data),list:(kind,f)=>B.recList(kind,f),update:(id,d)=>B.recUpdate(id,d),remove:id=>B.recDelete(id),
  photo:(blob,ctx,grp,caption)=>B.photoAdd(LA.user,blob,ctx,grp,caption)

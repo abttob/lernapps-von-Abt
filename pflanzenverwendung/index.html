@@ -58,6 +58,7 @@
   .tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
   .msg{padding:.7rem .9rem;border-radius:12px;font-weight:600;margin:.4rem 0}
   .msg.err{background:var(--red-l);color:#8a1f1b}
+  .msg.ok{background:var(--green-l);color:#1d5c2e}
   .banner{background:#fff3c0;border:2px dashed #e5b800;border-radius:12px;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem}
   /* Lehrer-Auswertung */
   .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
@@ -1101,18 +1102,31 @@ function liveRows(profs,prog){
     else if(A.length){st="done";ord=2;const S=scoreAttempt(A[A.length-1]);txt="✅ fertig · "+S.pct+" %"+(A.length>1?" ("+A.length+" Runden)":"");}
     else if(L){st="off";ord=3;txt=L.state==="run"?"⏸ abgebrochen bei Aufgabe "+(L.step+1)+"/"+L.of:"⚪ war in der App";}
     else{st="off";ord=4;txt="⚪ App noch nicht geöffnet";}
-    return {name:p.name,isNew:new Date(p.created_at).toDateString()===today,created:p.created_at,st,ord,txt,at:L?L.at:(r?r.updated_at:null)};})
+    return {id:p.id,nres:A.length,name:p.name,isNew:new Date(p.created_at).toDateString()===today,created:p.created_at,st,ord,txt,at:L?L.at:(r?r.updated_at:null)};})
    .sort((a,b)=>a.ord-b.ord||a.name.localeCompare(b.name,"de"));
 }
 function liveHtml(L){
   const n=k=>L.filter(x=>x.st===k).length;
   return `<div class="card live"><h2>👥 Wer ist da? <span class="small" style="font-weight:400">· aktualisiert ${new Date().toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit",second:"2-digit"})} (automatisch alle 15 s)</span></h2>
-   <p class="small"><b>${L.length}</b> registriert · <b>${n("run")}</b> arbeiten gerade · <b>${n("ready")}</b> angemeldet · <b>${n("done")}</b> fertig. «neu» = heute registriert (evtl. Doppelkonto, wenn jemand das Passwort vergessen hat).</p>
-   <div class="scroll"><table><tr><th>Name</th><th>Status</th><th>Letzte Aktivität</th></tr>
-   ${L.map(x=>`<tr><td><b>${esc(x.name)}</b>${x.isNew?'<span class="newb">neu</span>':''}</td><td><span class="st ${x.st}">${esc(x.txt)}</span></td><td>${x.at?ago(x.at):"–"}</td></tr>`).join("")||'<tr><td colspan="3">Noch niemand in dieser Klasse registriert.</td></tr>'}</table></div></div>`;
+   <p class="small"><b>${L.length}</b> registriert · <b>${n("run")}</b> arbeiten gerade · <b>${n("ready")}</b> angemeldet · <b>${n("done")}</b> fertig. «neu» = heute registriert (evtl. Doppelkonto, wenn jemand das Passwort vergessen hat). Mit 🔑 setzt du ein neues Passwort, mit 🗑 löschst du ein Konto samt Resultaten.</p><div id="admMsg"></div>
+   <div class="scroll"><table><tr><th>Name</th><th>Status</th><th>Letzte Aktivität</th><th>Konto</th></tr>
+   ${L.map(x=>`<tr><td><b>${esc(x.name)}</b>${x.isNew?'<span class="newb">neu</span>':''}</td><td><span class="st ${x.st}">${esc(x.txt)}</span></td><td>${x.at?ago(x.at):"–"}</td><td style="white-space:nowrap"><button class="btn inline" data-pw="${x.id}" title="Neues Passwort setzen">🔑 Passwort</button> <button class="btn inline" data-del="${x.id}" data-n="${esc(x.name)}" data-r="${x.nres}" title="Konto löschen">🗑 Löschen</button></td></tr>`).join("")||'<tr><td colspan="4">Noch niemand in dieser Klasse registriert.</td></tr>'}</table></div></div>`;
 }
-async function refreshLive(){const box=$("liveBox");if(!box||TAB!=="res"||$("teacher").classList.contains("hidden"))return;
-  try{const [profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);box.innerHTML=liveHtml(liveRows(profs,prog));}catch(e){console.warn(e);}}
+function bindAdmin(box){box.onclick=async e=>{const b=e.target.closest("button[data-pw],button[data-del]");if(!b)return;
+  const msg=t=>{const m=$("admMsg");if(m)m.innerHTML=t;};
+  if(b.dataset.pw){const name=b.closest("tr").querySelector("b").textContent;
+    const sug="pflanze"+(100+Math.floor(Math.random()*900));
+    const pw=prompt("Neues Passwort für «"+name+"» (mind. 6 Zeichen).\nTeile es der Person mit – sie meldet sich damit unter ihrem Namen «"+name+"» an:",sug);
+    if(pw==null)return;b.disabled=true;
+    try{await LA.adminSetPw(b.dataset.pw,pw.trim());msg('<div class="msg ok">✔ Passwort für <b>'+esc(name)+'</b> ist jetzt: <b>'+esc(pw.trim())+'</b></div>');}
+    catch(err){msg('<div class="msg err">'+esc(err.message)+'</div>');}b.disabled=false;return;}
+  const n=b.dataset.n,res=+b.dataset.r;
+  if(!confirm("Konto «"+n+"» endgültig löschen?"+(res?"\n\nAchtung: "+res+" Resultat"+(res>1?"e gehen":" geht")+" dabei verloren (auch in anderen Apps)." :"\n\nAuch Resultate in anderen Apps werden gelöscht.")))return;
+  b.disabled=true;try{await LA.adminDelete(b.dataset.del);msg('<div class="msg ok">✔ Konto <b>'+esc(n)+'</b> gelöscht.</div>');await refreshLive(true);}
+  catch(err){msg('<div class="msg err">'+esc(err.message)+'</div>');b.disabled=false;}};}
+async function refreshLive(force){const box=$("liveBox");if(!box||TAB!=="res"||$("teacher").classList.contains("hidden"))return;
+  const keep=$("admMsg")?$("admMsg").innerHTML:"";
+  try{const [profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);box.innerHTML=liveHtml(liveRows(profs,prog));if(keep)$("admMsg").innerHTML=keep;}catch(e){console.warn(e);}}
 async function teacherView(){
   $("wrap").classList.add("wide");$("subline").textContent="Auswertung Klasse "+LA.klasse;
   const T=$("teacher");show("teacher");T.innerHTML='<div class="card">Lädt Resultate …</div>';
@@ -1154,6 +1168,7 @@ async function teacherView(){
         if(it.type==="mc"){const q=mcById[it.id];return q?`<div class="it">${it.ok?"✅":"❌"} ${esc(q.q)}</div>`:"";}
         const c=caseById[it.id];return `<div class="it"><b>${esc(c?c.t:it.id)}</b> ${it.lbOk?"✅":"❌"} ${esc(it.lbGiven)} · `+it.plants.map(p=>{let st=p.st;const J=JUDG[it.id+"|"+p.key];if(st==="unk"&&J)st=J.ok?"ok":"no";return ({ok:"✅",half:"🟡",no:"❌",unk:"🔎",dup:"❌"}[st]||"")+" "+esc(p.text);}).join(", ")+`</div>`;}).join("")+`</div>`).join("");
       d.classList.remove("hidden");});
+    bindAdmin($("liveBox"));
     $("csv").onclick=()=>{const L=[["Name","1. Runde %","Datum","Beste %","Letzte %","Runden"]].concat(rows.map(r=>[r.name,r.first.pct,dt(r.A[0].finished),r.best.pct,r.last.pct,r.A.length]));
       const csv=L.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv"}));a.download="pflanzenverwendung-resultate.csv";a.click();};
   }
