@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Die Werkhof-Show – Wartung, Ordnung & Sauberkeit (L58/L61/L62)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--gelb:#FFC400;--schwarz:#14151a;--dunkel:#1f2129;--karte:#2a2d38;--gruen:#21c36b;--rot:#ff4d4d;--lime:#98c723;--tA:#ff8a1f;--tB:#3b8cff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Nunito',system-ui,sans-serif;background:var(--schwarz);color:#fff;overflow:hidden;font-weight:800}
+h1,h2,.bungee{font-family:'Bungee','Arial Black',Impact,sans-serif;font-weight:400;letter-spacing:.5px}
+button{font-family:inherit;font-weight:900;cursor:pointer;border:none}
+.stripes{height:16px;background:repeating-linear-gradient(-45deg,var(--lime) 0 28px,var(--schwarz) 28px 56px)}
+.screen{position:absolute;inset:0;display:none;flex-direction:column}
+.screen.on{display:flex}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 20px;gap:12px}
+.topbar a,.topbar .lnk{color:#aaa;text-decoration:none;font-size:16px;background:none}
+.score{display:flex;gap:14px;align-items:center}
+.team{display:flex;align-items:center;gap:10px;border-radius:14px;padding:6px 14px;font-size:clamp(16px,1.6vw,24px)}
+.team b{font-family:'Bungee',Impact,sans-serif;font-size:clamp(22px,2.4vw,38px)}
+.tA{background:var(--tA);color:#000}.tB{background:var(--tB);color:#fff}
+.stars{display:flex;gap:4px;align-items:center;background:var(--karte);border-radius:14px;padding:4px 10px}
+.stars span{font-size:clamp(18px,2vw,30px);cursor:pointer;filter:grayscale(1) opacity(.35);transition:.2s}
+.stars span.on{filter:none;transform:scale(1.1)}
+.stars small{color:#aaa;font-size:12px;margin-right:6px}
+/* Start */
+#start{align-items:center;overflow:auto}
+.logo{text-align:center;margin-top:3vh}
+.logo h1{font-size:clamp(36px,6.5vw,96px);color:var(--lime);text-shadow:5px 5px 0 #000,0 0 40px rgba(152,199,35,.35);line-height:1.02}
+.logo .sub{font-size:clamp(16px,1.8vw,26px);color:#ddd;margin-top:10px}
+.wob{display:inline-block;animation:wob 2.4s ease-in-out infinite}@keyframes wob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.setup{background:var(--dunkel);border-radius:22px;padding:20px 24px;margin:3vh auto;width:min(1000px,94vw);border:3px solid #333}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.teams label{display:flex;align-items:center;gap:10px;border-radius:14px;padding:12px;font-size:20px}
+.teams input{flex:1;min-width:0;background:transparent;border:none;border-bottom:2px dashed rgba(0,0,0,.4);font:inherit;font-size:22px;color:inherit}
+.rounds{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.round{background:var(--karte);border-radius:18px;padding:18px;text-align:left;color:#fff;border:3px solid transparent;transition:.15s}
+.round:hover{border-color:var(--lime);transform:translateY(-3px)}
+.round .ic{font-size:44px}.round h2{font-size:clamp(20px,2vw,30px);color:var(--gelb);margin:6px 0}.round p{color:#ccc;font-size:17px;font-weight:600}
+.reset{margin-top:14px;background:none;color:#888;font-size:14px;text-decoration:underline}
+/* Suchbild */
+#such .wrap{flex:1;display:flex;gap:16px;padding:6px 20px 14px;min-height:0}
+.sb{flex:1;display:flex;align-items:center;justify-content:center;min-width:0}
+.sb svg{max-height:100%;max-width:100%;border-radius:14px;cursor:crosshair;background:#fff}
+.side{width:clamp(220px,22vw,340px);display:flex;flex-direction:column;gap:10px;overflow:auto}
+.side h2{color:var(--gelb);font-size:clamp(18px,1.7vw,26px)}
+.cnt{font-family:'Bungee',Impact,sans-serif;font-size:clamp(34px,4vw,60px);color:var(--lime)}
+.flist{display:flex;flex-direction:column;gap:6px}
+.flist div{background:var(--karte);border-radius:10px;padding:8px 10px;font-size:15px;border-left:8px solid}
+.btn{background:var(--karte);color:#fff;border-radius:12px;padding:12px 14px;font-size:17px}
+.btn.y{background:var(--gelb);color:#000}
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:20}
+.modal.on{display:flex}
+.mbox{background:var(--dunkel);border:4px solid var(--lime);border-radius:24px;padding:26px 30px;width:min(820px,92vw);text-align:center}
+.mbox h2{font-size:clamp(24px,2.8vw,42px);margin-bottom:10px}
+.mbox p{font-size:clamp(18px,1.8vw,26px);font-weight:600;color:#ddd;margin-bottom:18px}
+.mbtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.mbtns button{font-size:clamp(18px,1.8vw,26px);padding:14px 26px;border-radius:16px}
+/* Quiz */
+#quiz .qwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4vw 24px;text-align:center;gap:2.5vh}
+.qnr{color:#aaa;font-size:clamp(16px,1.6vw,24px)}
+.qtext{font-size:clamp(30px,4.2vw,68px);line-height:1.15;max-width:1400px}
+.howto{display:flex;gap:4vw;font-size:clamp(20px,2.2vw,34px);color:#ccc}
+.howto b{color:#fff}
+.count{font-family:'Bungee',Impact,sans-serif;font-size:clamp(70px,12vw,190px);color:var(--gelb);line-height:1;min-height:1em}
+.verdict{font-family:'Bungee',Impact,sans-serif;font-size:clamp(50px,8vw,130px);line-height:1}
+.verdict.r{color:var(--gruen)}.verdict.f{color:var(--rot)}
+.expl{font-size:clamp(20px,2.2vw,34px);color:#eee;max-width:1300px;font-weight:600}
+.qbtns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.qbtns button{font-size:clamp(18px,1.7vw,26px);padding:14px 26px;border-radius:16px}
+.hidden{display:none!important}
+/* Ende */
+#ende{align-items:center;justify-content:center;text-align:center;gap:3vh}
+#ende h1{font-size:clamp(40px,7vw,110px);color:var(--gelb)}
+#ende p{font-size:clamp(20px,2.2vw,34px)}
+.confetti{position:fixed;top:-20px;font-size:28px;animation:fall linear forwards;z-index:30;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+</style>
+</head>
+<body>
+
+<!-- START -->
+<section id="start" class="screen on">
+ <div class="stripes" style="width:100%"></div>
+ <div class="topbar" style="width:100%"><a href="../">← Alle Apps</a><div id="starsS"></div></div>
+ <div class="logo"><h1><span class="wob">🧰</span> WERKHOF-SHOW</h1>
+  <div class="sub">Wartung · Ordnung · Sauberkeit · L58 · L61 · L62 · GLA25A</div></div>
+ <div class="setup">
+  <div class="teams">
+   <label class="tA">🟧 <input id="nA" value="Linke Hälfte" maxlength="22"></label>
+   <label class="tB">🟦 <input id="nB" value="Rechte Hälfte" maxlength="22"></label>
+  </div>
+  <div class="rounds">
+   <button class="round" id="goSuch"><div class="ic">🔍</div><h2>Runde 1: Tatort Werkhof</h2><p>Einstieg · Suchbild-Duell am Beamer: Wer entdeckt zuerst die 8 Fehler? Die Lehrperson klickt, die Klasse ruft.</p></button>
+   <button class="round" id="goQuiz"><div class="ic">🧍</div><h2>Finale: Steh auf, wenn's stimmt!</h2><p>Lockerer Abschluss · Aussage lesen, 5 Sekunden überlegen, dann: <b>stimmt = aufstehen</b>, stimmt nicht = sitzen bleiben.</p></button>
+  </div>
+  <div style="text-align:center"><button class="reset" id="reset">Punkte und Sterne auf 0 setzen</button></div>
+ </div>
+</section>
+
+<!-- SUCHBILD -->
+<section id="such" class="screen">
+ <div class="stripes"></div>
+ <div class="topbar"><button class="lnk" data-home>← Menü</button><div class="score" id="scoreS1"></div></div>
+ <div class="wrap">
+  <div class="sb" id="sbBox"></div>
+  <div class="side">
+   <h2>🔍 Tatort Werkhof</h2>
+   <div>Gefunden: <span class="cnt" id="sbCnt">0</span><span style="font-size:24px"> / 8</span></div>
+   <div class="flist" id="sbList"></div>
+   <button class="btn" id="sbSolve">💡 Rest auflösen</button>
+   <button class="btn y" id="sbDone">Weiter ➜</button>
+  </div>
+ </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" class="screen">
+ <div class="stripes"></div>
+ <div class="topbar"><button class="lnk" data-home>← Menü</button><div class="score" id="scoreS2"></div></div>
+ <div class="qwrap">
+  <div class="qnr" id="qNr"></div>
+  <div class="qtext" id="qText"></div>
+  <div class="howto" id="qHow"><span>🧍 <b>stimmt</b> = aufstehen</span><span>🪑 <b>stimmt nicht</b> = sitzen bleiben</span></div>
+  <div class="count" id="qCount"></div>
+  <div class="verdict hidden" id="qVerdict"></div>
+  <div class="expl hidden" id="qExpl"></div>
+  <div class="qbtns" id="qBtns"></div>
+ </div>
+</section>
+
+<!-- ENDE -->
+<section id="ende" class="screen">
+ <h1 id="eTitle"></h1><p id="eText"></p>
+ <div class="score" id="scoreS3" style="justify-content:center"></div>
+ <button class="btn y" data-home style="font-size:22px;padding:14px 30px">← Menü</button>
+</section>
+
+<div class="modal" id="modal"><div class="mbox"><h2 id="mT"></h2><p id="mP"></p><div class="mbtns" id="mB"></div></div></div>
+
+<script src="../wartung-garage/suchbild.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const Q=[
+ ["Den Tagesparkdienst macht man nur einmal im Jahr.",false,"Tagesparkdienst = nach JEDEM Einsatz. Einmal im Jahr ist der Service."],
+ ["Vor Arbeiten am Rasenmähermesser zieht man den Zündkerzenstecker ab.",true,"So kann der Motor nicht aus Versehen anspringen."],
+ ["Den Benzin-Rasenmäher kippt man mit dem Luftfilter nach unten.",false,"Luftfilter und Vergaser nach OBEN, sonst läuft Öl oder Benzin in den Filter."],
+ ["Eine stumpfe Motorsägekette macht feines Sägemehl statt Späne.",true,"Feines Mehl, man muss drücken, das Holz raucht: Kette schärfen!"],
+ ["Harz an der Heckenschere schützt die Messer. Also nicht wegputzen!",false,"Harz verklebt die Messer. Bürsten, Harzlöser, dann Pflegeöl."],
+ ["Schnittwerkzeuge desinfiziert man zum Beispiel mit Alkohol.",true,"Alkohol (z. B. 70 %) oder Desinfektionsmittel."],
+ ["Bei Feuerbrand-Verdacht reicht es, die Schere am Abend zu desinfizieren.",false,"Nach JEDER Pflanze desinfizieren, sonst verschleppt man die Krankheit."],
+ ["Ausgelaufenes Öl spült man mit Wasser in den Schacht.",false,"Nie! Ölbindemittel streuen, aufnehmen, als Sonderabfall entsorgen."],
+ ["Ein Wartungsprotokoll zeigt, wer was wann gemacht hat.",true,"Datum, Gerät, Arbeiten, Mängel, Visum."],
+ ["Einen Rechen legt man mit den Zinken nach oben hin, damit er schneller trocknet.",false,"Verletzungsgefahr! Aufhängen oder Zinken nach unten."],
+ ["Ordnung im Lieferwagen spart Zeit und ist sicherer.",true,"Kein Suchen, keine Leerfahrten, nichts rutscht beim Bremsen."],
+ ["Den Sicherheitsbügel am Rasenmäher darf man mit Klebeband fixieren, wenn es pressiert.",false,"Niemals überbrücken! Er stoppt das Messer, wenn man loslässt."],
+ ["Ein Ausfall auf der Baustelle kostet oft mehr als die Wartung.",true,"Reparatur + wartendes Team + verschobener Termin."],
+ ["Zündkerze ersetzen gehört zum Service, nicht zum Tagesparkdienst.",true,"Service = in Abständen nach Betriebsanleitung."]
+];
+let S={a:0,b:0,stars:0,nA:"Linke Hälfte",nB:"Rechte Hälfte"};
+try{Object.assign(S,JSON.parse(localStorage.getItem("werkhofshow")||"{}"));}catch(e){}
+function save(){try{localStorage.setItem("werkhofshow",JSON.stringify(S));}catch(e){}}
+$("nA").value=S.nA;$("nB").value=S.nB;
+$("nA").oninput=e=>{S.nA=e.target.value;save();};$("nB").oninput=e=>{S.nB=e.target.value;save();};
+function scoreHtml(){return `<div class="team tA">🟧 ${esc(S.nA)} <b>${S.a}</b></div><div class="team tB">🟦 ${esc(S.nB)} <b>${S.b}</b></div>${starsHtml()}`;}
+function starsHtml(){return `<div class="stars" title="Team-Punkte der Klasse (Handy-Garage)"><small>Klasse</small>${[1,2,3,4,5].map(i=>`<span data-s="${i}" class="${i<=S.stars?"on":""}">⭐</span>`).join("")}</div>`;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function drawScore(){["scoreS1","scoreS2","scoreS3"].forEach(id=>$(id).innerHTML=scoreHtml());$("starsS").innerHTML=starsHtml();
+ document.querySelectorAll(".stars span").forEach(s=>s.onclick=()=>{const v=+s.dataset.s;S.stars=S.stars===v?v-1:v;save();drawScore();if(S.stars===5)confetti();});}
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id));drawScore();}
+document.querySelectorAll("[data-home]").forEach(b=>b.onclick=()=>{clearInterval(cd);show("start");});
+$("reset").onclick=()=>{S.a=0;S.b=0;S.stars=0;save();drawScore();};
+function modal(t,p,btns){$("mT").innerHTML=t;$("mP").innerHTML=p;$("mB").innerHTML="";btns.forEach(([lbl,cls,fn])=>{const b=document.createElement("button");b.className=cls;b.innerHTML=lbl;b.onclick=()=>{$("modal").classList.remove("on");fn&&fn();};$("mB").appendChild(b);});$("modal").classList.add("on");}
+function point(t){S[t]++;save();drawScore();}
+function confetti(){for(let i=0;i<60;i++){const c=document.createElement("div");c.className="confetti";c.textContent=["🌿","⭐","🔧","🎉","🧰"][i%5];c.style.left=Math.random()*100+"vw";c.style.animationDuration=(2+Math.random()*2.5)+"s";document.body.appendChild(c);setTimeout(()=>c.remove(),5000);}}
+
+/* ---------- Runde 1: Suchbild ---------- */
+let found=[];
+$("goSuch").onclick=()=>{found=[];show("such");$("sbBox").innerHTML=SUCHBILD.svg({numbers:false});drawSb();
+ const svg=$("sbBox").querySelector("svg");svg.removeAttribute("width");
+ svg.addEventListener("click",ev=>{const pt=svg.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());tap(p.x,p.y);});};
+function mark(s,col){const [x,y,r]=s.c[0];$("sbBox").querySelector("#marks").insertAdjacentHTML("beforeend",`<circle cx="${x}" cy="${y}" r="${Math.min(r,46)}" fill="none" stroke="${col}" stroke-width="6"/>`);}
+function tap(x,y){const s=SUCHBILD.hit(x,y);if(!s)return;
+ if(!s.err){modal("👍 In Ordnung!","<b>"+esc(s.t)+"</b><br>"+esc(s.e),[["OK","btn y"]]);return;}
+ if(found.find(f=>f.n===s.n)){modal("Schon gefunden","<b>"+esc(s.t)+"</b>",[["OK","btn y"]]);return;}
+ modal("❗ "+esc(s.t),esc(s.e)+"<br><br>Wer hat's zuerst gesagt?",[[`🟧 ${esc(S.nA)} +1`,"tA",()=>add(s,"a")],[`🟦 ${esc(S.nB)} +1`,"tB",()=>add(s,"b")],["niemand","btn",()=>add(s,null)]]);}
+function add(s,t){found.push({n:s.n,t});mark(s,t==="a"?"#ff8a1f":t==="b"?"#3b8cff":"#d32f2f");if(t)point(t);drawSb();if(found.length===8){confetti();}}
+function drawSb(){$("sbCnt").textContent=found.length;$("sbList").innerHTML=found.map(f=>{const s=SUCHBILD.SPOTS.find(x=>x.n===f.n);return `<div style="border-color:${f.t==="a"?"var(--tA)":f.t==="b"?"var(--tB)":"#d32f2f"}">${esc(s.t)}</div>`;}).join("");}
+$("sbSolve").onclick=()=>{SUCHBILD.SPOTS.filter(s=>s.err&&!found.find(f=>f.n===s.n)).forEach(s=>{found.push({n:s.n,t:null});mark(s,"#ffc400");});drawSb();};
+$("sbDone").onclick=()=>{show("start");};
+
+/* ---------- Finale: Steh auf ---------- */
+let order=[],qi=0,cd=null;
+$("goQuiz").onclick=()=>{order=Q.map((_,i)=>i).sort(()=>Math.random()-.5).slice(0,10);qi=0;show("quiz");drawQ();};
+function drawQ(){const q=Q[order[qi]];clearInterval(cd);
+ $("qNr").textContent="Aussage "+(qi+1)+" / "+order.length;$("qText").textContent=q[0];
+ $("qHow").classList.remove("hidden");$("qVerdict").classList.add("hidden");$("qExpl").classList.add("hidden");$("qCount").textContent="";
+ $("qBtns").innerHTML='<button class="btn y" id="qGo">⏱ 5 Sekunden</button><button class="btn" id="qShow">Auflösen</button>';
+ $("qGo").onclick=()=>{let n=5;$("qCount").textContent=n;cd=setInterval(()=>{n--;$("qCount").textContent=n>0?n:"JETZT!";if(n<=0){clearInterval(cd);}},1000);};
+ $("qShow").onclick=reveal;}
+function reveal(){const q=Q[order[qi]];clearInterval(cd);$("qCount").textContent="";
+ const v=$("qVerdict");v.className="verdict "+(q[1]?"r":"f");v.textContent=q[1]?"✅ STIMMT – stehen!":"❌ STIMMT NICHT – sitzen!";
+ $("qExpl").textContent=q[2];$("qExpl").classList.remove("hidden");$("qHow").classList.add("hidden");
+ $("qBtns").innerHTML=`<button class="tA" id="pA">🟧 ${esc(S.nA)} +1</button><button class="tB" id="pB">🟦 ${esc(S.nB)} +1</button><button class="btn y" id="qNext">${qi<order.length-1?"Nächste ➜":"Siegerehrung 🏆"}</button>`;
+ $("pA").onclick=()=>{point("a");$("pA").disabled=true;$("pA").style.opacity=.5;};
+ $("pB").onclick=()=>{point("b");$("pB").disabled=true;$("pB").style.opacity=.5;};
+ $("qNext").onclick=()=>{qi++;if(qi<order.length)drawQ();else ende();};}
+function ende(){show("ende");const w=S.a===S.b?null:S.a>S.b?S.nA:S.nB;$("eTitle").textContent=w?"🏆 "+w+" gewinnt!":"🤝 Unentschieden!";
+ $("eText").textContent="Ihr seid Werkhof-Profis. Und jetzt: Arbeitsplatz sauber verlassen! 🧹";confetti();}
+document.addEventListener("keydown",e=>{if(!$("quiz").classList.contains("on"))return;if(e.key===" "){e.preventDefault();const b=$("qGo");if(b)b.click();}if(e.key==="Enter"){const s=$("qShow")||$("qNext");if(s)s.click();}});
+drawScore();
+</script>
+</body>
+</html>
