@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Auswendig lernen: Muss-Wissen Platz- und Wegebau</title><link rel="stylesheet" href="../assets/app.css">
+<style>
+.tabbar{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;background:rgba(244,251,239,.96);padding:.5rem 0;margin:0 0 .6rem}
+.tabbar button{font:inherit;font-weight:800;font-size:.86rem;border:3px solid var(--line);background:#fff;border-radius:14px;min-height:58px;cursor:pointer;color:var(--ink);padding:.2rem}
+.tabbar button.on{background:var(--green);color:#fff;border-color:var(--green-d)}
+.tabbar button span{display:block;font-size:1.25rem}
+.topic h3{margin:.1rem 0 .3rem;font-size:1.15rem}
+.hook{background:#fff4c9;border-left:8px solid var(--sun);border-radius:12px;padding:.6rem .8rem;font-weight:700;margin:.5rem 0}
+.facts{margin:.4rem 0 0;padding-left:1.1rem}.facts li{margin:.25rem 0;font-weight:600}
+.pick{display:flex;flex-wrap:wrap;gap:.4rem;margin:.4rem 0 .6rem}
+.pick button{font:inherit;font-weight:800;font-size:.9rem;border:3px solid var(--line);background:#fff;border-radius:999px;padding:.45rem .8rem;cursor:pointer;min-height:44px}
+.pick button.on{background:#e9f8e4;border-color:var(--green)}
+.pre{display:flex;align-items:center;gap:.5rem}.pre b{font-size:1.4rem}.pre input{flex:1;margin:.3rem 0}.pre .u{font-weight:800;color:var(--muted);min-width:2.5rem}
+.boxes{display:flex;gap:.3rem;flex-wrap:wrap;font-size:.85rem;font-weight:700;color:var(--muted)}
+.boxes span{background:#eef6ea;border-radius:999px;padding:.15rem .6rem}
+table.tt{width:100%;border-collapse:separate;border-spacing:0 .35rem}table.tt th{text-align:left;font-size:.9rem;color:var(--muted);padding:0 .3rem}
+table.tt td{padding:.2rem .3rem;font-weight:800;vertical-align:middle}
+table.tt select{margin:0;padding:.5rem .4rem;font-size:1rem;border-radius:12px;min-height:48px}
+table.tt select.ok{border-color:var(--green);background:#e8f5e9}table.tt select.no{border-color:var(--red);background:#fdecea}
+.timer{font-size:1.5rem;font-weight:900;color:var(--green-d)}
+.done{color:var(--green-d);font-weight:900}
+@media print{.hero,.tabbar,.noprint,.who{display:none!important}.card{box-shadow:none;border:1px solid #999;break-inside:avoid}body::before{display:none}.wrap{margin:0}}
+</style></head><body>
+<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>🧠 Auswendig lernen: Muss-Wissen</h1><p>Die Zahlen, Tabellen und Regeln, die du an der Prüfung Platz- und Wegebau ohne Unterlagen können musst.</p></div>
+<div class="wrap"><div class="chips" style="margin:0 0 .6rem"><span class="chip">L166–L171</span><span class="chip">L174–L177</span></div>
+<div class="tabbar noprint" id="tabs"><button data-t="merk" class="on"><span>📋</span>Merkliste</button><button data-t="drill"><span>🧠</span>Abfragen</button><button data-t="tab"><span>🗂</span>Tabellen</button><button data-t="blitz"><span>⏱</span>Blitz-Check</button></div>
+<div class="card noprint" id="sum"></div>
+<div id="view"><div class="card">Lädt …</div></div>
+<div class="copy">© Tobias Abt, BBZ BL · Quelle: Lehrmittel J5 und Dossier Platz- und Wegebau</div>
+</div>
+<script src="../assets/config.js"></script><script src="../assets/core.js"></script><script src="data.js"></script>
+<script>
+const SLUG='auswendig';const M=window.MW;const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ITEMS=M.topics.flatMap(t=>t.items.map(i=>Object.assign({topic:t.id,tt:t.title,icon:t.icon},i)));
+let S={box:{},tabs:{},blitzBest:0};let tab='merk',saveT=null;
+const ans=i=>(i.pre||'')+i.a+(i.u?(['°','%'].includes(i.u)?'':' ')+i.u:'');
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function pctNow(){const sure=ITEMS.filter(i=>(S.box[i.id]||0)>=2).length;const td=M.tables.filter(t=>S.tabs[t.id]).length;return Math.round(100*(sure+td*3)/(ITEMS.length+M.tables.length*3))}
+function save(extra){clearTimeout(saveT);saveT=setTimeout(()=>{const p=pctNow();try{LA.saveProgress(SLUG,Object.assign({box:S.box,tabs:S.tabs,blitzBest:S.blitzBest,pct:p,progressPct:p,stage:Object.keys(S.tabs).length,stages:M.tables.length},extra||{}))}catch(e){}},300);sum()}
+function sum(){const b=[0,0,0,0];ITEMS.forEach(i=>b[Math.min(3,S.box[i.id]||0)]++);const td=M.tables.filter(t=>S.tabs[t.id]).length;const p=pctNow();
+ document.getElementById('sum').innerHTML=`<b>📊 Dein Stand: ${p}%</b><div class="bar"><i style="width:${p}%"></i></div><div class="boxes"><span>⚪ neu ${b[0]}</span><span>🔴 üben ${b[1]}</span><span>🟡 fast ${b[2]}</span><span>🟢 sicher ${b[3]}</span><span>🗂 Tabellen ${td}/${M.tables.length}</span>${S.blitzBest?`<span>⏱ Blitz bestes ${S.blitzBest}%</span>`:''}</div>`}
+function setTab(t){tab=t;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({merk:renderMerk,drill:renderDrillStart,tab:renderTables,blitz:renderBlitzStart})[t]();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+
+/* ---------- Merkliste ---------- */
+function renderMerk(){
+ document.getElementById('view').innerHTML=`<div class="card info noprint"><b>So lernst du am besten</b><br>1. Lies ein Thema und die Eselsbrücke. 2. Deck die Liste ab und sag die Werte laut. 3. Wechsle zu «Abfragen» und prüf dich. Was falsch ist, kommt öfter dran.<div style="margin-top:.5rem"><button class="btn small sec" onclick="window.print()">🖨 Merkliste drucken</button></div></div>`+
+ M.topics.map(t=>{const n=t.items.length,s=t.items.filter(i=>(S.box[i.id]||0)>=2).length;return `<div class="card topic"><div class="small">${esc(t.lz)} · ${s}/${n} sicher</div><h3>${t.icon} ${esc(t.title)}</h3><div class="hook">💡 ${esc(t.hook)}</div><ul class="facts">${t.facts.map(f=>`<li>${esc(f)}</li>`).join('')}</ul><button class="btn small noprint" data-go="${t.id}">🧠 Dieses Thema abfragen</button></div>`}).join('');
+ document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{sel=new Set([b.dataset.go]);tab='drill';document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='drill'));startDrill()})}
+
+/* ---------- Abfragen (Lernbox) ---------- */
+let sel=new Set(M.topics.map(t=>t.id)),queue=[],cur=null,answered=false,round={ok:0,no:0};
+function renderDrillStart(){
+ document.getElementById('view').innerHTML=`<div class="card"><b>Welche Themen willst du abfragen?</b><div class="pick">${M.topics.map(t=>`<button data-p="${t.id}" class="${sel.has(t.id)?'on':''}">${t.icon} ${esc(t.title)}</button>`).join('')}</div>
+ <div class="pick"><button id="all">Alle</button><button id="none">Keine</button></div><div class="small">Neue und falsche Fragen kommen zuerst. Richtig = eine Box höher. Falsch = zurück in Box 1 und die Frage kommt in dieser Runde nochmals.</div><button class="btn" id="go">▶ Abfragen starten</button></div>`;
+ document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const id=b.dataset.p;sel.has(id)?sel.delete(id):sel.add(id);b.classList.toggle('on')});
+ document.getElementById('all').onclick=()=>{sel=new Set(M.topics.map(t=>t.id));renderDrillStart()};document.getElementById('none').onclick=()=>{sel=new Set();renderDrillStart()};
+ document.getElementById('go').onclick=()=>{if(!sel.size){alertBox('Wähle mindestens ein Thema.');return}startDrill()}}
+function alertBox(t){const v=document.getElementById('view');v.insertAdjacentHTML('afterbegin',`<div class="msg err">${esc(t)}</div>`)}
+function startDrill(){const L=ITEMS.filter(i=>sel.has(i.topic));
+ queue=shuffle(L).sort((a,b)=>(S.box[a.id]||0)-(S.box[b.id]||0)).slice(0,15);round={ok:0,no:0,total:queue.length};nextQ()}
+function nextQ(){cur=queue.shift();answered=false;if(!cur){renderRoundEnd();return}renderQ()}
+function renderQ(){const i=cur,b=S.box[i.id]||0;let body='';
+ if(i.t==='num')body=`<div class="pre">${i.pre?`<b>${esc(i.pre)}</b>`:''}<input class="num" id="in" inputmode="decimal" autocomplete="off" placeholder="Zahl eingeben"><span class="u">${esc(i.u||'')}</span></div><button class="btn" id="chk">Prüfen</button>`;
+ else if(i.t==='mc'){const ord=shuffle(i.o.map((o,k)=>k));body=ord.map((k,n)=>`<button class="opt" data-k="${k}"><span class="k">${'ABCD'[n]}</span>${esc(i.o[k])}</button>`).join('')}
+ else body=`<div class="small">Sag die Antwort laut oder schreib sie auf. Dann aufdecken und ehrlich bewerten.</div><button class="btn" id="show">Antwort aufdecken</button>`;
+ document.getElementById('view').innerHTML=`<div class="card"><div class="small">${i.icon} ${esc(i.tt)} · Box ${b} · noch ${queue.length} Fragen</div><div class="q">${esc(i.q)}</div><div id="ar">${body}</div><div id="fb"></div></div>`;
+ if(i.t==='num'){const inp=document.getElementById('in');inp.focus();const go=()=>checkNum(inp.value);document.getElementById('chk').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()}}
+ else if(i.t==='mc')document.querySelectorAll('[data-k]').forEach(x=>x.onclick=()=>{if(answered)return;const k=+x.dataset.k;document.querySelectorAll('[data-k]').forEach(y=>{if(+y.dataset.k===i.a)y.classList.add('ok')});if(k!==i.a)x.classList.add('no');grade(k===i.a,i.o[i.a])});
+ else document.getElementById('show').onclick=()=>{document.getElementById('ar').innerHTML=`<div class="why">✅ ${esc(i.a)}</div><div class="cols"><button class="btn warn" id="sn">✗ Nicht gewusst</button><button class="btn" id="sy">✓ Gewusst</button></div>`;document.getElementById('sy').onclick=()=>grade(true,null,true);document.getElementById('sn').onclick=()=>grade(false,null,true)}}
+function parseNum(v){v=String(v).replace(/[±+\s]/g,'').replace(',','.').replace(/[^0-9.\-]/g,'');return v===''?NaN:parseFloat(v)}
+function checkNum(v){if(answered)return;const x=parseNum(v);if(isNaN(x)){document.getElementById('fb').innerHTML='<div class="msg err">Bitte eine Zahl eingeben.</div>';return}
+ const ok=Math.abs(x-cur.a)<=Math.max(0.001,Math.abs(cur.a)*0.001);document.getElementById('in').disabled=true;grade(ok,ans(cur))}
+function grade(ok,right,self){answered=true;const i=cur;const b=S.box[i.id]||0;
+ if(ok){S.box[i.id]=Math.min(3,b+1);round.ok++}else{S.box[i.id]=1;round.no++;queue.splice(Math.min(3,queue.length),0,i)}
+ save();const fb=document.getElementById('fb');
+ fb.innerHTML=(self?'':`<div class="msg ${ok?'ok':'err'}">${ok?'✓ Richtig!':'✗ Leider falsch.'} ${right&&!ok?'Richtig ist: <b>'+esc(right)+'</b>':''}</div>`)+`<button class="btn" id="nx">Weiter ▶</button>`;
+ if(self)document.getElementById('ar').querySelector('.cols').remove();
+ const nx=document.getElementById('nx');nx.onclick=nextQ;nx.focus()}
+function renderRoundEnd(){const t=round.ok+round.no;const p=t?Math.round(100*round.ok/t):0;
+ document.getElementById('view').innerHTML=`<div class="card res"><div class="big">${p}%</div><div>${round.ok} richtig, ${round.no} falsch (falsche Fragen kamen nochmals dran)</div><button class="btn" id="again">🔁 Nächste Runde</button><button class="btn sec" id="back">Themen wählen</button></div>`;
+ document.getElementById('again').onclick=startDrill;document.getElementById('back').onclick=renderDrillStart}
+
+/* ---------- Tabellen ---------- */
+function renderTables(){
+ document.getElementById('view').innerHTML=`<div class="card info">Fülle die Tabellen aus dem Kopf. Wähle in jedem Feld den richtigen Wert und drück «Prüfen». Eine Tabelle ist geschafft, wenn alles grün ist.</div>`+M.tables.map(t=>{
+  const pool=c=>[...new Set(t.rows.map(r=>r[c]))];
+  return `<div class="card" id="${t.id}"><div class="small">${esc(t.lz)} ${S.tabs[t.id]?'· <span class="done">✅ geschafft</span>':''}</div><h3 style="margin:.2rem 0">${esc(t.title)}</h3><table class="tt"><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${t.rows.map((r,ri)=>`<tr>${r.map((v,c)=>t.ask.includes(c)?`<td><select data-r="${ri}" data-c="${c}"><option value="">?</option>${shuffle(pool(c)).map(o=>`<option>${esc(o)}</option>`).join('')}</select></td>`:`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table><div class="cols"><button class="btn sec small" data-reset="${t.id}" style="width:100%">↺ Leeren</button><button class="btn small" data-chk="${t.id}" style="width:100%">Prüfen</button></div><div class="fb"></div></div>`}).join('');
+ document.querySelectorAll('[data-chk]').forEach(b=>b.onclick=()=>{const t=M.tables.find(x=>x.id===b.dataset.chk);const box=document.getElementById(t.id);let ok=0,n=0;
+  box.querySelectorAll('select').forEach(s=>{n++;const good=s.value===t.rows[+s.dataset.r][+s.dataset.c];s.classList.toggle('ok',good);s.classList.toggle('no',!good);if(good)ok++});
+  const fb=box.querySelector('.fb');if(ok===n){S.tabs[t.id]=true;save();fb.innerHTML='<div class="msg ok">✅ Alles richtig! Tabelle geschafft.</div>'}else fb.innerHTML=`<div class="msg err">${ok} von ${n} richtig. Korrigiere die roten Felder.</div>`});
+ document.querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>{const box=document.getElementById(b.dataset.reset);box.querySelectorAll('select').forEach(s=>{s.value='';s.className=''});box.querySelector('.fb').innerHTML=''})}
+
+/* ---------- Blitz-Check ---------- */
+let bq=[],bi=0,bres=[],timer=null,tLeft=0;
+function renderBlitzStart(){document.getElementById('view').innerHTML=`<div class="card"><b>⏱ Blitz-Check: wie an der Prüfung</b><p>12 zufällige Fragen aus allen Themen, 4 Minuten. Kein Zurück, keine Hilfe. Am Schluss siehst du alle Fehler.</p>${S.blitzBest?`<p class="small">Dein bestes Resultat: ${S.blitzBest}%</p>`:''}<button class="btn" id="bs">▶ Start</button></div>`;document.getElementById('bs').onclick=startBlitz}
+function startBlitz(){bq=shuffle(ITEMS.filter(i=>i.t!=='self')).slice(0,12);bi=0;bres=[];tLeft=240;clearInterval(timer);timer=setInterval(()=>{tLeft--;const el=document.getElementById('tm');if(el)el.textContent=fmt(tLeft);if(tLeft<=0){clearInterval(timer);endBlitz()}},1000);showB()}
+const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+function showB(){if(bi>=bq.length){clearInterval(timer);endBlitz();return}const i=bq[bi];let body='';
+ if(i.t==='num')body=`<div class="pre">${i.pre?`<b>${esc(i.pre)}</b>`:''}<input class="num" id="bin" inputmode="decimal" autocomplete="off"><span class="u">${esc(i.u||'')}</span></div><button class="btn" id="bok">Weiter</button>`;
+ else body=shuffle(i.o.map((o,k)=>k)).map((k,n)=>`<button class="opt" data-b="${k}"><span class="k">${'ABCD'[n]}</span>${esc(i.o[k])}</button>`).join('');
+ document.getElementById('view').innerHTML=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="small">Frage ${bi+1} von ${bq.length}</span><span class="timer" id="tm">${fmt(tLeft)}</span></div><div class="q">${esc(i.q)}</div>${body}</div>`;
+ if(i.t==='num'){const inp=document.getElementById('bin');inp.focus();const go=()=>{const x=parseNum(inp.value);bres.push({i,ok:!isNaN(x)&&Math.abs(x-i.a)<=Math.max(0.001,Math.abs(i.a)*0.001),given:inp.value||'–'});bi++;showB()};document.getElementById('bok').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()}}
+ else document.querySelectorAll('[data-b]').forEach(x=>x.onclick=()=>{const k=+x.dataset.b;bres.push({i,ok:k===i.a,given:i.o[k]});bi++;showB()})}
+function endBlitz(){if(document.getElementById('bres'))return;const n=bq.length,ok=bres.filter(r=>r.ok).length,p=Math.round(100*ok/n);
+ bres.forEach(r=>{const b=S.box[r.i.id]||0;S.box[r.i.id]=r.ok?Math.min(3,b+1):1});if(p>S.blitzBest)S.blitzBest=p;save({blitzLast:p});
+ const miss=bq.slice(bres.length).map(i=>({i,ok:false,given:'(keine Zeit)'}));const all=bres.concat(miss);
+ document.getElementById('view').innerHTML=`<div class="card res" id="bres"><div class="big">${p}%</div><div>${ok} von ${n} richtig${miss.length?` · ${miss.length} nicht mehr geschafft`:''}</div><div class="small">${p>=80?'Stark! So kannst du an die Prüfung.':p>=60?'Gut. Übe die roten Fragen nochmals.':'Noch nicht sicher. Lies die Merkliste und frag dich ab.'}</div></div>
+ <div class="card"><b>Auswertung</b><table class="t">${all.map(r=>`<tr><td>${r.ok?'✅':'❌'}</td><td>${esc(r.i.q)}<br><span class="small">Richtig: <b>${esc(r.i.t==='num'?ans(r.i):r.i.o[r.i.a])}</b>${r.ok?'':' · Deine Antwort: '+esc(r.given)}</span></td></tr>`).join('')}</table><button class="btn" id="bagain">🔁 Nochmals</button></div>`;
+ document.getElementById('bagain').onclick=startBlitz}
+
+LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));const p=LA.getProgress(SLUG);if(p&&p.data){S.box=p.data.box||{};S.tabs=p.data.tabs||{};S.blitzBest=p.data.blitzBest||0}sum();setTab('merk')});
+</script></body></html>
