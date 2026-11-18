@@ -1,113 +1,181 @@
 <!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Auswendig lernen: Muss-Wissen Platz- und Wegebau</title><link rel="stylesheet" href="../assets/app.css">
 <style>
-.tabbar{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;background:rgba(244,251,239,.96);padding:.5rem 0;margin:0 0 .6rem}
-.tabbar button{font:inherit;font-weight:800;font-size:.86rem;border:3px solid var(--line);background:#fff;border-radius:14px;min-height:58px;cursor:pointer;color:var(--ink);padding:.2rem}
-.tabbar button.on{background:var(--green);color:#fff;border-color:var(--green-d)}
-.tabbar button span{display:block;font-size:1.25rem}
-.topic h3{margin:.1rem 0 .3rem;font-size:1.15rem}
-.hook{background:#fff4c9;border-left:8px solid var(--sun);border-radius:12px;padding:.6rem .8rem;font-weight:700;margin:.5rem 0}
-.facts{margin:.4rem 0 0;padding-left:1.1rem}.facts li{margin:.25rem 0;font-weight:600}
-.pick{display:flex;flex-wrap:wrap;gap:.4rem;margin:.4rem 0 .6rem}
-.pick button{font:inherit;font-weight:800;font-size:.9rem;border:3px solid var(--line);background:#fff;border-radius:999px;padding:.45rem .8rem;cursor:pointer;min-height:44px}
-.pick button.on{background:#e9f8e4;border-color:var(--green)}
-.pre{display:flex;align-items:center;gap:.5rem}.pre b{font-size:1.4rem}.pre input{flex:1;margin:.3rem 0}.pre .u{font-weight:800;color:var(--muted);min-width:2.5rem}
-.boxes{display:flex;gap:.3rem;flex-wrap:wrap;font-size:.85rem;font-weight:700;color:var(--muted)}
-.boxes span{background:#eef6ea;border-radius:999px;padding:.15rem .6rem}
-table.tt{width:100%;border-collapse:separate;border-spacing:0 .35rem}table.tt th{text-align:left;font-size:.9rem;color:var(--muted);padding:0 .3rem}
-table.tt td{padding:.2rem .3rem;font-weight:800;vertical-align:middle}
-table.tt select{margin:0;padding:.5rem .4rem;font-size:1rem;border-radius:12px;min-height:48px}
-table.tt select.ok{border-color:var(--green);background:#e8f5e9}table.tt select.no{border-color:var(--red);background:#fdecea}
-.timer{font-size:1.5rem;font-weight:900;color:var(--green-d)}
-.done{color:var(--green-d);font-weight:900}
-@media print{.hero,.tabbar,.noprint,.who{display:none!important}.card{box-shadow:none;border:1px solid #999;break-inside:avoid}body::before{display:none}.wrap{margin:0}}
+.top{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin:0 0 .6rem;background:#fff;border:3px solid var(--line);border-radius:18px;padding:.4rem .5rem .4rem .9rem;flex-direction:row-reverse}
+.top .btn{width:auto;min-height:48px;margin:0;padding:.55rem 1rem}
+.top b{font-size:1.05rem}
+.prog{display:flex;align-items:center;gap:1rem}
+.ringbig{flex:0 0 86px;width:86px;height:86px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) calc(var(--p)*1%),#e3efdc 0)}
+.ringbig i{width:66px;height:66px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:1.25rem}
+.pills{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.35rem}
+.pills span{background:#eef6ea;border-radius:999px;padding:.2rem .65rem;font-size:.85rem;font-weight:800;color:var(--muted)}
+.modes .app{min-height:150px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.modes .app small{color:var(--muted)}
+.modes .app .st{margin-top:auto;font-weight:800;color:var(--green-d);font-size:.9rem}
+details.tp{background:#fff;border:3px solid var(--line);border-radius:20px;margin:.7rem 0;box-shadow:0 5px 0 rgba(63,157,74,.12);overflow:hidden}
+details.tp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.7rem;padding:.9rem 1rem;font-weight:800;font-size:1.08rem;min-height:64px}
+details.tp summary::-webkit-details-marker{display:none}
+details.tp summary .ic{font-size:1.6rem}
+details.tp summary .tt{flex:1}
+details.tp summary .cnt{font-size:.8rem;font-weight:800;background:#eef6ea;color:var(--green-d);border-radius:999px;padding:.2rem .6rem;white-space:nowrap}
+details.tp summary::after{content:'▾';font-size:1.2rem;color:var(--muted);transition:transform .15s}
+details.tp[open] summary::after{transform:rotate(180deg)}
+details.tp .in{padding:0 1rem 1rem}
+.hook{background:#fff4c9;border-left:8px solid var(--sun);border-radius:12px;padding:.7rem .9rem;font-weight:700;margin:.2rem 0 .6rem}
+.facts{margin:.3rem 0 .6rem;padding-left:1.15rem}.facts li{margin:.35rem 0;font-weight:600;line-height:1.4}
+.pickgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.5rem;margin:.6rem 0}
+.pickgrid button{font:inherit;font-weight:800;font-size:.92rem;text-align:left;border:3px solid var(--line);background:#fff;border-radius:14px;padding:.6rem .7rem;min-height:56px;cursor:pointer;display:flex;gap:.45rem;align-items:center;color:var(--ink)}
+.pickgrid button.on{background:#e3f5dd;border-color:var(--green)}
+.pickgrid button .ck{margin-left:auto;font-size:1.1rem;color:var(--green-d)}
+.row2{display:flex;gap:.5rem}.row2 .btn{flex:1}
+.ansrow{display:flex;align-items:center;gap:.5rem;margin:.6rem 0}
+.ansrow .pre{font-size:1.6rem;font-weight:900;color:var(--green-d)}
+.ansrow input{flex:1;font:inherit;font-weight:800;font-size:1.4rem;padding:.8rem 1rem;border:3px solid var(--line);border-radius:16px;min-width:0;background:#fff;color:var(--ink)}
+.ansrow input:focus{outline:none;border-color:var(--green)}
+.ansrow input.ok{border-color:var(--green);background:#d6f5d3}.ansrow input.no{border-color:var(--red);background:#fde0de}
+.ansrow .unit{font-weight:900;font-size:1.15rem;color:var(--muted);min-width:2.2rem}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;font-weight:800;color:var(--muted);margin:.5rem 0 .2rem}
+.selfans{margin:.8rem 0;padding:.9rem 1rem;background:#e8f5e9;border-left:8px solid var(--green);border-radius:12px;font-weight:700}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.8rem}
+.tgrid .app{min-height:110px;cursor:pointer;font:inherit;text-align:left;color:var(--ink)}
+table.fill{width:100%;border-collapse:separate;border-spacing:0 .45rem}
+table.fill th{text-align:left;font-size:.85rem;color:var(--muted);padding:0 .25rem;font-weight:800}
+table.fill td{padding:0 .25rem;font-weight:800;vertical-align:middle}
+table.fill select{margin:0;padding:.55rem .5rem;font-size:1rem;min-height:50px;border-radius:12px;width:100%}
+table.fill select.ok{border-color:var(--green);background:#d6f5d3}table.fill select.no{border-color:var(--red);background:#fde0de}
+.timer{font-size:1.6rem;font-weight:900;color:var(--green-d)}
+.timer.low{color:var(--red)}
+.resl{list-style:none;padding:0;margin:.5rem 0}
+.resl li{display:flex;gap:.6rem;padding:.6rem 0;border-bottom:2px solid #eef3ea;font-weight:700}
+.resl li span{font-size:1.2rem}
+.resl small{display:block;color:var(--muted);font-weight:700;margin-top:.15rem}
+@media print{.hero,.noprint,.top,.who,.copy{display:none!important}details.tp{box-shadow:none;border:1px solid #999;break-inside:avoid}details.tp summary::after{display:none}body::before{display:none}.wrap{margin:0;max-width:none}}
 </style></head><body>
-<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>🧠 Auswendig lernen: Muss-Wissen</h1><p>Die Zahlen, Tabellen und Regeln, die du an der Prüfung Platz- und Wegebau ohne Unterlagen können musst.</p></div>
-<div class="wrap"><div class="chips" style="margin:0 0 .6rem"><span class="chip">L166–L171</span><span class="chip">L174–L177</span></div>
-<div class="tabbar noprint" id="tabs"><button data-t="merk" class="on"><span>📋</span>Merkliste</button><button data-t="drill"><span>🧠</span>Abfragen</button><button data-t="tab"><span>🗂</span>Tabellen</button><button data-t="blitz"><span>⏱</span>Blitz-Check</button></div>
-<div class="card noprint" id="sum"></div>
-<div id="view"><div class="card">Lädt …</div></div>
-<div class="copy">© Tobias Abt, BBZ BL · Quelle: Lehrmittel J5 und Dossier Platz- und Wegebau</div>
-</div>
+<div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>🧠 Auswendig lernen</h1><p>Das Muss-Wissen für die Prüfung Platz- und Wegebau: Zahlen, Tabellen und Regeln.</p><div class="chips"><span class="chip">L166–L177</span></div></div>
+<div class="wrap" id="view"><div class="card">Lädt …</div></div>
+<div class="wrap"><div class="copy">© Tobias Abt, BBZ BL · Quelle: Lehrmittel und Dossier Platz- und Wegebau</div></div>
 <script src="../assets/config.js"></script><script src="../assets/core.js"></script><script src="data.js"></script>
 <script>
-const SLUG='auswendig';const M=window.MW;const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const ITEMS=M.topics.flatMap(t=>t.items.map(i=>Object.assign({topic:t.id,tt:t.title,icon:t.icon},i)));
-let S={box:{},tabs:{},blitzBest:0};let tab='merk',saveT=null;
-const ans=i=>(i.pre||'')+i.a+(i.u?(['°','%'].includes(i.u)?'':' ')+i.u:'');
+const SLUG='auswendig',M=window.MW;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ITEMS=M.topics.flatMap(t=>t.items.map(i=>Object.assign({topic:t.id,tt:t.title,icon:t.icon,hook:t.hook},i)));
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-function pctNow(){const sure=ITEMS.filter(i=>(S.box[i.id]||0)>=2).length;const td=M.tables.filter(t=>S.tabs[t.id]).length;return Math.round(100*(sure+td*3)/(ITEMS.length+M.tables.length*3))}
-function save(extra){clearTimeout(saveT);saveT=setTimeout(()=>{const p=pctNow();try{LA.saveProgress(SLUG,Object.assign({box:S.box,tabs:S.tabs,blitzBest:S.blitzBest,pct:p,progressPct:p,stage:Object.keys(S.tabs).length,stages:M.tables.length},extra||{}))}catch(e){}},300);sum()}
-function sum(){const b=[0,0,0,0];ITEMS.forEach(i=>b[Math.min(3,S.box[i.id]||0)]++);const td=M.tables.filter(t=>S.tabs[t.id]).length;const p=pctNow();
- document.getElementById('sum').innerHTML=`<b>📊 Dein Stand: ${p}%</b><div class="bar"><i style="width:${p}%"></i></div><div class="boxes"><span>⚪ neu ${b[0]}</span><span>🔴 üben ${b[1]}</span><span>🟡 fast ${b[2]}</span><span>🟢 sicher ${b[3]}</span><span>🗂 Tabellen ${td}/${M.tables.length}</span>${S.blitzBest?`<span>⏱ Blitz bestes ${S.blitzBest}%</span>`:''}</div>`}
-function setTab(t){tab=t;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({merk:renderMerk,drill:renderDrillStart,tab:renderTables,blitz:renderBlitzStart})[t]();window.scrollTo({top:0,behavior:'smooth'})}
-document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+const ans=i=>i.t==='num'?(i.pre||'')+String(i.a)+(i.u?(['°','%'].includes(i.u)?'':' ')+i.u:''):i.t==='mc'?i.o[i.a]:i.a;
+const V=document.getElementById('view');
+let S={box:{},tabs:{},blitzBest:0},saveT=null,timer=null;
+function stopTimer(){if(timer){clearInterval(timer);timer=null}}
+function sure(){return ITEMS.filter(i=>(S.box[i.id]||0)>=2).length}
+function pctNow(){const td=M.tables.filter(t=>S.tabs[t.id]).length;return Math.round(100*(sure()+td*3)/(ITEMS.length+M.tables.length*3))}
+function save(extra){clearTimeout(saveT);saveT=setTimeout(()=>{const p=pctNow();try{LA.saveProgress(SLUG,Object.assign({box:S.box,tabs:S.tabs,blitzBest:S.blitzBest,progressPct:p,pct:p,stages:6},extra||{}))}catch(e){}},250)}
+function head(title){return `<div class="top noprint"><button class="btn sec small" data-home>← Übersicht</button><b>${title}</b></div>`}
+function wireHome(){V.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>go(home))}
+function go(fn){stopTimer();fn();window.scrollTo({top:0,behavior:'smooth'})}
+
+/* ---------- Übersicht ---------- */
+function home(){
+ const b=[0,0,0,0];ITEMS.forEach(i=>b[Math.min(3,S.box[i.id]||0)]++);const td=M.tables.filter(t=>S.tabs[t.id]).length;const p=pctNow();
+ V.innerHTML=`<div class="card"><div class="prog"><div class="ringbig" style="--p:${p}"><i>${p}%</i></div><div><b>Dein Stand</b><div class="pills"><span>🟢 sicher ${b[3]+b[2]} von ${ITEMS.length}</span><span>🔴 üben ${b[1]}</span><span>⚪ neu ${b[0]}</span><span>🗂 Tabellen ${td}/${M.tables.length}</span>${S.blitzBest?`<span>⏱ Blitz ${S.blitzBest}%</span>`:''}</div></div></div></div>
+ <div class="grid modes">
+  <button class="app" data-m="merk"><span class="ic">📋</span><b>1. Merkliste</b><small>Alles Muss-Wissen nach Themen, mit Eselsbrücken. Zum Lesen und Drucken.</small><span class="st">${M.topics.length} Themen</span></button>
+  <button class="app" data-m="drill"><span class="ic">🧠</span><b>2. Abfragen</b><small>Zahlen eintippen und Fragen beantworten. Was falsch ist, kommt nochmals.</small><span class="st">${b[3]+b[2]} von ${ITEMS.length} sicher</span></button>
+  <button class="app" data-m="tab"><span class="ic">🗂</span><b>3. Tabellen</b><small>Die wichtigsten Tabellen aus dem Kopf ausfüllen.</small><span class="st">${td} von ${M.tables.length} geschafft</span></button>
+  <button class="app" data-m="blitz"><span class="ic">⏱</span><b>4. Blitz-Check</b><small>12 Fragen in 4 Minuten, wie an der Prüfung. Ziel: 80 %.</small><span class="st">${S.blitzBest?'Bestes: '+S.blitzBest+' %':'Noch nicht gemacht'}</span></button>
+ </div>
+ <div class="card info"><b>So lernst du am besten</b><br>Zuerst die Merkliste lesen. Dann abfragen, bis alles grün ist. Am Schluss die Tabellen und den Blitz-Check. Lieber jeden Tag 20 Minuten als einmal 3 Stunden.</div>`;
+ V.querySelectorAll('[data-m]').forEach(x=>x.onclick=()=>go({merk:merk,drill:drillStart,tab:tables,blitz:blitzStart}[x.dataset.m]))}
 
 /* ---------- Merkliste ---------- */
-function renderMerk(){
- document.getElementById('view').innerHTML=`<div class="card info noprint"><b>So lernst du am besten</b><br>1. Lies ein Thema und die Eselsbrücke. 2. Deck die Liste ab und sag die Werte laut. 3. Wechsle zu «Abfragen» und prüf dich. Was falsch ist, kommt öfter dran.<div style="margin-top:.5rem"><button class="btn small sec" onclick="window.print()">🖨 Merkliste drucken</button></div></div>`+
- M.topics.map(t=>{const n=t.items.length,s=t.items.filter(i=>(S.box[i.id]||0)>=2).length;return `<div class="card topic"><div class="small">${esc(t.lz)} · ${s}/${n} sicher</div><h3>${t.icon} ${esc(t.title)}</h3><div class="hook">💡 ${esc(t.hook)}</div><ul class="facts">${t.facts.map(f=>`<li>${esc(f)}</li>`).join('')}</ul><button class="btn small noprint" data-go="${t.id}">🧠 Dieses Thema abfragen</button></div>`}).join('');
- document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{sel=new Set([b.dataset.go]);tab='drill';document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.t==='drill'));startDrill()})}
+function merk(){
+ V.innerHTML=head('📋 Merkliste')+`<div class="card info noprint">Tippe auf ein Thema. Lies die Eselsbrücke, deck die Liste ab und sag die Werte laut.<div class="row2" style="margin-top:.5rem"><button class="btn small sec" id="openall">Alle öffnen</button><button class="btn small sec" id="print">🖨 Drucken</button></div></div>`+
+ M.topics.map(t=>{const n=t.items.length,s=t.items.filter(i=>(S.box[i.id]||0)>=2).length;
+  return `<details class="tp"><summary><span class="ic">${t.icon}</span><span class="tt">${esc(t.title)}<br><small style="color:var(--muted);font-weight:700">${esc(t.lz)}</small></span><span class="cnt">${s}/${n}</span></summary><div class="in"><div class="hook">💡 ${esc(t.hook)}</div><ul class="facts">${t.facts.map(f=>`<li>${esc(f)}</li>`).join('')}</ul><button class="btn noprint" data-q="${t.id}">🧠 Dieses Thema abfragen</button></div></details>`}).join('');
+ wireHome();
+ const oa=document.getElementById('openall');
+ oa.onclick=()=>{const all=[...V.querySelectorAll('details.tp')],open=!all.every(d=>d.open);all.forEach(d=>d.open=open);oa.textContent=open?'Alle schliessen':'Alle öffnen'};
+ document.getElementById('print').onclick=()=>{V.querySelectorAll('details.tp').forEach(d=>d.open=true);setTimeout(()=>window.print(),100)};
+ V.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{sel=new Set([b.dataset.q]);go(startDrill)})}
 
-/* ---------- Abfragen (Lernbox) ---------- */
-let sel=new Set(M.topics.map(t=>t.id)),queue=[],cur=null,answered=false,round={ok:0,no:0};
-function renderDrillStart(){
- document.getElementById('view').innerHTML=`<div class="card"><b>Welche Themen willst du abfragen?</b><div class="pick">${M.topics.map(t=>`<button data-p="${t.id}" class="${sel.has(t.id)?'on':''}">${t.icon} ${esc(t.title)}</button>`).join('')}</div>
- <div class="pick"><button id="all">Alle</button><button id="none">Keine</button></div><div class="small">Neue und falsche Fragen kommen zuerst. Richtig = eine Box höher. Falsch = zurück in Box 1 und die Frage kommt in dieser Runde nochmals.</div><button class="btn" id="go">▶ Abfragen starten</button></div>`;
- document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const id=b.dataset.p;sel.has(id)?sel.delete(id):sel.add(id);b.classList.toggle('on')});
- document.getElementById('all').onclick=()=>{sel=new Set(M.topics.map(t=>t.id));renderDrillStart()};document.getElementById('none').onclick=()=>{sel=new Set();renderDrillStart()};
- document.getElementById('go').onclick=()=>{if(!sel.size){alertBox('Wähle mindestens ein Thema.');return}startDrill()}}
-function alertBox(t){const v=document.getElementById('view');v.insertAdjacentHTML('afterbegin',`<div class="msg err">${esc(t)}</div>`)}
-function startDrill(){const L=ITEMS.filter(i=>sel.has(i.topic));
- queue=shuffle(L).sort((a,b)=>(S.box[a.id]||0)-(S.box[b.id]||0)).slice(0,15);round={ok:0,no:0,total:queue.length};nextQ()}
-function nextQ(){cur=queue.shift();answered=false;if(!cur){renderRoundEnd();return}renderQ()}
-function renderQ(){const i=cur,b=S.box[i.id]||0;let body='';
- if(i.t==='num')body=`<div class="pre">${i.pre?`<b>${esc(i.pre)}</b>`:''}<input class="num" id="in" inputmode="decimal" autocomplete="off" placeholder="Zahl eingeben"><span class="u">${esc(i.u||'')}</span></div><button class="btn" id="chk">Prüfen</button>`;
- else if(i.t==='mc'){const ord=shuffle(i.o.map((o,k)=>k));body=ord.map((k,n)=>`<button class="opt" data-k="${k}"><span class="k">${'ABCD'[n]}</span>${esc(i.o[k])}</button>`).join('')}
- else body=`<div class="small">Sag die Antwort laut oder schreib sie auf. Dann aufdecken und ehrlich bewerten.</div><button class="btn" id="show">Antwort aufdecken</button>`;
- document.getElementById('view').innerHTML=`<div class="card"><div class="small">${i.icon} ${esc(i.tt)} · Box ${b} · noch ${queue.length} Fragen</div><div class="q">${esc(i.q)}</div><div id="ar">${body}</div><div id="fb"></div></div>`;
- if(i.t==='num'){const inp=document.getElementById('in');inp.focus();const go=()=>checkNum(inp.value);document.getElementById('chk').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()}}
- else if(i.t==='mc')document.querySelectorAll('[data-k]').forEach(x=>x.onclick=()=>{if(answered)return;const k=+x.dataset.k;document.querySelectorAll('[data-k]').forEach(y=>{if(+y.dataset.k===i.a)y.classList.add('ok')});if(k!==i.a)x.classList.add('no');grade(k===i.a,i.o[i.a])});
- else document.getElementById('show').onclick=()=>{document.getElementById('ar').innerHTML=`<div class="why">✅ ${esc(i.a)}</div><div class="cols"><button class="btn warn" id="sn">✗ Nicht gewusst</button><button class="btn" id="sy">✓ Gewusst</button></div>`;document.getElementById('sy').onclick=()=>grade(true,null,true);document.getElementById('sn').onclick=()=>grade(false,null,true)}}
-function parseNum(v){v=String(v).replace(/[±+\s]/g,'').replace(',','.').replace(/[^0-9.\-]/g,'');return v===''?NaN:parseFloat(v)}
-function checkNum(v){if(answered)return;const x=parseNum(v);if(isNaN(x)){document.getElementById('fb').innerHTML='<div class="msg err">Bitte eine Zahl eingeben.</div>';return}
- const ok=Math.abs(x-cur.a)<=Math.max(0.001,Math.abs(cur.a)*0.001);document.getElementById('in').disabled=true;grade(ok,ans(cur))}
-function grade(ok,right,self){answered=true;const i=cur;const b=S.box[i.id]||0;
- if(ok){S.box[i.id]=Math.min(3,b+1);round.ok++}else{S.box[i.id]=1;round.no++;queue.splice(Math.min(3,queue.length),0,i)}
+/* ---------- Abfragen ---------- */
+let sel=new Set(M.topics.map(t=>t.id)),R=null;
+function drillStart(){
+ V.innerHTML=head('🧠 Abfragen')+`<div class="card"><b>Welche Themen willst du abfragen?</b><div class="pickgrid">${M.topics.map(t=>{const s=t.items.filter(i=>(S.box[i.id]||0)>=2).length;return `<button data-p="${t.id}" class="${sel.has(t.id)?'on':''}"><span>${t.icon}</span><span>${esc(t.title)}<br><small style="color:var(--muted)">${s}/${t.items.length} sicher</small></span><span class="ck">${sel.has(t.id)?'✓':''}</span></button>`}).join('')}</div>
+ <div class="row2"><button class="btn small sec" id="all">Alle wählen</button><button class="btn small sec" id="none">Keine</button></div>
+ <div class="small" style="margin:.6rem 0">Eine Runde hat bis zu 15 Fragen. Neue und falsche Fragen kommen zuerst. Was du falsch hast, kommt am Schluss der Runde nochmals.</div><div id="warn"></div><button class="btn" id="start">▶ Runde starten</button></div>`;
+ wireHome();
+ V.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const id=b.dataset.p;sel.has(id)?sel.delete(id):sel.add(id);b.classList.toggle('on',sel.has(id));b.querySelector('.ck').textContent=sel.has(id)?'✓':''});
+ document.getElementById('all').onclick=()=>{sel=new Set(M.topics.map(t=>t.id));drillStart()};
+ document.getElementById('none').onclick=()=>{sel=new Set();drillStart()};
+ document.getElementById('start').onclick=()=>{if(!sel.size){document.getElementById('warn').innerHTML='<div class="msg err">Wähle mindestens ein Thema.</div>';return}go(startDrill)}}
+function startDrill(){
+ const L=shuffle(ITEMS.filter(i=>sel.has(i.topic))).sort((a,b)=>(S.box[a.id]||0)-(S.box[b.id]||0)).slice(0,15);
+ R={q:L,pos:0,ok:0,no:0,again:[],repeated:new Set(),wrong:[]};drillQ()}
+function drillQ(){
+ if(R.pos>=R.q.length&&R.again.length){R.q=R.q.concat(R.again);R.again=[]}
+ if(R.pos>=R.q.length){drillEnd();return}
+ const i=R.q[R.pos],b=S.box[i.id]||0,done=R.pos,total=R.q.length+R.again.length;
+ let body='';
+ if(i.t==='num')body=`<div class="ansrow">${i.pre?`<span class="pre">${esc(i.pre)}</span>`:''}<input id="in" type="text" inputmode="decimal" autocomplete="off" placeholder="Zahl"><span class="unit">${esc(i.u||'')}</span></div><div id="fb"></div><button class="btn" id="act">Prüfen</button>`;
+ else if(i.t==='mc')body=shuffle(i.o.map((o,k)=>k)).map((k,n)=>`<button class="opt" data-k="${k}"><span class="k">${'ABCD'[n]}</span>${esc(i.o[k])}</button>`).join('')+`<div id="fb"></div>`;
+ else body=`<div class="small">Sag die Antwort laut oder schreib sie auf. Dann deck sie auf und bewerte dich ehrlich.</div><div id="fb"></div><button class="btn" id="act">Antwort aufdecken</button>`;
+ V.innerHTML=head('🧠 Abfragen')+`<div class="card"><div class="bar"><i style="width:${Math.round(100*done/total)}%"></i></div><div class="meta"><span>Frage ${done+1} von ${total}${R.repeated.has(i.id)?' · Wiederholung':''}</span><span>${['⚪ neu','🔴 üben','🟡 fast','🟢 sicher'][Math.min(3,b)]}</span></div><div class="small">${i.icon} ${esc(i.tt)}</div><div class="q">${esc(i.q)}</div>${body}</div>`;
+ wireHome();R.answered=false;
+ if(i.t==='num'){const inp=document.getElementById('in');setTimeout(()=>inp.focus(),50);
+  const check=()=>{if(R.answered)return;const x=parseNum(inp.value);if(isNaN(x)){document.getElementById('fb').innerHTML='<div class="msg err">Bitte eine Zahl eingeben.</div>';return}
+   const ok=near(x,i.a);inp.disabled=true;inp.classList.add(ok?'ok':'no');result(ok)};
+  document.getElementById('act').onclick=check;inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();check()}}}
+ else if(i.t==='mc')V.querySelectorAll('[data-k]').forEach(x=>x.onclick=()=>{if(R.answered)return;const k=+x.dataset.k;V.querySelectorAll('[data-k]').forEach(y=>{y.disabled=true;if(+y.dataset.k===i.a)y.classList.add('ok')});if(k!==i.a)x.classList.add('no');result(k===i.a)});
+ else document.getElementById('act').onclick=()=>{const fb=document.getElementById('fb');document.getElementById('act').remove();
+  fb.innerHTML=`<div class="selfans">✅ ${esc(i.a)}</div><div class="row2"><button class="btn warn" id="sn">✗ Nicht gewusst</button><button class="btn" id="sy">✓ Gewusst</button></div>`;
+  document.getElementById('sy').onclick=()=>result(true,true);document.getElementById('sn').onclick=()=>result(false,true)}}
+function parseNum(v){v=String(v).replace(/[±+\s']/g,'').replace(',','.').replace(/[^0-9.\-]/g,'');return v===''||v==='.'||v==='-'?NaN:parseFloat(v)}
+function near(x,a){return Math.abs(x-a)<=Math.max(0.0001,Math.abs(a)*0.002)}
+function result(ok,self){if(R.answered)return;R.answered=true;const i=R.q[R.pos],b=S.box[i.id]||0;
+ if(ok){S.box[i.id]=Math.min(3,b+1);R.ok++}else{S.box[i.id]=1;R.no++;if(!R.wrong.includes(i))R.wrong.push(i);if(!R.repeated.has(i.id)){R.repeated.add(i.id);R.again.push(i)}}
  save();const fb=document.getElementById('fb');
- fb.innerHTML=(self?'':`<div class="msg ${ok?'ok':'err'}">${ok?'✓ Richtig!':'✗ Leider falsch.'} ${right&&!ok?'Richtig ist: <b>'+esc(right)+'</b>':''}</div>`)+`<button class="btn" id="nx">Weiter ▶</button>`;
- if(self)document.getElementById('ar').querySelector('.cols').remove();
- const nx=document.getElementById('nx');nx.onclick=nextQ;nx.focus()}
-function renderRoundEnd(){const t=round.ok+round.no;const p=t?Math.round(100*round.ok/t):0;
- document.getElementById('view').innerHTML=`<div class="card res"><div class="big">${p}%</div><div>${round.ok} richtig, ${round.no} falsch (falsche Fragen kamen nochmals dran)</div><button class="btn" id="again">🔁 Nächste Runde</button><button class="btn sec" id="back">Themen wählen</button></div>`;
- document.getElementById('again').onclick=startDrill;document.getElementById('back').onclick=renderDrillStart}
+ if(self){fb.querySelector('.row2').remove()}
+ fb.innerHTML=(self?fb.innerHTML:`<div class="msg ${ok?'ok':'err'}">${ok?'✓ Richtig!':'✗ Falsch. Richtig ist: <b>'+esc(ans(i))+'</b>'}</div>`)+(ok?'':`<div class="why">💡 ${esc(i.hook)}<br><small>Diese Frage kommt am Schluss der Runde nochmals.</small></div>`)+`<button class="btn" id="nx">Weiter ▶</button>`;
+ if(R.repeated.has(i.id)&&!ok&&!R.again.includes(i)){const w=fb.querySelector('.why small');if(w)w.remove()}
+ const a=document.getElementById('act');if(a)a.remove();
+ const nx=document.getElementById('nx');nx.onclick=()=>{R.pos++;drillQ();window.scrollTo({top:0})};setTimeout(()=>nx.focus({preventScroll:true}),30);
+ nx.scrollIntoView({block:'nearest',behavior:'smooth'})}
+function drillEnd(){const t=R.ok+R.no,p=t?Math.round(100*R.ok/t):0;
+ V.innerHTML=head('🧠 Abfragen')+`<div class="card res"><div class="big">${p}%</div><div><b>${R.ok} richtig, ${R.no} falsch</b></div><div class="small" style="margin:.4rem 0">Jetzt sicher: ${sure()} von ${ITEMS.length} Fragen</div><button class="btn" id="again">🔁 Nächste Runde</button><button class="btn sec" id="pick">Themen ändern</button></div>${R.wrong.length?`<div class="card"><b>Das musst du dir nochmals anschauen</b><ul class="resl">${R.wrong.map(i=>`<li><span>🔴</span><div>${esc(i.q)}<small>Richtig: ${esc(ans(i))}</small></div></li>`).join('')}</ul></div>`:''}`;
+ wireHome();document.getElementById('again').onclick=()=>go(startDrill);document.getElementById('pick').onclick=()=>go(drillStart)}
 
 /* ---------- Tabellen ---------- */
-function renderTables(){
- document.getElementById('view').innerHTML=`<div class="card info">Fülle die Tabellen aus dem Kopf. Wähle in jedem Feld den richtigen Wert und drück «Prüfen». Eine Tabelle ist geschafft, wenn alles grün ist.</div>`+M.tables.map(t=>{
-  const pool=c=>[...new Set(t.rows.map(r=>r[c]))];
-  return `<div class="card" id="${t.id}"><div class="small">${esc(t.lz)} ${S.tabs[t.id]?'· <span class="done">✅ geschafft</span>':''}</div><h3 style="margin:.2rem 0">${esc(t.title)}</h3><table class="tt"><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${t.rows.map((r,ri)=>`<tr>${r.map((v,c)=>t.ask.includes(c)?`<td><select data-r="${ri}" data-c="${c}"><option value="">?</option>${shuffle(pool(c)).map(o=>`<option>${esc(o)}</option>`).join('')}</select></td>`:`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table><div class="cols"><button class="btn sec small" data-reset="${t.id}" style="width:100%">↺ Leeren</button><button class="btn small" data-chk="${t.id}" style="width:100%">Prüfen</button></div><div class="fb"></div></div>`}).join('');
- document.querySelectorAll('[data-chk]').forEach(b=>b.onclick=()=>{const t=M.tables.find(x=>x.id===b.dataset.chk);const box=document.getElementById(t.id);let ok=0,n=0;
-  box.querySelectorAll('select').forEach(s=>{n++;const good=s.value===t.rows[+s.dataset.r][+s.dataset.c];s.classList.toggle('ok',good);s.classList.toggle('no',!good);if(good)ok++});
-  const fb=box.querySelector('.fb');if(ok===n){S.tabs[t.id]=true;save();fb.innerHTML='<div class="msg ok">✅ Alles richtig! Tabelle geschafft.</div>'}else fb.innerHTML=`<div class="msg err">${ok} von ${n} richtig. Korrigiere die roten Felder.</div>`});
- document.querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>{const box=document.getElementById(b.dataset.reset);box.querySelectorAll('select').forEach(s=>{s.value='';s.className=''});box.querySelector('.fb').innerHTML=''})}
+function tables(){
+ V.innerHTML=head('🗂 Tabellen')+`<div class="card info">Wähle eine Tabelle und fülle sie aus dem Kopf. Geschafft ist sie, wenn alle Felder grün sind.</div><div class="tgrid">${M.tables.map(t=>`<button class="app" data-t="${t.id}"><b>${esc(t.title)}</b><small>${esc(t.lz)} · ${t.rows.length} Zeilen</small><span style="margin-top:auto;font-weight:800;color:${S.tabs[t.id]?'var(--green-d)':'var(--muted)'}">${S.tabs[t.id]?'✅ geschafft':'○ offen'}</span></button>`).join('')}</div>`;
+ wireHome();V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>go(()=>table(b.dataset.t)))}
+function table(id){const t=M.tables.find(x=>x.id===id),P={};t.ask.forEach(c=>P[c]=shuffle([...new Set(t.rows.map(r=>String(r[c])))]));
+ V.innerHTML=`<div class="top noprint"><button class="btn sec small" id="back">← Tabellen</button><b>🗂 ${M.tables.indexOf(t)+1} von ${M.tables.length}</b></div><div class="card"><b style="font-size:1.15rem">${esc(t.title)}</b><div class="small">${esc(t.lz)}</div><table class="fill"><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${t.rows.map((r,ri)=>`<tr>${r.map((v,c)=>t.ask.includes(c)?`<td><select data-r="${ri}" data-c="${c}"><option value="">wählen …</option>${P[c].map(o=>`<option>${esc(o)}</option>`).join('')}</select></td>`:`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table><div id="fb"></div><button class="btn" id="chk">Prüfen</button><div class="row2"><button class="btn sec small" id="rst">↺ Neu mischen</button><button class="btn sec small" id="next">Nächste Tabelle ▶</button></div></div>`;
+ document.getElementById('back').onclick=()=>go(tables);
+ V.querySelectorAll('select').forEach(s=>s.onchange=()=>s.classList.remove('ok','no'));
+ document.getElementById('chk').onclick=()=>{let ok=0,n=0,empty=0;V.querySelectorAll('select').forEach(s=>{n++;if(!s.value)empty++;const g=s.value===String(t.rows[+s.dataset.r][+s.dataset.c]);s.classList.toggle('ok',g);s.classList.toggle('no',!g);if(g)ok++});
+  const fb=document.getElementById('fb');
+  if(ok===n){S.tabs[t.id]=true;save();fb.innerHTML='<div class="msg ok">✅ Alles richtig! Tabelle geschafft.</div>'}
+  else fb.innerHTML=`<div class="msg err">${ok} von ${n} richtig${empty?' · '+empty+' Felder noch leer':''}. Korrigiere die roten Felder.</div>`};
+ document.getElementById('rst').onclick=()=>table(id);
+ document.getElementById('next').onclick=()=>{const k=M.tables.indexOf(t);go(()=>table(M.tables[(k+1)%M.tables.length].id))}}
 
 /* ---------- Blitz-Check ---------- */
-let bq=[],bi=0,bres=[],timer=null,tLeft=0;
-function renderBlitzStart(){document.getElementById('view').innerHTML=`<div class="card"><b>⏱ Blitz-Check: wie an der Prüfung</b><p>12 zufällige Fragen aus allen Themen, 4 Minuten. Kein Zurück, keine Hilfe. Am Schluss siehst du alle Fehler.</p>${S.blitzBest?`<p class="small">Dein bestes Resultat: ${S.blitzBest}%</p>`:''}<button class="btn" id="bs">▶ Start</button></div>`;document.getElementById('bs').onclick=startBlitz}
-function startBlitz(){bq=shuffle(ITEMS.filter(i=>i.t!=='self')).slice(0,12);bi=0;bres=[];tLeft=240;clearInterval(timer);timer=setInterval(()=>{tLeft--;const el=document.getElementById('tm');if(el)el.textContent=fmt(tLeft);if(tLeft<=0){clearInterval(timer);endBlitz()}},1000);showB()}
+let B=null;
+function blitzStart(){V.innerHTML=head('⏱ Blitz-Check')+`<div class="card"><b>Wie an der Prüfung</b><ul class="facts"><li>12 zufällige Fragen aus allen Themen</li><li>4 Minuten Zeit, kein Zurück</li><li>Am Schluss siehst du alle Fehler mit der richtigen Lösung</li></ul>${S.blitzBest?`<div class="msg ok">Dein bestes Resultat: ${S.blitzBest} %</div>`:''}<button class="btn" id="bs">▶ Start</button></div>`;wireHome();document.getElementById('bs').onclick=startBlitz}
 const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
-function showB(){if(bi>=bq.length){clearInterval(timer);endBlitz();return}const i=bq[bi];let body='';
- if(i.t==='num')body=`<div class="pre">${i.pre?`<b>${esc(i.pre)}</b>`:''}<input class="num" id="bin" inputmode="decimal" autocomplete="off"><span class="u">${esc(i.u||'')}</span></div><button class="btn" id="bok">Weiter</button>`;
+function startBlitz(){stopTimer();B={q:shuffle(ITEMS.filter(i=>i.t!=='self')).slice(0,12),i:0,res:[],left:240,over:false};
+ timer=setInterval(()=>{if(!B||B.over){stopTimer();return}B.left--;const el=document.getElementById('tm');if(el){el.textContent=fmt(B.left);el.classList.toggle('low',B.left<=30)}if(B.left<=0)endBlitz()},1000);showB();window.scrollTo({top:0})}
+function showB(){if(B.i>=B.q.length){endBlitz();return}const i=B.q[B.i];let body='';
+ if(i.t==='num')body=`<div class="ansrow">${i.pre?`<span class="pre">${esc(i.pre)}</span>`:''}<input id="bin" type="text" inputmode="decimal" autocomplete="off" placeholder="Zahl"><span class="unit">${esc(i.u||'')}</span></div><button class="btn" id="bok">Weiter ▶</button>`;
  else body=shuffle(i.o.map((o,k)=>k)).map((k,n)=>`<button class="opt" data-b="${k}"><span class="k">${'ABCD'[n]}</span>${esc(i.o[k])}</button>`).join('');
- document.getElementById('view').innerHTML=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span class="small">Frage ${bi+1} von ${bq.length}</span><span class="timer" id="tm">${fmt(tLeft)}</span></div><div class="q">${esc(i.q)}</div>${body}</div>`;
- if(i.t==='num'){const inp=document.getElementById('bin');inp.focus();const go=()=>{const x=parseNum(inp.value);bres.push({i,ok:!isNaN(x)&&Math.abs(x-i.a)<=Math.max(0.001,Math.abs(i.a)*0.001),given:inp.value||'–'});bi++;showB()};document.getElementById('bok').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()}}
- else document.querySelectorAll('[data-b]').forEach(x=>x.onclick=()=>{const k=+x.dataset.b;bres.push({i,ok:k===i.a,given:i.o[k]});bi++;showB()})}
-function endBlitz(){if(document.getElementById('bres'))return;const n=bq.length,ok=bres.filter(r=>r.ok).length,p=Math.round(100*ok/n);
- bres.forEach(r=>{const b=S.box[r.i.id]||0;S.box[r.i.id]=r.ok?Math.min(3,b+1):1});if(p>S.blitzBest)S.blitzBest=p;save({blitzLast:p});
- const miss=bq.slice(bres.length).map(i=>({i,ok:false,given:'(keine Zeit)'}));const all=bres.concat(miss);
- document.getElementById('view').innerHTML=`<div class="card res" id="bres"><div class="big">${p}%</div><div>${ok} von ${n} richtig${miss.length?` · ${miss.length} nicht mehr geschafft`:''}</div><div class="small">${p>=80?'Stark! So kannst du an die Prüfung.':p>=60?'Gut. Übe die roten Fragen nochmals.':'Noch nicht sicher. Lies die Merkliste und frag dich ab.'}</div></div>
- <div class="card"><b>Auswertung</b><table class="t">${all.map(r=>`<tr><td>${r.ok?'✅':'❌'}</td><td>${esc(r.i.q)}<br><span class="small">Richtig: <b>${esc(r.i.t==='num'?ans(r.i):r.i.o[r.i.a])}</b>${r.ok?'':' · Deine Antwort: '+esc(r.given)}</span></td></tr>`).join('')}</table><button class="btn" id="bagain">🔁 Nochmals</button></div>`;
- document.getElementById('bagain').onclick=startBlitz}
+ V.innerHTML=head('⏱ Blitz-Check')+`<div class="card"><div class="bar"><i style="width:${Math.round(100*B.i/B.q.length)}%"></i></div><div class="meta"><span>Frage ${B.i+1} von ${B.q.length}</span><span class="timer${B.left<=30?' low':''}" id="tm">${fmt(B.left)}</span></div><div class="q">${esc(i.q)}</div>${body}</div>`;
+ wireHome();
+ if(i.t==='num'){const inp=document.getElementById('bin');setTimeout(()=>inp.focus(),50);const nx=()=>{const x=parseNum(inp.value);B.res.push({i,ok:!isNaN(x)&&near(x,i.a),given:inp.value||'–'});B.i++;showB()};document.getElementById('bok').onclick=nx;inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();nx()}}}
+ else V.querySelectorAll('[data-b]').forEach(x=>x.onclick=()=>{const k=+x.dataset.b;B.res.push({i,ok:k===i.a,given:i.o[k]});B.i++;showB()})}
+function endBlitz(){if(!B||B.over)return;B.over=true;stopTimer();
+ const n=B.q.length,ok=B.res.filter(r=>r.ok).length,p=Math.round(100*ok/n);
+ B.res.forEach(r=>{const b=S.box[r.i.id]||0;S.box[r.i.id]=r.ok?Math.min(3,b+1):1});if(p>S.blitzBest)S.blitzBest=p;save({blitzLast:p});
+ const all=B.res.concat(B.q.slice(B.res.length).map(i=>({i,ok:false,given:'keine Zeit mehr'})));
+ V.innerHTML=head('⏱ Blitz-Check')+`<div class="card res"><div class="big">${p}%</div><div><b>${ok} von ${n} richtig</b></div><div class="small" style="margin:.4rem 0">${p>=80?'Stark! So kannst du an die Prüfung.':p>=60?'Gut. Übe die roten Fragen nochmals.':'Noch nicht sicher. Lies die Merkliste und frag dich ab.'}</div><button class="btn" id="bagain">🔁 Nochmals</button></div>
+ <div class="card"><b>Auswertung</b><ul class="resl">${all.map(r=>`<li><span>${r.ok?'✅':'❌'}</span><div>${esc(r.i.q)}<small>Richtig: ${esc(ans(r.i))}${r.ok?'':' · Deine Antwort: '+esc(r.given)}</small></div></li>`).join('')}</ul></div>`;
+ wireHome();document.getElementById('bagain').onclick=startBlitz;window.scrollTo({top:0})}
 
-LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));const p=LA.getProgress(SLUG);if(p&&p.data){S.box=p.data.box||{};S.tabs=p.data.tabs||{};S.blitzBest=p.data.blitzBest||0}sum();setTab('merk')});
+LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));const p=LA.getProgress(SLUG);if(p&&p.data){S.box=p.data.box||{};S.tabs=p.data.tabs||{};S.blitzBest=p.data.blitzBest||0}home()});
 </script></body></html>
