@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Entwässerung – Lern-App mit 6 Posten</title>
 <style>
-  :root{--bg:#eaf1f5;--card:#fff;--ink:#1d2b33;--muted:#5a6a73;--green:#2f7a4a;--green-l:#d9efe0;--red:#b04a4a;--red-l:#f7dede;--yel-l:#fff0b8;--blue:#1f6fa8;--blue-d:#174f78;--blue-l:#dcebf6;--line:#cdd9e0}
+  :root{--bg:#eaf1f5;--card:#fff;--ink:#1d2b33;--muted:#5a6a73;--green:#2f7a4a;--green-l:#d9efe0;--red:#b04a4a;--red-l:#f7dede;--yel:#e5b800;--yel-l:#fff0b8;--blue:#1f6fa8;--blue-d:#174f78;--blue-l:#dcebf6;--line:#cdd9e0}
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
-  .wrap{max-width:660px;margin:0 auto;padding:16px 16px 48px}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;-webkit-tap-highlight-color:transparent}
+  .wrap{max-width:680px;margin:0 auto;padding:16px 14px 48px}
   .wrap.wide{max-width:1150px}
   .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
   a.back,.who a{color:var(--blue);text-decoration:none;font-size:.95rem}
@@ -17,15 +17,15 @@
   h1{font-size:1.45rem;margin:.6rem 0 .2rem}
   h2{font-size:1.15rem;margin:0 0 .5rem}
   .sub{color:var(--muted);margin:0 0 1rem}
-  .card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
-  .btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:52px;font-family:inherit}
+  .card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px}
+  .btn{display:block;width:100%;text-align:left;padding:13px 15px;margin:8px 0;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:1rem;color:var(--ink);cursor:pointer;min-height:50px;font-family:inherit}
   .btn:hover{border-color:var(--blue)}
   .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);text-align:center;font-weight:600}
   .btn.secondary{text-align:center;font-weight:600}
   .btn.inline{display:inline-block;width:auto;padding:8px 14px;min-height:42px;margin:4px 4px 4px 0;text-align:center;font-weight:600;font-size:.9rem}
   .btn.ok{background:var(--green-l);border-color:var(--green)}
   .btn.no{background:var(--red-l);border-color:var(--red)}
-  .btn.sel{background:var(--blue-l);border-color:var(--blue)}
+  .btn.half{background:var(--yel-l);border-color:var(--yel)}
   .btn:disabled{cursor:default}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
   .post{background:#fff;border-radius:16px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.07);cursor:pointer;border:2px solid transparent;display:flex;flex-direction:column;gap:6px;min-height:150px}
@@ -37,25 +37,90 @@
   .bar{height:8px;background:#dbe5ea;border-radius:6px;overflow:hidden;margin:6px 0 14px}
   .bar>div{height:100%;background:var(--blue);transition:width .3s}
   .meta{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
-  .tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:20px;background:var(--blue-l);color:var(--blue);margin-right:6px}
-  .q{font-size:1.1rem;font-weight:600;margin:10px 0 6px}
-  .ctx{font-size:.92rem;color:var(--muted);background:#f4f7f9;border-left:3px solid var(--line);padding:8px 10px;border-radius:6px;margin:8px 0}
+  .tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:20px;background:var(--blue-l);color:var(--blue);margin:0 6px 4px 0}
+  .tag.typ{background:#efe7fb;color:#5b3a99}
+  .q{font-size:1.08rem;font-weight:600;margin:8px 0 6px}
+  .ctx{font-size:.92rem;color:#3d4b53;background:#f4f7f9;border-left:3px solid var(--line);padding:8px 10px;border-radius:6px;margin:8px 0}
   .numrow{display:flex;gap:8px;align-items:center;margin:10px 0}
   .numrow input{flex:1;font-size:1.15rem;padding:12px;border:1.5px solid var(--line);border-radius:12px;min-width:0}
   .numrow span{font-weight:600;color:var(--muted)}
   .fb{padding:12px 14px;border-radius:12px;margin-top:10px;font-size:.95rem}
-  .fb.ok{background:var(--green-l)} .fb.no{background:var(--red-l)}
+  .fb.ok{background:var(--green-l)} .fb.no{background:var(--red-l)} .fb.half{background:var(--yel-l)}
   .fb b{display:block;margin-bottom:4px}
+  .fb ul{margin:.3rem 0 0;padding-left:1.2rem}
   .big{font-size:2.6rem;font-weight:700;text-align:center;margin:6px 0}
-  .hidden{display:none}
+  .hidden{display:none !important}
   .small{font-size:.85rem;color:var(--muted)}
-  .chosen{display:flex;flex-direction:column;gap:6px;margin:8px 0;min-height:30px}
-  .chosen div{background:var(--blue-l);border-radius:10px;padding:8px 10px;font-weight:600;font-size:.95rem}
-  .chosen div.okk{background:var(--green-l)} .chosen div.bad{background:var(--red-l)}
   svg.sk{width:100%;height:auto;display:block;margin:6px 0;background:#f8fbfc;border-radius:12px}
   .lvl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
   .lvl .btn{margin:0;text-align:center;font-weight:600}
-  .hint{font-size:.9rem;background:#fff8dc;border-radius:10px;padding:8px 10px;margin-top:8px}
+  .learn{font-size:.95rem}
+  .learn li{margin:.25rem 0}
+  /* Hilfen */
+  .hintbtn{display:inline-block;margin:10px 0 0;padding:8px 12px;border-radius:10px;border:1.5px dashed var(--yel);background:#fffbea;font:inherit;font-weight:600;font-size:.9rem;cursor:pointer}
+  .hint{font-size:.92rem;background:#fff8dc;border-radius:10px;padding:8px 10px;margin-top:8px;border-left:4px solid var(--yel)}
+  /* Bausteine / Drag-and-Drop */
+  .chip{display:inline-block;padding:8px 12px;margin:4px;border-radius:20px;background:#fff;border:1.5px solid var(--blue);color:var(--blue-d);font-weight:600;font-size:.92rem;cursor:grab;user-select:none;touch-action:none;line-height:1.25}
+  .chip.sel{background:var(--blue);color:#fff;box-shadow:0 0 0 3px rgba(31,111,168,.25)}
+  .chip.okc{border-color:var(--green);background:var(--green-l);color:#1f5333}
+  .chip.badc{border-color:var(--red);background:var(--red-l);color:#7a1f1f}
+  .ghost{position:fixed;z-index:100;pointer-events:none;opacity:.9;transform:translate(-50%,-50%) scale(1.05);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+  .bank{min-height:52px;padding:6px;border:2px dashed var(--line);border-radius:12px;background:#f7fafc;margin:8px 0}
+  .bank.over,.slot.over,.bucket.over{border-color:var(--blue);background:#eef6fc}
+  .buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+  .bucket{border:2px solid var(--line);border-radius:12px;padding:6px;min-height:110px;background:#fff}
+  .bucket h4{margin:2px 4px 6px;font-size:.88rem;color:var(--blue-d)}
+  .gaptext{font-size:1rem;line-height:2.4}
+  .slot{display:inline-block;min-width:92px;min-height:38px;vertical-align:middle;border:2px dashed #9fb4c2;border-radius:20px;background:#f7fafc;margin:0 2px;padding:0;text-align:center}
+  .slot .chip{margin:0}
+  .slot.sel{border-color:var(--blue);background:#eef6fc}
+  .lrow{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .lnum{flex:0 0 30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-weight:700;display:grid;place-items:center}
+  .lrow .slot{flex:1;min-height:42px;border-radius:12px;text-align:left;padding:2px}
+  /* Sortieren */
+  .sortlist{list-style:none;margin:8px 0;padding:0}
+  .sortlist li{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:6px 8px;margin:6px 0;min-height:48px}
+  .sortlist li.drag{opacity:.55;border-color:var(--blue)}
+  .sortlist .hd{touch-action:none;cursor:grab;font-size:1.3rem;color:var(--muted);padding:4px 6px}
+  .sortlist .tx{flex:1;font-size:.95rem}
+  .sortlist .ar{display:flex;flex-direction:column}
+  .sortlist .ar button{border:0;background:#eef3f6;border-radius:6px;margin:1px;width:34px;height:22px;cursor:pointer;font-size:.8rem}
+  .sortlist li.okk{background:var(--green-l);border-color:var(--green)} .sortlist li.bad{background:var(--red-l);border-color:var(--red)}
+  /* Paare */
+  .match{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:8px 34px;margin:8px 0}
+  .match .it{position:relative;z-index:2;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:9px 10px;font-size:.92rem;cursor:pointer;min-height:46px;display:flex;align-items:center;touch-action:none;user-select:none}
+  .match .it.sel{border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,111,168,.25)}
+  .match .it.okk{background:var(--green-l)} .match .it.bad{background:var(--red-l)}
+  .match svg{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible}
+  /* Concept-Map */
+  .cmap{position:relative;height:420px;background:#f8fbfc;border:1.5px solid var(--line);border-radius:14px;margin:8px 0;touch-action:none;user-select:none}
+  .cmap .nd{position:absolute;transform:translate(-50%,-50%);background:#fff;border:2px solid var(--blue);border-radius:12px;padding:6px 7px;font-size:.8rem;font-weight:600;text-align:center;width:29%;hyphens:manual;overflow-wrap:anywhere;z-index:2;cursor:pointer;line-height:1.2}
+  .cmap .nd.src{background:#dbe9f6}
+  .cmap .nd.sel{background:var(--blue);color:#fff}
+  .cmap svg{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+  /* Fehlersuche */
+  .ft span.seg{cursor:pointer;border-radius:6px;padding:2px 3px;line-height:2}
+  .ft span.seg:hover{background:#f2f5f7}
+  .ft span.seg.mark{background:var(--red-l);text-decoration:line-through;text-decoration-color:var(--red)}
+  .ft span.seg.okk{background:var(--green-l);text-decoration:none}
+  .ft span.seg.miss{outline:2px dashed var(--red)}
+  .spot{cursor:pointer}
+  /* Simulation */
+  .ctrl{margin:8px 0}
+  .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.92rem}
+  .ctrl input[type=range]{width:100%;height:34px;accent-color:var(--blue)}
+  .opt{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
+  .opt button{flex:1;min-width:90px;font:inherit;font-size:.88rem;font-weight:600;padding:9px 8px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer}
+  .opt button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;margin:6px 0}
+  .readout div{background:#f4f7f9;border-radius:10px;padding:6px 9px;font-size:.85rem}
+  .readout b{display:block;font-size:1.05rem}
+  .readout .warn{background:var(--red-l)} .readout .good{background:var(--green-l)}
+  /* Szenario */
+  .scn{background:#f4f7f9;border-radius:12px;padding:12px;margin:8px 0;font-size:.98rem}
+  .scn .who2{font-weight:700;color:var(--blue-d)}
+  .trail{font-size:.82rem;color:var(--muted);margin:6px 0}
+  .locked .chip,.locked .it,.locked .nd,.locked .spot,.locked .seg,.locked .hd,.locked input[type=range],.locked .opt button,.locked .ar button{pointer-events:none}
   .wrong{font-size:.9rem;border-bottom:1px solid #eef1ef;padding:10px 0}
   .wrong:last-child{border:0}
   .wrong .a{color:var(--green);font-weight:600}
@@ -99,54 +164,34 @@
 
   <div id="loading" class="card">Lädt …</div>
 
-  <!-- Übersicht -->
   <div id="home" class="hidden">
     <div class="card">
       <h2 id="hello"></h2>
-      <p style="margin:.2rem 0 .4rem">Wähle einen Posten. Jede Runde hat neue, zufällige Aufgaben. Ab <b>80 %</b> gilt ein Posten als geschafft ✅. Die App ist eine <b>freiwillige Ergänzung</b> zum Dossier.</p>
+      <p style="margin:.2rem 0 .4rem">Wähle einen Posten. Jede Runde mischt verschiedene Aufgabentypen: Zuordnen, Sortieren, Lückentexte, Grafiken beschriften, Fehlersuche, Simulationen und Fallgeschichten. Bei jeder Aufgabe gibt es 💡 <b>Hilfen auf Abruf</b> (kosten ein paar Punkte). Ab <b>80 %</b> gilt ein Posten als geschafft ✅.</p>
       <div class="bar"><div id="totbar" style="width:0"></div></div>
       <p class="small" id="totline" style="margin:0"></p>
     </div>
     <div class="grid" id="posts"></div>
   </div>
 
-  <!-- Gefälle: Stufenwahl -->
-  <div id="levels" class="hidden">
-    <div class="card">
-      <h2>📐 Gefälle-Trainer</h2>
-      <p style="margin:.2rem 0 .6rem">Jede Runde hat 8 Aufgaben mit neuen Zahlen. Rechne mit Taschenrechner, Lösungen mit Punkt oder Komma.</p>
-      <svg class="sk" viewBox="0 0 560 170" aria-label="Formeln">
-        <polygon points="40,60 520,120 520,140 40,140" fill="#e9d8b8" stroke="#8a6d3b"/>
-        <line x1="40" y1="60" x2="520" y2="120" stroke="#1f6fa8" stroke-width="4"/>
-        <line x1="40" y1="60" x2="520" y2="60" stroke="#999" stroke-dasharray="6 5"/>
-        <line x1="530" y1="60" x2="530" y2="120" stroke="#b04a4a" stroke-width="2"/><text x="536" y="96" fill="#b04a4a" font-size="15" font-weight="700">Δh</text>
-        <line x1="40" y1="155" x2="520" y2="155" stroke="#333"/><text x="250" y="168" font-size="13">Länge L (horizontal)</text>
-        <text x="200" y="80" fill="#1f6fa8" font-size="15" font-weight="700" transform="rotate(7 200 80)">Gefälle p in %</text>
-        <text x="40" y="28" font-size="16" font-weight="700">p = Δh : L × 100   ·   Δh = L × p : 100   ·   L = Δh × 100 : p</text>
-      </svg>
-      <div class="lvl" id="lvlBtns"></div>
-      <p class="small" style="margin-top:10px">Achte auf die Einheiten: Δh in cm umrechnen → m (12 cm = 0.12 m).</p>
-    </div>
-    <button class="btn secondary" onclick="go('')">← Zur Übersicht</button>
-  </div>
+  <div id="intro" class="hidden"></div>
 
-  <!-- Quiz -->
   <div id="quiz" class="hidden">
     <div class="meta"><span id="pos"></span><span id="score"></span></div>
     <div class="bar"><div id="prog"></div></div>
-    <div class="card">
-      <span class="tag" id="tagP"></span><span class="tag" id="tagT"></span>
-      <div id="sketch"></div>
-      <div class="ctx hidden" id="ctx"></div>
+    <div class="card" id="qcard">
+      <span class="tag" id="tagP"></span><span class="tag typ" id="tagT"></span>
       <div class="q" id="qtext"></div>
+      <div class="ctx hidden" id="ctx"></div>
       <div id="answers"></div>
+      <div id="hintbox"></div>
+      <button class="btn primary hidden" id="chk">Prüfen</button>
       <div id="feedback"></div>
       <button class="btn primary hidden" id="next">Weiter</button>
     </div>
     <button class="btn secondary" id="abort">Runde abbrechen</button>
   </div>
 
-  <!-- Resultat -->
   <div id="result" class="hidden">
     <div class="card">
       <div class="big" id="pct"></div>
@@ -172,375 +217,868 @@ const shuffle=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(M
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const f2=(n,d=2)=>Number(n).toFixed(d);
+const el=(h)=>{const t=document.createElement("template");t.innerHTML=h.trim();return t.content.firstElementChild;};
+const TYPNAME={mc:"Auswahl",num:"Rechnen",sort:"Sortieren",cat:"Zuordnen",gap:"Lückentext",label:"Grafik beschriften",match:"Paare verknüpfen",
+ cmap:"Concept-Map",hot:"Fehlersuche im Bild",ftext:"Fehlersuche im Text",sim:"Simulation",branch:"Fallgeschichte"};
+const HINTF=[1,0.85,0.7,0.55];
 
-/* ======================= SVG-Skizzen (eigene Grafiken) ======================= */
-const SVG={
- grabenU:`<svg class="sk" viewBox="0 0 300 170"><rect x="0" y="40" width="300" height="130" fill="#e3d2b0"/><rect x="110" y="40" width="80" height="120" fill="#f8fbfc"/>
-  <rect x="104" y="30" width="6" height="110" fill="#d9a900"/><rect x="190" y="30" width="6" height="110" fill="#d9a900"/>
-  <line x1="110" y1="65" x2="190" y2="65" stroke="#666" stroke-width="5"/><line x1="110" y1="110" x2="190" y2="110" stroke="#666" stroke-width="5"/>
-  <circle cx="150" cy="145" r="12" fill="#fff" stroke="#333" stroke-width="2"/><path d="M10 40 L40 18 L70 40Z" fill="#a98b5a"/>
-  <text x="5" y="14" font-size="12">Aushub</text><text x="120" y="22" font-size="12" font-weight="700">U-Graben</text></svg>`,
- grabenV:`<svg class="sk" viewBox="0 0 300 170"><polygon points="0,40 300,40 300,170 0,170" fill="#e3d2b0"/><polygon points="70,40 230,40 180,160 120,160" fill="#f8fbfc"/>
-  <circle cx="150" cy="146" r="12" fill="#fff" stroke="#333" stroke-width="2"/><path d="M0 40 L15 22 L30 40Z" fill="#a98b5a"/>
-  <text x="120" y="22" font-size="12" font-weight="700">V-Graben</text><text x="200" y="100" font-size="12">Böschung</text></svg>`,
- deckel:(t)=>{const holes=t==="gelocht"?Array.from({length:19},(_,i)=>{const a=i/19*6.28,r=i%2?22:38;return `<circle cx="${60+r*Math.cos(a)}" cy="${60+r*Math.sin(a)}" r="4" fill="#333"/>`}).join("")+'<circle cx="60" cy="60" r="4" fill="#333"/>'
-   :t==="geschlitzt"?[30,42,54,66,78,90].map(y=>`<path d="M30 ${y} q15 -6 30 0 t30 0" stroke="#333" stroke-width="5" fill="none"/>`).join(""):'<rect x="45" y="55" width="30" height="8" fill="#555"/>';
-   return `<svg viewBox="0 0 120 120" width="110"><circle cx="60" cy="60" r="56" fill="#8a8f93" stroke="#555" stroke-width="3"/>${holes}</svg>`},
- slope:(L,dh,p,unk,label)=>{const pn=parseFloat(p);const y2=40+Math.min(70,Math.max(18,(isNaN(pn)?3:pn)*6));
-  const t=(k,v)=>unk===k?"?":v;
-  return `<svg class="sk" viewBox="0 0 560 160"><polygon points="40,40 520,${y2} 520,140 40,140" fill="#e9d8b8" stroke="#8a6d3b"/>
-   <line x1="40" y1="40" x2="520" y2="${y2}" stroke="#1f6fa8" stroke-width="4"/><line x1="40" y1="40" x2="520" y2="40" stroke="#999" stroke-dasharray="6 5"/>
-   <line x1="530" y1="40" x2="530" y2="${y2}" stroke="#b04a4a" stroke-width="2"/><text x="536" y="${(40+y2)/2+5}" fill="#b04a4a" font-size="15" font-weight="700">Δh ${t("dh",dh)}</text>
-   <line x1="40" y1="152" x2="520" y2="152" stroke="#333"/><text x="230" y="150" font-size="14" font-weight="700">L ${t("L",L)}</text>
-   <text x="170" y="${30+(y2-40)*0.3}" fill="#1f6fa8" font-size="15" font-weight="700">p ${t("p",p)}</text>
-   ${label?`<text x="40" y="22" font-size="13">${label}</text>`:""}</svg>`},
- konzept:`<svg class="sk" viewBox="0 0 560 90"><g font-size="12" font-weight="700" text-anchor="middle">
-  <rect x="5" y="25" width="90" height="40" rx="8" fill="#eceff1" stroke="#333"/><text x="50" y="50">Fallrohr</text>
-  <rect x="120" y="25" width="90" height="40" rx="8" fill="#fff3c4" stroke="#333"/><text x="165" y="50">?</text>
-  <rect x="235" y="25" width="90" height="40" rx="8" fill="#dbe9f6" stroke="#333"/><text x="280" y="50">?</text>
-  <rect x="350" y="25" width="90" height="40" rx="8" fill="#cfe2f3" stroke="#333"/><text x="395" y="50">?</text>
-  <rect x="465" y="25" width="90" height="40" rx="8" fill="#eceff1" stroke="#333"/><text x="510" y="50">?</text></g>
-  <g stroke="#1f6fa8" stroke-width="3"><line x1="95" y1="45" x2="118" y2="45"/><line x1="210" y1="45" x2="233" y2="45"/><line x1="325" y1="45" x2="348" y2="45"/><line x1="440" y1="45" x2="463" y2="45"/></g></svg>`
-};
+/* ================= Drag & Drop für Bausteine (Maus und Touch) ================= */
+function Place(root,opt){
+ opt=opt||{};let sel=null;const P={};
+ const chips=()=>[...root.querySelectorAll(".chip")];
+ const bank=root.querySelector(".bank");
+ const slotOf=c=>c.parentElement.closest("[data-s]");
+ function clearSel(){if(sel)sel.classList.remove("sel");sel=null;root.querySelectorAll(".slot.sel").forEach(s=>s.classList.remove("sel"));}
+ function holder(t){return t.querySelector(".drop")||t;}
+ function move(chip,target){
+  if(!target)return;
+  if(target.dataset.single){const old=holder(target).querySelector(".chip");if(old&&old!==chip)bank.appendChild(old);}
+  holder(target).appendChild(chip);clearSel();opt.onChange&&opt.onChange();
+ }
+ P.move=move;
+ function tapChip(c){if(sel===c){clearSel();return;}clearSel();sel=c;c.classList.add("sel");}
+ function tapTarget(t){
+  if(sel){move(sel,t);return;}
+  if(t.dataset.single){const c=holder(t).querySelector(".chip");if(c){bank.appendChild(c);opt.onChange&&opt.onChange();}}
+ }
+ root.addEventListener("click",e=>{
+  if(root.closest(".locked"))return;
+  if(e.target.closest(".chip"))return;
+  const t=e.target.closest("[data-s]")||e.target.closest(".bank");
+  if(t){if(t.classList.contains("bank")){if(sel){bank.appendChild(sel);clearSel();opt.onChange&&opt.onChange();}}else tapTarget(t);}
+ });
+ let drag=null;
+ root.addEventListener("pointerdown",e=>{
+  const c=e.target.closest(".chip");if(!c||root.closest(".locked"))return;
+  e.preventDefault();drag={c,x:e.clientX,y:e.clientY,on:false,g:null,over:null};
+  c.setPointerCapture&&c.setPointerCapture(e.pointerId);
+ });
+ root.addEventListener("pointermove",e=>{
+  if(!drag)return;const d=Math.hypot(e.clientX-drag.x,e.clientY-drag.y);
+  if(!drag.on&&d>6){drag.on=true;drag.g=drag.c.cloneNode(true);drag.g.classList.add("ghost");document.body.appendChild(drag.g);drag.c.style.opacity=".35";}
+  if(drag.on){drag.g.style.left=e.clientX+"px";drag.g.style.top=e.clientY+"px";
+   const u=document.elementFromPoint(e.clientX,e.clientY);const t=u&&(u.closest("[data-s]")||u.closest(".bank"));
+   if(drag.over&&drag.over!==t)drag.over.classList.remove("over");if(t&&root.contains(t)){t.classList.add("over");drag.over=t;}else drag.over=null;}
+ });
+ const end=e=>{
+  if(!drag)return;const D=drag;drag=null;
+  if(D.on){D.g.remove();D.c.style.opacity="";if(D.over)D.over.classList.remove("over");
+   const u=document.elementFromPoint(e.clientX,e.clientY);const t=u&&(u.closest("[data-s]")||u.closest(".bank"));
+   if(t&&root.contains(t)){if(t.classList.contains("bank")){bank.appendChild(D.c);clearSel();opt.onChange&&opt.onChange();}else move(D.c,t);}
+  }else tapChip(D.c);
+ };
+ root.addEventListener("pointerup",end);root.addEventListener("pointercancel",e=>{if(drag){if(drag.g)drag.g.remove();drag.c.style.opacity="";drag=null;}});
+ P.where=()=>{const m={};chips().forEach(c=>{const s=slotOf(c);m[c.dataset.c]=s?s.dataset.s:null;});return m;};
+ return P;
+}
+const chipHTML=(t,k)=>`<span class="chip" data-c="${k}">${esc(t)}</span>`;
 
-/* ======================= Fragenpools ======================= */
-const mc=(id,q,o,a,ex,extra)=>Object.assign({id,t:"mc",q,o,a,ex},extra||{});
-const num=(id,q,ans,unit,ex,tol,extra)=>Object.assign({id,t:"num",q,ans,unit,ex,tol:tol==null?0.01:tol},extra||{});
-const ord=(id,q,items,ex,extra)=>Object.assign({id,t:"ord",q,items,ex},extra||{});
+/* ================= Aufgabentypen ================= */
+const T={};
+T.mc={check:false,build(q,A,done){
+ const perm=shuffle(q.o.map((_,k)=>k));
+ A.innerHTML=(q.svg||"")+perm.map(k=>`<button class="btn" data-k="${k}">${q.oh?q.oh[k]:esc(q.o[k])}</button>`).join("");
+ A.querySelectorAll("button[data-k]").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;
+  A.querySelectorAll("button[data-k]").forEach(x=>{x.disabled=true;const kk=+x.dataset.k;if(kk===q.a)x.classList.add("ok");else if(kk===k)x.classList.add("no");});
+  done({frac:k===q.a?1:0,given:q.o[k],right:q.o[q.a]});});
+}};
+T.num={build(q,A){
+ A.innerHTML=(q.svg||"")+`<div class="numrow"><input id="inp" inputmode="decimal" autocomplete="off" placeholder="Resultat"><span>${esc(q.unit)}</span></div>`;
+ setTimeout(()=>{const i=$("inp");if(i)i.onkeydown=e=>{if(e.key==="Enter")$("chk").click()};},10);
+ return{check(){const s=$("inp").value.trim().replace(/\s|'/g,"").replace(",",".");
+  if(!/^-?\d*\.?\d+$/.test(s))return{retry:"Bitte eine Zahl eingeben (z. B. 2.5)."};
+  const v=parseFloat(s);$("inp").disabled=true;
+  const d=q.dec!=null?q.dec:(Math.abs(q.ans%1)<1e-9?0:2);
+  return{frac:Math.abs(v-q.ans)<=q.tol+1e-9?1:0,given:v+" "+q.unit,right:(+q.ans.toFixed(d))+" "+q.unit};}};
+}};
+T.sort={build(q,A){
+ let order=shuffle(q.items.map((_,k)=>k));if(order.every((k,n)=>k===n))order.reverse();
+ A.innerHTML=(q.svg||"")+`<p class="small">${esc(q.dir||"Ziehe die Karten am Griff ☰ in die richtige Reihenfolge (oder nutze ▲▼).")}</p><ol class="sortlist" id="sl">`+
+  order.map(k=>`<li data-k="${k}"><span class="hd">☰</span><span class="tx">${esc(q.items[k])}</span><span class="ar"><button data-m="-1">▲</button><button data-m="1">▼</button></span></li>`).join("")+`</ol>`;
+ const L=A.querySelector("#sl");
+ L.addEventListener("click",e=>{const b=e.target.closest("button[data-m]");if(!b)return;const li=b.closest("li");
+  if(b.dataset.m==="-1"&&li.previousElementSibling)L.insertBefore(li,li.previousElementSibling);
+  if(b.dataset.m==="1"&&li.nextElementSibling)L.insertBefore(li.nextElementSibling,li);});
+ let dr=null;
+ L.addEventListener("pointerdown",e=>{const h=e.target.closest(".hd");if(!h)return;e.preventDefault();dr=h.closest("li");dr.classList.add("drag");h.setPointerCapture&&h.setPointerCapture(e.pointerId);});
+ L.addEventListener("pointermove",e=>{if(!dr)return;
+  const items=[...L.children].filter(x=>x!==dr);
+  for(const it of items){const r=it.getBoundingClientRect();if(e.clientY>r.top&&e.clientY<r.bottom){
+   if(e.clientY<r.top+r.height/2)L.insertBefore(dr,it);else L.insertBefore(dr,it.nextSibling);break;}}});
+ const end=()=>{if(dr){dr.classList.remove("drag");dr=null;}};
+ L.addEventListener("pointerup",end);L.addEventListener("pointercancel",end);
+ return{check(){const cur=[...L.children].map(li=>+li.dataset.k);let ok=0;
+  [...L.children].forEach((li,n)=>{const g=+li.dataset.k===n;li.classList.add(g?"okk":"bad");if(g)ok++;});
+  return{frac:ok/q.items.length,given:cur.map(k=>q.items[k]).join(" → "),right:q.items.join(" → "),detail:`${ok} von ${q.items.length} am richtigen Platz.`};}};
+}};
+T.cat={build(q,A){
+ const chips=shuffle(q.chips.map((c,k)=>({t:c[0],b:c[1],k})));
+ A.innerHTML=(q.svg||"")+`<p class="small">Ziehe jeden Baustein in die passende Gruppe – oder tippe zuerst den Baustein und dann die Gruppe an.</p>
+  <div class="bank">${chips.map(c=>chipHTML(c.t,c.k)).join("")}</div>
+  <div class="buckets">${q.buckets.map((b,i)=>`<div class="bucket" data-s="${i}"><h4>${esc(b)}</h4><div class="drop"></div></div>`).join("")}</div>`;
+ const P=Place(A);
+ return{check(){const W=P.where();let ok=0;const wr=[];
+  q.chips.forEach((c,k)=>{const ch=A.querySelector(`.chip[data-c="${k}"]`);const g=W[k]!=null&&+W[k]===c[1];
+   ch.classList.add(g?"okc":"badc");if(g)ok++;else wr.push(`${c[0]} → ${q.buckets[c[1]]}`);});
+  return{frac:ok/q.chips.length,given:`${ok}/${q.chips.length} richtig`,right:wr.join("; "),detail:`${ok} von ${q.chips.length} richtig zugeordnet.`+(wr.length?`<ul>${wr.map(w=>"<li>"+esc(w)+"</li>").join("")}</ul>`:"")};}};
+}};
+T.gap={build(q,A){
+ const parts=q.text.split(/\[\[(.+?)\]\]/);const ans=[];let h="";
+ parts.forEach((p,i)=>{if(i%2){ans.push(p);h+=`<span class="slot" data-s="${ans.length-1}" data-single="1"></span>`;}else h+=esc(p);});
+ const bankItems=shuffle(ans.map((t,k)=>({t,k:"a"+k})).concat((q.extra||[]).map((t,k)=>({t,k:"x"+k}))));
+ A.innerHTML=`<p class="small">Ziehe die Bausteine in die Lücken – oder tippe zuerst einen Baustein und dann die Lücke an.</p><div class="bank">${bankItems.map(b=>chipHTML(b.t,b.k)).join("")}</div><div class="gaptext">${h}</div>`;
+ const P=Place(A);
+ return{check(){let ok=0;const wr=[];
+  ans.forEach((a,k)=>{const s=A.querySelector(`.slot[data-s="${k}"]`);const c=s.querySelector(".chip");const g=c&&c.textContent===a;
+   if(c)c.classList.add(g?"okc":"badc");else s.style.borderColor="var(--red)";if(g)ok++;else wr.push(`Lücke ${k+1}: ${a}`);});
+  return{frac:ok/ans.length,given:`${ok}/${ans.length}`,right:wr.join("; "),detail:`${ok} von ${ans.length} Lücken richtig.`+(wr.length?`<ul>${wr.map(w=>"<li>"+esc(w)+"</li>").join("")}</ul>`:"")};}};
+}};
+T.label={build(q,A){
+ const bankItems=shuffle(q.labels.map((t,k)=>({t,k:"a"+k})).concat((q.extra||[]).map((t,k)=>({t,k:"x"+k}))));
+ A.innerHTML=q.svg+`<p class="small">Ziehe die Begriffe zu den Nummern – oder tippe zuerst den Begriff und dann das Feld an.</p><div class="bank">${bankItems.map(b=>chipHTML(b.t,b.k)).join("")}</div>`+
+  q.labels.map((_,k)=>`<div class="lrow"><span class="lnum">${k+1}</span><span class="slot" data-s="${k}" data-single="1"></span></div>`).join("");
+ const P=Place(A);
+ return{check(){let ok=0;const wr=[];
+  q.labels.forEach((a,k)=>{const s=A.querySelector(`.slot[data-s="${k}"]`);const c=s.querySelector(".chip");const g=c&&c.textContent===a;
+   if(c)c.classList.add(g?"okc":"badc");else s.style.borderColor="var(--red)";if(g)ok++;else wr.push(`${k+1} = ${a}`);});
+  return{frac:ok/q.labels.length,given:`${ok}/${q.labels.length}`,right:wr.join("; "),detail:`${ok} von ${q.labels.length} richtig beschriftet.`+(wr.length?`<ul>${wr.map(w=>"<li>"+esc(w)+"</li>").join("")}</ul>`:"")};}};
+}};
+const PAL=["#1f6fa8","#2f7a4a","#b5651d","#7b3fa0","#c0392b","#0f8a8a","#8a6d00"];
+T.match={build(q,A){
+ const R=shuffle(q.pairs.map((p,k)=>({t:p[1],k})));
+ A.innerHTML=`<p class="small">Verbinde jedes Element links mit dem passenden rechts: antippen und dann rechts antippen – oder mit dem Finger hinüberziehen.</p>
+  <div class="match" id="mt"><svg></svg>${q.pairs.map((p,k)=>`<div class="it L" data-k="${k}" style="grid-column:1;grid-row:${k+1}">${esc(p[0])}</div>`).join("")}
+  ${R.map((r,n)=>`<div class="it R" data-k="${r.k}" style="grid-column:2;grid-row:${n+1}">${esc(r.t)}</div>`).join("")}</div>`;
+ const M=A.querySelector("#mt"),S=M.querySelector("svg");const pairs={};let sel=null,tmp=null;
+ const pt=(e,side)=>{const r=e.getBoundingClientRect(),m=M.getBoundingClientRect();return[side==="L"?r.right-m.left:r.left-m.left,r.top-m.top+r.height/2];};
+ function draw(extra){if(!M.isConnected)return;let h="";Object.entries(pairs).forEach(([l,r],i)=>{const a=pt(M.querySelector(`.L[data-k="${l}"]`),"L"),b=pt(M.querySelector(`.R[data-k="${r}"]`),"R");
+   h+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${PAL[l%PAL.length]}" stroke-width="3"/><circle cx="${a[0]}" cy="${a[1]}" r="5" fill="${PAL[l%PAL.length]}"/><circle cx="${b[0]}" cy="${b[1]}" r="5" fill="${PAL[l%PAL.length]}"/>`;});
+  if(extra)h+=extra;S.innerHTML=h;
+  M.querySelectorAll(".it").forEach(x=>{const k=x.dataset.k,isL=x.classList.contains("L");const pk=isL?pairs[k]:Object.keys(pairs).find(l=>pairs[l]==k);
+   x.style.borderColor=pk!=null?PAL[(isL?+k:+pk)%PAL.length]:"";});}
+ function link(l,r){Object.keys(pairs).forEach(x=>{if(pairs[x]==r)delete pairs[x];});pairs[l]=r;draw();}
+ M.addEventListener("pointerdown",e=>{const it=e.target.closest(".it");if(!it||A.closest(".locked"))return;e.preventDefault();
+  if(it.classList.contains("L")){M.querySelectorAll(".it.sel").forEach(x=>x.classList.remove("sel"));
+   if(sel===it.dataset.k&&pairs[sel]==null){sel=null;return;}
+   sel=it.dataset.k;it.classList.add("sel");tmp={x:e.clientX,y:e.clientY,moved:false};it.setPointerCapture&&it.setPointerCapture(e.pointerId);}
+  else if(sel!=null){link(sel,it.dataset.k);M.querySelectorAll(".it.sel").forEach(x=>x.classList.remove("sel"));sel=null;}
+  else{const l=Object.keys(pairs).find(x=>pairs[x]==it.dataset.k);if(l!=null){delete pairs[l];draw();}}});
+ M.addEventListener("pointermove",e=>{if(!tmp||sel==null)return;if(Math.hypot(e.clientX-tmp.x,e.clientY-tmp.y)>8)tmp.moved=true;if(!tmp.moved)return;
+  const a=pt(M.querySelector(`.L[data-k="${sel}"]`),"L"),m=M.getBoundingClientRect();
+  draw(`<line x1="${a[0]}" y1="${a[1]}" x2="${e.clientX-m.left}" y2="${e.clientY-m.top}" stroke="#999" stroke-width="3" stroke-dasharray="6 4"/>`);});
+ M.addEventListener("pointerup",e=>{if(!tmp)return;const was=tmp;tmp=null;if(!was.moved){draw();return;}
+  const u=document.elementFromPoint(e.clientX,e.clientY);const it=u&&u.closest(".it.R");
+  if(it&&sel!=null){link(sel,it.dataset.k);M.querySelectorAll(".it.sel").forEach(x=>x.classList.remove("sel"));sel=null;}else draw();});
+ window.addEventListener("resize",()=>draw());setTimeout(draw,30);
+ return{check(){let ok=0;const wr=[];q.pairs.forEach((p,k)=>{const g=pairs[k]!=null&&+pairs[k]===k;if(g)ok++;else wr.push(`${p[0]} ↔ ${p[1]}`);
+   M.querySelector(`.L[data-k="${k}"]`).classList.add(g?"okk":"bad");});
+  return{frac:ok/q.pairs.length,given:`${ok}/${q.pairs.length}`,right:wr.join("; "),detail:`${ok} von ${q.pairs.length} Paaren richtig.`+(wr.length?`<ul>${wr.map(w=>"<li>"+esc(w)+"</li>").join("")}</ul>`:"")};}};
+}};
+T.cmap={build(q,A){
+ A.innerHTML=`<p class="small">${esc(q.dir||"Verbinde die Begriffe mit Pfeilen: Tippe zuerst den Startbegriff, dann den Zielbegriff (oder ziehe). Einen Pfeil löschst du, indem du ihn antippst.")}</p>
+  <div class="cmap" id="cm" style="height:${q.ht||420}px"><svg><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1f6fa8"/></marker>
+  <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2f7a4a"/></marker><marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b04a4a"/></marker></defs><g></g></svg>
+  ${q.nodes.map((n,k)=>`<div class="nd${n.src?" src":""}" data-k="${k}" style="left:${n.x}%;top:${n.y}%">${esc(n.t)}</div>`).join("")}</div><p class="small" id="cmn"></p>`;
+ const C=A.querySelector("#cm"),G=C.querySelector("g");const E=new Set();let sel=null,dr=null;let res=null;
+ const ctr=k=>{const n=C.querySelector(`.nd[data-k="${k}"]`),r=n.getBoundingClientRect(),m=C.getBoundingClientRect();return{x:r.left-m.left+r.width/2,y:r.top-m.top+r.height/2,w:r.width/2,h:r.height/2};};
+ const clip=(a,b)=>{const dx=b.x-a.x,dy=b.y-a.y;const s=Math.min(Math.abs(b.w/(dx||1e-9)),Math.abs(b.h/(dy||1e-9)));return{x:b.x-dx*s,y:b.y-dy*s};};
+ function draw(extra){if(!C.isConnected)return;let h="";E.forEach(e=>{const[a,b]=e.split(">");const A1=ctr(a),B1=ctr(b);const s=clip(B1,A1),t=clip(A1,B1);
+   const st=res?res[e]:null;const col=st==null?"#1f6fa8":st?"#2f7a4a":"#b04a4a";const mk=st==null?"ah":st?"ahg":"ahr";
+   h+=`<line x1="${s.x}" y1="${s.y}" x2="${t.x}" y2="${t.y}" stroke="${col}" stroke-width="2.5" marker-end="url(#${mk})"/><line class="hit" data-e="${e}" x1="${s.x}" y1="${s.y}" x2="${t.x}" y2="${t.y}" stroke="transparent" stroke-width="18" style="cursor:pointer;pointer-events:stroke"/>`;});
+  if(res&&res.missing)res.missing.forEach(e=>{const[a,b]=e.split(">");const A1=ctr(a),B1=ctr(b);const s=clip(B1,A1),t=clip(A1,B1);
+   h+=`<line x1="${s.x}" y1="${s.y}" x2="${t.x}" y2="${t.y}" stroke="#2f7a4a" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ahg)"/>`;});
+  h+=extra||"";G.innerHTML=h;A.querySelector("#cmn").textContent=`${E.size} Pfeil${E.size===1?"":"e"} gesetzt · gesucht: ${q.edges.length}`;}
+ function tog(a,b){if(a===b)return;const k=a+">"+b;if(E.has(k))E.delete(k);else{E.delete(b+">"+a);E.add(k);}draw();}
+ C.addEventListener("pointerdown",e=>{if(A.closest(".locked"))return;const h=e.target.closest(".hit");if(h){E.delete(h.dataset.e);draw();return;}
+  const n=e.target.closest(".nd");if(!n)return;e.preventDefault();
+  if(sel!=null&&sel!==n.dataset.k){tog(sel,n.dataset.k);C.querySelectorAll(".nd.sel").forEach(x=>x.classList.remove("sel"));sel=null;return;}
+  if(sel===n.dataset.k){n.classList.remove("sel");sel=null;return;}
+  sel=n.dataset.k;n.classList.add("sel");dr={x:e.clientX,y:e.clientY,mv:false};n.setPointerCapture&&n.setPointerCapture(e.pointerId);});
+ C.addEventListener("pointermove",e=>{if(!dr||sel==null)return;if(Math.hypot(e.clientX-dr.x,e.clientY-dr.y)>8)dr.mv=true;if(!dr.mv)return;
+  const a=ctr(sel),m=C.getBoundingClientRect();draw(`<line x1="${a.x}" y1="${a.y}" x2="${e.clientX-m.left}" y2="${e.clientY-m.top}" stroke="#999" stroke-width="2.5" stroke-dasharray="6 4"/>`);});
+ C.addEventListener("pointerup",e=>{if(!dr)return;const was=dr;dr=null;if(!was.mv){draw();return;}
+  const u=document.elementFromPoint(e.clientX,e.clientY);const n=u&&u.closest(".nd");
+  if(n&&n.dataset.k!==sel)tog(sel,n.dataset.k);C.querySelectorAll(".nd.sel").forEach(x=>x.classList.remove("sel"));sel=null;draw();});
+ window.addEventListener("resize",()=>draw());setTimeout(draw,30);
+ return{check(){const need=new Set(q.edges.map(e=>e[0]+">"+e[1]));res={};let ok=0,bad=0;
+  E.forEach(e=>{if(need.has(e)){res[e]=true;ok++;}else{res[e]=false;bad++;}});
+  res.missing=[...need].filter(e=>!E.has(e));draw();
+  const name=k=>q.nodes[k].t;
+  const frac=Math.max(0,ok-0.5*bad)/need.size;
+  return{frac,given:`${ok} richtig, ${bad} falsch`,right:res.missing.map(e=>{const[a,b]=e.split(">");return name(a)+" → "+name(b);}).join("; "),
+   detail:`${ok} von ${need.size} Pfeilen richtig${bad?`, ${bad} falsche (rot)`:""}. Fehlende Pfeile sind gestrichelt grün eingezeichnet.`+(q.edges.some(e=>e[2])?`<ul>${q.edges.map(e=>`<li>${esc(name(e[0]))} → ${esc(name(e[1]))}: ${esc(e[2]||"")}</li>`).join("")}</ul>`:"")};}};
+}};
+T.hot={build(q,A){
+ A.innerHTML=`<p class="small">Tippe im Bild auf alle Stellen, die du für falsch hältst. Nochmals tippen hebt die Markierung auf.</p>`+
+  q.svg.replace("</svg>",q.spots.map((s,k)=>`<g class="spot" data-k="${k}"><circle cx="${s.x}" cy="${s.y}" r="${s.r||22}" fill="rgba(255,255,255,0.01)" stroke="transparent" stroke-width="4"/></g>`).join("")+"</svg>")+
+  `<p class="small" id="hotn">0 Stellen markiert</p>`;
+ const M=new Set();
+ A.querySelectorAll(".spot").forEach(g=>g.addEventListener("click",()=>{if(A.closest(".locked"))return;const k=+g.dataset.k;const c=g.querySelector("circle");
+  if(M.has(k)){M.delete(k);c.setAttribute("stroke","transparent");c.setAttribute("fill","rgba(255,255,255,0.01)");}
+  else{M.add(k);c.setAttribute("stroke","#c0392b");c.setAttribute("fill","rgba(192,57,43,0.12)");}
+  A.querySelector("#hotn").textContent=`${M.size} Stelle${M.size===1?"":"n"} markiert`;}));
+ return{check(){const errs=q.spots.map((s,k)=>s.err?k:null).filter(k=>k!=null);let ok=0,bad=0;const li=[];
+  q.spots.forEach((s,k)=>{const c=A.querySelector(`.spot[data-k="${k}"] circle`);
+   if(s.err&&M.has(k)){ok++;c.setAttribute("stroke","#2f7a4a");c.setAttribute("fill","rgba(47,122,74,.18)");li.push("✅ "+s.fb);}
+   else if(s.err){c.setAttribute("stroke","#c0392b");c.setAttribute("stroke-dasharray","5 4");li.push("❌ übersehen: "+s.fb);}
+   else if(M.has(k)){bad++;c.setAttribute("stroke","#e5b800");li.push("⚠️ kein Fehler: "+s.fb);}});
+  return{frac:Math.max(0,ok-0.5*bad)/errs.length,given:`${ok} gefunden, ${bad} falsch markiert`,right:"",detail:`${ok} von ${errs.length} Fehlern gefunden.<ul>${li.map(x=>"<li>"+esc(x)+"</li>").join("")}</ul>`};}};
+}};
+T.ftext={build(q,A){
+ A.innerHTML=`<p class="small">Tippe auf alle Sätze oder Stellen mit einem Fehler.</p><div class="ft ${q.list?"":"gaptext"}" style="line-height:1.9">${q.segs.map((s,k)=>`<span class="seg" data-k="${k}">${esc(s[0])}</span>`).join(q.list?"<br>":" ")}</div>`;
+ A.querySelectorAll(".seg").forEach(s=>s.onclick=()=>{if(!A.closest(".locked"))s.classList.toggle("mark");});
+ return{check(){let ok=0,bad=0,n=0;const li=[];
+  q.segs.forEach((s,k)=>{const e=A.querySelector(`.seg[data-k="${k}"]`);const m=e.classList.contains("mark");
+   if(s[1]){n++;if(m){ok++;li.push("✅ "+s[0]+" → "+s[1]);}else{e.classList.add("miss");li.push("❌ übersehen: "+s[0]+" → "+s[1]);}}
+   else if(m){bad++;e.classList.remove("mark");e.classList.add("okk");li.push("⚠️ war richtig: "+s[0]);}});
+  return{frac:Math.max(0,ok-0.5*bad)/n,given:`${ok} gefunden, ${bad} falsch markiert`,right:"",detail:`${ok} von ${n} Fehlern gefunden.<ul>${li.map(x=>"<li>"+esc(x)+"</li>").join("")}</ul>`};}};
+}};
+T.sim={build(q,A){
+ const v={};(q.ctl||[]).forEach(c=>v[c.k]=c.v);(q.opt||[]).forEach(o=>v[o.k]=o.v);
+ A.innerHTML=`<div id="simv"></div>`+(q.opt||[]).map(o=>`<div class="ctrl"><label>${esc(o.l)}</label><div class="opt" data-k="${o.k}">${o.c.map(c=>`<button data-v="${esc(c)}">${esc(c)}</button>`).join("")}</div></div>`).join("")+
+  (q.ctl||[]).map(c=>`<div class="ctrl"><label><span>${esc(c.l)}</span><span id="sv_${c.k}"></span></label><input type="range" data-k="${c.k}" min="${c.min}" max="${c.max}" step="${c.st}" value="${c.v}"></div>`).join("")+`<div id="simr"></div>`;
+ const fmtv=(c,x)=>(c.f?c.f(x):(+x).toFixed(c.d==null?1:c.d))+" "+(c.u||"");
+ function upd(){(q.ctl||[]).forEach(c=>{$("sv_"+c.k).textContent=fmtv(c,v[c.k]);});
+  A.querySelectorAll(".opt").forEach(o=>o.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===String(v[o.dataset.k]))));
+  const out=q.draw(v);$("simv").innerHTML=out.svg;$("simr").innerHTML=`<div class="readout">${out.r.map(r=>`<div class="${r[2]||""}">${esc(r[0])}<b>${esc(r[1])}</b></div>`).join("")}</div>`;}
+ A.querySelectorAll("input[type=range]").forEach(i=>i.oninput=()=>{v[i.dataset.k]=+i.value;upd();});
+ A.querySelectorAll(".opt button").forEach(b=>b.onclick=()=>{v[b.parentElement.dataset.k]=b.dataset.v;upd();});
+ upd();
+ return{check(){const r=q.goal(v);return{frac:r.ok?1:0,given:r.given||"",right:r.right||"",detail:r.msg||""};}};
+}};
+T.branch={check:false,build(q,A,done){
+ let node=q.start,pts=0,n=0;const trail=[];
+ function show(id){const N=q.nodes[id];
+  if(N.end){const frac=n?pts/n:1;A.innerHTML=`<div class="scn">${N.t}</div>`;done({frac,given:trail.join(" | "),right:"",detail:`Du hast ${f2(pts,1).replace(".0","")} von ${n} möglichen Punkten erreicht.`});return;}
+  A.innerHTML=`<div class="trail">${trail.length?"Bisher: "+trail.map((t,i)=>`${i+1}. ${esc(t)}`).join(" · "):""}</div><div class="scn">${N.t}</div>`+N.c.map((c,k)=>`<button class="btn" data-k="${k}">${esc(c.t)}</button>`).join("");
+  A.querySelectorAll("button[data-k]").forEach(b=>b.onclick=()=>{const c=N.c[+b.dataset.k];
+   A.querySelectorAll("button[data-k]").forEach(x=>x.disabled=true);
+   if(c.p!=null){n++;pts+=c.p;}trail.push(c.t.length>40?c.t.slice(0,38)+"…":c.t);
+   b.classList.add(c.p==null||c.p>=1?"ok":c.p>0?"half":"no");
+   const f=el(`<div class="fb ${c.p==null||c.p>=1?"ok":c.p>0?"half":"no"}"><b>${c.p==null?"":c.p>=1?"✅ Gute Entscheidung":c.p>0?"🟡 Geht, aber …":"❌ Schlechte Entscheidung"}</b>${esc(c.fb||"")}</div>`);
+   A.appendChild(f);const nb=el(`<button class="btn primary">Weiter →</button>`);A.appendChild(nb);nb.onclick=()=>show(c.to);nb.scrollIntoView({behavior:"smooth",block:"nearest"});});}
+ show(node);
+}};
 
-const POOLS={
-graben:[
- mc("g1","Ab welcher Grabentiefe muss eine Leiter angestellt werden?",["0.80 m","1.00 m","1.50 m","2.00 m"],1,"Ab 1.00 m Tiefe braucht es eine Leiter, die über den Grabenrand hinausragt."),
- mc("g2","Ab welcher Tiefe muss ein Graben gespriesst oder geböscht (V-Graben) werden?",["1.00 m","1.20 m","1.50 m","2.00 m"],2,"Ab 1.50 m Tiefe: spriessen oder böschen."),
- mc("g3","Wie breit muss der freie Grabenrand beim U-Graben mindestens sein?",["20 cm","30 cm","50 cm","100 cm"],2,"U-Graben: mind. 50 cm frei. Kein Aushub, keine Maschinen am Rand.",{svg:"grabenU"}),
- mc("g4","Wie breit muss der freie Grabenrand beim V-Graben mindestens sein?",["50 cm","80 cm","100 cm","150 cm"],2,"Beim V-Graben mind. 100 cm bis zum Aushub.",{svg:"grabenV"}),
- mc("g5","Welche lichte Breite braucht ein gespriesster U-Graben mindestens?",["40 cm","50 cm","60 cm","80 cm"],2,"Mind. 60 cm, damit man sicher arbeiten kann."),
- mc("g6","Wie weit müssen die Dielen über den Grabenrand hinausragen?",["mind. 5 cm","mind. 15 cm","mind. 30 cm","gar nicht"],1,"Mind. 15 cm: so fällt nichts in den Graben."),
- mc("g7","Welches Böschungsverhältnis gilt beim V-Graben in standfestem Material?",["1 : 1","2 : 1","1 : 2","3 : 1"],1,"Standfest 2 : 1 (steiler), rollig 1 : 1 (flacher)."),
- mc("g8","Welches Böschungsverhältnis gilt beim V-Graben in rolligem Material (Kies, Sand)?",["1 : 1","2 : 1","3 : 1","senkrecht"],0,"Rolliges Material rutscht → flache Böschung 1 : 1."),
- mc("g9","Leitung 0.80 m tief durch einen schmalen Hausgarten. Was ist richtig?",["U-Graben, keine Leiter und keine Spriessung nötig","V-Graben 1 : 1","U-Graben mit Spriessung","Pressvortrieb"],0,"Unter 1.00 m keine Leiter, unter 1.50 m keine Spriessung; wenig Platz → U."),
- mc("g10","Leitung 2.00 m tief direkt neben Hausfassade und Strasse. Was wählst du?",["V-Graben 2 : 1","U-Graben mit Spriessung","U-Graben ohne Spriessung","V-Graben 1 : 1"],1,"Kein Platz für Böschung → gespriesster U-Graben."),
- mc("g11","Leitung 1.80 m tief über eine freie Wiese, Boden: rolliger Kies. Was ist sinnvoll?",["V-Graben 1 : 1","V-Graben 2 : 1","U-Graben ohne Verbau","Leiter genügt"],0,"Platz vorhanden, rollig → V-Graben 1 : 1 (oder U gespriesst)."),
- mc("g12","Wo beginnt der Aushub eines Leitungsgrabens?",["Beim höchsten Punkt","Beim tiefsten Punkt","In der Mitte","Egal"],1,"Beim tiefsten Punkt: So kann das Wasser im Graben abfliessen."),
- mc("g13","Darf im Graben ein Vibrationsstampfer mit Benzinmotor laufen?",["Ja, wenn es schnell geht","Nein, die Abgase (CO) sammeln sich im Graben","Ja, ab 1.50 m Tiefe","Nur mit Helm"],1,"Abgase sind schwerer als Luft und sammeln sich im Graben – lebensgefährlich."),
- mc("g14","Beim Baggern wird ein gelbes Kunststoffrohr angekratzt. Was ist es vermutlich, und was tust du?",["Wasserleitung – weiterarbeiten","Gasleitung – sofort stoppen und melden","Drainage – zuschütten","Telefon – egal"],1,"Gelb = Gas. Sofort stoppen, Vorgesetzte und Werk informieren."),
- mc("g15","Wo wird ein Warnband eingelegt?",["Direkt auf das Rohr","20–30 cm über Elektro-, Gas- und Wasserleitungen","Auf die Grabensohle","An der Oberfläche"],1,"20–30 cm über der Leitung: Es warnt bei späteren Grabarbeiten."),
- mc("g16","Was machst du, bevor du mit Grabarbeiten beginnst?",["Werkleitungspläne einholen und Sondiergräben von Hand","Sofort mit dem Bagger beginnen","Nur den Nachbarn fragen","Den Graben fluten"],0,"Pläne einholen, Leitungen lokalisieren, Sondiergräben quer zum Leitungsverlauf."),
- mc("g17","Wann darf bei der Grabenfüllung zum ersten Mal maschinell verdichtet werden?",["direkt auf dem Rohr","10 cm über dem Rohr","30 cm über der Schutzschicht","nie"],2,"Erst 30 cm über der Schutzschicht, sonst wird das Rohr beschädigt."),
- mc("g18","Grabenfüllung in einer Grünfläche: Was beachtest du?",["5–10 % überhöhen, weil sich das Material setzt","genau auf Höhe einbauen","20 % tiefer lassen","mit Wasser einschwemmen"],0,"Die Füllung setzt sich → 5–10 % überhöhen."),
- num("g19","V-Graben: Tiefe 1.50 m, Sohlenbreite 0.60 m, rolliges Material (1 : 1). Wie breit ist der Graben oben?",3.60,"m","0.60 + 2 × 1.50 = 3.60 m",0.01),
- num("g20","V-Graben: Tiefe 1.60 m, Sohlenbreite 0.60 m, standfestes Material (2 : 1). Wie breit ist der Graben oben?",2.20,"m","Böschungsbreite je Seite 1.60 : 2 = 0.80 m → 0.60 + 2 × 0.80 = 2.20 m",0.01),
- mc("g21","Wo lagerst du das Aushubmaterial?",["Alles gemischt am Grabenrand","Schichten getrennt (Ober-, Unterboden, Untergrund), mit Abstand zum Grabenrand","Im Graben","Auf der Strasse"],1,"Getrennt lagern, damit Ober- und Unterboden wieder richtig eingebaut werden können."),
-],
-abwasser:[
- mc("a1","Dachwasser eines Einfamilienhauses: Wohin gehört es zuerst?",["Versickern auf dem Grundstück","Schmutzwasserleitung → ARA","Ölabscheider","Strasse"],0,"Dachwasser ist nicht verschmutzt (NV) → versickern."),
- mc("a2","Abwasser aus Küche, Bad und WC: Wohin?",["Versickern","Schmutzwasserleitung → ARA","Bach","Mulde"],1,"Verschmutzt (V) → ARA."),
- mc("a3","Wasser vom Sitzplatz: Wohin?",["Über die Schulter in die Grünfläche","Schmutzwasserleitung","In den Keller","Auf das Trottoir"],0,"NV → einfachste Lösung: Versickerung über die Schulter."),
- mc("a4","Waschplatz für Gartenbaumaschinen: Wohin mit dem Wasser?",["Versickern","Schlammsammler + Ölabscheider → Kanalisation (Bewilligung)","In die Mulde","Auf die Wiese"],1,"Verschmutzt (Öl, Treibstoff) → nie versickern."),
- mc("a5","Sickerwasser aus einer Drainage ist …",["verschmutzt","nicht verschmutzt","immer giftig","Schmutzwasser"],1,"Drainagewasser ist NV → Versickerung oder Regenwasserleitung."),
- mc("a6","Wie viele Leitungen hat das Mischsystem?",["1 für alles","2","3","keine"],0,"Misch = Schmutz- und Regenwasser in einer Leitung."),
- mc("a7","Was passiert im Mischsystem bei Starkregen?",["Nichts","Die ARA wird überlastet, ungereinigtes Wasser läuft in Gewässer","Das Wasser versickert","Die Leitungen gefrieren"],1,"Darum ist das Mischsystem ungünstig."),
- mc("a8","Was ist ein Vorfluter?",["Ein Schacht","Ein offenes Gewässer (Bach, Fluss)","Ein Rohr","Eine Pumpe"],1,"Vorfluter = Gewässer, das Wasser aufnimmt."),
- mc("a9","Trennsystem: Wohin fliesst das Regenwasser?",["In die ARA","Versickerung, Regenwasserkanal oder Gewässer","In die Schmutzwasserleitung","In den Keller"],1,"Regenwasser wird getrennt geführt."),
- mc("a10","Muttenz: Bis wohin müssen Schmutz- und Sauberwasser getrennt geführt werden?",["bis zur Hausmauer","bis zum letzten Kontrollschacht an der Parzellengrenze","gar nicht","bis zur ARA"],1,"Getrennt bis zum letzten KS, auch wenn in der Strasse ein Mischwasserkanal liegt."),
- mc("a11","Muttenz: Wie viele Anschlüsse an die öffentliche Kanalisation darf eine Parzelle haben?",["einen","zwei","beliebig viele","pro Fallrohr einen"],0,"Nur ein Anschluss."),
- mc("a12","Warum trennt man auf dem Grundstück, obwohl in der Strasse ein Mischwasserkanal liegt?",["Weil es schöner aussieht","Reglement verlangt es; weniger Wasser in Kanal und ARA; bereit für späteres Trennsystem","Weil Rohre billiger sind","Aus Gewohnheit"],1,"Versickern entlastet Kanal und ARA."),
- ord("a13","Muttenz: Bringe den Umgang mit Regenwasser in die richtige Reihenfolge (1. Wahl zuerst).",["Vermeiden bzw. nutzen (durchlässige Beläge, Begrünung)","Auf dem Grundstück versickern","Gedrosselt in ein Gewässer","Gedrosselt in den Mischwasserkanal"],"Erst vermeiden, dann versickern, dann Gewässer, zuletzt Kanal."),
- mc("a14","Wasser aus der Waschmaschine ist …",["nicht verschmutzt","verschmutzt → ARA","Regenwasser","Sickerwasser"],1,"Waschmittel → verschmutzt."),
- mc("a15","Hangwasser, das gegen das Haus drückt, ist …",["verschmutzt","nicht verschmutzt → versickern / Vorfluter","Schmutzwasser","Mischwasser"],1,"Hangwasser ist NV."),
- mc("a16","Welche Planfarben verlangt Muttenz?",["Schmutzwasser rot, Regenwasser hellblau","Schmutzwasser blau, Regenwasser rot","alles schwarz","Schmutzwasser grün"],0,"Rot = Schmutzwasser, hellblau = Regenwasser."),
- mc("a17","Muttenz: Wie viel Regen muss bei versiegelten Flächen zurückgehalten werden?",["5 mm","12 mm während 1 Stunde","50 mm","gar nichts"],1,"Retention 12 mm der versiegelten Fläche während 1 Stunde."),
- mc("a18","Darf Wasser von einer privaten Einfahrt auf das Trottoir fliessen?",["Ja","Nein, kein Wasser auf öffentlichen Grund","Nur im Winter","Nur bei Gewitter"],1,"An der Grenze: Anschlag 2.5 cm bzw. Rinne."),
-],
-schacht:[
- mc("s1","Wie gross muss die Nutztiefe eines Schlammsammlers mindestens sein?",["0.50 m","1.00 m","1.50 m","2.00 m"],1,"Mind. 1.00 m (vor einer Versickerung 1.10 m)."),
- mc("s2","Wie tief muss der Tauchbogen mindestens ins Wasser eintauchen?",["2 cm","5 cm","10 cm","50 cm"],2,"Mind. 10 cm, damit Schwimmstoffe zurückbleiben."),
- mc("s3","Welche Aufgaben hat der Tauchbogen?",["Schwimmstoffe zurückhalten, Absinken ermöglichen, Geruchsverschluss","Wasser pumpen","Wasser erwärmen","Nur Dekoration"],0,"Alle drei!"),
- mc("s4","Wie viel höher als der Auslauf liegt der Einlauf im Schlammsammler?",["gleich hoch","mind. 5 cm","mind. 50 cm","tiefer"],1,"Einlauf mind. 5 cm höher."),
- mc("s5","Wie werden Leitungen an einen Betonschacht angeschlossen?",["Loch spitzen","Kernbohrung ohne Schlag + Schachtfutter oder Gummidichtung","Mit Silikon","Mit Klebeband"],1,"Spitzen kann den Schacht reissen."),
- mc("s6","Was ist eine Inspektionsöffnung?",["Begehbarer Schacht","Öffnung Ø max. 40 cm nur für Geräte (Kamera, Spülung)","Ein Schlammsammler","Ein Versickerungsschacht"],1,"Niemand steigt hinein."),
- mc("s7","Ab welcher Schachttiefe braucht es Steigeisen?",["0.80 m","1.20 m","2.00 m","nie"],1,"Ab 1.20 m Tiefe."),
- mc("s8","Wie unterscheidet sich ein Einstiegschacht (ES) von einem kleinen Kontrollschacht?",["gar nicht, im Lehrmittel sind es Synonyme; «Einstieg» betont: begehbar, Ø 80–100 cm","ES ist für Regenwasser","ES hat keinen Deckel","ES ist kleiner"],0,"Im Lehrmittel gleichbedeutend. Ein ES ist begehbar."),
- mc("s9","Wo wird ein Kontrollschacht eingebaut?",["Nach einem Sturzgefälle","Nur im Haus","Nur bei Rinnen","Unter Bäumen"],0,"Auch: Grundstücksanschluss, Zusammenführungen, Richtungsänderungen, alle 40 m, Material-/Kaliberwechsel."),
- mc("s10","Wie oft sollte bei langen Leitungen ein Kontrollschacht folgen?",["alle 10 m","idealerweise alle 40 m","alle 200 m","nie"],1,"Idealerweise alle 40 m."),
- mc("s11","Wie muss das Grundwasser beim Versickerungsschacht liegen?",["direkt an der Sohle","mind. 1 m unter der Sohle","egal","über dem Deckel"],1,"Mind. 1 m Abstand zum Grundwasser."),
- mc("s12","Welchen Deckel hat ein Versickerungsschacht?",["gelocht","geschlitzt","geschlossen, abgedichtet, abschliessbar, «Versickerung»","gar keinen"],2,"Damit kein Schmutzwasser hineingelangt."),
- mc("s13","Schlammsammler in einem Kiesplatz – das Wasser soll von oben einlaufen. Welcher Deckel?",["geschlossen","gelocht oder geschlitzt","Betondeckel voll","zum Auspflästern"],1,"Offene Deckel lassen das Wasser einlaufen.",{deckel:true}),
- mc("s14","Kontrollschacht in einem Granitpflaster-Platz, soll kaum auffallen. Welcher Deckel?",["Deckel zum Auspflästern","gelocht","Rahmen für Fahrbahn","Gitterrost"],0,"Wird mit dem gleichen Pflaster ausgelegt."),
- mc("s15","Wozu dient ein Ausgleichsrahmen?",["Um die Deckelhöhe einfach an den Belag anzupassen","Als Rost","Zum Schliessen","Als Leiter"],0,"Höhe anpassen, z. B. wenn der Belag erhöht wird."),
- mc("s16","Wo werden rechteckige Schachtabdeckungen vor allem eingesetzt?",["Im Rasen","Im Strassenbereich entlang von Randabschlüssen","In Dachgärten","Nie"],1,"Strassenabläufe."),
- mc("s17","Welche Belastungsklasse für einen Gartenweg (nur Fussgänger und Velos)?",["A 15","B 125","C 250","D 400"],0,"A 15 = 15 kN."),
- mc("s18","Welche Belastungsklasse für eine Garageneinfahrt Einfamilienhaus (PW)?",["A 15","B 125","D 400","F 900"],1,"B 125: PW-Parkflächen, Einfahrten."),
- mc("s19","Welche Belastungsklasse für eine Bordrinne am Strassenrand?",["A 15","B 125","C 250","E 600"],2,"C 250."),
- mc("s20","Welche Belastungsklasse für die Fahrbahn einer Strasse mit Lastwagen?",["B 125","C 250","D 400","A 15"],2,"D 400."),
- mc("s21","Wo erkennst du die Belastungsklasse einer Abdeckung?",["Auf der Abdeckung eingegossen/aufgedruckt","Am Gewicht","An der Farbe","Gar nicht"],0,"Sie steht auf dem Rost bzw. Deckel."),
- mc("s22","Darf eine Rinne direkt an die Kanalisationsleitung angeschlossen werden?",["Ja","Nein, immer über einen Schlammsammler","Nur bei Regen","Nur Kunststoffrinnen"],1,"Rinnen immer über einen SS."),
- mc("s23","Rinne mit Eigengefälle: Wie wird sie versetzt?",["horizontal, Elemente nummeriert","im Gefälle","senkrecht","egal"],0,"Das Gefälle steckt in den Elementen."),
- mc("s24","Wie dick muss die Rückenstütze aus Beton bei einer Rinne der Klasse B mindestens sein?",["5 cm","10 cm","12 cm","20 cm"],2,"A 10, B 12, C 15, D/E 20 cm."),
- mc("s25","Unterschied Bodeneinlauf und Bodenablauf?",["Bodeneinlauf mit, Bodenablauf ohne Geruchsverschluss","kein Unterschied","Bodenablauf ist grösser","Bodeneinlauf nur für Schmutzwasser"],0,"Beide müssen an einen SS angeschlossen werden."),
- mc("s26","Muttenz: Wie weit muss ein Sickerschacht von der Parzellengrenze entfernt sein?",["0.5 m","1.0 m","1.5 m","5 m"],2,"Mind. 1.5 m."),
-],
-leitung:[
- mc("l1","Grünes oder beiges Kunststoffrohr, absolut dicht, schweissbar – heute Standard?",["PVC","PP (Polypropylen)","Steinzeug","Beton"],1,"PP ist heute Standard."),
- mc("l2","Rotbraunes Kunststoffrohr, bei Kälte spröde, in vielen Gemeinden verboten?",["PP","PE-HD","PVC","Steinzeug"],2,"PVC."),
- mc("l3","Säure- und laugenbeständig, braun glasiert, aber schlagempfindlich?",["Steinzeug","Beton","PE-HD","PVC"],0,"Steinzeug."),
- mc("l4","Welches Rohr ist nur für nicht verschmutztes Wasser geeignet?",["Betonrohr","Steinzeug","PP","PE-HD"],0,"Schmutzwasser greift Zement an."),
- mc("l5","Rohr mit oberer Hälfte gelocht?",["Sickerrohr","Drainflexrohr","Kanalrohr PP","Betonrohr"],0,"Sickerrohr: nimmt Wasser von oben auf."),
- mc("l6","Flexibles Rohr, rundherum geschlitzt?",["Drainflexrohr","Steinzeugrohr","Kanalrohr","Gussrohr"],0,"Drainflex."),
- mc("l7","Was bedeutet DN bei Kunststoffrohren?",["Innendurchmesser","Aussendurchmesser","Wandstärke","Länge"],1,"DN = Aussendurchmesser (bei Beton/Steinzeug: NW = Innendurchmesser)."),
- mc("l8","Was bedeutet SN 8?",["Ringsteifigkeit 8 kN/m²","8 m lang","8 mm Wand","8 Bogen"],0,"Ringsteifigkeit; im Gartenbau mind. SN 4."),
- mc("l9","Muttenz: Welcher Mindestdurchmesser gilt beim Einfamilienhaus?",["DN 100","DN 125","DN 200","DN 300"],1,"DN 125 (MFH DN 150)."),
- ord("l10","Rohrumhüllung: Ordne von unten nach oben.",["Grabensohle","Bettung","Leitung","Verdämmung","Schutzschicht","Warnband","Grabenfüllung"],"Sohle – Bettung – Leitung – Verdämmung – Schutzschicht – (Warnband) – Grabenfüllung."),
- mc("l11","Warum muss das Material der Rohrumhüllung rund sein?",["Damit es schöner aussieht","Scharfe Kanten beschädigen das Rohr","Weil es billiger ist","Wegen der Farbe"],1,"Punktlasten → Risse → undicht."),
- mc("l12","Welches Grösstkorn für die Rohrumhüllung bei PP DN 160?",["8 mm","22 mm","40 mm","100 mm"],1,"NW < 200: max. 22 mm; > 200: max. 40 mm."),
- mc("l13","Wie werden Kanalisationsleitungen (Schmutzwasser) eingebettet?",["In Sand","Einbetoniert: mind. 10 cm unter und über dem Rohr","Gar nicht","In Schotter"],1,"Beton mind. 10 cm rundum."),
- mc("l14","Mindestgefälle einer Sammelleitung?",["0.5 %","1 %","3 %","5 %"],1,"Min. 1 %, ideal 3 %, max. 5 %."),
- mc("l15","Idealgefälle einer Sammelleitung (Lehrmittel)?",["1 %","2 %","3 %","8 %"],2,"Ideal 3 %."),
- mc("l16","Maximalgefälle einer Sammelleitung?",["3 %","5 %","10 %","15 %"],1,"Max. 5 % – sonst Sturzgefälle."),
- mc("l17","Mindestgefälle einer Sickerleitung?",["0.5 %","1 %","2 %","3 %"],0,"0.5 % (max. 1 %)."),
- mc("l18","Wie wird eine Richtungsänderung von 90° ausgeführt?",["Mit einem 90°-Bogen","Mit zwei 45°-Bogen oder einem Schacht","Gar nicht","Mit Klebeband"],1,"Bogen max. 45°."),
- mc("l19","Wie tief liegt der Rohrscheitel?",["10 cm unter Terrain","Auf Frosttiefe, unter Strassen mit grossen Verkehrslasten ca. 1.50 m","Auf der Oberfläche","Egal"],1,"Frostsicher und vor Lasten geschützt."),
- mc("l20","In welche Richtung zeigen die Muffen?",["Mit der Fliessrichtung","Gegen die Fliessrichtung","Nach oben","Egal"],1,"Muffen gegen die Fliessrichtung, verlegt vom tiefsten Punkt her."),
- mc("l21","Muttenz: Idealgefälle für Schmutzwasser / Sauberwasser?",["1 % / 1 %","3 % / 2 %","5 % / 5 %","10 % / 2 %"],1,"3 % Schmutzwasser, 2 % Sauberwasser."),
- mc("l22","Muttenz: Wie lange vorher meldest du die Abnahme an?",["1 h","mind. 24 h","1 Woche","gar nicht"],1,"Mind. 24 h; zudecken erst nach Abnahme und Einmessung."),
- mc("l23","Wie wird die Dichtheit einer Entwässerungsleitung geprüft?",["Füllprobe mit Wasser","Anschauen","Klopfen","Mit Rauch"],0,"Füllprobe."),
- num("l24","Leitung 18.50 m lang, 2 % Gefälle. Wie gross ist die Höhendifferenz in cm?",37,"cm","18.50 × 2 : 100 = 0.37 m = 37 cm",0.5),
- mc("l25","Was macht man, wenn das Gelände für eine Leitung zu steil ist?",["Sturzgefälle (Absturz) mit Kontrollschacht danach","Leitung steiler legen","Leitung weglassen","Pumpe einbauen"],0,"Sturzgefälle, danach KS."),
-],
-versickerung:[
- ord("v1","Versickerungskonzept: Ordne den Weg des Dachwassers.",["Fallrohr","Schlammsammler","Einleitschacht","Rigole (Versickerungsstrang)","Kontrollschacht"],"Fallrohr → SS → Einleitschacht → Rigole → KS.",{svg:"konzept"}),
- ord("v2","Rigole im Schnitt: Ordne von oben nach unten.",["Oberboden","Auffüllmaterial","Geotextilmatte","Filterkies 8/16 mit Versickerungsrohr","Sickerfähiger Untergrund (mind. 1 m)","Grundwasser"],"Oben Boden, dann Geotextil, Filterkies mit Rohr, mind. 1 m Untergrund bis zum Grundwasser."),
- mc("v3","Welche Versickerungsart ist zu bevorzugen?",["Versickerungsschacht","Über die Schulter / Mulde mit Oberbodenpassage","Rigole","Direkt ins Grundwasser"],1,"Der belebte Oberboden reinigt das Wasser – einfach und günstig."),
- mc("v4","Welche Versickerung erfolgt OHNE Bodenpassage?",["Schulter","Mulde","Versickerungsschacht","Rasenfläche"],2,"Schacht, Rigole, Strang: unterirdisch ohne Bodenpassage."),
- mc("v5","Richtwert: Wie gross muss eine Versickerungsfläche sein?",["1 % der entwässerten Fläche","5–10 % der entwässerten Fläche","50 %","100 %"],1,"5–10 %."),
- mc("v6","Was bedeutet Retention?",["Wasser sofort ableiten","Zwischenspeicherung mit gedrosseltem Ablauf","Wasser erhitzen","Wasser reinigen mit Chemie"],1,"Zurückhalten und langsam abgeben."),
- mc("v7","Warum steht vor jeder Versickerungsanlage ein Schlammsammler?",["Damit Sand und Laub die Anlage nicht verstopfen","Für die Optik","Damit das Wasser warm wird","Gar nicht nötig"],0,"Sonst verstopft die Rigole."),
- mc("v8","Ist bei einer Rigole ein Notüberlauf nötig?",["Nein","Ja, obligatorisch","Nur im Winter","Nur bei Kies"],1,"Bei Starkregen muss das Wasser kontrolliert abfliessen können."),
- mc("v9","Was ist die Grundidee der Schwammstadt?",["Regen möglichst schnell in die Kanalisation","Regen speichern, versickern, verdunsten und nutzen","Alles asphaltieren","Mehr Pumpen"],1,"Die Stadt saugt Wasser auf wie ein Schwamm."),
- mc("v10","Welcher Belag hat den kleinsten Abflussbeiwert ψ?",["Asphalt","Pflaster mit dichten Fugen","Rasengittersteine","Beton"],2,"Rasengitter ψ ≈ 0.15; Asphalt ≈ 0.9."),
- num("v11","Einfahrt 40 m², Asphalt (ψ = 0.9), Gewitter 20 mm (= 20 l/m²). Wie viele Liter fliessen ab?",720,"Liter","40 × 20 × 0.9 = 720 Liter",1),
- num("v12","Muttenz: Versiegelte Fläche 150 m². Retention 12 mm. Wie viele m³ müssen zurückgehalten werden?",1.8,"m³","150 × 0.012 = 1.8 m³",0.01),
- mc("v13","Wie breit sind die Schlitze einer Schlitzdrainage?",["1–2 cm","6–10 cm","30 cm","1 m"],1,"6–10 cm, mit der Grabenfräse."),
- mc("v14","Womit werden die Schlitze gefüllt?",["Oberboden","Feinkies (Betonkies 0/16, Splitt, Rundkies) bis knapp zur Grasnarbe","Lehm","Beton"],1,"Feinkies bis knapp unter die Grasnarbe."),
- mc("v15","Was ist der Vorteil der Schlitzdrainage?",["Kann auch nachträglich eingebaut werden","Ist unsichtbar teuer","Braucht keinen Abfluss","Funktioniert ohne Gefälle nie"],0,"Ideal für vernässte Rasen- und Sportflächen."),
- mc("v16","Wo setzt man eine vertikale Flächendrainage ein?",["Sportplatz","Stützmauern, Gebäudeteile unter Terrain","Rasen","Dachgarten"],1,"Senkrecht am Bauwerk."),
- mc("v17","Wo setzt man eine horizontale Flächendrainage ein?",["Sportplätze, Garagendecken, Flachdächer, Pflanztröge","Hausfassade","Stützmauer","Trottoir"],0,"Flächig auf Planum oder Bauteil."),
- mc("v18","Welches Material darf NICHT über Abdichtungen eingebaut werden?",["Geröll 30/50","Rundkies 16/32","Schotter 16/32 (kantig)","Drainmatte"],2,"Kantiges Material beschädigt die Abdichtung."),
- mc("v19","Wozu dient ein Geotextil über Geröll?",["Trennen und Filtern","Wärmen","Färben","Verdichten"],0,"Feinteile werden nicht eingeschwemmt."),
- mc("v20","Welches Material braucht dank Filterwirkung kein Geotextil?",["Geröll 30/50","Betonkies 0/32","Rundkies 8/16","Schotter"],1,"Mehrkorn = natürliche Filterwirkung (aber Verkalkungsgefahr)."),
- mc("v21","Arbeit auf einer Tiefgaragendecke: Was ist verboten?",["Auf intakter Schutzschicht arbeiten","Absteckeisen einschlagen","Schäden melden","Leichte Geräte"],1,"Die Dachabdichtung darf nie verletzt werden."),
- mc("v22","Retentionsmulde mit stehendem Wasser: Worauf achtest du?",["Sicherheit: Umzäunung prüfen (Gefährdungsbeurteilung)","Fische einsetzen","Mit Beton abdichten","Nichts"],0,"Kleinkinder!"),
-],
-};
+/* ================= Eigene Grafiken ================= */
+const mk=(n,x,y)=>`<g><circle cx="${x}" cy="${y}" r="11" fill="#c0392b"/><text x="${x}" y="${y+4.5}" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">${n}</text></g>`;
+const dim=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#b04a4a" stroke-width="1.6"/>`+
+ (x1===x2?`<line x1="${x1-5}" y1="${y1}" x2="${x1+5}" y2="${y1}" stroke="#b04a4a" stroke-width="1.6"/><line x1="${x2-5}" y1="${y2}" x2="${x2+5}" y2="${y2}" stroke="#b04a4a" stroke-width="1.6"/>`
+ :`<line x1="${x1}" y1="${y1-5}" x2="${x1}" y2="${y1+5}" stroke="#b04a4a" stroke-width="1.6"/><line x1="${x2}" y1="${y2-5}" x2="${x2}" y2="${y2+5}" stroke="#b04a4a" stroke-width="1.6"/>`);
+const SOIL="#e3d2b0";
+const SVG={};
+SVG.uGraben=`<svg class="sk" viewBox="0 0 360 270">
+ <rect x="0" y="60" width="360" height="210" fill="${SOIL}"/><rect x="0" y="56" width="360" height="5" fill="#7aa35a"/>
+ <rect x="140" y="56" width="80" height="190" fill="#f8fbfc"/>
+ <path d="M8 58 L50 26 L95 58Z" fill="#a98b5a"/><text x="30" y="20" font-size="12">Aushub</text>
+ <rect x="133" y="44" width="7" height="172" fill="#d9a900"/><rect x="220" y="44" width="7" height="172" fill="#d9a900"/>
+ <rect x="140" y="95" width="80" height="7" rx="2" fill="#777"/><rect x="140" y="160" width="80" height="7" rx="2" fill="#777"/>
+ <circle cx="180" cy="229" r="15" fill="#fff" stroke="#333" stroke-width="2"/>
+ ${dim(95,50,133,50)}${dim(238,44,238,58)}${dim(140,132,220,132)}${dim(238,167,238,246)}
+ <line x1="122" y1="98" x2="140" y2="98" stroke="#333"/><line x1="122" y1="190" x2="133" y2="190" stroke="#333"/>
+ ${mk(1,114,37)}${mk(2,256,50)}${mk(3,180,120)}${mk(4,256,206)}${mk(5,110,98)}${mk(6,110,190)}</svg>`;
+
+SVG.baustelle=`<svg class="sk" viewBox="85 35 480 285">
+ <rect width="600" height="122" fill="#eaf4fb"/><rect y="120" width="600" height="200" fill="${SOIL}"/><rect y="118" width="600" height="7" fill="#7aa35a"/>
+ <rect x="250" y="118" width="80" height="182" fill="#f4efe6"/><line x1="250" y1="118" x2="250" y2="300" stroke="#8a6d3b" stroke-width="2"/><line x1="330" y1="118" x2="330" y2="300" stroke="#8a6d3b" stroke-width="2"/>
+ <line x1="236" y1="120" x2="236" y2="300" stroke="#555" stroke-width="1.4"/><text x="200" y="215" font-size="13" font-weight="700">1.70 m</text>
+ <path d="M331 118 L360 70 L425 58 L478 118Z" fill="#a98b5a"/>
+ <rect x="250" y="156" width="80" height="10" fill="#f2c200"/><path d="M286 154 l4 6 l-4 4 l5 6" stroke="#c0392b" stroke-width="2.5" fill="none"/>
+ <rect x="276" y="236" width="18" height="40" rx="4" fill="#f39c12"/><circle cx="285" cy="225" r="9" fill="#f1c6a0"/><rect x="278" y="276" width="6" height="22" fill="#34495e"/><rect x="287" y="276" width="6" height="22" fill="#34495e"/>
+ <rect x="300" y="268" width="20" height="30" rx="3" fill="#7f8c8d"/><text x="301" y="287" font-size="8" fill="#fff">Benzin</text>
+ <circle cx="318" cy="252" r="7" fill="#bbb" opacity=".8"/><circle cx="324" cy="240" r="9" fill="#ccc" opacity=".7"/><circle cx="316" cy="228" r="10" fill="#ddd" opacity=".6"/>
+ <g stroke="#7a5a2a" stroke-width="3"><line x1="317" y1="300" x2="317" y2="176"/><line x1="327" y1="300" x2="327" y2="176"/></g>
+ <g stroke="#7a5a2a" stroke-width="2">${[190,210,230,250,270,290].map(y=>`<line x1="317" y1="${y}" x2="327" y2="${y}"/>`).join("")}</g>
+ <g><rect x="150" y="98" width="80" height="9" fill="#fff" stroke="#c0392b"/>${[150,170,190,210].map(x=>`<rect x="${x}" y="98" width="10" height="9" fill="#c0392b"/>`).join("")}<line x1="155" y1="107" x2="155" y2="120" stroke="#333" stroke-width="2"/><line x1="225" y1="107" x2="225" y2="120" stroke="#333" stroke-width="2"/></g>
+ <rect x="100" y="84" width="20" height="34" rx="4" fill="#f39c12"/><circle cx="110" cy="74" r="9" fill="#f1c6a0"/><path d="M100 72 a10 9 0 0 1 20 0z" fill="#f2c200"/>
+ <polygon points="520,70 545,112 495,112" fill="#fff" stroke="#c0392b" stroke-width="4"/><text x="514" y="106" font-size="20" font-weight="700">!</text><line x1="520" y1="112" x2="520" y2="120" stroke="#333" stroke-width="3"/>
+</svg>`;
+
+SVG.ss=`<svg class="sk" viewBox="0 0 360 300">
+ <rect y="50" width="360" height="250" fill="${SOIL}"/><rect y="46" width="360" height="5" fill="#7aa35a"/>
+ <rect x="115" y="95" width="130" height="185" fill="#b9b9b9"/><rect x="127" y="95" width="106" height="173" fill="#f8fbfc"/>
+ <polygon points="115,95 245,95 195,55 115,55" fill="#b9b9b9"/><polygon points="127,95 233,95 186,62 127,62" fill="#f8fbfc"/>
+ <rect x="124" y="48" width="70" height="8" fill="#444"/>
+ <rect x="127" y="150" width="106" height="118" fill="#bfe0f5"/><rect x="127" y="242" width="106" height="26" fill="#8d6e4b"/>
+ <rect x="20" y="132" width="107" height="15" fill="#9fb7c4" stroke="#6b8794"/><rect x="233" y="140" width="110" height="15" fill="#9fb7c4" stroke="#6b8794"/>
+ <path d="M236 147 L214 147 Q201 147 201 160 L201 188" stroke="#555" stroke-width="13" fill="none"/>
+ ${dim(272,155,272,268)}
+ ${mk(1,212,38)}${mk(2,258,72)}${mk(3,60,118)}${mk(4,305,126)}${mk(5,170,178)}${mk(6,150,255)}${mk(7,290,212)}</svg>`;
+
+SVG.rohr=`<svg class="sk" viewBox="0 0 320 330">
+ <rect width="320" height="330" fill="${SOIL}"/><rect y="14" width="320" height="6" fill="#7aa35a"/>
+ <rect x="90" y="20" width="140" height="175" fill="#d6c095"/><rect x="90" y="195" width="140" height="40" fill="#f1e3b5"/>
+ <rect x="90" y="235" width="140" height="40" fill="#ead9a3"/><rect x="90" y="275" width="140" height="25" fill="#e2c57a"/>
+ <circle cx="160" cy="255" r="20" fill="#2f8f5a" stroke="#1d5e3a" stroke-width="2"/>
+ <line x1="98" y1="170" x2="222" y2="170" stroke="#c0392b" stroke-width="3" stroke-dasharray="8 5"/>
+ <line x1="86" y1="301" x2="234" y2="301" stroke="#333" stroke-width="3"/><line x1="90" y1="20" x2="90" y2="301" stroke="#8a6d3b" stroke-width="2"/><line x1="230" y1="20" x2="230" y2="301" stroke="#8a6d3b" stroke-width="2"/>
+ <g stroke="#333">${[[90,215],[170,215],[215,215],[245,222],[288,215]].map(([y,x])=>`<line x1="${x}" y1="${y}" x2="248" y2="${y}"/>`).join("")}<line x1="72" y1="255" x2="140" y2="255"/><line x1="72" y1="301" x2="90" y2="301"/></g>
+ ${mk(1,260,90)}${mk(2,260,170)}${mk(3,260,215)}${mk(4,260,245)}${mk(5,60,255)}${mk(6,260,288)}${mk(7,60,301)}</svg>`;
+
+SVG.rigole=`<svg class="sk" viewBox="0 0 440 262">
+ <rect y="40" width="440" height="222" fill="${SOIL}"/><rect y="36" width="440" height="5" fill="#7aa35a"/>
+ <rect x="165" y="120" width="165" height="72" fill="#ece7da"/>
+ ${Array.from({length:60},(_,i)=>`<circle cx="${172+(i*37)%152}" cy="${126+(i*23)%60}" r="${3+(i%3)}" fill="none" stroke="#9a8f78"/>`).join("")}
+ <line x1="165" y1="118" x2="330" y2="118" stroke="#222" stroke-width="3" stroke-dasharray="7 4"/>
+ <rect x="165" y="148" width="165" height="13" fill="#fff" stroke="#555"/>${Array.from({length:30},(_,i)=>`<line x1="${170+i*5.4}" y1="150" x2="${170+i*5.4}" y2="159" stroke="#777"/>`).join("")}
+ <rect x="28" y="38" width="54" height="134" fill="#9a9a9a"/><rect x="36" y="38" width="38" height="126" fill="#f8fbfc"/><rect x="36" y="110" width="38" height="54" fill="#bfe0f5"/><rect x="30" y="32" width="50" height="6" fill="#444"/>
+ <rect x="82" y="96" width="38" height="10" fill="#9fb7c4"/>
+ <rect x="118" y="38" width="48" height="138" fill="#9a9a9a"/><rect x="126" y="38" width="32" height="130" fill="#f8fbfc"/><rect x="126" y="140" width="32" height="28" fill="#bfe0f5"/><rect x="120" y="32" width="44" height="6" fill="#444"/>
+ <rect x="330" y="38" width="48" height="158" fill="#9a9a9a"/><rect x="338" y="38" width="32" height="150" fill="#f8fbfc"/><rect x="332" y="32" width="44" height="6" fill="#444"/>
+ <g fill="#1f6fa8">${[185,220,255,290].map(x=>`<path d="M${x} 196 v20 l-5 -6 m5 6 l5 -6" stroke="#1f6fa8" stroke-width="2" fill="none"/>`).join("")}</g>
+ <line x1="0" y1="248" x2="440" y2="248" stroke="#1f6fa8" stroke-width="2" stroke-dasharray="10 4 2 4"/><path d="M60 240 l7 -9 h-14z" fill="none" stroke="#1f6fa8" stroke-width="2"/>
+ ${dim(400,192,400,248)}
+ ${mk(1,55,20)}${mk(2,142,20)}${mk(3,252,180)}${mk(4,220,154)}${mk(5,190,106)}${mk(6,354,20)}${mk(7,420,220)}</svg>`;
+
+SVG.deckel=t=>{const holes=t==="gelocht"?Array.from({length:19},(_,i)=>{const a=i/19*6.28,r=i%2?22:38;return `<circle cx="${60+r*Math.cos(a)}" cy="${60+r*Math.sin(a)}" r="4" fill="#333"/>`}).join("")+'<circle cx="60" cy="60" r="4" fill="#333"/>'
+ :t==="geschlitzt"?[30,42,54,66,78,90].map(y=>`<path d="M30 ${y} q15 -6 30 0 t30 0" stroke="#333" stroke-width="5" fill="none"/>`).join(""):'<rect x="45" y="55" width="30" height="8" fill="#555"/><text x="60" y="88" font-size="10" text-anchor="middle" fill="#fff">VERSICKERUNG</text>';
+ return `<svg viewBox="0 0 120 120" width="96"><circle cx="60" cy="60" r="56" fill="#8a8f93" stroke="#555" stroke-width="3"/>${holes}</svg>`;};
+
+SVG.slope=(L,dh,p,unk,label,pn,puddle)=>{const pv=isNaN(pn)?parseFloat(p):pn;const y2=40+Math.min(70,Math.max(14,(isNaN(pv)?3:pv)*6));const t=(k,v)=>unk===k?"?":v;
+ return `<svg class="sk" viewBox="0 0 560 165"><polygon points="40,40 520,${y2} 520,140 40,140" fill="#e9d8b8" stroke="#8a6d3b"/>
+ <line x1="40" y1="40" x2="520" y2="${y2}" stroke="#1f6fa8" stroke-width="4"/><line x1="40" y1="40" x2="520" y2="40" stroke="#999" stroke-dasharray="6 5"/>
+ ${puddle?`<ellipse cx="300" cy="${40+(y2-40)*0.54-3}" rx="70" ry="6" fill="#5dade2" opacity=".85"/><text x="300" y="${40+(y2-40)*0.54-14}" font-size="13" text-anchor="middle" fill="#1f6fa8" font-weight="700">Pfütze!</text>`:`<circle cx="470" cy="${40+(y2-40)*0.9-6}" r="5" fill="#5dade2"/><text x="440" y="${40+(y2-40)*0.9-14}" font-size="12" fill="#1f6fa8">Wasser fliesst ab →</text>`}
+ <line x1="530" y1="40" x2="530" y2="${y2}" stroke="#b04a4a" stroke-width="2"/><text x="536" y="${(40+y2)/2+5}" fill="#b04a4a" font-size="15" font-weight="700">Δh ${t("dh",dh)}</text>
+ <line x1="40" y1="155" x2="520" y2="155" stroke="#333"/><text x="250" y="152" font-size="14" font-weight="700">L ${t("L",L)}</text>
+ <text x="150" y="${32+(y2-40)*0.25}" fill="#1f6fa8" font-size="15" font-weight="700">p ${t("p",p)}</text>
+ ${label?`<text x="40" y="22" font-size="13">${label}</text>`:""}</svg>`;};
+
+/* ================= Simulationen ================= */
+const SIM={};
+SIM.graben=(hide)=>v=>{
+ const S=70,d=v.d,U=v.art==="U-Graben",side=U?0:(v.mat==="rollig"?d:d/2),bw=0.6,top=bw+2*side;
+ const cx=280,y0=50,yb=y0+d*S,half=bw*S/2,ht=top*S/2;
+ const shore=U&&d>=1.5&&!hide;const ladder=d>=1.0;
+ const rand=U?0.5:1.0;
+ const vx=cx-ht-rand*S-95,vw=(cx+ht+95)-vx;
+ let g=`<svg class="sk" viewBox="${vx} 0 ${vw} ${Math.max(140,yb+30)}"><rect y="${y0}" width="560" height="${Math.max(140,yb+30)}" fill="${SOIL}"/><rect y="${y0-4}" width="560" height="5" fill="#7aa35a"/>
+  <polygon points="${cx-ht},${y0} ${cx+ht},${y0} ${cx+half},${yb} ${cx-half},${yb}" fill="#f8fbfc" stroke="#8a6d3b" stroke-width="2"/>
+  <path d="M${cx-ht-rand*S-80} ${y0} l40 -30 l40 30z" fill="#a98b5a"/>
+  ${dim(cx-ht-rand*S,y0-8,cx-ht,y0-8)}<text x="${cx-ht-rand*S/2}" y="${y0-14}" font-size="16" text-anchor="middle">${rand*100} cm</text>
+  ${dim(cx+ht+18,y0,cx+ht+18,yb)}<text x="${cx+ht+26}" y="${(y0+yb)/2}" font-size="17">${d.toFixed(2)} m</text>
+  <circle cx="${cx}" cy="${yb-12}" r="10" fill="#fff" stroke="#333" stroke-width="2"/>`;
+ if(shore)g+=`<rect x="${cx-half-6}" y="${y0-12}" width="6" height="${d*S}" fill="#d9a900"/><rect x="${cx+half}" y="${y0-12}" width="6" height="${d*S}" fill="#d9a900"/>`+
+  [0.3,0.65].map(f=>`<rect x="${cx-half}" y="${y0+d*S*f}" width="${half*2}" height="6" fill="#777"/>`).join("");
+ if(ladder){const lx=cx+half-14-(U?0:(side*S)*0.15);g+=`<g stroke="#7a5a2a" stroke-width="3"><line x1="${lx}" y1="${yb}" x2="${lx}" y2="${y0-30}"/><line x1="${lx+10}" y1="${yb}" x2="${lx+10}" y2="${y0-30}"/></g>`;}
+ g+=`<text x="10" y="${y0+20}" font-size="17">${U?"U-Graben":"V-Graben, "+v.mat}</text></svg>`;
+ const r=[["Tiefe",d.toFixed(2)+" m"],["Breite oben",top.toFixed(2)+" m"],["Leiter",ladder?"nötig (ab 1.00 m)":"nicht nötig",ladder?"warn":"good"],["Freier Grabenrand","mind. "+rand*100+" cm"]];
+ if(U&&!hide)r.push(["Spriessung",d>=1.5?"Pflicht (ab 1.50 m)":"nicht nötig",d>=1.5?"warn":"good"]);
+ if(!U)r.push(["Böschung",v.mat==="rollig"?"1 : 1":"2 : 1"]);
+ return{svg:g,r};};
+SIM.misch=v=>{
+ const M=v.sys==="Mischsystem",load=M?40+4*v.r:40,over=M&&load>100;const pct=Math.min(load,160);
+ const g=`<svg class="sk" viewBox="0 0 560 210"><rect width="560" height="210" fill="#f8fbfc"/>
+  ${v.r>0?Array.from({length:Math.min(30,v.r)},(_,i)=>`<line x1="${(i*53)%540+10}" y1="${(i*17)%40+5}" x2="${(i*53)%540+4}" y2="${(i*17)%40+17}" stroke="#5dade2" stroke-width="2"/>`).join(""):""}
+  <rect x="30" y="70" width="90" height="70" fill="#f5e6c8" stroke="#555"/><polygon points="22,72 75,38 128,72" fill="#c0392b"/><text x="75" y="112" font-size="17" text-anchor="middle">Haus</text>
+  <line x1="120" y1="130" x2="330" y2="130" stroke="${M?"#7b3fa0":"#d32f2f"}" stroke-width="7"/><text x="160" y="122" font-size="16">${M?"Mischwasser":"Schmutzwasser"}</text>
+  ${M?"":`<line x1="100" y1="70" x2="100" y2="60" stroke="#29b6f6" stroke-width="5"/><path d="M100 60 L170 60 L170 175" stroke="#29b6f6" stroke-width="5" fill="none"/><ellipse cx="190" cy="185" rx="45" ry="12" fill="#a8d5a2"/><text x="190" y="205" font-size="16" text-anchor="middle">Versickerungsmulde</text>`}
+  <rect x="330" y="90" width="120" height="80" rx="8" fill="#eceff1" stroke="#333"/><text x="390" y="84" font-size="18" text-anchor="middle" font-weight="700">ARA</text>
+  <rect x="340" y="${160-Math.min(pct,100)*0.6}" width="100" height="${Math.min(pct,100)*0.6}" fill="${over?"#e74c3c":"#5dade2"}"/>
+  <path d="M330 175 Q 380 200 450 195 L560 195" stroke="#2e86c1" stroke-width="10" fill="none"/><text x="505" y="186" font-size="17">Bach</text>
+  ${over?`<path d="M300 130 L300 190" stroke="#e74c3c" stroke-width="5"/><text x="230" y="168" font-size="17" fill="#c0392b" font-weight="700">Überlauf: ungereinigt in den Bach!</text>`:""}</svg>`;
+ return{svg:g,r:[["Regen",v.r+" mm/h"],["ARA-Belastung",load+" %",load>100?"warn":"good"],["Überlauf in den Bach",over?"JA":"nein",over?"warn":"good"]]};};
+SIM.schacht=v=>{
+ const S=60,t=v.t,o=v.o,yb=40+t*S,w=o*1.1,cx=280,step=t>1.2;const pers=v.z==="Personen steigen ein";
+ let g=`<svg class="sk" viewBox="170 20 310 ${yb+20}"><rect y="40" width="560" height="${yb}" fill="${SOIL}"/><rect y="36" width="560" height="5" fill="#7aa35a"/>
+  <rect x="${cx-w/2-10}" y="40" width="${w+20}" height="${t*S+10}" fill="#b9b9b9"/><rect x="${cx-w/2}" y="40" width="${w}" height="${t*S}" fill="#f8fbfc"/>
+  <rect x="${cx-w/2-12}" y="34" width="${w+24}" height="7" fill="#444"/>${dim(cx-w/2,yb+18,cx+w/2,yb+18)}<text x="${cx}" y="${yb+15}" font-size="16" text-anchor="middle">Ø ${o} cm</text>
+  ${dim(cx+w/2+30,40,cx+w/2+30,yb)}<text x="${cx+w/2+38}" y="${(40+yb)/2}" font-size="17">${t.toFixed(2)} m</text>`;
+ if(step)for(let y=70;y<yb-10;y+=22)g+=`<line x1="${cx-w/2}" y1="${y}" x2="${cx-w/2+10}" y2="${y}" stroke="#333" stroke-width="4"/>`;
+ if(pers){const ok=o>=80;g+=`<g transform="translate(${cx-8},${Math.max(60,yb-70)})"><circle cx="8" cy="0" r="9" fill="#f1c6a0"/><rect x="0" y="10" width="17" height="34" rx="4" fill="${ok?"#f39c12":"#e74c3c"}"/></g>`;}
+ if(v.z==="nur Kamera / Spülung")g+=`<rect x="${cx-6}" y="${Math.max(50,yb-30)}" width="12" height="18" fill="#333"/><text x="${cx+12}" y="${Math.max(62,yb-18)}" font-size="16">Kamera</text>`;
+ g+="</svg>";
+ return{svg:g,r:[["Tiefe",t.toFixed(2)+" m"],["Durchmesser","Ø "+o+" cm"],["Steigeisen",step?"vorhanden (Tiefe > 1.20 m)":"keine"]]};};
+SIM.leitung=v=>{
+ const L=18.5,h0=451.70,dh=L*v.p/100,e=h0-dh,ms=451.50;
+ const Y=h=>60+(451.80-h)*400;const ye=Y(e);
+ const st=v.p<1?["zu flach (min. 1 %)","warn"]:v.p>5?["zu steil (max. 5 %)","warn"]:v.p===3?["Idealgefälle (3 %)","good"]:["normgerecht","good"];
+ const g=`<svg class="sk" viewBox="0 0 560 230"><rect width="560" height="230" fill="${SOIL}"/>
+  <rect x="30" y="20" width="44" height="${Y(h0)-20+30}" fill="#9a9a9a"/><text x="52" y="14" font-size="16" text-anchor="middle">SS</text>
+  <line x1="74" y1="${Y(h0)}" x2="470" y2="${Math.min(225,ye)}" stroke="#2f8f5a" stroke-width="8"/>
+  <path d="M440 ${Y(ms)-38} Q 500 ${Y(ms)+6} 556 ${Y(ms)-38}" fill="#a8d5a2" stroke="#2f7a4a"/><line x1="440" y1="${Y(ms)}" x2="556" y2="${Y(ms)}" stroke="#2f7a4a" stroke-dasharray="5 4"/>
+  <text x="498" y="${Y(ms)+16}" font-size="16" text-anchor="middle">Muldensohle 451.50</text>
+  <text x="80" y="${Y(h0)-10}" font-size="16">451.70</text><text x="300" y="${Math.min(222,ye)+18}" font-size="17" font-weight="700">Ende: ${e.toFixed(3)}</text>
+  <text x="200" y="40" font-size="17">Länge 18.50 m · Gefälle ${v.p.toFixed(1)} %</text></svg>`;
+ return{svg:g,r:[["Höhendifferenz",(dh*100).toFixed(1)+" cm"],["Leitungsende",e.toFixed(3)+" m ü. M.",e>=ms?"good":"warn"],["Norm Sammelleitung",st[0],st[1]],["Ankunft",e>=ms?"über der Muldensohle":"unter der Muldensohle!",e>=ms?"good":"warn"]]};};
+SIM.mulde=v=>{
+ const V=v.A*v.R/1000,h=V/v.M*100,over=h>v.t;
+ const Y0=60,S=5,mw=Math.min(380,v.M*9+60);const cx=300;
+ const g=`<svg class="sk" viewBox="0 0 560 250"><rect width="560" height="250" fill="#f8fbfc"/><rect y="${Y0}" width="560" height="190" fill="${SOIL}"/><rect y="${Y0-4}" width="560" height="5" fill="#7aa35a"/>
+  <rect x="20" y="10" width="110" height="46" fill="#bbb"/><text x="75" y="38" font-size="16" text-anchor="middle">${v.A} m² versiegelt</text>
+  <path d="M130 50 L${cx-mw/2} ${Y0+8}" stroke="#29b6f6" stroke-width="4"/>
+  <path d="M${cx-mw/2} ${Y0} L${cx-mw/2+20} ${Y0+v.t*S} L${cx+mw/2-20} ${Y0+v.t*S} L${cx+mw/2} ${Y0}Z" fill="#cfe8c7" stroke="#2f7a4a" stroke-width="2"/>
+  <rect x="${cx-mw/2+20}" y="${Y0+v.t*S-Math.min(h,v.t)*S}" width="${mw-40}" height="${Math.min(h,v.t)*S}" fill="#5dade2" opacity=".75"/>
+  ${dim(cx+mw/2+12,Y0,cx+mw/2+12,Y0+v.t*S)}<text x="${cx+mw/2+18}" y="${Y0+v.t*S/2+4}" font-size="16">${v.t} cm tief</text>
+  <rect x="${cx+mw/2-6}" y="${Y0-2}" width="8" height="40" fill="#777"/><text x="${cx+mw/2-60}" y="${Y0-10}" font-size="16">Notüberlauf</text>
+  ${over?`<text x="${cx}" y="${Y0+v.t*S+40}" font-size="18" fill="#c0392b" font-weight="700" text-anchor="middle">Notüberlauf springt an!</text>`:`<text x="${cx}" y="${Y0+v.t*S+40}" font-size="17" fill="#2f7a4a" text-anchor="middle">Wasser versickert langsam durch den Oberboden</text>`}
+  ${Array.from({length:6},(_,i)=>`<path d="M${cx-mw/2+40+i*(mw-80)/5} ${Y0+v.t*S+6} v16" stroke="#1f6fa8" stroke-width="2"/>`).join("")}</svg>`;
+ return{svg:g,r:[["Wasservolumen",V.toFixed(2)+" m³ = "+Math.round(V*1000)+" l"],["Wasserhöhe in der Mulde",h.toFixed(1)+" cm"],["Notüberlauf",over?"springt an":"nein",over?"warn":"good"]]};};
+const PSI={"Asphalt":0.9,"Pflaster dicht":0.75,"Pflaster offene Fugen":0.5,"Schotterrasen":0.3,"Sickerpflaster":0.25,"Rasengitter":0.15};
+SIM.psi=v=>{
+ const p=PSI[v.b],Q=v.F*v.R*p,tot=v.F*v.R;
+ const g=`<svg class="sk" viewBox="0 0 560 150"><rect width="560" height="150" fill="#f8fbfc"/>
+  <rect x="20" y="20" width="200" height="110" rx="8" fill="${{"Asphalt":"#555","Pflaster dicht":"#b8a99a","Pflaster offene Fugen":"#c8b7a6","Schotterrasen":"#b5c99a","Sickerpflaster":"#a1887f","Rasengitter":"#8bc34a"}[v.b]}"/><text x="120" y="80" font-size="18" fill="#fff" text-anchor="middle" font-weight="700">${v.b}</text>
+  <text x="250" y="40" font-size="17">Regen total: ${Math.round(tot)} l</text>
+  <rect x="250" y="50" width="280" height="22" fill="#e6eef3"/><rect x="250" y="50" width="${280*p}" height="22" fill="#e74c3c"/><text x="255" y="66" font-size="16" fill="#fff">fliesst ab</text>
+  <rect x="250" y="90" width="280" height="22" fill="#e6eef3"/><rect x="250" y="90" width="${280*(1-p)}" height="22" fill="#2f7a4a"/><text x="255" y="106" font-size="16" fill="#fff">versickert / verdunstet vor Ort</text></svg>`;
+ return{svg:g,r:[["Abflussbeiwert ψ",p.toFixed(2)],["Abfluss",Math.round(Q)+" l",Q<=300?"good":"warn"],["bleibt vor Ort",Math.round(tot-Q)+" l"]]};};
+
+/* ================= Inhalte ================= */
+const mc=(id,q,o,a,ex,h)=>({id,t:"mc",q,o,a,ex,h});
+const POOLS={};
+
+/* ---------- 1 Graben ---------- */
+POOLS.graben=[
+ {id:"g_sim1",t:"sim",q:"Simulation: Stelle beim U-Graben die kleinste Tiefe ein, ab der gespriesst werden muss. Dann «Prüfen».",
+  ctx:"Probiere zuerst aus: Was verändert sich, wenn du die Tiefe vergrösserst?",
+  opt:[{k:"art",l:"Grabenart",c:["U-Graben","V-Graben"],v:"U-Graben"},{k:"mat",l:"Material",c:["standfest","rollig"],v:"standfest"}],
+  ctl:[{k:"d",l:"Grabentiefe",min:0.5,max:2.5,st:0.1,v:0.8,u:"m",d:2}],draw:SIM.graben(true),
+  goal:v=>({ok:v.art==="U-Graben"&&Math.abs(v.d-1.5)<0.01,msg:"Ab 1.50 m Tiefe muss ein U-Graben gespriesst werden (oder als V-Graben geböscht)."}),
+  h:["Die Leiter braucht es schon früher – die Spriessung kommt später.","Die Grenze liegt zwischen 1.00 m und 2.00 m.","Es ist 1.50 m."]},
+ {id:"g_sim2",t:"sim",q:"Simulation: V-Graben in rolligem Material. Stelle die Tiefe so ein, dass der Graben oben genau 3.00 m breit ist.",
+  opt:[{k:"art",l:"Grabenart",c:["U-Graben","V-Graben"],v:"V-Graben"},{k:"mat",l:"Material",c:["standfest","rollig"],v:"standfest"}],
+  ctl:[{k:"d",l:"Grabentiefe",min:0.5,max:2.5,st:0.1,v:1.0,u:"m",d:2}],draw:SIM.graben(false),
+  goal:v=>({ok:v.art==="V-Graben"&&v.mat==="rollig"&&Math.abs(v.d-1.2)<0.01,msg:"Rollig = 1 : 1 → Breite oben = 0.60 + 2 × Tiefe. 0.60 + 2 × 1.20 = 3.00 m."}),
+  h:["Rolliges Material wird mit 1 : 1 geböscht: pro Meter Tiefe 1 m zur Seite.","Breite oben = Sohlenbreite 0.60 m + 2 × Böschungsbreite.","3.00 − 0.60 = 2.40 m → je Seite 1.20 m."]},
+ {id:"g_sim3",t:"sim",q:"Simulation: V-Graben in standfestem Material. Wie tief darf er höchstens sein, damit er oben nicht breiter als 2.00 m wird? Stelle die Tiefe ein.",
+  opt:[{k:"art",l:"Grabenart",c:["U-Graben","V-Graben"],v:"V-Graben"},{k:"mat",l:"Material",c:["standfest","rollig"],v:"rollig"}],
+  ctl:[{k:"d",l:"Grabentiefe",min:0.5,max:2.5,st:0.1,v:0.8,u:"m",d:2}],draw:SIM.graben(false),
+  goal:v=>({ok:v.art==="V-Graben"&&v.mat==="standfest"&&Math.abs(v.d-1.4)<0.01,msg:"Standfest = 2 : 1 → je Seite Tiefe : 2. 0.60 + 1.40 = 2.00 m."}),
+  h:["Achte auf das Material: standfest!","Standfest 2 : 1: Pro 2 m Tiefe nur 1 m zur Seite.","Breite oben = 0.60 + Tiefe."]},
+ {id:"g_hot",t:"hot",q:"Fehlersuche auf der Baustelle Meier: Markiere alle sicherheitswidrigen Stellen.",svg:SVG.baustelle,
+  spots:[{x:262,y:205,r:24,err:1,fb:"Keine Spriessung bei 1.70 m Tiefe (ab 1.50 m spriessen oder böschen)."},
+   {x:395,y:92,r:26,err:1,fb:"Aushub direkt am Grabenrand – mind. 50 cm freihalten."},
+   {x:285,y:222,r:15,err:1,fb:"Kein Helm im Graben."},
+   {x:310,y:262,r:20,err:1,fb:"Benzinmotor im Graben – Abgase (CO) sammeln sich am Grabengrund."},
+   {x:322,y:182,r:15,err:1,fb:"Leiter zu kurz – sie muss über den Grabenrand hinausragen."},
+   {x:282,y:161,r:16,err:1,fb:"Gelbe Gasleitung angekratzt – Werkleitungspläne nicht eingeholt, keine Sondierung."},
+   {x:190,y:103,r:22,err:0,fb:"Absperrung – korrekt."},{x:110,y:82,r:18,err:0,fb:"Arbeiter oben mit Helm – korrekt."},{x:520,y:96,r:22,err:0,fb:"Baustellensignal – korrekt."}],
+  ex:"Sicherheit im Graben: Spriessung/Böschung, freier Grabenrand, Helm, keine Verbrennungsmotoren, Leiter, Werkleitungen abklären.",
+  h:["Es sind 6 Fehler versteckt.","Schau dir den Grabenrand, die Grabenwände und alles im Graben genau an.","Denk an: Wände, Aushub, Kopf, Motor, Fluchtweg, Leitung."]},
+ {id:"g_label",t:"label",q:"Grafik beschriften: Gespriesster U-Graben (Lehrmittel S. 107).",svg:SVG.uGraben,
+  labels:["freier Grabenrand mind. 50 cm","Dielen mind. 15 cm über Rand","lichte Breite mind. 60 cm","max. 80 cm bis zur Sohle","Spriesse","Diele (Grabenverbau)"],extra:["mind. 100 cm","Warnband"],
+  h:["Rote Masslinien zeigen Mindest- oder Maximalmasse.","Die 50 cm gelten beim U-Graben, 100 cm beim V-Graben.","Die waagrechten grauen Balken sind Spriessen, die gelben senkrechten Bretter Dielen."]},
+ {id:"g_match",t:"match",q:"Paare verknüpfen: Welche Regel gehört zu welchem Wert?",
+  pairs:[["Leiter anstellen ab","1.00 m Tiefe"],["Spriessen oder böschen ab","1.50 m Tiefe"],["Böschung standfestes Material","2 : 1"],["Böschung rolliges Material","1 : 1"],["Warnband über Gas-, Wasser-, Elektroleitung","20–30 cm"],["Erster maschineller Verdichtungsdurchgang","30 cm über Schutzschicht"]],
+  h:["Zwei Paare sind Tiefen, zwei sind Böschungsverhältnisse.","Rolliges Material braucht die flachere Böschung."]},
+ {id:"g_sort",t:"sort",q:"Sortieren: Bringe den Arbeitsablauf für einen Leitungsgraben in die richtige Reihenfolge.",
+  items:["Werkleitungspläne einholen, Bewilligung beantragen","Leitungsverlauf abstecken, Höhen festlegen","Baustelle absperren und signalisieren","Sondiergräben von Hand","Aushub vom tiefsten Punkt her","Spriessen bzw. böschen, Leiter stellen","Leitung verlegen, Abnahme","Schutzschicht, Warnband, Grabenfüllung lagenweise"],
+  h:["Zuerst wird abgeklärt und geplant, erst dann gegraben.","Sondieren kommt vor dem maschinellen Aushub.","Zugedeckt wird erst nach der Abnahme."]},
+ {id:"g_cat",t:"cat",q:"Zuordnen: U-Graben oder V-Graben?",buckets:["U-Graben","V-Graben"],
+  chips:[["braucht wenig Platz",0],["gespriesst ab 1.50 m",0],["geeignet direkt neben der Fassade",0],["freier Grabenrand mind. 50 cm",0],["geböschte Wände",1],["mehr Aushub",1],["freier Grabenrand mind. 100 cm",1],["geeignet auf freier Wiese",1]],
+  h:["U = senkrechte Wände, V = schräge Wände.","Schräge Wände brauchen viel Platz und mehr Aushub."]},
+ {id:"g_gap",t:"gap",q:"Lückentext: Grabenfüllung",text:"Die Grabenfüllung wird [[lagenweise]] eingebaut. Maschinell verdichtet wird erst [[30 cm]] über der [[Schutzschicht]]. In Grünflächen wird die Füllung um [[5–10 %]] überhöht, weil sie sich setzt. Das Grösstkorn beträgt höchstens [[100 mm]].",
+  extra:["10 cm","Bettung","50 %","300 mm"],h:["Das Rohr darf beim Verdichten nicht beschädigt werden.","Die Füllung sackt mit der Zeit ab."]},
+ {id:"g_branch",t:"branch",q:"Fallgeschichte: Montagmorgen auf der Baustelle Meier. Du bist heute verantwortlich.",start:"a",nodes:{
+  a:{t:"<span class='who2'>Situation:</span> Jan hat am Freitag einen <b>1.70 m tiefen U-Graben</b> ausgehoben, nicht gespriesst. Jetzt will er hinuntersteigen und die Leitung verlegen. Was tust du?",
+   c:[{t:"Einsteigen lassen – der Graben hat übers Wochenende gehalten.",p:0,fb:"Gefährlich! Ab 1.50 m muss gespriesst oder geböscht werden. Grabenwände können jederzeit einbrechen, besonders nach Regen.",to:"a2"},
+      {t:"Niemand steigt ein. Zuerst wird gespriesst.",p:1,fb:"Richtig: ab 1.50 m spriessen oder böschen.",to:"b"},
+      {t:"Einsteigen, aber nur kurz und mit Helm.",p:0,fb:"Der Helm schützt nicht vor einer Verschüttung.",to:"a2"}]},
+  a2:{t:"Der Bauführer stoppt die Arbeit: Zuerst wird gespriesst.",c:[{t:"Verstanden – wir spriessen.",to:"b"}]},
+  b:{t:"Der Graben ist gespriesst. Der Aushub liegt aber direkt an der Grabenkante.",
+   c:[{t:"Aushub wegschieben: Grabenrand mind. 50 cm frei.",p:1,fb:"Genau – zusätzliche Last am Rand drückt auf die Spriessung, Material kann abrutschen.",to:"c"},
+      {t:"So lassen, die Spriessung hält das schon aus.",p:0,fb:"Nein: Der Grabenrand muss frei sein (Last, herabfallendes Material).",to:"c"},
+      {t:"Einen Teil des Aushubs in den Graben zurückschieben.",p:0,fb:"Dann ist der Graben wieder gefüllt – und das Problem nicht gelöst.",to:"c"}]},
+  c:{t:"Beim Weitergraben kratzt der Bagger ein <b>gelbes Kunststoffrohr</b> an. Es riecht leicht.",
+   c:[{t:"Sofort stoppen, Motor aus, Personen weg, Vorgesetzte und Gaswerk (Notfallnummer) informieren.",p:1,fb:"Richtig. Gelb = Gas. Keine Funken, nichts selber reparieren.",to:"z"},
+      {t:"Mit Klebeband abdichten und weiterarbeiten.",p:0,fb:"Lebensgefährlich – Gasleitungen repariert nur das Werk.",to:"z"},
+      {t:"Vorsichtiger weiterbaggern.",p:0,fb:"Nein: sofort stoppen und melden.",to:"z"}]},
+  z:{end:1,t:"🏁 Szenario beendet. Merke: Werkleitungspläne einholen und Sondiergräben von Hand <b>vor</b> dem Baggern hätten den Schaden verhindert."}},
+  ex:"Im Graben gilt: zuerst Sicherheit, dann Tempo."},
+ {id:"g_num1",t:"num",q:"V-Graben: Tiefe 1.50 m, Sohlenbreite 0.60 m, rolliges Material (1 : 1). Wie breit ist der Graben oben?",ans:3.60,unit:"m",tol:0.01,ex:"0.60 + 2 × 1.50 = 3.60 m",h:["Rollig 1 : 1 → je Seite so breit wie tief.","Breite oben = 0.60 + 2 × 1.50."]},
+ {id:"g_num2",t:"num",q:"V-Graben 12.00 m lang, Querschnitt (Trapez) 4.32 m². Wie viele m³ Aushub (fest)?",ans:51.84,unit:"m³",tol:0.05,ex:"4.32 × 12.00 = 51.84 m³",h:["Volumen = Querschnittsfläche × Länge."]},
+ mc("g_mc1","Darf im Graben ein Vibrationsstampfer mit Benzinmotor laufen?",["Ja, wenn es schnell geht","Nein, die Abgase (CO) sammeln sich im Graben","Ja, ab 1.50 m Tiefe","Nur mit Helm"],1,"Abgase sind schwerer als Luft und sammeln sich am Grabengrund.",["Denk an die Abgase."]),
+ mc("g_mc2","Wo beginnt der Aushub eines Leitungsgrabens?",["Beim höchsten Punkt","Beim tiefsten Punkt","In der Mitte","Egal"],1,"Beim tiefsten Punkt, damit das Wasser im Graben abfliessen kann.",["Was passiert, wenn es regnet?"]),
+ mc("g_mc3","Wann wird eine Leitung mit einem horizontal gesteuerten Bohrgerät eingebaut?",["Immer im Garten","Unter Strassen, Bahnlinien, Gebäuden oder Bäumen, wo nicht offen gegraben werden kann","Nur bei Gasleitungen","Nie im Gartenbau"],1,"Grabenlose Verlegung (Pressvortrieb, Bohrgerät).",["Was ist, wenn ein Graben nicht möglich ist?"]),
+];
+
+/* ---------- 2 Abwasser ---------- */
+POOLS.abwasser=[
+ {id:"a_cat",t:"cat",q:"Zuordnen: Wohin gehört das Abwasser?",buckets:["nicht verschmutzt → versickern","verschmutzt → Schmutzwasser → ARA","verschmutzt → Vorbehandlung (Ölabscheider)"],
+  chips:[["Dachwasser",0],["Wasser vom Sitzplatz",0],["Drainagewasser",0],["Hangwasser",0],["WC",1],["Küche",1],["Waschmaschine",1],["Dusche",1],["Waschplatz Maschinen",2],["Tankstelle",2]],
+  h:["Regen, der nur über saubere Flächen läuft, ist nicht verschmutzt.","Alles aus dem Haus ist verschmutzt.","Öl und Treibstoff brauchen einen Ölabscheider."]},
+ {id:"a_sim",t:"sim",q:"Simulation Starkregen: Stelle im Mischsystem den Regen so ein, dass der Überlauf gerade zum ersten Mal anspringt.",
+  ctx:"Die ARA kann 100 % verarbeiten. Was passiert bei mehr Wasser?",
+  opt:[{k:"sys",l:"System",c:["Mischsystem","Trennsystem"],v:"Mischsystem"}],ctl:[{k:"r",l:"Regen",min:0,max:40,st:1,v:0,u:"mm/h",d:0}],draw:SIM.misch,
+  goal:v=>({ok:v.sys==="Mischsystem"&&v.r===16,msg:"Ab 16 mm/h ist die ARA im Mischsystem überlastet: ungereinigtes Wasser läuft in den Bach. Im Trennsystem bleibt die ARA bei jedem Regen bei 40 %."}),
+  h:["Beobachte die ARA-Belastung.","Der Überlauf springt an, sobald mehr als 100 % ankommt.","Zwischen 15 und 20 mm/h."]},
+ {id:"a_sim2",t:"sim",q:"Simulation: Bei 30 mm/h Regen soll die ARA unter 100 % bleiben. Stelle Regen und System passend ein.",
+  opt:[{k:"sys",l:"System",c:["Mischsystem","Trennsystem"],v:"Mischsystem"}],ctl:[{k:"r",l:"Regen",min:0,max:40,st:1,v:10,u:"mm/h",d:0}],draw:SIM.misch,
+  goal:v=>({ok:v.sys==="Trennsystem"&&v.r===30,msg:"Im Trennsystem gelangt das Regenwasser nicht in die ARA – es versickert. Darum trennt man auf dem Grundstück."}),
+  h:["Regen auf 30 mm/h stellen.","Welches System hält das Regenwasser von der ARA fern?"]},
+ {id:"a_match",t:"match",q:"Paare verknüpfen: Begriff und Erklärung",
+  pairs:[["Mischsystem","Schmutz- und Regenwasser in einer Leitung"],["Trennsystem","getrennte Leitungen für Schmutz- und Regenwasser"],["Vorfluter","offenes Gewässer (Bach, Fluss)"],["ARA","Kläranlage"],["Retention","Regenwasser zurückhalten, gedrosselt abgeben"],["Meteorwasser","Regenwasser"]],
+  h:["«Meteor» hat mit dem Wetter zu tun.","Retention = zurückhalten."]},
+ {id:"a_sort",t:"sort",q:"Sortieren: Muttenz – Umgang mit Regenwasser (1. Wahl zuoberst).",items:["Vermeiden bzw. nutzen (durchlässige Beläge, Begrünung)","Auf dem Grundstück versickern","Gedrosselt in ein Gewässer","Gedrosselt in den Mischwasserkanal"],
+  h:["Das Beste ist, wenn gar kein Abfluss entsteht.","Der Mischwasserkanal ist die letzte Möglichkeit."]},
+ {id:"a_gap",t:"gap",q:"Lückentext: Die Muttenzer Vorgaben",
+  text:"Pro Parzelle gibt es nur [[einen]] Anschluss an die Kanalisation. Schmutz- und Sauberwasser werden bis zum letzten [[Kontrollschacht]] getrennt geführt. Nicht verschmutztes Wasser soll vorrangig [[versickern]]. Zurückgehalten werden mind. [[12 mm]] Regen der versiegelten Fläche. Auf Plänen ist Schmutzwasser [[rot]] und Regenwasser [[hellblau]].",
+  extra:["zwei","Schlammsammler","50 mm","grün"],h:["Schau im Kurzmerkblatt Muttenz im Dossier nach.","Die Retention ist eine kleine Regenmenge in mm."]},
+ {id:"a_ft",t:"ftext",list:1,q:"Fehlersuche: Lernender Tim beschreibt die Entwässerung Meier. Markiere die falschen Aussagen.",
+  segs:[["Dachwasser fliesst über Schlammsammler in die Versickerungsmulde.",""],["Das Küchenabwasser leiten wir auch in die Mulde, es ist ja nur Spülwasser.","Küchenabwasser ist verschmutzt → Schmutzwasserleitung → ARA."],
+   ["Der Sitzplatz entwässert über die Schulter in den Rasen.",""],["Die Einfahrt entwässert über das Trottoir in die Strasse.","Kein Wasser auf öffentlichen Grund: Anschlag 2.5 cm bzw. Rinne."],
+   ["Für Dach- und Schmutzwasser bauen wir zwei Anschlüsse an den Mischwasserkanal.","Muttenz: nur ein Anschluss, getrennt bis zum letzten KS."],["Auf dem Plan ist Schmutzwasser rot und Regenwasser hellblau.",""]],
+  h:["Es sind 3 Fehler.","Prüfe jede Aussage mit dem Kurzmerkblatt Muttenz."]},
+ {id:"a_cmap",t:"cmap",q:"Concept-Map: Zeichne den Weg jedes Wassers mit Pfeilen ein.",ht:440,
+  nodes:[{t:"Dach",x:15,y:9,src:1},{t:"Sitzplatz",x:15,y:36,src:1},{t:"WC / Küche",x:15,y:63,src:1},{t:"Waschplatz",x:15,y:90,src:1},
+   {t:"Schlamm\u00adsammler",x:48,y:9},{t:"Schulter (Rasen)",x:48,y:36},{t:"Schmutz\u00adwasser\u00adleitung",x:48,y:63},{t:"Öl\u00adabscheider",x:48,y:90},
+   {t:"Versicke\u00adrungs\u00admulde",x:85,y:22},{t:"ARA",x:85,y:76}],
+  edges:[["0","4","Dachwasser zuerst in den SS"],["4","8","dann versickern"],["1","5","über die Schulter"],["2","6",""],["6","9",""],["3","7","Vorbehandlung"],["7","9","über die Kanalisation"]],
+  ex:"Sauberes Wasser versickert, verschmutztes geht in die ARA – Öl zuerst in den Ölabscheider.",
+  h:["Es braucht 7 Pfeile.","Jede Quelle links hat genau einen Pfeil nach rechts. Von der zweiten Spalte gehen zwei Pfeile zur ARA und einer zur Mulde.","Waschplatz → Ölabscheider → ARA."]},
+ {id:"a_branch",t:"branch",q:"Fallgeschichte: Kundengespräch mit Frau Meier.",start:"a",nodes:{
+  a:{t:"<span class='who2'>Frau Meier:</span> «Warum leiten wir das Dachwasser nicht einfach in den Mischwasserkanal? Der ist ja schon da.»",
+   c:[{t:"Die Gemeinde verlangt, dass sauberes Regenwasser vorrangig versickert (§ 9). Das entlastet Kanal und Kläranlage.",p:1,fb:"Fachlich korrekt und kundenfreundlich erklärt.",to:"b"},
+      {t:"Weil es billiger ist.",p:0.5,fb:"Nicht immer richtig – eine Mulde kostet auch. Das Hauptargument ist das Reglement und der Gewässerschutz.",to:"b"},
+      {t:"Das machen wir halt immer so.",p:0,fb:"Kein Argument – die Kundin will verstehen, warum.",to:"b"}]},
+  b:{t:"<span class='who2'>Frau Meier:</span> «Und wenn es mal ganz stark regnet? Läuft dann unser Garten über?»",
+   c:[{t:"Die Mulde hält mind. 12 mm Regen zurück. Bei Starkregen läuft das Wasser über einen sichtbaren Notüberlauf ab.",p:1,fb:"Genau – Retention plus Notüberlauf.",to:"c"},
+      {t:"Nein, das passiert nie.",p:0,fb:"Falsches Versprechen. Darum gibt es den Notüberlauf.",to:"c"},
+      {t:"Dann müssen Sie abpumpen.",p:0,fb:"Nein – der Notüberlauf regelt das automatisch.",to:"c"}]},
+  c:{t:"<span class='who2'>Frau Meier:</span> «Können wir das Wasser vom Autowaschplatz auch in die Mulde leiten?»",
+   c:[{t:"Nein. Das Wasser ist verschmutzt (Öl, Reinigungsmittel) und gehört über Schlammsammler und Ölabscheider in die Kanalisation – mit Bewilligung.",p:1,fb:"Richtig: verschmutztes Wasser nie versickern.",to:"z"},
+      {t:"Ja, der Boden filtert alles.",p:0,fb:"Öl und Reinigungsmittel gefährden das Grundwasser.",to:"z"},
+      {t:"Ja, wenn Sie wenig Seife brauchen.",p:0,fb:"Auch dann bleibt das Wasser verschmutzt.",to:"z"}]},
+  z:{end:1,t:"🏁 Gespräch beendet. Gute Kundengespräche verbinden Fachwissen mit verständlichen Begründungen."}}},
+ mc("a_mc1","Was passiert im Mischsystem bei Starkregen?",["Nichts","Die ARA wird überlastet, ungereinigtes Wasser läuft in Gewässer","Das Wasser versickert","Die Leitungen gefrieren"],1,"Darum ist das Mischsystem ungünstig.",["Die ARA hat eine begrenzte Kapazität."]),
+ mc("a_mc2","Muttenz: Bis wohin werden Schmutz- und Sauberwasser getrennt?",["bis zur Hausmauer","bis zum letzten Kontrollschacht an der Parzellengrenze","gar nicht","bis zur ARA"],1,"Auch wenn in der Strasse ein Mischwasserkanal liegt.",["Es ist ein Schacht."]),
+];
+
+/* ---------- 3 Schacht ---------- */
+POOLS.schacht=[
+ {id:"s_label",t:"label",q:"Grafik beschriften: Schlammsammler im Schnitt.",svg:SVG.ss,
+  labels:["Deckel","Konus exzentrisch","Einlauf (5 cm höher)","Auslauf","Tauchbogen","Schlammraum","Nutztiefe mind. 1.00 m"],extra:["Steigeisen","Geotextil"],
+  h:["Das Wasser kommt links herein und geht rechts hinaus.","Der gebogene Rohrteil taucht ins Wasser.","Die Masslinie misst von der Auslaufsohle bis zum Boden."]},
+ {id:"s_match",t:"match",q:"Paare verknüpfen: Welcher Deckel passt?",
+  pairs:[["Gussdeckel gelocht oder geschlitzt","Schlammsammler im Kiesplatz, Wasser läuft von oben ein"],["Geschlossener Deckel, abschliessbar, «Versickerung»","Versickerungsschacht"],["Deckel zum Auspflästern","Kontrollschacht im Granitpflaster, soll kaum auffallen"],["Rechteckiger Schachtrahmen","Strassenablauf am Randstein"],["Ausgleichsrahmen","Belag wird später erhöht"]],
+  h:["Wo soll Wasser durch den Deckel? Wo auf keinen Fall?","Rechteckige Abdeckungen braucht man vor allem im Strassenbereich."]},
+ {id:"s_cat",t:"cat",q:"Zuordnen: Welche Belastungsklasse braucht die Abdeckung?",buckets:["A 15","B 125","C 250","D 400"],
+  chips:[["Gartenweg",0],["Velo-Abstellplatz",0],["Garageneinfahrt EFH",1],["PW-Parkplatz",1],["Bordrinne am Strassenrand",2],["Fahrbahn mit Lastwagen",3],["Fahrbahn Hauptstrasse",3]],
+  h:["A = nur Fussgänger und Velos.","B = Personenwagen.","C = Rand der Strasse, D = Fahrbahn mit Schwerverkehr."]},
+ {id:"s_sim",t:"sim",q:"Simulation: Ein Schacht ist 1.80 m tief. Personen müssen einsteigen können. Stelle Tiefe, Zweck und Durchmesser fachgerecht ein.",
+  opt:[{k:"z",l:"Zweck",c:["nur Kamera / Spülung","Kontrolle von oben","Personen steigen ein"],v:"Kontrolle von oben"}],
+  ctl:[{k:"t",l:"Schachttiefe",min:0.4,max:3,st:0.1,v:1.0,u:"m",d:2},{k:"o",l:"Durchmesser",min:30,max:120,st:10,v:60,u:"cm",d:0}],draw:SIM.schacht,
+  goal:v=>({ok:Math.abs(v.t-1.8)<0.01&&v.z==="Personen steigen ein"&&v.o>=80&&v.o<=100,msg:"Einstiegschacht: begehbar, Ø 80–100 cm, Steigeisen ab 1.20 m Tiefe."}),
+  h:["Zuerst die Tiefe auf 1.80 m stellen.","Ein begehbarer Schacht heisst Einstiegschacht.","Für Personen braucht es mind. 80 cm Durchmesser."]},
+ {id:"s_sim2",t:"sim",q:"Simulation: Eine Inspektionsöffnung nur für Kamera und Spülschlauch. Stelle den Zweck und den grösstmöglichen Durchmesser ein.",
+  opt:[{k:"z",l:"Zweck",c:["nur Kamera / Spülung","Kontrolle von oben","Personen steigen ein"],v:"Personen steigen ein"}],
+  ctl:[{k:"t",l:"Schachttiefe",min:0.4,max:3,st:0.1,v:1.2,u:"m",d:2},{k:"o",l:"Durchmesser",min:30,max:120,st:10,v:100,u:"cm",d:0}],draw:SIM.schacht,
+  goal:v=>({ok:v.z==="nur Kamera / Spülung"&&v.o===40,msg:"Inspektionsöffnung: max. Ø 40 cm, nur für Geräte."}),
+  h:["Inspektionsöffnungen sind klein.","Lehrmittel S. 100: «max. … cm»."]},
+ {id:"s_ft",t:"ftext",list:1,q:"Fehlersuche: Bauprotokoll Schlammsammler. Markiere die Fehler.",
+  segs:[["Die Nutztiefe beträgt 0.60 m.","mind. 1.00 m (vor Versickerung 1.10 m)"],["Der Tauchbogen taucht 12 cm ins Wasser.",""],["Der Einlauf liegt 5 cm höher als der Auslauf.",""],
+   ["Das Loch für den Einlauf wird mit dem Spitzhammer gespitzt.","Kernbohrung ohne Schlag, Anschluss mit Schachtfutter/Gummidichtung"],["Der Innendurchmesser beträgt 60 cm.",""],
+   ["Die Rinne der Einfahrt wird direkt an die Leitung angeschlossen.","Rinnen immer über einen Schlammsammler"]],h:["Es sind 3 Fehler.","Vergleiche mit den Mindestmassen im Lehrmittel S. 96."]},
+ {id:"s_gap",t:"gap",q:"Lückentext: Der Tauchbogen",text:"Der Tauchbogen taucht mind. [[10 cm]] ins Wasser. Er hält [[Schwimmstoffe]] zurück, gibt schweren Teilen Zeit zum [[Absinken]] und wirkt als [[Geruchsverschluss]]. Der Schlammsammler hat eine Nutztiefe von mind. [[1.00 m]].",
+  extra:["50 cm","Steine","Notüberlauf","0.50 m"],h:["Laub und Holz schwimmen oben.","Gerüche aus der Leitung sollen nicht hinauskommen."]},
+ {id:"s_sort",t:"sort",q:"Sortieren: Der Weg des Platzwassers bei der Einfahrt Meier.",items:["Platz (Gefälle)","Rinne","Schlammsammler","Leitung","Versickerungsmulde","Notüberlauf"],
+  h:["Das Wasser wird zuerst gesammelt, dann gereinigt, dann versickert.","Der Notüberlauf kommt nur bei Starkregen."]},
+ {id:"s_branch",t:"branch",q:"Fallgeschichte: Die Einfahrt der Familie Meier entwässern.",start:"a",nodes:{
+  a:{t:"Die Einfahrt fällt Richtung Strasse. Was baust du an der Grundstücksgrenze?",
+   c:[{t:"Rinne quer zur Einfahrt und Anschlag 2.5 cm",p:1,fb:"So gelangt kein Wasser auf öffentlichen Grund.",to:"b"},
+      {t:"Nichts – das Wasser läuft über das Trottoir ab.",p:0,fb:"Verboten: kein Wasser auf öffentlichen Grund.",to:"b"},
+      {t:"Den Randstein selber abschneiden, damit es flacher wird.",p:0,fb:"Verboten – nur eine Tiefbaufirma nach Absprache mit der Gemeinde.",to:"b"}]},
+  b:{t:"Welche Belastungsklasse wählst du für die Rinnenabdeckung?",
+   c:[{t:"B 125",p:1,fb:"Richtig für PW-Einfahrten.",to:"c"},{t:"A 15",p:0,fb:"Bricht unter einem Auto.",to:"c"},{t:"D 400",p:0.5,fb:"Hält, ist aber überdimensioniert und teurer.",to:"c"}]},
+  c:{t:"Wohin führst du das Wasser der Rinne?",
+   c:[{t:"Über einen Schlammsammler in die Versickerungsmulde",p:1,fb:"Richtig: Rinnen immer über einen SS, dann versickern.",to:"z"},
+      {t:"Direkt in die Mulde",p:0,fb:"Sand und Laub verschlammen die Mulde – zuerst ein SS.",to:"z"},
+      {t:"Direkt in den Mischwasserkanal",p:0,fb:"Muttenz: zuerst versickern; und immer über einen SS.",to:"z"}]},
+  z:{end:1,t:"🏁 Geschafft! Rinne B 125 + Anschlag 2.5 cm → Schlammsammler → Versickerungsmulde."}}},
+ mc("s_mc1","Ab welcher Schachttiefe braucht es Steigeisen?",["0.80 m","1.20 m","2.00 m","nie"],1,"Ab 1.20 m Tiefe.",["Etwas mehr als einen Meter."]),
+ mc("s_mc2","Wo wird ein Kontrollschacht eingebaut?",["Unmittelbar nach einem Sturzgefälle","Nur im Haus","Unter Bäumen","Nur bei Rinnen"],0,"Auch: Grundstücksanschluss, Zusammenführungen, Richtungsänderungen, ideal alle 40 m, Material- oder Kaliberwechsel.",["Wo muss man eine Leitung besonders gut kontrollieren können?"]),
+ mc("s_mc3","Was unterscheidet Bodeneinlauf und Bodenablauf?",["Bodeneinlauf mit, Bodenablauf ohne Geruchsverschluss","kein Unterschied","Bodenablauf ist grösser","Bodeneinlauf nur für Schmutzwasser"],0,"Beide müssen an einen Schlammsammler angeschlossen werden.",["Es geht um Gerüche."]),
+];
+
+/* ---------- 4 Leitung ---------- */
+POOLS.leitung=[
+ {id:"l_label",t:"label",q:"Grafik beschriften: Rohrumhüllung im Leitungsgraben.",svg:SVG.rohr,
+  labels:["Grabenfüllung","Warnband","Schutzschicht","Verdämmung","Leitung","Bettung","Grabensohle"],extra:["Geotextil","Spriesse"],
+  h:["Von unten: Sohle, Bettung …","Die Verdämmung liegt seitlich neben dem Rohr.","Das Warnband ist die rote gestrichelte Linie."]},
+ {id:"l_sort",t:"sort",q:"Sortieren: Schichten im Leitungsgraben von unten nach oben.",dir:"Oberste Karte = unterste Schicht im Graben. Ziehe am Griff ☰ oder nutze ▲▼.",
+  items:["Grabensohle","Bettung","Leitung","Verdämmung","Schutzschicht","Warnband","Grabenfüllung"],h:["Die Leitung liegt auf der Bettung.","Das Warnband liegt über der Schutzschicht."]},
+ {id:"l_match",t:"match",q:"Paare verknüpfen: Rohrmaterial und Eigenschaft",
+  pairs:[["PP","grün/beige, absolut dicht, heute Standard"],["PVC","rotbraun, spröde bei Kälte, vielerorts verboten"],["Steinzeug","säurebeständig, aber schlagempfindlich"],["Beton","nur für nicht verschmutztes Wasser"],["PE-HD","schwarz, weicher als PP, schweissbar"],["Drainflexrohr","flexibel, rundum geschlitzt"]],
+  h:["Zement wird von Schmutzwasser angegriffen.","Steinzeug ist wie Keramik."]},
+ {id:"l_sim",t:"sim",q:"Simulation: Wähle ein normgerechtes Gefälle, bei dem die Leitung nicht unter der Muldensohle (451.50) ankommt.",
+  ctx:"Leitung PP DN 125 vom Schlammsammler (Sohle 451.70) zur Mulde, Länge 18.50 m.",
+  ctl:[{k:"p",l:"Gefälle",min:0,max:8,st:0.5,v:3,u:"%",d:1}],draw:SIM.leitung,
+  goal:v=>({ok:v.p===1,msg:"Nur 1 % erfüllt beides: Norm (min. 1 %) und Ende 451.515 m über der Muldensohle 451.50 m."}),
+  h:["Sammelleitung: mind. 1 %, max. 5 %.","Je steiler, desto tiefer kommt die Leitung an.","Probiere das kleinste erlaubte Gefälle."]},
+ {id:"l_ft",t:"ftext",list:1,q:"Fehlersuche: Arbeitsanweisung von Lernendem Tim. Markiere die Fehler.",
+  segs:[["1. Grabensohle im Gefälle von 2 % planieren.",""],["2. Bettung aus scharfkantigem Schotter 16/32 einbringen.","rundes Material, z. B. Hüllkies 0/22"],["3. Rohre vom höchsten Punkt her verlegen.","vom tiefsten Punkt her"],
+   ["4. Muffen zeigen gegen die Fliessrichtung.",""],["5. Richtungsänderung 90° mit einem 90°-Bogen.","zwei 45°-Bogen oder ein Schacht"],["6. Verdämmung seitlich einbringen und von Hand verdichten.",""],
+   ["7. Direkt auf dem Rohr mit der Rüttelplatte verdichten.","Maschine erst 30 cm über der Schutzschicht"],["8. Abnahme mind. 24 h vorher bei der Gemeinde anmelden.",""]],h:["Es sind 4 Fehler.","Denk an Material, Richtung, Bogen und Verdichten."]},
+ {id:"l_gap",t:"gap",q:"Lückentext: Leitungsführung und Verlegetiefe",
+  text:"Leitungen werden in [[gerader]] Linie und mit gleichmässigem Gefälle verlegt. Eine Sammelleitung hat mind. [[1 %]], ideal [[3 %]] und höchstens [[5 %]] Gefälle. Bogen haben höchstens [[45°]]. Der Rohrscheitel liegt auf [[Frosttiefe]], unter Strassen mit grossen Verkehrslasten ca. 1.50 m tief.",
+  extra:["0.5 %","90°","10 %","Terrainhöhe"],h:["Die Sickerleitung hat 0.5 % – hier geht es um die Sammelleitung.","90° wird mit zwei Bogen gemacht."]},
+ {id:"l_cat",t:"cat",q:"Zuordnen: Was steht auf dem Rohr?",buckets:["NW / LW","DN","SN"],
+  chips:[["Innendurchmesser (Beton, Steinzeug)",0],["Lichtweite",0],["Aussendurchmesser (Kunststoff)",1],["PP DN 125 = 125 mm aussen",1],["Ringsteifigkeit in kN/m²",2],["im Gartenbau mind. 4",2]],
+  h:["S wie Steifigkeit.","DN gilt für Kunststoffrohre."]},
+ {id:"l_branch",t:"branch",q:"Fallgeschichte: Die Abnahme der Regenwasserleitung.",start:"a",nodes:{
+  a:{t:"Die Leitung ist verlegt. Es ist Donnerstag 16 Uhr. Wann kann die Abnahme durch die Gemeinde frühestens sein?",
+   c:[{t:"Ich melde jetzt an – frühestens Freitag ab 16 Uhr (mind. 24 h).",p:1,fb:"Richtig.",to:"b"},{t:"Ich decke zu – die Gemeinde merkt es nicht.",p:0,fb:"Verboten: zudecken erst nach Abnahme und Einmessung.",to:"b"},{t:"Freitag 8 Uhr einfach anrufen.",p:0,fb:"Zu kurzfristig – mind. 24 h vorher anmelden.",to:"b"}]},
+  b:{t:"Am Tag der Abnahme: Was bereitest du vor?",
+   c:[{t:"Leitung offen und sichtbar, Wasser für die Füllprobe mind. 1 h vorher bereit, Pläne",p:1,fb:"Perfekt vorbereitet.",to:"c"},{t:"Den Graben schon halb zuschütten, damit es schneller geht.",p:0,fb:"Die Gemeinde muss Lage, Material und Gefälle sehen.",to:"c"},{t:"Nichts – die Gemeinde bringt alles mit.",p:0,fb:"Die Füllprobe ist deine Aufgabe.",to:"c"}]},
+  c:{t:"Die Kontrolle zeigt einen Wassersack (Gegengefälle) in der Leitung.",
+   c:[{t:"Rohr freilegen, Bettung korrigieren, neu verlegen und nochmals prüfen",p:1,fb:"Richtig – sonst lagert sich dort Schmutz ab.",to:"d"},{t:"Egal, das Wasser fliesst schon irgendwie.",p:0,fb:"Wassersäcke führen zu Ablagerungen und Verstopfungen.",to:"d"},{t:"Mehr Kies darüber schütten.",p:0,fb:"Das ändert das Gefälle nicht.",to:"d"}]},
+  d:{t:"Nach der Abnahme: Wie füllst du den Graben?",
+   c:[{t:"Schutzschicht steinfrei, Warnband wo nötig, lagenweise verdichten – Maschine erst 30 cm über Schutzschicht",p:1,fb:"Fachgerecht.",to:"z"},{t:"Alles auf einmal einfüllen und direkt auf dem Rohr rütteln.",p:0,fb:"Rohrbruch-Gefahr!",to:"z"},{t:"Mit Wasser einschwemmen.",p:0,fb:"Nicht fachgerecht, in Muttenz in Strassen ausdrücklich verboten.",to:"z"}]},
+  z:{end:1,t:"🏁 Abnahme bestanden!"}}},
+ {id:"l_num",t:"num",q:"Leitung 18.50 m lang, 2 % Gefälle. Wie gross ist die Höhendifferenz in cm?",ans:37,unit:"cm",tol:0.5,ex:"18.50 × 2 : 100 = 0.37 m = 37 cm",h:["Δh = L × p : 100","Ergebnis in m, dann × 100 für cm."]},
+ mc("l_mc1","Welches Grösstkorn für die Rohrumhüllung bei PP DN 160?",["8 mm","22 mm","40 mm","100 mm"],1,"NW < 200: max. 22 mm; > 200: max. 40 mm.",["Unter 200 mm Rohr gilt die kleinere Zahl."]),
+ mc("l_mc2","Wie werden Kanalisationsleitungen (Schmutzwasser) eingebettet?",["In Sand","Einbetoniert: mind. 10 cm unter und über dem Rohr","Gar nicht","In Schotter"],1,"Beton mind. 10 cm rundum.",["Schmutzwasserleitungen werden besonders geschützt."]),
+ mc("l_mc3","Muttenz: Welcher Mindestdurchmesser gilt beim Einfamilienhaus?",["DN 100","DN 125","DN 200","DN 300"],1,"DN 125 (MFH DN 150).",["Zwischen 100 und 150."]),
+];
+
+/* ---------- 6 Versickerung & Drainage ---------- */
+POOLS.versickerung=[
+ {id:"v_sort",t:"sort",q:"Sortieren: Versickerungskonzept – der Weg des Dachwassers.",items:["Fallrohr","Schlammsammler","Einleitschacht","Rigole (Versickerungsstrang)","Kontrollschacht"],
+  h:["Bevor Wasser versickert, muss es gereinigt werden.","Der Kontrollschacht steht am Ende der Rigole."]},
+ {id:"v_label",t:"label",q:"Grafik beschriften: Rigole mit vorgeschaltetem Schlammsammler.",svg:SVG.rigole,
+  labels:["Schlammsammler","Einleitschacht","Filterkies 8/16","Versickerungsrohr geschlitzt","Geotextilmatte","Kontrollschacht","mind. 1 m bis Grundwasser"],extra:["Ölabscheider","Tauchbogen"],
+  h:["Das Wasser fliesst von links nach rechts.","Die gestrichelte Linie über dem Kies ist ein Vlies.","Die Masslinie rechts zeigt den Abstand zum Grundwasser."]},
+ {id:"v_sim",t:"sim",q:"Simulation Retention: Muttenz verlangt 12 mm Rückhalt. Versiegelt sind 194 m², die Mulde misst 4.50 × 4.50 m (20.25 m²). Stelle die kleinste Muldentiefe (ganze cm) ein, bei der der Notüberlauf nicht anspringt.",
+  ctl:[{k:"A",l:"Versiegelte Fläche",min:50,max:300,st:2,v:194,u:"m²",d:0},{k:"R",l:"Regen",min:0,max:40,st:1,v:12,u:"mm",d:0},{k:"M",l:"Muldenfläche",min:10,max:40,st:0.25,v:20.25,u:"m²",d:2},{k:"t",l:"Muldentiefe",min:4,max:30,st:1,v:6,u:"cm",d:0}],
+  draw:SIM.mulde,goal:v=>({ok:v.A===194&&v.R===12&&Math.abs(v.M-20.25)<0.01&&v.t===12,msg:"194 m² × 0.012 m = 2.33 m³; 2.33 : 20.25 = 0.115 m → mind. 12 cm (plus Freibord in der Praxis)."}),
+  h:["Lass Fläche, Regen und Muldenfläche so, wie sie sind.","Erhöhe die Tiefe, bis der Notüberlauf nicht mehr anspringt.","Volumen = Fläche × Regen; Höhe = Volumen : Muldenfläche."]},
+ {id:"v_sim2",t:"sim",q:"Simulation Beläge: Einfahrt 50 m², Gewitter 30 mm. Wähle einen Belag, bei dem höchstens 300 Liter abfliessen.",
+  opt:[{k:"b",l:"Belag",c:Object.keys(PSI),v:"Asphalt"}],ctl:[{k:"F",l:"Fläche",min:10,max:100,st:5,v:50,u:"m²",d:0},{k:"R",l:"Regen",min:5,max:50,st:5,v:30,u:"mm",d:0}],
+  draw:SIM.psi,goal:v=>({ok:v.F===50&&v.R===30&&v.b==="Rasengitter",msg:"50 × 30 × 0.15 = 225 Liter. Sickerpflaster (ψ 0.25) gibt schon 375 Liter."}),
+  h:["Abfluss = Fläche × Regen × ψ.","300 : 1500 = 0.2 → ψ muss kleiner als 0.2 sein."]},
+ {id:"v_cat",t:"cat",q:"Zuordnen: Welche Versickerungsart ist das?",buckets:["oberirdisch, mit Bodenpassage","unterirdisch, ohne Bodenpassage"],
+  chips:[["Versickerung über die Schulter",0],["Versickerungsmulde",0],["Retentionsmulde mit Oberboden",0],["Rasenfläche",0],["Versickerungsschacht",1],["Rigole",1],["Versickerungsstrang",1]],
+  h:["Bodenpassage = das Wasser fliesst durch den belebten Oberboden.","Alles mit Schacht oder Kies im Boden ist unterirdisch."]},
+ {id:"v_match",t:"match",q:"Paare verknüpfen: Drainage und Einsatz",
+  pairs:[["Schlitzdrainage","nasser Rasen, auch nachträglich"],["Vertikale Flächendrainage","Stützmauer, Gebäudeteile unter Terrain"],["Horizontale Flächendrainage","Sportplatz, Garagendecke"],["Filter-/Drainmatte","Dachgarten mit wenig Aufbauhöhe"],["Sickerleitung","entlang Mauern, 0.5–1 % Gefälle"]],
+  h:["Vertikal = senkrecht.","Matten sind dünn und leicht."]},
+ {id:"v_cmap",t:"cmap",q:"Concept-Map Schwammstadt: Wohin geht das Regenwasser? Verbinde mit Pfeilen.",ht:420,
+  nodes:[{t:"Regen",x:50,y:7,src:1},{t:"Gründach",x:15,y:32},{t:"Baum\u00adgrube",x:50,y:32},{t:"Mulde",x:85,y:32},
+   {t:"Verdun\u00adstung",x:16,y:64},{t:"Versicke\u00adrung",x:50,y:64},{t:"Grund\u00adwasser",x:42,y:93},{t:"Not\u00adüberlauf",x:86,y:70},{t:"Kanali\u00adsation",x:86,y:93}],
+  edges:[["0","1",""],["0","2",""],["0","3",""],["1","4","Dachbegrünung verdunstet Wasser"],["2","4","Bäume verdunsten (kühlen)"],["3","5","Bodenpassage"],["5","6","Grundwasser neu bilden"],["3","7","nur bei Starkregen"],["7","8",""]],
+  ex:"Schwammstadt: Wasser zurückhalten, verdunsten, versickern – nur der Überschuss geht in die Kanalisation.",h:["Es braucht 9 Pfeile.","Der Regen fällt auf drei Elemente.","Gründach und Baum verdunsten, die Mulde versickert – und hat einen Notüberlauf."]},
+ {id:"v_ft",t:"ftext",list:1,q:"Fehlersuche: Baubeschrieb einer Rigole. Markiere die Fehler.",
+  segs:[["Das Dachwasser fliesst ohne Schlammsammler direkt in den Einleitschacht.","immer einen Schlammsammler vorschalten"],["Die Rigole wird mit Filterkies 8/16 gefüllt.",""],
+   ["Als Auffüllmaterial nehmen wir günstiges Recyclingmaterial.","kein Recyclingmaterial"],["Über dem Kies liegt eine Geotextilmatte.",""],
+   ["Das Grundwasser liegt 50 cm unter der Rigole.","mind. 1 m Abstand"],["Einen Notüberlauf brauchen wir nicht.","Notüberlauf ist obligatorisch"],["Am Ende folgt ein Kontrollschacht mit Deckel «Versickerung».",""]],
+  h:["Es sind 4 Fehler.","Lehrmittel S. 113: Schnitt durch die Rigole."]},
+ {id:"v_gap",t:"gap",q:"Lückentext: Schlitzdrainage",text:"Die Schlitze sind [[6–10 cm]] breit und werden mit [[Feinkies]] bis knapp zur [[Grasnarbe]] gefüllt. Beim nachträglichen Einbau liegt auf der Sohle ein flexibles [[Versickerungsrohr]]. Das Wasser fliesst über eine [[Sammelleitung]] ab.",
+  extra:["30 cm","Oberboden","Betonrohr","Schmutzwasserleitung"],h:["Die Schlitze macht eine Grabenfräse.","Zum Füllen eignen sich Betonkies 0/16, Splitt oder Rundkies."]},
+ {id:"v_branch",t:"branch",q:"Fallgeschichte: Der nasse Rasen hinter dem Haus Meier.",start:"a",nodes:{
+  a:{t:"Familie Meier: «Unser Rasen ist nach jedem Regen tagelang nass.» Was machst du zuerst?",
+   c:[{t:"Ursache abklären: Bodenaufbau mit Spaten oder Sondierung prüfen",p:1,fb:"Richtig – zuerst verstehen, dann handeln.",to:"b"},{t:"Sofort neuen Rollrasen verlegen",p:0,fb:"Das Problem bleibt.",to:"b"},{t:"Mehr düngen",p:0,fb:"Hilft nicht gegen Staunässe.",to:"b"}]},
+  b:{t:"In 25 cm Tiefe liegt eine verdichtete, wasserstauende Schicht. Der Rasen soll nicht abgetragen werden.",
+   c:[{t:"Schlitzdrainage: 6–10 cm breite Schlitze mit Feinkies",p:1,fb:"Ideal – kann nachträglich eingebaut werden.",to:"c"},{t:"Vertikale Flächendrainage an der Hausmauer",p:0,fb:"Die ist für Bauwerke, nicht für Rasenflächen.",to:"c"},{t:"Versickerungsschacht mitten im Rasen",p:0,fb:"Ein Schacht entwässert die Fläche nicht.",to:"c"}]},
+  c:{t:"Wohin mit dem gesammelten Wasser?",
+   c:[{t:"Sammelleitung mit Gefälle in die Versickerungsmulde",p:1,fb:"Sauberes Wasser versickert auf dem Grundstück.",to:"z"},{t:"Auf das Nachbargrundstück",p:0,fb:"Nicht erlaubt.",to:"z"},{t:"In die Schmutzwasserleitung",p:0,fb:"Sauberes Wasser gehört nicht in die ARA.",to:"z"}]},
+  z:{end:1,t:"🏁 Gelöst: Schlitzdrainage + Sammelleitung in die Mulde."}}},
+ mc("v_mc1","Warum steht vor jeder Versickerungsanlage ein Schlammsammler?",["Damit Sand und Laub die Anlage nicht verstopfen","Für die Optik","Damit das Wasser warm bleibt","Gar nicht nötig"],0,"Sonst verschlammt die Rigole.",["Was steckt im Dachwasser?"]),
+ mc("v_mc2","Welches Material darf NICHT über Abdichtungen eingebaut werden?",["Geröll 30/50","Rundkies 16/32","Schotter 16/32 (kantig)","Drainmatte"],2,"Kantiges Material beschädigt die Abdichtung.",["Rund oder kantig?"]),
+ mc("v_mc3","Richtwert: Wie gross muss eine Versickerungsfläche sein?",["1 % der entwässerten Fläche","5–10 % der entwässerten Fläche","50 %","100 %"],1,"5–10 % (Lehrmittel S. 110).",["Es ist ein kleiner Anteil."]),
+];
 
 const POSTEN=[
- {id:"graben",ic:"🦺",t:"Graben-Check",d:"U oder V, Leiter, Spriessung, Grabenrand und Warnband.",lz:"L156/L157",n:10},
- {id:"abwasser",ic:"🔀",t:"Abwasser sortieren",d:"Verschmutzt oder nicht? Misch- und Trennsystem, Muttenz.",lz:"L158",n:10},
- {id:"schacht",ic:"🕳️",t:"Schacht-Detektiv",d:"SS, KS, ES, VS, Deckel, Rinnen und Belastungsklassen.",lz:"L159",n:10},
- {id:"leitung",ic:"🧱",t:"Leitungsbau",d:"Material, Rohrumhüllung, Gefälle, Verlegetiefe.",lz:"L160/L161",n:10},
- {id:"gefaelle",ic:"📐",t:"Gefälle-Trainer",d:"Rechnen: %, Höhendifferenz, Länge, Koten und Minimalgefälle.",lz:"L162/L163",n:8},
- {id:"versickerung",ic:"🌧️",t:"Versickerung & Drainage",d:"Versickerungskonzept, Schichten, Schwammstadt, Schlitzdrainage.",lz:"L164 + Regenwasser",n:10},
+ {id:"graben",ic:"🦺",t:"Graben-Check",d:"Simulation, Fehlersuche auf der Baustelle, Grafik beschriften, Fallgeschichte.",lz:"L156/L157",n:8,
+  learn:`<ul><li>Leiter ab <b>1.00 m</b> Tiefe – sie ragt über den Grabenrand.</li><li>Ab <b>1.50 m</b>: spriessen (U-Graben) oder böschen (V-Graben).</li><li>Freier Grabenrand: U mind. <b>50 cm</b>, V mind. <b>100 cm</b>.</li><li>U-Graben: lichte Breite mind. 60 cm, Dielen mind. 15 cm über den Rand.</li><li>Böschung: standfest <b>2 : 1</b>, rollig <b>1 : 1</b>.</li><li>Werkleitungen abklären, Sondiergräben von Hand, Warnband 20–30 cm über der Leitung.</li></ul>`},
+ {id:"abwasser",ic:"🔀",t:"Abwasser sortieren",d:"Starkregen-Simulation, Concept-Map, Kundengespräch, Muttenzer Regeln.",lz:"L158",n:8,
+  learn:`<ul><li><b>Mischsystem</b>: eine Leitung für alles – bei Starkregen läuft ungereinigtes Wasser in Bäche.</li><li><b>Trennsystem</b>: Schmutzwasser → ARA, Regenwasser → versickern oder Gewässer.</li><li>Nicht verschmutzt: Dach, Plätze, Drainage. Verschmutzt: alles aus dem Haus, Waschplätze.</li><li>Muttenz: ein Anschluss, getrennt bis zum letzten KS, Regenwasser vorrangig versickern, Retention 12 mm.</li></ul>`},
+ {id:"schacht",ic:"🕳️",t:"Schacht-Detektiv",d:"Schlammsammler beschriften, Schacht-Simulation, Deckel und Belastungsklassen.",lz:"L159",n:8,
+  learn:`<ul><li><b>Schlammsammler</b>: Nutztiefe mind. 1.00 m, Tauchbogen mind. 10 cm eingetaucht, Ø mind. 50 cm.</li><li><b>KS / ES</b>: Kontrolle und Reinigung; begehbar (ES) Ø 80–100 cm, Steigeisen ab 1.20 m. Inspektionsöffnung max. Ø 40 cm.</li><li><b>VS</b>: nur mit Bewilligung, SS vorgeschaltet, Deckel dicht «Versickerung», GW mind. 1 m tiefer.</li><li>Belastungsklassen: A 15 Fussgänger, B 125 PW, C 250 Strassenrand, D 400 Fahrbahn.</li></ul>`},
+ {id:"leitung",ic:"🧱",t:"Leitungsbau",d:"Rohrumhüllung beschriften, Gefälle-Simulation, Fehlersuche, Abnahme-Geschichte.",lz:"L160/L161",n:8,
+  learn:`<ul><li>Rohrumhüllung: <b>Bettung – Verdämmung – Schutzschicht</b>, rundes Material (NW &lt; 200: max. 22 mm).</li><li>Sammelleitung: min. 1 %, ideal 3 %, max. 5 % Gefälle; Sickerleitung 0.5–1 %.</li><li>Bogen max. 45°, Rohrscheitel auf Frosttiefe, Muffen gegen die Fliessrichtung, vom tiefsten Punkt her verlegen.</li><li>PP heute Standard; Beton nur für sauberes Wasser; PVC vielerorts verboten.</li></ul>`},
+ {id:"gefaelle",ic:"📐",t:"Gefälle-Trainer",d:"Rechnen in 7 Stufen, Schieberegler-Simulation und Fehlersuche in Rechnungen.",lz:"L162/L163",n:8,
+  learn:`<ul><li><b>p = Δh : L × 100</b> · <b>Δh = L × p : 100</b> · <b>L = Δh × 100 : p</b></li><li>Δh immer in Metern einsetzen (12 cm = 0.12 m).</li><li>Minimalgefälle: Rasen 0.5 %, Asphalt/glatte Platten 1 %, Holz/wassergebunden 1.5 %, bruchrohe Platten 2 %, bruchrohes Pflaster 2.5 %.</li></ul>`},
+ {id:"versickerung",ic:"🌧️",t:"Versickerung & Drainage",d:"Retention- und Belags-Simulation, Rigole beschriften, Schwammstadt-Map.",lz:"L164 + Regenwasser",n:8,
+  learn:`<ul><li>Zuerst <b>oberirdisch mit Bodenpassage</b> versickern (Schulter, Mulde) – der Oberboden reinigt.</li><li>Versickerungsfläche ca. 5–10 % der entwässerten Fläche.</li><li>Rigole: Schlammsammler → Einleitschacht → Rigole → Kontrollschacht; GW mind. 1 m tiefer; Notüberlauf obligatorisch.</li><li>Schlitzdrainage: 6–10 cm breite Schlitze mit Feinkies, auch nachträglich.</li></ul>`},
 ];
 const PBY=Object.fromEntries(POSTEN.map(p=>[p.id,p]));
 const BYID={};Object.values(POOLS).forEach(a=>a.forEach(q=>BYID[q.id]=q));
 
-/* ======================= Gefälle-Generator ======================= */
+/* ================= Gefälle-Generator ================= */
 const BELAEGE=[["Natursteinplatten gesägt",1.0],["Natursteinplatten bruchroh",2.0],["Natursteinpflaster gestockt",2.0],["Natursteinpflaster bruchroh",2.5],
  ["Ortbeton Besenstrich",1.5],["Rasengittersteine",1.5],["Betonplatten glatt",1.0],["Waschbetonplatten",2.0],["Wassergebundener Belag",1.5],["Asphalt",1.0],["Holzdeck",1.5],["Rasenfläche",0.5]];
 const PS=[0.5,1,1.5,2,2.5,3,4,5,6,8,10,12];
-const STUFEN=[
- {k:1,t:"Stufe 1: Gefälle in %"},{k:2,t:"Stufe 2: Höhendifferenz"},{k:3,t:"Stufe 3: Länge"},{k:4,t:"Stufe 4: Höhenkoten"},{k:5,t:"Stufe 5: Reicht das Gefälle?"},{k:0,t:"🎯 Prüfungsmix"}];
+const STUFEN=[{k:1,t:"1 · Gefälle in %"},{k:2,t:"2 · Höhendifferenz"},{k:3,t:"3 · Länge"},{k:4,t:"4 · Höhenkoten"},{k:5,t:"5 · Reicht das Gefälle?"},{k:6,t:"6 · Schieberegler-Labor"},{k:7,t:"7 · Fehler in der Rechnung"},{k:0,t:"🎯 Prüfungsmix"}];
+const STUFTXT={G1:"Gefälle-Trainer 1: Gefälle in %",G2:"Gefälle-Trainer 2: Höhendifferenz",G3:"Gefälle-Trainer 3: Länge",G4:"Gefälle-Trainer 4: Höhenkoten",G5:"Gefälle-Trainer 5: Minimalgefälle-Check",G6:"Gefälle-Trainer 6: Schieberegler-Labor",G7:"Gefälle-Trainer 7: Fehler in der Rechnung"};
+const cm=x=>f2(x*100,1).replace(/\.0$/,"");
+function triple(){let p,L,dh;do{p=pick(PS);L=pick([2,2.5,3,3.5,4,4.5,5,6,7.5,8,10,12,15,16,20]);dh=+(L*p/100).toFixed(4);}while(Math.abs(dh*1000-Math.round(dh*1000))>1e-6||dh*100<1);return{p,L,dh};}
 function genGef(k){
- if(k===0)k=rnd(1,5);
- let p,L,dh;
- do{p=pick(PS);L=pick([2,2.5,3,3.5,4,4.5,5,6,7.5,8,10,12,15,16,20]);dh=+(L*p/100).toFixed(4);}while(Math.abs(dh*1000-Math.round(dh*1000))>1e-6||dh*100<1);
- if(k===1){return {id:"G1",stufe:1,t:"num",unit:"%",ans:p,tol:0.051,q:`Ein Weg ist ${f2(L)} m lang und fällt um ${f2(dh*100,1)} cm. Wie gross ist das Gefälle?`,
-   ex:`p = Δh : L × 100 = ${f2(dh,3)} : ${f2(L)} × 100 = ${p} %`,sk:SVG.slope(f2(L)+" m",f2(dh*100,1)+" cm",p+" %","p")};}
- if(k===2){return {id:"G2",stufe:2,t:"num",unit:"cm",ans:+(dh*100).toFixed(2),tol:0.06,q:`Ein Platz ist ${f2(L)} m lang und soll ${p} % Gefälle haben. Wie gross ist die Höhendifferenz in cm?`,
-   ex:`Δh = L × p : 100 = ${f2(L)} × ${p} : 100 = ${f2(dh,3)} m = ${f2(dh*100,1)} cm`,sk:SVG.slope(f2(L)+" m",f2(dh*100,1)+" cm",p+" %","dh")};}
- if(k===3){return {id:"G3",stufe:3,t:"num",unit:"m",ans:L,tol:0.011,q:`Eine Rampe überwindet ${f2(dh*100,1)} cm bei ${p} % Gefälle. Wie lang ist sie (horizontal)?`,
-   ex:`L = Δh × 100 : p = ${f2(dh,3)} × 100 : ${p} = ${f2(L)} m`,sk:SVG.slope(f2(L)+" m",f2(dh*100,1)+" cm",p+" %","L")};}
- if(k===4){const h=+(451+Math.random()*2).toFixed(2); L=pick([3,4,4.5,5,6,8,10,12.5,15]); const pp=pick([1,1.5,2,2.5,3,5]); dh=+(L*pp/100).toFixed(3); const e=+(h-dh).toFixed(3);
-   return {id:"G4",stufe:4,t:"num",unit:"m ü. M.",ans:e,tol:0.006,q:`Der Belag liegt am Haus auf ${f2(h)} m ü. M. und fällt über ${f2(L)} m mit ${pp} % vom Haus weg. Auf welcher Höhe liegt die Aussenkante?`,
-   ex:`Δh = ${f2(L)} × ${pp} : 100 = ${f2(dh,3)} m → ${f2(h)} − ${f2(dh,3)} = ${f2(e,3)} m ü. M.`,sk:SVG.slope(f2(L)+" m",f2(dh*100,1)+" cm",pp+" %","",`Haus ${f2(h)} → Aussenkante ?`)};}
- const [b,min]=pick(BELAEGE); L=pick([4,5,6,8,10,12,15]); const real=pick([min-0.5,min,min+0.5,min+1,min-1].filter(x=>x>0)); dh=+(L*real/100).toFixed(3);
- const ok=real>=min-1e-9;
- return {id:"G5",stufe:5,t:"mc",o:["Ja, das Minimalgefälle ist eingehalten","Nein, das Gefälle ist zu klein"],a:ok?0:1,
-  q:`${b}, Länge ${f2(L)} m, Höhendifferenz ${f2(dh*100,1)} cm. Reicht das Gefälle?`,
-  ex:`p = ${f2(dh,3)} : ${f2(L)} × 100 = ${f2(real,1)} %. Minimalgefälle ${b}: ${f2(min,1)} % → ${ok?"reicht.":"zu klein!"}`,sk:SVG.slope(f2(L)+" m",f2(dh*100,1)+" cm","? %","p")};
+ if(k===0)k=rnd(1,7);
+ const H1="Formeln: p = Δh : L × 100 · Δh = L × p : 100 · L = Δh × 100 : p";
+ if(k===1){const{p,L,dh}=triple();return{id:"G1",stufe:1,t:"num",unit:"%",ans:p,tol:0.051,q:`Ein Weg ist ${f2(L)} m lang und fällt um ${cm(dh)} cm. Wie gross ist das Gefälle?`,
+  svg:SVG.slope(f2(L)+" m",cm(dh)+" cm",p+" %","p",null,p),ex:`p = ${f2(dh,3)} : ${f2(L)} × 100 = ${p} %`,
+  h:[H1,`Δh in Meter umrechnen: ${cm(dh)} cm = ${f2(dh,3)} m.`,`p = ${f2(dh,3)} : ${f2(L)} × 100`]};}
+ if(k===2){const{p,L,dh}=triple();return{id:"G2",stufe:2,t:"num",unit:"cm",ans:+(dh*100).toFixed(2),tol:0.06,q:`Ein Platz ist ${f2(L)} m lang und soll ${p} % Gefälle haben. Wie gross ist die Höhendifferenz in cm?`,
+  svg:SVG.slope(f2(L)+" m",cm(dh)+" cm",p+" %","dh",null,p),ex:`Δh = ${f2(L)} × ${p} : 100 = ${f2(dh,3)} m = ${cm(dh)} cm`,
+  h:[H1,`Δh = L × p : 100 = ${f2(L)} × ${p} : 100 (Resultat in m)`,"Meter × 100 = Zentimeter."]};}
+ if(k===3){const{p,L,dh}=triple();return{id:"G3",stufe:3,t:"num",unit:"m",ans:L,tol:0.011,q:`Eine Rampe überwindet ${cm(dh)} cm bei ${p} % Gefälle. Wie lang ist sie (horizontal gemessen)?`,
+  svg:SVG.slope(f2(L)+" m",cm(dh)+" cm",p+" %","L",null,p),ex:`L = ${f2(dh,3)} × 100 : ${p} = ${f2(L)} m`,
+  h:[H1,`Δh in Meter: ${f2(dh,3)} m.`,`L = ${f2(dh,3)} × 100 : ${p}`]};}
+ if(k===4){const h=+(451+Math.random()*2).toFixed(2);const L=pick([3,4,4.5,5,6,8,10,12.5,15]);const pp=pick([1,1.5,2,2.5,3,5]);const dh=+(L*pp/100).toFixed(3);const e=+(h-dh).toFixed(3);
+  return{id:"G4",stufe:4,t:"num",unit:"m ü. M.",dec:3,ans:e,tol:0.006,q:`Der Belag liegt am Haus auf ${f2(h)} m ü. M. und fällt über ${f2(L)} m mit ${pp} % vom Haus weg. Auf welcher Höhe liegt die Aussenkante?`,
+  svg:SVG.slope(f2(L)+" m",cm(dh)+" cm",pp+" %","",`Haus ${f2(h)} → Aussenkante ?`,pp),ex:`Δh = ${f2(L)} × ${pp} : 100 = ${f2(dh,3)} m → ${f2(h)} − ${f2(dh,3)} = ${f2(e,3)} m ü. M.`,
+  h:["Zuerst die Höhendifferenz Δh berechnen.",`Δh = ${f2(L)} × ${pp} : 100 = ${f2(dh,3)} m`,"Das Gefälle geht vom Haus weg → die Aussenkante liegt tiefer: Kote − Δh."]};}
+ if(k===5){const[b,min]=pick(BELAEGE);const L=pick([4,5,6,8,10,12,15]);const real=pick([min-0.5,min,min+0.5,min+1,min-0.25].filter(x=>x>0));const dh=+(L*real/100).toFixed(4);const ok=real>=min-1e-9;
+  return{id:"G5",stufe:5,t:"mc",o:["Ja, das Minimalgefälle ist eingehalten","Nein, das Gefälle ist zu klein"],a:ok?0:1,
+  q:`${b}, Länge ${f2(L)} m, Höhendifferenz ${cm(dh)} cm. Reicht das Gefälle?`,svg:SVG.slope(f2(L)+" m",cm(dh)+" cm","? %","p",null,real),
+  ex:`p = ${f2(dh,3)} : ${f2(L)} × 100 = ${f2(real,2).replace(/0$/,"")} %. Minimalgefälle ${b}: ${f2(min,1)} % → ${ok?"reicht.":"zu klein!"}`,
+  h:["Berechne zuerst das vorhandene Gefälle p.",`p = ${f2(dh,3)} : ${f2(L)} × 100`,`Minimalgefälle für ${b}: siehe Lernkarte (Rasen 0.5 %, glatt 1 %, Holz/Besenstrich/wassergebunden/Rasengitter 1.5 %, bruchrohe Platten 2 %, bruchrohes Pflaster 2.5 %).`]};}
+ if(k===6){const[b,min]=pick(BELAEGE);const L=pick([2,3,4,5,6,8,10,12]);const need=L*min;const mx=Math.max(20,Math.ceil(need*2/5)*5);
+  return{id:"G6",stufe:6,t:"sim",q:`Gefälle-Labor: ${b}, Länge ${f2(L)} m. Stelle die kleinste Höhendifferenz ein, bei der das Minimalgefälle eingehalten ist.`,
+  ctl:[{k:"dh",l:"Höhendifferenz Δh",min:0,max:mx,st:0.5,v:0,u:"cm",d:1}],
+  draw:v=>{const p=v.dh/100/L*100;const ok=p>=min-1e-9;return{svg:SVG.slope(f2(L)+" m",f2(v.dh,1)+" cm",f2(p,2)+" %","",b,p,!ok),r:[["Gefälle p",f2(p,2)+" %"],["Wasser",ok?"fliesst ab":"bleibt stehen",ok?"good":"warn"]]};},
+  goal:v=>({ok:Math.abs(v.dh-need)<0.26,msg:`Minimalgefälle ${b}: ${f2(min,1)} % → Δh = ${f2(L)} × ${f2(min,1)} : 100 = ${f2(need/100,3)} m = ${f2(need,1)} cm.`}),
+  h:["Schiebe langsam, bis das Wasser abfliesst.",`Minimalgefälle ${b}: ${f2(min,1)} %.`,`Δh = ${f2(L)} × ${f2(min,1)} : 100 (in m) → × 100 = cm.`]};}
+ // k===7 Fehlersuche in Rechnung
+ const{p,L,dh}=triple();const kind=pick(["conv","formel","resultat"]);
+ const wrongP=pick([p*10,p/10,+(p+1).toFixed(1)]);
+ const segs=[[`Gegeben: L = ${f2(L)} m, Δh = ${cm(dh)} cm`,""],
+  kind==="conv"?[`Δh = ${cm(dh)} cm = ${f2(dh*10,3)} m`,`richtig: ${cm(dh)} cm = ${f2(dh,3)} m`]:[`Δh = ${cm(dh)} cm = ${f2(dh,3)} m`,""],
+  kind==="formel"?[`p = L : Δh × 100`,"richtig: p = Δh : L × 100"]:[`p = Δh : L × 100`,""],
+  [`p = ${f2(dh,3)} : ${f2(L)} × 100`,""],
+  kind==="resultat"?[`p = ${wrongP} %`,`richtig: p = ${p} %`]:[`p = ${p} %`,""]];
+ return{id:"G7",stufe:7,t:"ftext",list:1,q:"Fehler in der Rechnung: Ein Lernender hat das Gefälle berechnet. Markiere den falschen Schritt.",segs,
+  ex:`Richtig: p = ${f2(dh,3)} : ${f2(L)} × 100 = ${p} %`,h:["Genau ein Schritt ist falsch.","Prüfe die Umrechnung cm → m (: 100).","Prüfe die Formel und rechne das Resultat nach."]};
 }
 
-/* ======================= Ablauf ======================= */
-let me=null, cur=null; // cur: {posten, stufe, qs, i, score, answers, wrong}
-function show(id){["loading","home","levels","quiz","result","teacher"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
+/* ================= Ablauf ================= */
+let me=null,cur=null;
+function show(id){["loading","home","intro","quiz","result","teacher"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
 function pdata(){const p=LA.getProgress(SLUG);return (p&&p.data&&p.data.posten)||{};}
 function done(id){const d=pdata()[id];return d&&d.best>=80;}
 function go(h){if(location.hash.slice(1)!==h)location.hash=h;else route();}
 window.addEventListener("hashchange",()=>route());
-
 function route(){
  if(!me)return;
  const h=location.hash.slice(1);
  if(me.role==="teacher"&&!/[?&]test=1/.test(location.search))return teacherView();
- if(h==="gefaelle")return levels();
- if(POOLS[h])return start(h);
+ if(PBY[h])return intro(h);
  home();
 }
-
+function stTxt(d){return d?(d.best>=80?`✅ Bestes Resultat ${d.best} % · ${d.runs} Runde${d.runs>1?"n":""}`:`🔸 Bestes Resultat ${d.best} % · weiter üben`):"⚪ noch nicht gestartet";}
 function home(){
- const D=pdata();
- $("hello").textContent=`Hallo ${me.name}!`;
+ const D=pdata();$("hello").textContent=`Hallo ${me.name}!`;
  const n=POSTEN.filter(p=>done(p.id)).length;
- $("totbar").style.width=(n/POSTEN.length*100)+"%";
- $("totline").textContent=`${n} von ${POSTEN.length} Posten geschafft.`;
- $("posts").innerHTML=POSTEN.map(p=>{const d=D[p.id];
-  const st=d?(d.best>=80?`✅ Bestes Resultat ${d.best} % · ${d.runs} Runde${d.runs>1?"n":""}`:`🔸 Bestes Resultat ${d.best} % · weiter üben`):"⚪ noch nicht gestartet";
-  return `<div class="post" onclick="go('${p.id}')"><div class="ic">${p.ic}</div><b>${p.t}</b><span class="tag" style="align-self:flex-start">${p.lz}</span><div class="d">${p.d}</div><div class="st">${st}</div></div>`}).join("");
+ $("totbar").style.width=(n/POSTEN.length*100)+"%";$("totline").textContent=`${n} von ${POSTEN.length} Posten geschafft.`;
+ $("posts").innerHTML=POSTEN.map(p=>`<div class="post" onclick="go('${p.id}')"><div class="ic">${p.ic}</div><b>${p.t}</b><span class="tag" style="align-self:flex-start">${p.lz}</span><div class="d">${p.d}</div><div class="st">${stTxt(D[p.id])}</div></div>`).join("");
  show("home");
 }
-
-function levels(){
- $("lvlBtns").innerHTML=STUFEN.map(s=>`<button class="btn" onclick="start('gefaelle',${s.k})">${s.t}</button>`).join("");
- show("levels");
+function intro(pid){
+ const P=PBY[pid],d=pdata()[pid];
+ const types=[...new Set(POOLS[pid]?POOLS[pid].map(q=>q.t):[])].filter(t=>t!=="mc"&&t!=="num").map(t=>TYPNAME[t]);
+ $("intro").innerHTML=`<div class="card"><h2>${P.ic} ${P.t} <span class="tag">${P.lz}</span></h2>
+  <div class="learn"><b>📘 Kurz erklärt</b>${P.learn}</div>
+  ${P.svg||""}
+  <p class="small" style="margin:.6rem 0 0">${stTxt(d)}</p></div>
+  ${pid==="gefaelle"?`<div class="card"><h2>Wähle eine Stufe</h2><div class="lvl">${STUFEN.map(s=>`<button class="btn" onclick="start('gefaelle',${s.k})">${s.t}</button>`).join("")}</div>
+   <p class="small" style="margin-top:10px">Jede Runde hat 8 Aufgaben mit neuen Zahlen. Lösungen mit Punkt oder Komma.</p></div>`
+  :`<div class="card"><p style="margin:0 0 .4rem">Eine Runde hat <b>${P.n} Aufgaben</b> in gemischten Formen${types.length?": "+types.join(", "):""}.</p><button class="btn primary" onclick="start('${pid}')">▶ Runde starten</button></div>`}
+  <button class="btn secondary" onclick="go('')">← Zur Übersicht</button>`;
+ show("intro");
 }
-
+function compose(pid){
+ const P=PBY[pid],by={};POOLS[pid].forEach(q=>{(by[q.t]=by[q.t]||[]).push(q);});
+ Object.keys(by).forEach(t=>by[t]=shuffle(by[t]));
+ const types=shuffle(Object.keys(by));const out=[];const cap={mc:2,num:1};const used={};
+ let guard=0;while(out.length<P.n&&guard++<200){for(const t of types){if(out.length>=P.n)break;
+  if(by[t].length&&(used[t]||0)<(cap[t]||2)){out.push(by[t].pop());used[t]=(used[t]||0)+1;}}
+  if(types.every(t=>!by[t].length||(used[t]||0)>=(cap[t]||2)))break;}
+ // Fallgeschichte nicht zuerst, Simulation eher früh
+ return shuffle(out).sort((a,b)=>(a.t==="branch")-(b.t==="branch"));
+}
 function start(pid,stufe){
- const P=PBY[pid];let qs;
- if(pid==="gefaelle"){qs=Array.from({length:P.n},()=>genGef(stufe));}
- else{const pool=shuffle(POOLS[pid]);qs=pool.slice(0,P.n).map(q=>q.t==="mc"?Object.assign({},q,{perm:shuffle(q.o.map((_,k)=>k))}):q);}
- cur={posten:pid,stufe:stufe==null?null:stufe,qs,i:0,score:0,answers:[],wrong:[]};
- $("abort").onclick=()=>{cur=null;go(pid==="gefaelle"?"gefaelle":"");if(pid!=="gefaelle")home();};
+ const P=PBY[pid];
+ const qs=pid==="gefaelle"?Array.from({length:8},()=>genGef(stufe)):compose(pid);
+ cur={posten:pid,stufe:stufe==null?null:stufe,qs,i:0,pts:0,answers:[],wrong:[]};
+ $("abort").onclick=()=>{cur=null;intro(pid);};
  render();show("quiz");
 }
-
 function render(){
- const q=cur.qs[cur.i],P=PBY[cur.posten];
+ const q=cur.qs[cur.i],P=PBY[cur.posten],typ=T[q.t];
+ cur.h=0;cur.locked=false;
  $("pos").textContent=`Aufgabe ${cur.i+1} von ${cur.qs.length}`;
- $("score").textContent=`${cur.score} richtig`;
+ $("score").textContent=`${f2(cur.pts,1).replace(".0","")} Punkte`;
  $("prog").style.width=(cur.i/cur.qs.length*100)+"%";
- $("tagP").textContent=P.ic+" "+P.t;
- $("tagT").textContent=q.stufe?("Stufe "+q.stufe):P.lz;
- $("sketch").innerHTML=q.sk||(q.svg?SVG[q.svg]:"")||(q.deckel?`<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${["gelocht","geschlitzt","geschlossen"].map(t=>`<div style="text-align:center">${SVG.deckel(t)}<div class="small">${t}</div></div>`).join("")}</div>`:"");
- $("ctx").classList.add("hidden");
- $("qtext").textContent=q.q;
+ $("tagP").textContent=P.ic+" "+P.t;$("tagT").textContent=(q.stufe?"Stufe "+q.stufe+" · ":"")+TYPNAME[q.t];
+ $("qtext").innerHTML=q.qh||esc(q.q);
+ $("ctx").classList.toggle("hidden",!q.ctx);$("ctx").innerHTML=q.ctx||"";
  $("feedback").innerHTML="";$("next").classList.add("hidden");
- const A=$("answers");
- if(q.t==="mc"){
-  const perm=q.perm||q.o.map((_,k)=>k);
-  A.innerHTML=perm.map(k=>`<button class="btn" data-k="${k}">${esc(q.o[k])}</button>`).join("");
-  A.querySelectorAll("button").forEach(b=>b.onclick=()=>checkMc(+b.dataset.k));
- }else if(q.t==="num"){
-  A.innerHTML=`<div class="numrow"><input id="inp" inputmode="decimal" autocomplete="off" placeholder="Resultat"><span>${esc(q.unit)}</span></div>
-   <button class="btn primary" id="chk">Prüfen</button>${cur.posten==="gefaelle"?'<button class="btn secondary" id="hnt">💡 Tipp</button><div id="hbox"></div>':""}`;
-  $("chk").onclick=checkNum;$("inp").onkeydown=e=>{if(e.key==="Enter")checkNum()};setTimeout(()=>$("inp").focus(),50);
-  if($("hnt"))$("hnt").onclick=()=>{$("hbox").innerHTML=`<div class="hint">p = Δh : L × 100 · Δh = L × p : 100 · L = Δh × 100 : p<br>Rechne Δh immer in Metern (cm : 100).</div>`;};
- }else{
-  const items=shuffle(q.items.map((t,k)=>({t,k})));cur.sel=[];
-  A.innerHTML=`<p class="small">Tippe die Begriffe in der richtigen Reihenfolge an.</p><div class="chosen" id="chosen"></div><div id="pool">${items.map(x=>`<button class="btn" data-k="${x.k}">${esc(x.t)}</button>`).join("")}</div>
-   <button class="btn secondary" id="rst">↺ Zurücksetzen</button>`;
-  const upd=()=>{$("chosen").innerHTML=cur.sel.map((k,n)=>`<div>${n+1}. ${esc(q.items[k])}</div>`).join("");
-   A.querySelectorAll("#pool button").forEach(b=>b.classList.toggle("hidden",cur.sel.includes(+b.dataset.k)));
-   if(cur.sel.length===q.items.length)checkOrd();};
-  A.querySelectorAll("#pool button").forEach(b=>b.onclick=()=>{cur.sel.push(+b.dataset.k);upd()});
-  $("rst").onclick=()=>{cur.sel=[];upd()};
- }
+ $("qcard").classList.remove("locked");
+ const A=$("answers");A.innerHTML="";
+ const H=$("hintbox");H.innerHTML="";
+ if(q.h&&q.h.length){const b=el(`<button class="hintbtn">💡 Hilfe anzeigen (1/${q.h.length})</button>`);H.appendChild(b);
+  b.onclick=()=>{if(cur.locked)return;H.insertBefore(el(`<div class="hint"><b>Hilfe ${cur.h+1}:</b> ${q.h[cur.h]}</div>`),b);cur.h++;
+   if(cur.h>=q.h.length)b.remove();else b.textContent=`💡 Weitere Hilfe (${cur.h+1}/${q.h.length})`;};}
+ const ctrl=typ.build(q,A,r=>finish(r));
+ const C=$("chk");
+ if(typ.check===false){C.classList.add("hidden");}
+ else{C.classList.remove("hidden");C.disabled=false;C.onclick=()=>{const r=ctrl.check();if(r.retry){$("feedback").innerHTML=`<div class="fb no">${esc(r.retry)}</div>`;return;}C.classList.add("hidden");finish(r);};}
 }
-
-function finish(ok,given,right){
- if(ok)cur.score++;
- const q=cur.qs[cur.i];
- cur.answers.push({id:q.id,ok,s:q.stufe||undefined});
- if(!ok)cur.wrong.push({q:q.q,given,right,ex:q.ex});
- $("feedback").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"✅ Richtig!":"❌ Leider falsch."}</b>${ok?"":"Richtig: "+esc(right)+"<br>"}${esc(q.ex||"")}</div>`;
- $("score").textContent=`${cur.score} richtig`;
- $("next").classList.remove("hidden");$("next").textContent=cur.i+1<cur.qs.length?"Weiter":"Resultat anzeigen";
- $("next").onclick=()=>{cur.i++;if(cur.i<cur.qs.length)render();else result();};
- $("next").scrollIntoView({behavior:"smooth",block:"nearest"});
+function finish(r){
+ const q=cur.qs[cur.i];cur.locked=true;$("qcard").classList.add("locked");
+ const hb=$("hintbox").querySelector(".hintbtn");if(hb)hb.remove();
+ const fac=HINTF[Math.min(cur.h,3)];const sc=Math.max(0,Math.min(1,r.frac))*fac;const ok=r.frac>=0.999;
+ cur.pts+=sc;
+ cur.answers.push({id:q.id,ok,sc:Math.round(sc*100),h:cur.h,s:q.stufe||undefined});
+ if(!ok)cur.wrong.push({q:q.q,given:r.given,right:r.right,ex:q.ex});
+ const cls=ok?"ok":r.frac>0?"half":"no";
+ const head=ok?"✅ Richtig!":r.frac>0?"🟡 Teilweise richtig":"❌ Leider falsch.";
+ const pinfo=`<div class="small" style="margin-top:6px">+${f2(sc,2).replace(/\.?0+$/,"")} Punkt${cur.h?` (${cur.h} Hilfe${cur.h>1?"n":""} benutzt)`:""}</div>`;
+ const showRight=!ok&&r.right&&["mc","num","sort"].includes(q.t);
+ $("feedback").innerHTML=`<div class="fb ${cls}"><b>${head}</b>${r.detail?`<div>${r.detail}</div>`:""}${showRight?`<div>Richtig: ${esc(r.right)}</div>`:""}${q.ex?`<div style="margin-top:4px">${q.ex}</div>`:""}${pinfo}</div>`;
+ $("score").textContent=`${f2(cur.pts,1).replace(".0","")} Punkte`;
+ const N=$("next");N.classList.remove("hidden");N.textContent=cur.i+1<cur.qs.length?"Weiter":"Resultat anzeigen";
+ N.onclick=()=>{cur.i++;if(cur.i<cur.qs.length)render();else result();};
+ setTimeout(()=>$("feedback").scrollIntoView({behavior:"smooth",block:"nearest"}),60);
 }
-function checkMc(k){
- const q=cur.qs[cur.i];const ok=k===q.a;
- $("answers").querySelectorAll("button").forEach(b=>{b.disabled=true;const kk=+b.dataset.k;if(kk===q.a)b.classList.add("ok");else if(kk===k)b.classList.add("no");});
- finish(ok,q.o[k],q.o[q.a]);
-}
-function parseNum(s){s=String(s).trim().replace(/\s|'/g,"").replace(",",".");if(!/^-?\d*\.?\d+$/.test(s))return NaN;return parseFloat(s);}
-function checkNum(){
- const q=cur.qs[cur.i];const v=parseNum($("inp").value);
- if(isNaN(v)){$("feedback").innerHTML='<div class="fb no">Bitte eine Zahl eingeben (z. B. 2.5).</div>';return;}
- const ok=Math.abs(v-q.ans)<=q.tol+1e-9;
- $("inp").disabled=true;$("chk").disabled=true;if($("hnt"))$("hnt").disabled=true;
- const d=q.unit==="m ü. M."?3:(Math.abs(q.ans%1)<1e-9?0:2);
- finish(ok,v+" "+q.unit,(+q.ans.toFixed(d))+" "+q.unit);
-}
-function checkOrd(){
- const q=cur.qs[cur.i];const ok=cur.sel.every((k,n)=>k===n);
- $("chosen").querySelectorAll("div").forEach((el,n)=>el.classList.add(cur.sel[n]===n?"okk":"bad"));
- $("rst").disabled=true;
- finish(ok,cur.sel.map(k=>q.items[k]).join(" → "),q.items.join(" → "));
-}
-
 async function result(){
- const pct=Math.round(cur.score/cur.qs.length*100);
- $("prog").style.width="100%";
- $("pct").textContent=pct+" %";
- $("verdict").innerHTML=`${cur.score} von ${cur.qs.length} richtig. `+(pct>=80?"✅ Posten geschafft!":pct>=50?"🔸 Gut unterwegs – noch eine Runde?":"🔁 Schau im Dossier nach und versuch es nochmals.");
+ const pct=Math.round(cur.pts/cur.qs.length*100);
+ $("prog").style.width="100%";$("pct").textContent=pct+" %";
+ $("verdict").innerHTML=`${f2(cur.pts,1).replace(".0","")} von ${cur.qs.length} Punkten. `+(pct>=80?"✅ Posten geschafft!":pct>=50?"🔸 Gut unterwegs – noch eine Runde?":"🔁 Schau im Dossier nach und versuch es nochmals.");
  $("wrongBox").classList.toggle("hidden",!cur.wrong.length);
- $("wrongList").innerHTML=cur.wrong.map(w=>`<div class="wrong">${esc(w.q)}<br><span class="small">Deine Antwort: ${esc(w.given)}</span><br><span class="a">→ ${esc(w.right)}</span><br><span class="small">${esc(w.ex||"")}</span></div>`).join("");
- const pid=cur.posten,st=cur.stufe;
- $("again").onclick=()=>start(pid,st);
+ $("wrongList").innerHTML=cur.wrong.map(w=>`<div class="wrong">${esc(w.q)}${w.right?`<br><span class="a">→ ${esc(w.right)}</span>`:""}${w.ex?`<br><span class="small">${w.ex}</span>`:""}</div>`).join("");
+ const pid=cur.posten,st=cur.stufe;$("again").onclick=()=>start(pid,st);
  show("result");
- const P=JSON.parse(JSON.stringify(pdata()));
- const d=P[pid]||{best:0,runs:0,attempts:[]};
+ const P=JSON.parse(JSON.stringify(pdata()));const d=P[pid]||{best:0,runs:0,attempts:[]};
  d.best=Math.max(d.best||0,pct);d.runs=(d.runs||0)+1;d.last=pct;
- d.attempts=(d.attempts||[]).concat([{pct,score:cur.score,total:cur.qs.length,stufe:st,finished:new Date().toISOString(),answers:cur.answers}]).slice(-15);
- P[pid]=d;
- const nDone=POSTEN.filter(p=>(P[p.id]&&P[p.id].best>=80)).length;
+ d.attempts=(d.attempts||[]).concat([{pct,score:+f2(cur.pts,2),total:cur.qs.length,stufe:st,finished:new Date().toISOString(),answers:cur.answers}]).slice(-15);
+ P[pid]=d;const nDone=POSTEN.filter(p=>P[p.id]&&P[p.id].best>=80).length;
  $("saved").textContent=LA.demo?"Demo-Modus: nur auf diesem Gerät gespeichert.":"Wird gespeichert …";
  await LA.saveProgress(SLUG,{posten:P,progressPct:Math.round(nDone/POSTEN.length*100),pct:Math.round(nDone/POSTEN.length*100)});
  if(!LA.demo)$("saved").textContent="✔ Gespeichert – deine Lehrperson sieht dein Resultat.";
 }
 
-/* ======================= Lehrer-Auswertung ======================= */
+/* ================= Lehrer-Auswertung ================= */
 const cls=p=>p==null?"g0":p>=80?"g3":p>=50?"g2":"g1";
 const dt=s=>s?new Date(s).toLocaleDateString("de-CH",{day:"2-digit",month:"2-digit"})+" "+new Date(s).toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit"}):"";
 async function teacherView(){
- $("wrap").classList.add("wide");
- $("subline").textContent="Auswertung Klasse "+LA.klasse+" · Lern-App Entwässerung (6 Posten)";
- const T=$("teacher");show("teacher");
- T.innerHTML='<div class="card">Lädt Resultate …</div>';
- let profs,prog;
- try{[profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);}
- catch(e){T.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return;}
+ $("wrap").classList.add("wide");$("subline").textContent="Auswertung Klasse "+LA.klasse+" · Lern-App Entwässerung (6 Posten)";
+ const Tt=$("teacher");show("teacher");Tt.innerHTML='<div class="card">Lädt Resultate …</div>';
+ let profs,prog;try{[profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);}catch(e){Tt.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return;}
  const Pf=Object.fromEntries(profs.map(p=>[p.id,p]));
  const rows=prog.filter(r=>r.slug===SLUG&&Pf[r.user_id]&&Pf[r.user_id].role==="student"&&Pf[r.user_id].klasse===LA.klasse)
   .map(r=>({name:Pf[r.user_id].name,P:(r.data&&r.data.posten)||{},upd:r.updated_at})).sort((a,b)=>a.name.localeCompare(b.name,"de"));
  const have=new Set(rows.map(r=>r.name));
  const open=profs.filter(p=>p.role==="student"&&p.klasse===LA.klasse&&!have.has(p.name)).map(p=>p.name).sort((a,b)=>a.localeCompare(b,"de"));
- // Statistik pro Frage
  const qs={};rows.forEach(r=>Object.entries(r.P).forEach(([pid,d])=>(d.attempts||[]).forEach(a=>(a.answers||[]).forEach(x=>{
-   const key=pid==="gefaelle"?"G"+(x.s||x.id.slice(1)):x.id;(qs[key]=qs[key]||{n:0,ok:0,pid});qs[key].n++;if(x.ok)qs[key].ok++;}))));
- const stTxt={G1:"Gefälle-Trainer Stufe 1: Gefälle in %",G2:"Gefälle-Trainer Stufe 2: Höhendifferenz",G3:"Gefälle-Trainer Stufe 3: Länge",G4:"Gefälle-Trainer Stufe 4: Höhenkoten",G5:"Gefälle-Trainer Stufe 5: Minimalgefälle-Check"};
- const qRows=Object.entries(qs).map(([id,s])=>({id,...s,p:Math.round(s.ok/s.n*100),txt:BYID[id]?BYID[id].q:(stTxt[id]||id)})).sort((a,b)=>a.p-b.p);
+  const key=pid==="gefaelle"?"G"+(x.s||String(x.id).slice(1)):x.id;(qs[key]=qs[key]||{n:0,sc:0,h:0,pid});qs[key].n++;qs[key].sc+=(x.sc!=null?x.sc:(x.ok?100:0));qs[key].h+=(x.h||0);}))));
+ const qRows=Object.entries(qs).map(([id,s])=>({id,...s,p:Math.round(s.sc/s.n),hm:(s.h/s.n).toFixed(1),q:BYID[id],txt:BYID[id]?BYID[id].q:(STUFTXT[id]||id)})).sort((a,b)=>a.p-b.p);
  const avgP=pid=>{const v=rows.map(r=>r.P[pid]&&r.P[pid].best).filter(x=>x!=null);return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null;};
- T.innerHTML=`
- <div class="kpis"><div class="kpi"><b>${rows.length}</b><span>Lernende mit Resultat</span></div>
+ Tt.innerHTML=`<div class="kpis"><div class="kpi"><b>${rows.length}</b><span>Lernende mit Resultat</span></div>
   ${POSTEN.map(p=>{const a=avgP(p.id);return `<div class="kpi"><b>${a==null?"–":a+" %"}</b><span>${p.ic} ${p.t} (Ø bestes)</span></div>`}).join("")}</div>
- <div class="card"><h2>Fortschritt pro Lernende/r</h2>
-  <p class="small">Bestes Resultat pro Posten (Anzahl Runden). Ab 80 % gilt ein Posten als geschafft. Auf eine Zeile tippen für alle Runden.</p>
+ <div class="card"><h2>Fortschritt pro Lernende/r</h2><p class="small">Bestes Resultat pro Posten (Anzahl Runden). Ab 80 % geschafft. Auf eine Zeile tippen für alle Runden.</p>
   <div style="margin-bottom:8px"><button class="btn inline" id="csv">⬇ CSV exportieren</button><button class="btn inline" id="rf">🔄 Aktualisieren</button><a class="btn inline" href="?test=1" style="text-decoration:none;color:inherit">▶ App selbst ausprobieren</a></div>
   <div class="scroll"><table><tr><th>Name</th>${POSTEN.map(p=>`<th>${p.ic} ${p.t}</th>`).join("")}<th>Geschafft</th><th>Zuletzt</th></tr>
   ${rows.map((r,k)=>`<tr class="click" data-k="${k}"><td><b>${esc(r.name)}</b></td>${POSTEN.map(p=>{const d=r.P[p.id];return `<td class="n">${d?`<span class="sc ${cls(d.best)}">${d.best} %</span> <span class="small">(${d.runs})</span>`:'<span class="sc g0">–</span>'}</td>`}).join("")}
    <td class="n">${POSTEN.filter(p=>r.P[p.id]&&r.P[p.id].best>=80).length}/6</td><td>${dt(r.upd)}</td></tr>
    <tr class="hidden" id="det${k}"><td colspan="${POSTEN.length+3}" class="det"></td></tr>`).join("")||`<tr><td colspan="${POSTEN.length+3}">Noch keine Resultate.</td></tr>`}
-  </table></div>
-  ${open.length?`<p class="small" style="margin-top:10px"><b>Registriert, aber noch nicht gestartet (${open.length}):</b> ${open.map(esc).join(", ")}</p>`:""}
- </div>
- <div class="card"><h2>Welche Fragen bereiten Mühe?</h2>
-  <p class="small">Anteil richtiger Antworten über alle Runden, schwierigste zuerst. Beim Gefälle-Trainer pro Stufe zusammengefasst.</p>
-  <div class="scroll"><table><tr><th>Frage</th><th>Posten</th><th>Richtig</th><th></th><th>n</th></tr>
-  ${qRows.map(x=>`<tr><td class="wrap">${esc(x.txt)}</td><td>${PBY[x.pid].ic} ${PBY[x.pid].t}</td><td class="n"><span class="sc ${cls(x.p)}">${x.p} %</span></td>
-   <td><div class="qbar"><div style="width:${x.p}%;background:${x.p>=80?"var(--green)":x.p>=50?"#e5b800":"var(--red)"}"></div></div></td><td class="n">${x.n}</td></tr>`).join("")||'<tr><td colspan="5">Noch keine Daten.</td></tr>'}
+  </table></div>${open.length?`<p class="small" style="margin-top:10px"><b>Registriert, aber noch nicht gestartet (${open.length}):</b> ${open.map(esc).join(", ")}</p>`:""}</div>
+ <div class="card"><h2>Welche Aufgaben bereiten Mühe?</h2><p class="small">Durchschnittliche Punktzahl über alle Runden (Teilpunkte und Hilfen eingerechnet), schwierigste zuerst. Ø Hilfen = wie oft Hilfen abgerufen wurden.</p>
+  <div class="scroll"><table><tr><th>Aufgabe</th><th>Typ</th><th>Posten</th><th>Ø Punkte</th><th></th><th>Ø Hilfen</th><th>n</th></tr>
+  ${qRows.map(x=>`<tr><td class="wrap">${esc(x.txt)}</td><td>${x.q?TYPNAME[x.q.t]:"Rechnen"}</td><td>${PBY[x.pid].ic} ${PBY[x.pid].t}</td><td class="n"><span class="sc ${cls(x.p)}">${x.p} %</span></td>
+   <td><div class="qbar"><div style="width:${x.p}%;background:${x.p>=80?"var(--green)":x.p>=50?"#e5b800":"var(--red)"}"></div></div></td><td class="n">${x.hm}</td><td class="n">${x.n}</td></tr>`).join("")||'<tr><td colspan="7">Noch keine Daten.</td></tr>'}
   </table></div></div>`;
- T.querySelectorAll("tr.click").forEach(tr=>tr.onclick=()=>{const k=+tr.dataset.k,d=$("det"+k),r=rows[k];
+ Tt.querySelectorAll("tr.click").forEach(tr=>tr.onclick=()=>{const k=+tr.dataset.k,d=$("det"+k),r=rows[k];
   if(!d.classList.contains("hidden")){d.classList.add("hidden");return;}
   d.firstElementChild.innerHTML=POSTEN.filter(p=>r.P[p.id]).map(p=>`<div style="margin-bottom:6px"><b>${p.ic} ${p.t}</b>: `+
    (r.P[p.id].attempts||[]).map(a=>`<span class="sc ${cls(a.pct)}" title="${dt(a.finished)}">${a.pct} %</span>${a.stufe!=null?` <span class="small">${a.stufe===0?"Mix":"St. "+a.stufe}</span>`:""}`).join(" ")+`</div>`).join("")||"Keine Runden.";
@@ -551,14 +1089,7 @@ async function teacherView(){
   const csv=lines.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"}));a.download="entwaesserung-resultate.csv";a.click();};
 }
-
-/* ======================= Start ======================= */
-(async()=>{
- me=await LA.requireLogin();
- LA.who($("who"));
- $("loading").classList.add("hidden");
- route();
-})();
+(async()=>{me=await LA.requireLogin();LA.who($("who"));$("loading").classList.add("hidden");route();})();
 </script>
 </body>
 </html>
