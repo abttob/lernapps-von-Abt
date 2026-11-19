@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tages-App 26.11.2026 – Transport & Ladungssicherung (L63–65) – GLA25A</title>
+<style>
+:root{--bg:#14151a;--card:#20232c;--card2:#2a2e3a;--ink:#f3f5f2;--muted:#a7b0aa;--lime:#98c723;--gelb:#ffc400;--gruen:#21c36b;--rot:#ff5a5a;--blau:#4da3ff;--line:#363b48}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.4}
+.wrap{max-width:640px;margin:0 auto;padding:12px 14px 50px}.wrap.wide{max-width:1300px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.9rem}
+.top a{color:var(--lime);text-decoration:none}
+.who{display:flex;gap:10px;align-items:center}.who span{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-weight:700}.who a{color:var(--muted)}
+.stripes{height:10px;border-radius:6px;background:repeating-linear-gradient(-45deg,var(--gelb) 0 18px,#14151a 18px 36px);margin:8px 0 12px}
+h1{font-size:1.5rem;margin:.4rem 0 .2rem}h2{font-size:1.15rem;margin:0 0 .5rem}
+.sub{color:var(--muted);margin:0 0 1rem}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+.btn{display:block;width:100%;text-align:left;padding:15px 16px;margin:9px 0;border:2px solid var(--line);border-radius:14px;background:var(--card2);font-size:1.03rem;color:var(--ink);cursor:pointer;min-height:56px;font-family:inherit;font-weight:600}
+.btn.primary{background:var(--lime);color:#14151a;border-color:var(--lime);text-align:center;font-weight:800;font-size:1.1rem}
+.btn.ok{background:#173d2a;border-color:var(--gruen)}.btn.no{background:#4a1d1d;border-color:var(--rot)}
+.btn:disabled{cursor:default}
+.btn.inline{display:inline-block;width:auto;min-height:40px;padding:8px 14px;text-align:center;font-size:.9rem;margin:4px 4px 4px 0}
+.hidden{display:none!important}.small{font-size:.85rem;color:var(--muted)}
+.niv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.niv button{font:inherit;border:2px solid var(--line);border-radius:14px;background:var(--card2);color:var(--ink);padding:10px 6px;cursor:pointer;min-height:72px}
+.niv button b{display:block}.niv button span{font-size:.75rem;color:var(--muted)}
+.niv button.on{border-color:var(--lime);background:#26301a}
+.tiles{display:grid;gap:10px}
+.tile{display:flex;gap:12px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;cursor:pointer;text-align:left;color:var(--ink);font:inherit;width:100%}
+.tile .ic{font-size:2rem;min-width:46px;text-align:center}.tile b{display:block;font-size:1.05rem}.tile span{font-size:.85rem;color:var(--muted)}
+.tile .st{margin-left:auto;font-size:.8rem;font-weight:800;border-radius:20px;padding:3px 10px;background:#2a2e3a;color:var(--muted);white-space:nowrap}
+.tile .st.done{background:#173d2a;color:#9ff0c0}
+.tile.ci{border-color:var(--lime)}.tile.co{border-color:var(--gelb)}.tile.lock{opacity:.6}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-weight:800;font-size:.95rem}.pill.fire{border-color:var(--gelb);color:var(--gelb)}
+.timer{height:12px;background:#2c303b;border-radius:8px;overflow:hidden;margin:4px 0 12px}.timer>div{height:100%;background:linear-gradient(90deg,var(--gruen),var(--gelb),var(--rot));transition:width .25s linear}
+.tag{display:inline-block;font-size:.75rem;font-weight:800;padding:3px 9px;border-radius:20px;background:#2f3b20;color:var(--lime);margin-bottom:6px}
+.q{font-size:1.17rem;font-weight:800;margin:6px 0 4px}
+.fb{padding:12px 14px;border-radius:14px;margin-top:10px;font-size:.98rem}.fb.ok{background:#173d2a;border:1px solid var(--gruen)}.fb.no{background:#3d1b1b;border:1px solid var(--rot)}.fb b{display:block;margin-bottom:3px}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:2.4rem;font-weight:900;color:var(--gelb);opacity:0;pointer-events:none;z-index:40;white-space:nowrap}
+.pop.go{animation:pop .9s ease-out}@keyframes pop{0%{opacity:0}25%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-110%)}}
+.big{font-size:2.8rem;font-weight:900;text-align:center;margin:4px 0;color:var(--lime)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}
+.sortcard{font-size:1.15rem;font-weight:800;text-align:center;padding:26px 14px;border-radius:16px;background:var(--card2);border:2px solid var(--line);margin:8px 0 12px;min-height:110px;display:grid;place-items:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.two .btn{text-align:center;font-weight:800}
+.ticket{border:3px dashed var(--gelb);border-radius:18px;padding:18px;text-align:center;background:#2b2610;margin:10px 0}
+.ticket .t{font-size:1.7rem;font-weight:900;color:var(--gelb)}
+.lockbox{text-align:center;padding:20px}.lockbox .clock{font-size:2.4rem;font-weight:900;color:var(--gelb)}
+/* Login (core.js) */
+.auth{position:fixed;inset:0;background:rgba(0,0,0,.65);display:grid;place-items:center;z-index:50;padding:1rem}
+.auth .card{max-width:430px;width:100%;margin:0;max-height:94vh;overflow:auto;background:#fff;color:#1f2d27}
+.auth label{font-weight:700;font-size:.9rem}.auth .fld{font:inherit;font-size:1.05rem;padding:12px;width:100%;border:1.5px solid #cfd9d2;border-radius:12px;margin:.3rem 0 .8rem}
+.auth .btn{text-align:center;background:#2f7a4a;color:#fff;border-color:#2f7a4a}
+.tabs{display:flex;gap:.5rem;margin-bottom:.8rem}.tabs button{flex:1;font:inherit;font-weight:700;padding:.7rem;border-radius:12px;border:1.5px solid #cfd9d2;background:#fff;cursor:pointer;min-height:48px}
+.tabs button.on{background:#2f7a4a;color:#fff;border-color:#2f7a4a}
+.msg{padding:.7rem .9rem;border-radius:12px;font-weight:700;margin:.4rem 0}.msg.err{background:#f7dede;color:#8a1f1b}
+.banner{background:#fff3c0;border:2px dashed #e5b800;border-radius:12px;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem;color:#1f2d27}
+/* Lehrperson */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.kpi b{display:block;font-size:1.6rem}.kpi span{font-size:.8rem;color:var(--muted)}
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;white-space:nowrap}th{background:#262b36;font-size:.78rem;position:sticky;top:0}
+td.n{text-align:center}
+.sc{display:inline-block;min-width:48px;text-align:center;font-weight:800;border-radius:8px;padding:2px 6px}
+.g0{background:#2a2e3a;color:#777}.g1{background:#4a1d1d;color:#ffb3b3}.g2{background:#4a3d10;color:#ffe08a}.g3{background:#173d2a;color:#9ff0c0}
+.lbr{display:grid;grid-template-columns:60px 1fr auto;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 16px;margin-bottom:8px}
+.lbr .m{font-size:2rem;text-align:center}.lbr b{font-size:1.3rem}.lbr .p{font-size:1.6rem;font-weight:900;color:var(--lime)}
+.beamer h1{font-size:2.6rem}.beamer .lbr b{font-size:1.9rem}.beamer .lbr .p{font-size:2.2rem}.beamer .kpi b{font-size:2.4rem}
+.prog{height:16px;background:#2c303b;border-radius:10px;overflow:hidden}.prog>div{height:100%;background:var(--lime)}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;vertical-align:-1px}.d1{background:#2e9d4a}.d2{background:#4da3ff}.d3{background:#ddd}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+ <div class="top"><a href="../">← Alle Apps</a><div class="who" id="who"></div></div>
+ <div class="stripes"></div>
+ <h1>🚚 Tages-App 26.11.2026</h1>
+ <p class="sub" id="subline">Transport & Ladungssicherung · L63 · L64 · L65 · Klasse GLA25A</p>
+ <div id="loading" class="card">Lädt …</div>
+
+ <div id="home" class="hidden">
+  <div class="card">
+   <h2 id="hello"></h2>
+   <p class="small" style="margin:.2rem 0 .6rem">Dein Niveau (wie im Dossier):</p>
+   <div class="niv" id="niv">
+    <button data-n="1"><b><i class="dot d1"></i>Basis</b><span>3 Antworten</span></button>
+    <button data-n="2"><b><i class="dot d2"></i>Standard</b><span>4 Antworten</span></button>
+    <button data-n="3"><b><i class="dot d3"></i>Profi</b><span>schwer, auf Zeit</span></button>
+   </div>
+  </div>
+  <div class="tiles" id="tiles"></div>
+ </div>
+
+ <div id="quiz" class="hidden">
+  <div class="hud"><span class="pill" id="pos"></span><span class="pill fire hidden" id="streak"></span><span class="pill" id="pts"></span></div>
+  <div class="timer" id="tWrap"><div id="tbar" style="width:100%"></div></div>
+  <div class="card">
+   <span class="tag" id="tag"></span>
+   <div class="q" id="qtext"></div>
+   <div id="answers"></div><div id="feedback"></div>
+   <button class="btn primary hidden" id="next">Weiter</button>
+  </div>
+ </div>
+
+ <div id="sort" class="hidden">
+  <div class="hud"><span class="pill" id="spos"></span><span class="pill" id="sscore"></span></div>
+  <div class="card">
+   <h2>🧲 Hält's oder rutscht's?</h2>
+   <p class="small" style="margin:0">Stell dir eine Vollbremsung vor. Ist diese Ladung richtig gesichert?</p>
+   <div class="sortcard" id="scard"></div>
+   <div class="two"><button class="btn" id="sA">✅ Hält</button><button class="btn" id="sB">❌ Rutscht / verboten</button></div>
+   <div id="sfb"></div><button class="btn primary hidden" id="snext">Weiter</button>
+  </div>
+ </div>
+
+ <div id="res" class="hidden"><div class="card" id="resBox"></div><button class="btn" onclick="home()">← Zurück</button></div>
+ <div id="teacher" class="hidden"></div>
+</div>
+<div class="pop" id="pop"></div>
+
+<script>/* Sicherung: falls die Anmeldung haengt */
+setTimeout(()=>{const l=document.getElementById("loading");if(!l||l.classList.contains("hidden")||document.querySelector(".auth"))return;
+l.innerHTML='<b>Das Laden dauert zu lange.</b><br><span class="small">Meist hilft neu laden. Falls nicht: neu anmelden.</span><button class="btn primary" onclick="location.reload()">🔄 Neu laden</button><button class="btn" onclick="try{Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){};location.reload()">🔑 Neu anmelden</button>';},8000);
+</script>
+<script src="../belagsaufbau/assets/config.js"></script>
+<script>window.LA_KLASSE="GLA25A"; window.LA_FIXCODE=c=>/^gla25a$/i.test(c)?"GLA25A":c;</script>
+<script src="core.js"></script>
+<script>
+/* ================= INHALTE ================= */
+const SLUG="tag-2026-11-26";
+const CHECKOUT_AB={h:16,m:45}; // Checkout erst ab 16.45 Uhr
+const LZ={L58:"L58 Warum warten?",L61:"L61 Wie warten?",L62:"L62 Ordnung & Sauberkeit",L63:"L63 Palettenhubwagen",L64:"L64 Gefahren beim Transport",L65:"L65 Vorschriften & Sichern"};
+/* Check-in: Rückblick 19.11.2026 (gleich für alle, damit vergleichbar). Richtige Antwort an 1. Stelle. */
+const CI=[
+{id:"c1",lz:"L58",q:"Warum wartet man Maschinen regelmässig?",o:["Damit sie sicher und zuverlässig laufen","Damit sie schöner glänzen","Weil es die Kundschaft so will","Damit man weniger arbeiten muss"],e:"Wartung = Sicherheit, weniger Ausfälle, längere Lebensdauer."},
+{id:"c2",lz:"L58",q:"Ein stumpfes Rasenmähermesser …",o:["reisst die Halme, die Spitzen werden braun","schneidet sauberer","spart Benzin","macht den Rasen dichter"],e:"Ausgefranste Halme trocknen aus und werden krank."},
+{id:"c3",lz:"L58",q:"Was macht der Sicherheitsbügel am Rasenmäher?",o:["Er stoppt Motor bzw. Messer, wenn man loslässt","Er startet den Motor schneller","Er regelt die Schnitthöhe","Er schaltet das Licht ein"],e:"Nie überbrücken!"},
+{id:"c4",lz:"L61",q:"Was ist der «Tagesparkdienst»?",o:["Pflege nach jedem Einsatz: reinigen, kontrollieren, auftanken","Ölwechsel einmal im Jahr","Die Maschine am Abend parkieren","Eine neue Maschine kaufen"],e:"Tagesparkdienst = nach jedem Einsatz."},
+{id:"c5",lz:"L61",q:"Was machst du VOR Arbeiten am Rasenmähermesser?",o:["Motor abstellen und Zündkerzenstecker abziehen","Motor laufen lassen","Den Tank füllen","Den Grasfangkorb montieren"],e:"So kann der Motor nicht anspringen."},
+{id:"c6",lz:"L61",q:"Wie kippst du einen Benzin-Rasenmäher zum Reinigen?",o:["Mit Luftfilter und Vergaser nach oben","Mit dem Luftfilter nach unten","Auf den Kopf stellen","Egal wie"],e:"Sonst läuft Öl oder Benzin in den Luftfilter."},
+{id:"c7",lz:"L61",q:"Was gehört zum Service (nicht zum Tagesparkdienst)?",o:["Zündkerze ersetzen","Grasreste entfernen","Treibstoff nachfüllen","Sichtkontrolle"],e:"Service = in Abständen nach Betriebsanleitung."},
+{id:"c8",lz:"L61",q:"Du entdeckst einen Riss im Mähmesser. Was tust du?",o:["Gerät stilllegen, kennzeichnen, Vorgesetzte informieren","Weiterarbeiten","Mit Klebeband flicken","Nichts sagen"],e:"Ein brechendes Messer wird zum Geschoss."},
+{id:"c9",lz:"L62",q:"Warum hat jedes Werkzeug einen festen Platz?",o:["Man findet es schnell und sieht, wenn etwas fehlt","Damit die Wand schön aussieht","Weil es sonst rostet","Damit niemand es benutzt"],e:"Ordnung spart Zeit."},
+{id:"c10",lz:"L62",q:"Womit desinfizierst du eine Schere zwischen zwei Pflanzen?",o:["Mit Alkohol (z. B. 70 %)","Mit Wasser","Mit Motoröl","Mit Benzin"],e:"Besonders wichtig bei Feuerbrand."},
+{id:"c11",lz:"L62",q:"Im Werkhof ist Öl ausgelaufen. Was ist richtig?",o:["Ölbindemittel streuen, aufnehmen, als Sonderabfall entsorgen","Mit Wasser in den Schacht spülen","Mit Erde zudecken","Liegen lassen"],e:"Öl nie in den Schacht!"},
+{id:"c12",lz:"L62",q:"Ein Rechen liegt mit den Zinken nach oben am Boden. Das Problem?",o:["Verletzungsgefahr, wenn man darauf tritt","Er trocknet schneller","Kein Problem","Er rostet weniger"],e:"Aufhängen oder Zinken nach unten."}
+];
+/* L63–65 (Ordner Kapitel E3, S. 351–356). lv: 1 Basis, 2 Standard, 3 Profi */
+const MC=[
+{lv:1,lz:"L63",q:"Darf jemand auf dem Palettenhubwagen mitfahren?",o:["Nein, nie. Er ist nur für Waren","Ja, wenn man langsam fährt","Ja, auf kurzen Strecken","Nur die Chefin oder der Chef"],e:"Flurförderzeuge dürfen auf keinen Fall Personen transportieren."},
+{lv:1,lz:"L63",q:"Was machst du, bevor du den Palettenhubwagen benutzt?",o:["Sichtkontrolle: Räder, Gabeln, Hydraulik, Deichsel","Nichts, er ist wartungsfrei","Ihn mit Wasser abspritzen","Die Gabeln einölen"],e:"Kurz prüfen, ob alles ganz ist und nichts tropft."},
+{lv:1,lz:"L63",q:"Wo siehst du, wie viel der Hubwagen tragen darf?",o:["Auf dem Typenschild bzw. in der Betriebsanleitung","Das sieht man an der Farbe","Im Fahrzeugausweis vom Lieferwagen","Nirgends, er trägt alles"],e:"Die Traglast steht am Gerät."},
+{lv:2,lz:"L63",q:"Was brauchst du, bevor du einen Hubwagen bedienen darfst?",o:["Eine dokumentierte Instruktion durch eine Fachperson","Einen Autofahrausweis","Nichts","Eine Bewilligung der Polizei"],e:"Danach erhältst du einen Instruktionsnachweis."},
+{lv:2,lz:"L63",q:"Wie alt musst du nach SUVA mindestens sein?",o:["15 Jahre","12 Jahre","18 Jahre","21 Jahre"],e:"Mindestalter 15 Jahre."},
+{lv:2,lz:"L63",q:"Wie fährst du die Gabeln unter die Palette?",o:["Ganz einfahren, die Last mittig aufnehmen","Nur die Spitzen einfahren","Schräg einfahren","Egal, Hauptsache schnell"],e:"Sonst kippt die Last oder die Palette bricht."},
+{lv:2,lz:"L63",q:"Welche Schutzausrüstung trägst du beim Hubwagen?",o:["Sicherheitsschuhe und Handschuhe","Sonnenbrille","Gehörschutz reicht","Keine"],e:"Die Rollen können die Füsse quetschen."},
+{lv:3,lz:"L63",q:"Zu welcher Gefahrenkategorie gehört der Palettenhubwagen?",o:["S (mitgängergeführt, ohne Fahrersitz)","B (Lastwagen)","G (Gabelstapler mit Sitz)","Keine Kategorie"],e:"Kategorie S: S1 Schlepper, S2 Hubwagen, S3 Kommissionierer."},
+{lv:3,lz:"L63",q:"Du musst eine Palette eine Rampe hinunter bringen. Was ist richtig?",o:["Nie unterhalb vor der Last gehen, langsam und kontrolliert","Laufen lassen und hinterher rennen","Vor der Last rückwärts hinunter gehen","Mit Schwung, damit es schneller geht"],e:"Wer unter der Last steht, wird überrollt. Bei zu viel Gefälle: nicht benutzen."},
+{lv:1,lz:"L64",q:"Was lässt eine Ladung verrutschen?",o:["Starkes Bremsen und Kurven","Die Farbe der Ladung","Sonnenschein","Ein voller Tank"],e:"Bei einer Vollbremsung wirken sehr grosse Kräfte."},
+{lv:1,lz:"L64",q:"Wovor musst du Pflanzen beim Transport schützen?",o:["Fahrtwind, Kälte, Hitze, Druckstellen, Erschütterungen","Vor Musik im Radio","Vor zu viel Licht in der Kabine","Vor gar nichts"],e:"Fahrtwind trocknet die Pflanzen aus."},
+{lv:1,lz:"L64",q:"Wie stellst du grössere Pflanzen im Topf auf die Ladefläche?",o:["Topf an Topf, damit sie nicht umkippen","Mit viel Abstand","Liegend auf die Seite","Auf das Dach"],e:"Dicht stellen = formschlüssig."},
+{lv:2,lz:"L64",q:"Wie schützt du Pflanzen vor Austrocknung durch den Fahrtwind?",o:["Abdecken, Wurzelballen abdecken, Tempo anpassen","Schneller fahren","Fenster öffnen","Mit Wasser giessen während der Fahrt"],e:"Am besten Plane oder geschlossener Aufbau, nicht auf die Autobahn."},
+{lv:2,lz:"L64",q:"Wie transportierst du Schnittgut auf dem Anhänger?",o:["Mit Netz oder Plane abdecken","Offen, es ist ja leicht","Nur bei Regen abdecken","Gar nicht, man lässt es liegen"],e:"Leichtes Material fliegt sonst weg."},
+{lv:2,lz:"L64",q:"Es hat Frost. Darfst du nassen Kies transportieren, der tropft?",o:["Nein, das Wasser gefriert auf der Strasse","Ja, kein Problem","Ja, wenn man schnell fährt","Nur am Abend"],e:"Abtropfendes Wasser macht die Fahrbahn glatt."},
+{lv:3,lz:"L64",q:"Wie schützt du den Stamm eines Hochstamms beim Transport?",o:["Mit Polster (Kunststoff oder Ballentuch) und Spannset","Mit Klebeband direkt auf die Rinde","Gar nicht, Rinde ist robust","Mit einer Kette"],e:"Die Rinde darf nicht verletzt werden."},
+{lv:3,lz:"L64",q:"Was kann eine verrutschte Ladung im schlimmsten Fall bewirken?",o:["Unfälle mit Verletzten oder Toten","Nur einen Kratzer am Fahrzeug","Nichts, die Ladung ist ja versichert","Ein schöneres Fahrgefühl"],e:"Darum: immer richtig sichern."},
+{lv:1,lz:"L65",q:"Wer ist für die richtige Beladung verantwortlich?",o:["Die Person, die das Fahrzeug fährt","Die Kundschaft","Der Hersteller vom Fahrzeug","Niemand"],e:"Der Fahrzeugführer bzw. die Fahrzeugführerin wird gebüsst."},
+{lv:1,lz:"L65",q:"Wo platzierst du die Ladung auf der Ladefläche?",o:["Direkt an der Stirnwand (Rückwand der Kabine)","Möglichst weit hinten","In der Mitte mit viel Platz rundherum","Egal wo"],e:"Ohne Lücke kann die Ladung beim Bremsen keinen Schwung holen."},
+{lv:1,lz:"L65",q:"Was macht eine Antirutschmatte?",o:["Sie erhöht die Reibung, die Ladung rutscht weniger","Sie macht die Ladung leichter","Sie schützt vor Regen","Sie ist nur Dekoration"],e:"Mehr Reibung = mehr Halt."},
+{lv:2,lz:"L65",q:"Wie hoch darf ein Fahrzeug mit Ladung höchstens sein?",o:["4 Meter","2.5 Meter","5 Meter","Es gibt keine Grenze"],e:"Strassenverkehrsvorschrift: max. 4 m."},
+{lv:2,lz:"L65",q:"Wie breit darf die Ladung sein?",o:["Höchstens so breit wie das Fahrzeug","1 Meter breiter als das Fahrzeug","Unbegrenzt","2 Meter"],e:"Seitlich darf nichts überragen."},
+{lv:2,lz:"L65",q:"Was heisst «formschlüssig» laden?",o:["Ohne Lücken, die Ladung stützt sich ab","Die Ladung hübsch formen","Möglichst viel Abstand lassen","Nur runde Sachen laden"],e:"Lücken füllen, z. B. mit Paletten."},
+{lv:2,lz:"L65",q:"Was bewirkt das Niederzurren (kraftschlüssig)?",o:["Die Ladung wird auf die Brücke gedrückt, die Reibung steigt","Die Ladung wird leichter","Die Ladung wird breiter","Nichts"],e:"Immer zwei Gurte verwenden."},
+{lv:2,lz:"L65",q:"Wo steht das maximale Gesamtgewicht deines Fahrzeugs?",o:["Im Fahrzeugausweis","Auf dem Pneu","Im Handschuhfach auf einem Zettel","Nirgends"],e:"Überladen = Busse oder Ausweisentzug."},
+{lv:3,lz:"L65",q:"Ab wie viel Überhang hinten muss ein Signalkörper (z. B. Fahne, Kugel) dran?",o:["Mehr als 1 m ab Ende der Karosserie","Ab 10 cm","Ab 3 m","Nie"],e:"Leuchtender Signalkörper bei über 1 m Überhang."},
+{lv:3,lz:"L65",q:"Wie weit darf die Ladung hinten höchstens über die Mitte der Hinterachse hinausragen?",o:["5 Meter","1 Meter","10 Meter","2 Meter"],e:"Vorne: max. 3 m ab Mitte Lenkrad."},
+{lv:3,lz:"L65",q:"Gesamtgewicht 3500 kg, Leergewicht 2300 kg. Wie viel darfst du laden (inkl. Mitfahrer und Werkzeug)?",o:["1200 kg","3500 kg","2300 kg","5800 kg"],e:"3500 − 2300 = 1200 kg. Personen zählen auch!"},
+{lv:3,lz:"L65",q:"Wie schwer ist 0.5 m³ Kiessand (1800 kg/m³)?",o:["900 kg","180 kg","1800 kg","3600 kg"],e:"0.5 × 1800 = 900 kg. Das ist fast die ganze Zuladung!"},
+{lv:3,lz:"L65",q:"Der Zurrgurt läuft sehr flach über die Ladung. Was passiert?",o:["Er drückt weniger stark, die Sicherung wird schwächer","Er drückt stärker","Gar nichts","Die Ladung wird leichter"],e:"Je flacher der Winkel, desto weniger Kraft auf die Ladung."}
+];
+MC.forEach((q,i)=>q.id="m"+(i+1));
+const SORT=[
+["Ladung direkt an die Stirnwand geschoben",true],["Lücken mit Paletten und Kisten aufgefüllt",true],["Antirutschmatte unter den Steinplatten",true],["Zwei Zurrgurte zum Niederzurren",true],
+["Schnittgut mit einem Netz abgedeckt",true],["Pflanzentöpfe Topf an Topf in Kisten",true],["Kanister aufrecht und festgezurrt",true],["Stamm mit Polster und Spannset gesichert",true],
+["Schwere Platten zuoberst auf leichten Kisten",false],["1 m Lücke zwischen Ladung und Stirnwand",false],["Nur ein Gurt, locker und sehr flach",false],["Schnittgut offen auf dem Anhänger",false],
+["Nasser Kies bei Frost, Wasser tropft auf die Strasse",false],["Ladung ragt seitlich über die Ladefläche",false],["Akkus lose neben dem Wasserkanister",false],["Rüttelplatte ungesichert auf dem Anhänger",false]
+];
+
+/* ================= GRUNDLAGEN ================= */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const SC=["loading","home","quiz","sort","res","teacher"];
+function show(id){SC.forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
+function pop(t){const p=$("pop");p.textContent=t;p.classList.remove("go");void p.offsetWidth;p.classList.add("go");}
+const cls=p=>p==null?"g0":p>=80?"g3":p>=50?"g2":"g1";
+const NIV={1:"Basis",2:"Standard",3:"Profi"};
+let S={niveau:2,ci:null,mods:{},co:[]};
+function load(){const p=LA.getProgress(SLUG);if(p&&p.data)S=Object.assign(S,p.data);}
+async function save(){const pct=Math.round(([S.ci?1:0,S.mods.sort?1:0,S.mods.quiz?1:0,S.co.length?1:0].reduce((a,b)=>a+b,0))/4*100);try{await LA.saveProgress(SLUG,Object.assign({pct},S));}catch(e){}}
+function openForStudents(){const n=new Date();return n.getHours()>CHECKOUT_AB.h||(n.getHours()===CHECKOUT_AB.h&&n.getMinutes()>=CHECKOUT_AB.m);}
+function checkoutOpen(){return (LA.user&&LA.user.role==="teacher")||openForStudents();}
+function untilText(){const n=new Date(),t=new Date();t.setHours(CHECKOUT_AB.h,CHECKOUT_AB.m,0,0);let m=Math.max(0,Math.round((t-n)/60000));return m>=60?Math.floor(m/60)+" h "+(m%60)+" min":m+" min";}
+
+/* ================= HOME ================= */
+let homeTick=null;
+function home(){
+ clearInterval(tick);clearTimeout(stimer);
+ $("hello").textContent="Hallo "+LA.user.name+" 👋";
+ document.querySelectorAll("#niv button").forEach(b=>b.classList.toggle("on",+b.dataset.n===S.niveau));
+ const open=checkoutOpen();
+ const st=(ok,txt)=>`<span class="st ${ok?"done":""}">${txt}</span>`;
+ $("tiles").innerHTML=`
+ <button class="tile ci" data-go="ci"><div class="ic">🎟️</div><div><b>1 · Check-in</b><span>Was weisst du noch vom 19.11.? 12 Fragen, 25 s pro Frage</span></div>${S.ci?st(true,"✓ "+S.ci.pts+" Pkt."):st(false,"zuerst!")}</button>
+ <button class="tile" data-go="sort"><div class="ic">🧲</div><div><b>2 · Hält's oder rutscht's?</b><span>Blitz-Entscheid zur Ladungssicherung (L65)</span></div>${S.mods.sort?st(S.mods.sort.best>=80,S.mods.sort.best+" %"):st(false,"offen")}</button>
+ <button class="tile" data-go="quiz"><div class="ic">🚚</div><div><b>3 · Lade-Profi-Training</b><span>10 Fragen zu L63–65 in deinem Niveau</span></div>${S.mods.quiz?st(S.mods.quiz.best>=80,S.mods.quiz.best+" %"):st(false,"offen")}</button>
+ <button class="tile co ${open?"":"lock"}" data-go="co"><div class="ic">${open?"✅":"🔒"}</div><div><b>4 · Checkout = Ticket zum Aufräumen</b><span>${open?"Jetzt offen! 8 Fragen in deinem Niveau":"Öffnet um 16.45 Uhr (noch "+untilText()+")"}</span></div>${S.co.length?st(true,"✓ "+S.co[0].score+"/"+S.co[0].total):st(false,open?"offen":"🔒")}</button>`;
+ document.querySelectorAll("#tiles .tile").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
+ show("home");
+ clearInterval(homeTick);homeTick=setInterval(()=>{if(!$("home").classList.contains("hidden")&&checkoutOpen()!==open)home();},20000);
+}
+document.querySelectorAll("#niv button").forEach(b=>b.onclick=()=>{S.niveau=+b.dataset.n;save();home();});
+
+/* ================= QUIZ-MOTOR (Check-in, Training, Checkout) ================= */
+let mode="",set=[],qi=0,pts=0,streak=0,right=0,log=[],t0=0,tick=null,locked=false,TIME=25,order=[];
+function pool(n){return n===1?MC.filter(q=>q.lv===1).concat(shuffle(MC.filter(q=>q.lv===2)).slice(0,4)):n===2?MC.filter(q=>q.lv<=2):MC.filter(q=>q.lv>=2);}
+function pick(p,N){const out=[];["L63","L64","L65"].forEach(l=>out.push(...shuffle(p.filter(q=>q.lz===l)).slice(0,Math.floor(N/3))));const rest=shuffle(p.filter(q=>!out.includes(q)));while(out.length<N&&rest.length)out.push(rest.pop());return shuffle(out);}
+function startQ(m){mode=m;
+ if(m==="ci"){set=shuffle(CI);TIME=25;}
+ else{set=pick(pool(S.niveau),m==="co"?8:10);TIME=S.niveau===3?20:0;}
+ qi=0;pts=0;streak=0;right=0;log=[];show("quiz");drawQ();}
+function drawQ(){
+ const q=set[qi];locked=false;
+ let idx=q.o.map((_,k)=>k);if(mode!=="ci"&&S.niveau===1)idx=[0,...shuffle(idx.slice(1)).slice(0,2)];order=shuffle(idx);
+ $("pos").textContent=({ci:"🎟️ Check-in",quiz:"🚚 Training",co:"✅ Checkout"})[mode]+" · "+(qi+1)+"/"+set.length;
+ $("pts").textContent=mode==="ci"?pts+" Pkt.":right+" richtig";
+ $("streak").classList.toggle("hidden",!(mode==="ci"&&streak>=3));$("streak").textContent="🔥 "+streak;
+ $("tag").textContent=LZ[q.lz]+(mode!=="ci"?" · "+NIV[S.niveau]:"");$("qtext").textContent=q.q;$("feedback").innerHTML="";$("next").classList.add("hidden");
+ $("answers").innerHTML="";order.forEach(k=>{const b=document.createElement("button");b.className="btn";b.textContent=q.o[k];b.dataset.k=k;b.onclick=()=>answer(k);$("answers").appendChild(b);});
+ clearInterval(tick);$("tWrap").classList.toggle("hidden",!TIME);
+ if(TIME){t0=Date.now();$("tbar").style.width="100%";tick=setInterval(()=>{const left=TIME-(Date.now()-t0)/1000;$("tbar").style.width=Math.max(0,left/TIME*100)+"%";if(left<=0)answer(-1);},200);}else t0=Date.now();
+}
+function answer(k){
+ if(locked)return;locked=true;clearInterval(tick);
+ const q=set[qi],ok=k===0,sec=Math.min(TIME||99,(Date.now()-t0)/1000);let gain=0;
+ if(ok){right++;streak++;if(mode==="ci"){gain=100+Math.round(50*(1-sec/TIME))+(streak>=3?25:0);pts+=gain;pop(streak>=3?"🔥 +"+gain:"+"+gain);}else pop("✅");}else streak=0;
+ log.push({id:q.id,ok});
+ document.querySelectorAll("#answers .btn").forEach(b=>{b.disabled=true;if(+b.dataset.k===0)b.classList.add("ok");else if(+b.dataset.k===k)b.classList.add("no");});
+ $("feedback").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"✅ Richtig!"+(gain?" +"+gain:""):k<0?"⏱ Zeit abgelaufen!":"❌ Leider falsch."}</b>${ok?"":"Richtig: <b style='display:inline'>"+esc(q.o[0])+"</b><br>"}${esc(q.e)}</div>`;
+ $("pts").textContent=mode==="ci"?pts+" Pkt.":right+" richtig";
+ const n=$("next");n.classList.remove("hidden");n.textContent=qi<set.length-1?"Weiter ➜":"🏁 Resultat";n.focus();
+}
+$("next").onclick=()=>{qi++;if(qi<set.length)drawQ();else finish();};
+function byLz(src){const o={};log.forEach(x=>{const q=src.find(y=>y.id===x.id);(o[q.lz]=o[q.lz]||{n:0,ok:0});o[q.lz].n++;if(x.ok)o[q.lz].ok++;});return o;}
+async function finish(){
+ const pct=Math.round(right/set.length*100),src=mode==="ci"?CI:MC,lz=byLz(src);
+ const wrong=log.filter(x=>!x.ok).map(x=>src.find(q=>q.id===x.id));
+ let head="";
+ if(mode==="ci"){const first=!S.ci;if(first)S.ci={pts,right,total:set.length,pct,byLz:lz,log,at:new Date().toISOString()};
+  head=`<div class="big">${pts} Pkt.</div><p style="text-align:center;margin:0">${right} von ${set.length} richtig</p>${first?"":"<p class='small' style='text-align:center'>Trainingsrunde – gewertet bleibt dein 1. Check-in ("+S.ci.pts+" Pkt.).</p>"}
+  <div class="card" style="margin-top:12px;text-align:center;background:#2f3b20;border-color:var(--lime)"><b>📵 Jetzt: Handy nach vorne aufs Pult. Laptop zuklappen.</b></div>`;}
+ else if(mode==="quiz"){const m=S.mods.quiz||{best:0,runs:0};m.best=Math.max(m.best,pct);m.runs++;m.niv=S.niveau;S.mods.quiz=m;head=`<div class="big">${pct} %</div><p style="text-align:center">${right} von ${set.length} richtig</p>`;}
+ else{S.co.push({at:new Date().toISOString(),niv:S.niveau,score:right,total:set.length,pct,byLz:lz,log});
+  head=`<div class="ticket"><div class="t">🎟️ TICKET ZUM AUFRÄUMEN</div><div style="font-size:1.2rem;margin:6px 0"><b>${esc(LA.user.name)}</b> · ${new Date().toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit"})}</div>
+  <div>Checkout: <b>${S.co[0].score} / ${S.co[0].total}</b> ${S.co.length>1?"(gewertet: 1. Versuch)":""}</div><div class="small">Zeig das Ticket der Lehrperson ➜ dann aufräumen 🧹</div></div>`;}
+ await save();
+ $("resBox").innerHTML=head+Object.keys(lz).map(l=>`<div class="row"><span>${LZ[l]}</span><b>${lz[l].ok} / ${lz[l].n}</b></div>`).join("")+
+  (wrong.length?"<h2 style='margin-top:12px'>Nochmals anschauen</h2>"+wrong.map(q=>`<div class="row" style="display:block">${esc(q.q)}<br><b style="color:var(--lime)">✔ ${esc(q.o[0])}</b></div>`).join(""):"");
+ show("res");
+}
+
+/* ================= SORTIEREN ================= */
+let sset=[],si=0,sright=0,sdone=false,stimer=null;
+function startSort(){const n=S.niveau===1?10:S.niveau===2?14:16;const A=shuffle(SORT.filter(x=>x[1])),B=shuffle(SORT.filter(x=>!x[1]));sset=shuffle(A.slice(0,Math.ceil(n/2)).concat(B.slice(0,Math.floor(n/2))));si=0;sright=0;show("sort");drawS();}
+function drawS(){sdone=false;$("spos").textContent="Karte "+(si+1)+"/"+sset.length+(S.niveau===3?" · ⏱ 6 s":"");$("sscore").textContent=sright+" richtig";$("scard").textContent=sset[si][0];$("sfb").innerHTML="";$("snext").classList.add("hidden");
+ ["sA","sB"].forEach(id=>{$(id).disabled=false;$(id).className="btn";});clearTimeout(stimer);if(S.niveau===3)stimer=setTimeout(()=>{if(!sdone)ansS(null);},6000);}
+function ansS(c){if(sdone)return;sdone=true;clearTimeout(stimer);const r=sset[si][1],ok=c===r;if(ok)sright++;
+ $(r?"sA":"sB").classList.add("ok");if(c!==null&&!ok)$(c?"sA":"sB").classList.add("no");["sA","sB"].forEach(id=>$(id).disabled=true);
+ $("sfb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"✅ Richtig!":c===null?"⏱ Zu langsam!":"❌ Falsch."}</b>${r?"So ist die Ladung gesichert.":"So rutscht oder fällt etwas, oder es ist verboten."}</div>`;
+ $("sscore").textContent=sright+" richtig";$("snext").classList.remove("hidden");$("snext").textContent=si<sset.length-1?"Weiter":"Resultat";}
+$("sA").onclick=()=>ansS(true);$("sB").onclick=()=>ansS(false);
+$("snext").onclick=async()=>{si++;if(si<sset.length)drawS();else{const pct=Math.round(sright/sset.length*100);const m=S.mods.sort||{best:0,runs:0};m.best=Math.max(m.best,pct);m.runs++;S.mods.sort=m;await save();
+ $("resBox").innerHTML=`<div class="big">${pct} %</div><p style="text-align:center">${sright} von ${sset.length} richtig entschieden.</p>`;show("res");}};
+
+function goCO(){if(!checkoutOpen()){$("resBox").innerHTML=`<div class="lockbox"><div style="font-size:3rem">🔒</div><div class="clock">16.45 Uhr</div><p>Der Checkout öffnet erst um 16.45 Uhr.<br>Noch <b>${untilText()}</b>.</p><p class="small">Bis dahin: Dossier fertig machen, Lösungsstation, Training 2 und 3.</p></div>`;show("res");return;}startQ("co");}
+const GO={ci:()=>startQ("ci"),sort:startSort,quiz:()=>startQ("quiz"),co:goCO};
+
+/* ================= LEHRPERSON ================= */
+const BEAMER=/[?&]beamer=1/.test(location.search);let tT=null;
+async function teacher(){
+ $("wrap").classList.add("wide");if(BEAMER)$("wrap").classList.add("beamer");
+ $("subline").innerHTML=BEAMER?"🏆 Check-in · Live-Rangliste":`Live-Übersicht Klasse ${esc(LA.klasse)} · <a href="?beamer=1" style="color:var(--lime)">🏆 Rangliste Beamer</a> · <a href="../handy-liste/" style="color:var(--lime)">📱 Handy-Liste</a> · <a href="?test=1" style="color:var(--lime)">▶ ausprobieren</a>`;
+ show("teacher");await drawT();clearInterval(tT);tT=setInterval(drawT,BEAMER?5000:12000);
+}
+async function drawT(){
+ let profs,prog;try{[profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()]);}catch(e){$("teacher").innerHTML='<div class="card">⚠ '+esc(e.message)+'</div>';return;}
+ const P=Object.fromEntries(profs.map(p=>[p.id,p]));
+ const studs=profs.filter(p=>p.role==="student"&&p.klasse===LA.klasse);
+ const rec=Object.fromEntries(prog.filter(r=>r.slug===SLUG&&P[r.user_id]).map(r=>[r.user_id,r]));
+ const rows=studs.map(p=>({name:p.name,d:(rec[p.id]&&rec[p.id].data)||{},at:rec[p.id]&&rec[p.id].updated_at})).sort((a,b)=>a.name.localeCompare(b.name,"de"));
+ const ci=rows.filter(r=>r.d.ci),co=rows.filter(r=>r.d.co&&r.d.co.length);
+ const avg=a=>a.length?Math.round(a.reduce((s,x)=>s+x,0)/a.length):null;
+ const lzAvg=(arr,key)=>{const o={};arr.forEach(r=>{const b=key(r);Object.keys(b).forEach(l=>{(o[l]=o[l]||{n:0,ok:0});o[l].n+=b[l].n;o[l].ok+=b[l].ok;});});return o;};
+ const ciLz=lzAvg(ci,r=>r.d.ci.byLz),coLz=lzAvg(co,r=>r.d.co[0].byLz);
+ const kp=(v,t)=>`<div class="kpi"><b>${v}</b><span>${t}</span></div>`;
+ const pc=o=>o&&o.n?Math.round(o.ok/o.n*100)+" %":"–";
+ const top=ci.slice().sort((a,b)=>b.d.ci.pts-a.d.ci.pts).slice(0,5);
+ const hard=CI.map(q=>{let n=0,ok=0;ci.forEach(r=>r.d.ci.log.forEach(x=>{if(x.id===q.id){n++;if(x.ok)ok++;}}));return{q,n,p:n?Math.round(ok/n*100):null};}).filter(x=>x.n).sort((a,b)=>a.p-b.p);
+ const lb=`<div class="card"><h2>🏆 Check-in Top 5</h2>${top.map((r,i)=>`<div class="lbr"><div class="m">${["🥇","🥈","🥉","4","5"][i]}</div><b>${esc(r.name)}</b><span class="p">${r.d.ci.pts}</span></div>`).join("")||'<p class="small">Noch niemand fertig …</p>'}</div>`;
+ const hd=hard.length?`<div class="card"><h2>🤔 Schwierigste Check-in-Fragen</h2>${hard.slice(0,BEAMER?2:5).map(x=>`<div class="row"><span>${esc(x.q.q)}<br><span class="small">✔ ${esc(x.q.o[0])}</span></span><span class="sc ${cls(x.p)}">${x.p} %</span></div>`).join("")}</div>`:"";
+ const kpis=`<div class="kpis">${kp(ci.length+" / "+rows.length,"Check-in fertig")}${kp(avg(ci.map(r=>r.d.ci.pct))==null?"–":avg(ci.map(r=>r.d.ci.pct))+" %","Schnitt Check-in")}${["L58","L61","L62"].map(l=>kp(pc(ciLz[l]),"Check-in "+LZ[l])).join("")}</div>`;
+ if(BEAMER){$("teacher").innerHTML=kpis+lb+hd;return;}
+ const now=new Date();
+ const kpis2=`<div class="kpis">${kp(co.length+" / "+rows.length,"Checkout fertig")}${kp(avg(co.map(r=>r.d.co[0].pct))==null?"–":avg(co.map(r=>r.d.co[0].pct))+" %","Schnitt Checkout")}${["L63","L64","L65"].map(l=>kp(pc(coLz[l]),"Checkout "+LZ[l])).join("")}${kp(openForStudents()?"🔓 offen":"🔒 ab 16.45","Checkout für Lernende")}</div>`;
+ const c=(v,p)=>v==null?'<span class="sc g0">–</span>':`<span class="sc ${cls(p)}">${v}</span>`;
+ $("teacher").innerHTML=kpis+kpis2+`<div class="card"><h2>👀 Alle Lernenden</h2><p class="small">Aktualisiert alle 12 Sekunden. Check-in und Checkout: gewertet wird der 1. Versuch.</p>
+ <div style="margin-bottom:8px"><button class="btn inline" id="csv">⬇ CSV</button><button class="btn inline" onclick="drawT()">🔄 Aktualisieren</button></div>
+ <div class="scroll"><table><tr><th>Name</th><th>Niveau</th><th>🎟️ Check-in</th><th>L58</th><th>L61</th><th>L62</th><th>🧲 Hält's?</th><th>🚚 Training</th><th>✅ Checkout</th><th>L63</th><th>L64</th><th>L65</th><th>Zuletzt</th></tr>
+ ${rows.map(r=>{const d=r.d,ciR=d.ci,coR=d.co&&d.co[0];const lz=(o,l)=>o&&o.byLz[l]?c(o.byLz[l].ok+"/"+o.byLz[l].n,Math.round(o.byLz[l].ok/o.byLz[l].n*100)):c(null);
+  return `<tr><td><b>${esc(r.name)}</b></td><td>${d.niveau?'<i class="dot d'+d.niveau+'"></i>'+NIV[d.niveau]:"–"}</td><td class="n">${ciR?c(ciR.right+"/"+ciR.total,ciR.pct):c(null)}</td><td class="n">${lz(ciR,"L58")}</td><td class="n">${lz(ciR,"L61")}</td><td class="n">${lz(ciR,"L62")}</td>
+  <td class="n">${d.mods&&d.mods.sort?c(d.mods.sort.best+" %",d.mods.sort.best):c(null)}</td><td class="n">${d.mods&&d.mods.quiz?c(d.mods.quiz.best+" %",d.mods.quiz.best):c(null)}</td>
+  <td class="n">${coR?c(coR.score+"/"+coR.total,coR.pct):c(null)}</td><td class="n">${lz(coR,"L63")}</td><td class="n">${lz(coR,"L64")}</td><td class="n">${lz(coR,"L65")}</td><td>${r.at?new Date(r.at).toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit"}):"–"}</td></tr>`;}).join("")||'<tr><td>Noch keine Lernenden registriert.</td></tr>'}
+ </table></div></div>`+lb+hd;
+ $("csv").onclick=()=>{const L=[["Name","Niveau","Check-in","Check-in %","Hält's %","Training %","Checkout","Checkout %"]].concat(rows.map(r=>{const d=r.d,a=d.ci,b=d.co&&d.co[0];return[r.name,NIV[d.niveau]||"",a?a.right+"/"+a.total:"",a?a.pct:"",d.mods&&d.mods.sort?d.mods.sort.best:"",d.mods&&d.mods.quiz?d.mods.quiz.best:"",b?b.score+"/"+b.total:"",b?b.pct:""];}));
+  const csv=L.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"}));a.download="tag-26-11-2026-GLA25A.csv";a.click();};
+}
+
+LA.requireLogin().then(()=>{LA.who($("who"));load();
+ if(LA.user.role==="teacher"&&!/[?&]test=1/.test(location.search))teacher();
+ else if(/[?&]checkout=1/.test(location.search)){home();goCO();}
+ else{home();if(!S.ci)startQ("ci");}
+});
+</script>
+</body>
+</html>

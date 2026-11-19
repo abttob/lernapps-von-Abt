@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handy- & Laptop-Liste GLA25A (nur Lehrperson)</title>
+<style>
+:root{--bg:#f2f5f1;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--gl:#d9efe0;--red:#c0392b;--rl:#f9dcd8;--line:#d4ddd6;--gelb:#ffe14d}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1200px;margin:0 auto;padding:14px 16px 50px}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:.9rem}.top a{color:var(--green);text-decoration:none}
+.who{display:flex;gap:10px;align-items:center}.who span{background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-weight:700}
+h1{margin:.5rem 0 .2rem;font-size:1.5rem}.sub{color:var(--muted);margin:0 0 12px}
+.card{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px;font-size:.9rem}
+.rules div{background:#f6f8f6;border-radius:10px;padding:8px 10px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button,input{font:inherit}
+.btn{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700;min-height:42px}
+.btn.g{background:var(--green);color:#fff;border-color:var(--green)}
+input[type=date]{padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;min-height:42px}
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border-bottom:1px solid #edf1ee;padding:7px 10px;text-align:center;white-space:nowrap}
+th{background:#e7f1ea;font-size:.8rem;position:sticky;top:0}td.nm{text-align:left;font-weight:700}
+th.today{background:var(--gelb)}
+.cell{min-width:58px;height:42px;border-radius:10px;border:1.5px solid var(--line);background:#fafafa;cursor:pointer;font-size:1.25rem}
+.cell.g{background:var(--gl);border-color:var(--green)}.cell.r{background:var(--rl);border-color:var(--red)}
+.st{font-weight:800;border-radius:20px;padding:4px 10px;font-size:.85rem}
+.st.keep{background:var(--gl);color:var(--green)}.st.give{background:var(--rl);color:var(--red)}.st.new{background:#eee;color:#666}
+.note{width:100%;min-width:160px;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.kpi{background:#fff;border-radius:12px;padding:10px 14px;box-shadow:0 1px 3px rgba(0,0,0,.07)}.kpi b{display:block;font-size:1.5rem}.kpi span{font-size:.8rem;color:var(--muted)}
+.hidden{display:none!important}
+.auth{position:fixed;inset:0;background:rgba(31,45,39,.55);display:grid;place-items:center;z-index:50;padding:1rem}
+.auth .card{max-width:430px;width:100%;margin:0}
+.auth label{font-weight:700;font-size:.9rem}.auth .fld{font:inherit;font-size:1.05rem;padding:12px;width:100%;border:1.5px solid var(--line);border-radius:12px;margin:.3rem 0 .8rem}
+.auth .btn{display:block;width:100%;background:var(--green);color:#fff;border-color:var(--green)}
+.tabs{display:flex;gap:.5rem;margin-bottom:.8rem}.tabs button{flex:1;font-weight:700;padding:.7rem;border-radius:12px;border:1.5px solid var(--line);background:#fff;cursor:pointer;min-height:48px}.tabs button.on{background:var(--green);color:#fff}
+.msg{padding:.7rem .9rem;border-radius:12px;font-weight:700;margin:.4rem 0}.msg.err{background:var(--rl);color:#8a1f1b}
+.banner{background:#fff3c0;border:2px dashed #e5b800;border-radius:12px;padding:.6rem .9rem;margin-bottom:.8rem;font-size:.9rem}
+.small{font-size:.85rem;color:var(--muted)}
+@media print{.top,.bar,.noprint{display:none!important}body{background:#fff}.card{box-shadow:none;padding:0}.cell{border:1px solid #999}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="top noprint"><a href="../">← Alle Apps</a><div class="who" id="who"></div></div>
+ <h1>📱💻 Handy- & Laptop-Liste</h1>
+ <p class="sub">Klasse GLA25A · nur für die Lehrperson · Regel: 1 Unterrichtstag ohne rote Karte ➜ darf Handy und Laptop beim nächsten Mal behalten</p>
+ <div id="loading" class="card">Lädt …</div>
+ <div id="main" class="hidden">
+  <div class="card noprint"><div class="rules">
+   <div>📵 <b>Start:</b> Handy vorne aufs Pult, Laptop zugeklappt</div>
+   <div>✅ <b>Holen erlaubt:</b> Pause · Absprache mit LP · gelbe Markierung im Dossier · zum Lernen</div>
+   <div>🟥 <b>Rote Karte:</b> abgelenkt, nicht am Arbeiten ➜ Handy bleibt ganz vorne</div>
+   <div>🟢 <b>Vertrauen:</b> Tag ohne rote Karte ➜ nächstes Mal behalten (bis zur nächsten roten Karte)</div>
+  </div></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="bar">
+   <label class="small">Unterrichtstag:</label><input type="date" id="day">
+   <button class="btn g" id="allG">🟢 Alle ohne Eintrag = grün</button>
+   <button class="btn" id="print">🖨️ Drucken</button>
+   <span class="small" id="saved"></span>
+  </div>
+  <div class="scroll"><table id="tbl"></table></div>
+  <p class="small">Klick auf ein Feld: leer ➜ 🟢 ➜ 🟥 ➜ leer. Gespeichert wird sofort (in deinem Lehrerkonto).</p>
+ </div>
+</div>
+<script>setTimeout(()=>{const l=document.getElementById("loading");if(!l||l.classList.contains("hidden")||document.querySelector(".auth"))return;l.innerHTML='<b>Das Laden dauert zu lange.</b> <button class="btn" onclick="location.reload()">🔄 Neu laden</button> <button class="btn" onclick="try{Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){};location.reload()">🔑 Neu anmelden</button>';},8000);</script>
+<script src="../belagsaufbau/assets/config.js"></script>
+<script>window.LA_KLASSE="GLA25A"; window.LA_FIXCODE=c=>/^gla25a$/i.test(c)?"GLA25A":c;</script>
+<script src="core.js"></script>
+<script>
+const SLUG="handy-liste";const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let D={days:{},notes:{}},studs=[];
+const iso=d=>d.toISOString().slice(0,10);
+function today(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return iso(d);}
+const fmt=s=>{const [y,m,d]=s.split("-");return d+"."+m+".";};
+async function persist(){try{await LA.saveProgress(SLUG,{pct:0,days:D.days,notes:D.notes});$("saved").textContent="✔ gespeichert "+new Date().toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit"});}catch(e){$("saved").textContent="⚠ "+e.message;}}
+function status(uid){const ds=Object.keys(D.days).sort();for(let i=ds.length-1;i>=0;i--){const v=D.days[ds[i]][uid];if(v)return v==="g"?{c:"keep",t:"📱 darf behalten"}:{c:"give",t:"📵 abgeben"};}return{c:"new",t:"📵 abgeben (Start)"};}
+function draw(){
+ const day=$("day").value;if(!D.days[day])D.days[day]=D.days[day]||{};
+ const ds=Object.keys(D.days).filter(k=>Object.keys(D.days[k]).length||k===day).sort();
+ const keep=studs.filter(s=>status(s.id).c==="keep").length,red=studs.filter(s=>D.days[day][s.id]==="r").length;
+ $("kpis").innerHTML=`<div class="kpi"><b>${studs.length}</b><span>Lernende</span></div><div class="kpi"><b>${keep}</b><span>dürfen nächstes Mal behalten</span></div><div class="kpi"><b>${red}</b><span>rote Karten am ${fmt(day)}</span></div>`;
+ $("tbl").innerHTML=`<tr><th style="text-align:left">Name</th>${ds.map(k=>`<th class="${k===day?"today":""}">${fmt(k)}</th>`).join("")}<th>Nächstes Mal</th><th>Notiz</th></tr>`+
+ studs.map(s=>`<tr><td class="nm">${esc(s.name)}</td>${ds.map(k=>{const v=D.days[k][s.id];return `<td><button class="cell ${v||""}" data-u="${s.id}" data-d="${k}">${v==="g"?"🟢":v==="r"?"🟥":""}</button></td>`;}).join("")}
+ <td><span class="st ${status(s.id).c}">${status(s.id).t}</span></td><td><input class="note" data-u="${s.id}" value="${esc(D.notes[s.id]||"")}" placeholder="z. B. Absprache …"></td></tr>`).join("")||'<tr><td>Noch keine Lernenden registriert.</td></tr>';
+ document.querySelectorAll(".cell").forEach(b=>b.onclick=()=>{const u=b.dataset.u,k=b.dataset.d;const v=D.days[k][u];D.days[k][u]=v===undefined?"g":v==="g"?"r":undefined;if(D.days[k][u]===undefined)delete D.days[k][u];persist();draw();});
+ document.querySelectorAll(".note").forEach(i=>i.onchange=()=>{D.notes[i.dataset.u]=i.value;persist();});
+}
+LA.requireLogin().then(async()=>{
+ LA.who($("who"));$("loading").classList.add("hidden");
+ if(LA.user.role!=="teacher"){$("loading").classList.remove("hidden");$("loading").innerHTML="Diese Seite ist nur für die Lehrperson.";return;}
+ const p=LA.getProgress(SLUG);if(p&&p.data)D={days:p.data.days||{},notes:p.data.notes||{}};
+ const profs=await LA.profiles();studs=profs.filter(x=>x.role==="student"&&x.klasse===LA.klasse).sort((a,b)=>a.name.localeCompare(b.name,"de"));
+ $("day").value=today();$("day").onchange=draw;
+ $("allG").onclick=()=>{const k=$("day").value;studs.forEach(s=>{if(!D.days[k][s.id])D.days[k][s.id]="g";});persist();draw();};
+ $("print").onclick=()=>window.print();
+ $("main").classList.remove("hidden");draw();
+});
+</script>
+</body>
+</html>
