@@ -485,6 +485,7 @@ async function drawTeacher(){
 LA.requireLogin().then(()=>{
  LA.who($("who"));loadState();
  if(LA.user.role==="teacher"&&!/[?&]test=1/.test(location.search))teacherView();
+ else if(/[?&]checkout=1/.test(location.search)){home();startQuiz("checkout");}
  else home();
 });
 </script>
