@@ -3,9 +3,23 @@
 <div class="wrap"><div class="chips" style="margin:0 0 .8rem"><span class="chip">L166–L177</span></div><div id="lk"><div class="card">Lädt …</div></div>
 
 </div>
-<script src="../assets/config.js"></script><script src="../assets/core.js"></script>
+<script src="../assets/config.js"></script><script src="../assets/core.js"></script><script src="../assets/hilfe.js"></script>
 <script>
 const esc=LA.esc;let cards=[],box={},filter='alle',queue=[],cur=null,flipped=false,saveT=null;
+const LZ={L166:['Ich erkläre die Anforderungen an die Sohlenplanie (Planum) aufgrund der Normen.','Das Planum ist die Oberfläche des Untergrunds, Toleranz ±3 cm, im gleichen Gefälle wie der Belag.','S. 145–146','S. 8–9'],
+L167:['Ich unterscheide verschiedene Belastungsklassen.','Die Verkehrslastklasse (ZP, T1–T3) zählt die Überfahrten pro Tag, nicht das Gewicht eines Fahrzeugs.','S. 146–147','S. 16–18'],
+L168:['Ich beschreibe Aufbau, Funktion und Planiegenauigkeit der Fundationsschicht.','Die Fundation verteilt die Last, ist frostsicher und wasserdurchlässig. Lagen max. 25 cm, Rohplanie ±2, Reinplanie ±1 cm, Bankett F/2.','S. 146–150','S. 8–10 und 18–21'],
+L169:['Ich zähle geeignete Materialien für die Fundationsschicht auf.','Kiesgemisch 0/45 (auch RC), Ausgleich Planiekies 0/22, max. 3 % Lehm. Nicht: Mergel, Humus.','S. 147–149','S. 11–12'],
+L170:['Ich erkläre Verdichtungsmöglichkeiten von Fundationsschichten.','Schwer verdichten, lagenweise, erdfeucht. Gerät nach Fläche: Stampfer, Rüttelplatte, Walze.','S. 146–150','S. 13–15'],
+L171:['Ich beurteile Materialien nach ihrem Verwendungszweck.','Holz nach Dauerhaftigkeit (Klasse 1–5), Naturstein nach Härte und Oberfläche, Beton nach Einsatz.','S. 156–159 und 172–174','S. 29–30 und 37'],
+L174:['Ich skizziere Einfassungen und stelle die Berechnungen an.','Randabschluss unterbetoniert 80 / 100 mm, Betonkeil 45° auf Fundation, Liter pro Meter × Länge.','S. 175–184','S. 22–26'],
+L175:['Ich skizziere den Schichtaufbau mit Schichtstärken, Materialien und Gefälle.','Deckschicht, Bettung 3–5 cm, Ausgleich bis 5 cm, Fundation, Planum. Gefälle 1.5–2.5 %.','S. 145–155 und 166–169','S. 19–21 und 33–41'],
+L176:['Ich skizziere Verlegemuster von Belägen.','Bahnen, Reihe, Kreis, Schuppe, Mosaik. Kreuzfugen vermeiden, Fugenversatz mind. 10 cm. Verschnitt je nach Muster 5–25 %.','S. 156–158 und 161–165','S. 27–29'],
+L177:['Ich beschreibe die Instandhaltung von Gartenbauten.','Kein Hochdruck, kein Salz auf Sickersteinen, Holz reinigen und ölen. Nachsanden ist Unterhalt.','S. 151–153 und 172–174','S. 35 und 42']};
+function cardTips(c){const plain=c.a.replace(/\*\*/g,'');const w=plain.split(/\s+/);const b=(c.a.match(/\*\*(.+?)\*\*/)||[])[1];
+ const t=[`Die Antwort beginnt mit: <b>${esc(w.slice(0,Math.min(3,Math.ceil(w.length/4))).join(' '))} …</b>`];
+ t.push(b?`Das wichtigste Stichwort ist: <b>${esc(b)}</b>`:`Weiter geht es mit: <b>${esc(w.slice(0,Math.ceil(w.length/2)).join(' '))} …</b>`);return t}
+function cardBg(c){const z=LZ[c.lz];if(!z)return null;return{t:`<b>${c.lz}</b>: ${z[0]}<br><br>${z[1]}`,lm:z[2],d:z[3]}}
 const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
 async function init(){
  try{cards=await (await fetch('cards.json')).json()}catch(e){document.getElementById('lk').innerHTML='<div class="msg err">Karten konnten nicht geladen werden.</div>';return}
@@ -27,8 +41,9 @@ function show(){const cd=document.getElementById('cd');if(!cur){cd.innerHTML='<d
  cd.innerHTML=`<div class="small" style="margin:.2rem 0">${cur.lz} · Karte ${cur.id} · Box ${box[cur.id]||0}</div>
  <div class="flip ${flipped?'on':''}" id="fl"><div class="in" id="in"><div class="f">${cur.img?`<img src="../img/${esc(cur.img)}" alt="">`:''}<div>${md(cur.q)}</div><div class="small" style="margin-top:1rem">👆 Antippen zum Umdrehen</div></div><div class="b"><div style="text-align:left">${md(cur.a)}</div></div></div></div>
  <div class="cols" id="bt" style="${flipped?'':'display:none'}"><button class="btn warn" id="no">🔁 Nochmals</button><button class="btn" id="yes">✅ Gewusst</button></div>
- <button class="btn sec" id="turn" style="${flipped?'display:none':''}">🔄 Karte umdrehen</button>`;
- const turn=()=>{flipped=true;document.getElementById('fl').classList.add('on');document.getElementById('bt').style.display='grid';document.getElementById('turn').style.display='none'};
+ <button class="btn sec" id="turn" style="${flipped?'display:none':''}">🔄 Karte umdrehen</button><div id="hb">${HILFE.bar()}</div>`;
+ const hc=HILFE.wire(document.getElementById('hb'),{tips:flipped?[]:cardTips(cur),bg:cardBg(cur),title:'Hintergrund: '+cur.lz});
+ const turn=()=>{hc.lock();flipped=true;document.getElementById('fl').classList.add('on');document.getElementById('bt').style.display='grid';document.getElementById('turn').style.display='none'};
  document.getElementById('in').onclick=()=>{if(!flipped)turn()};document.getElementById('turn').onclick=turn;
  const go=(ok)=>{const o=box[cur.id]||0;box[cur.id]=ok?Math.min(3,o+1):1;if(!ok)queue.push(cur);save();next();render()};
  document.getElementById('yes').onclick=()=>go(true);document.getElementById('no').onclick=()=>go(false)}

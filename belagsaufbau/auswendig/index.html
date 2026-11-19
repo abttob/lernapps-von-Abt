@@ -53,7 +53,7 @@ table.fill select.ok{border-color:var(--green);background:#d6f5d3}table.fill sel
 <div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>🧠 Auswendig lernen</h1><p>Das Muss-Wissen für die Prüfung Platz- und Wegebau: Zahlen, Tabellen und Regeln.</p><div class="chips"><span class="chip">L166–L177</span></div></div>
 <div class="wrap" id="view"><div class="card">Lädt …</div></div>
 <div class="wrap"><div class="copy">© Tobias Abt, BBZ BL · Quelle: Lehrmittel und Dossier Platz- und Wegebau</div></div>
-<script src="../assets/config.js"></script><script src="../assets/core.js"></script><script src="data.js"></script>
+<script src="../assets/config.js"></script><script src="../assets/core.js"></script><script src="data.js"></script><script src="../assets/hilfe.js"></script>
 <script>
 const SLUG='auswendig',M=window.MW;
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -61,6 +61,11 @@ const ITEMS=M.topics.flatMap(t=>t.items.map(i=>Object.assign({topic:t.id,tt:t.ti
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const ans=i=>i.t==='num'?(i.pre||'')+String(i.a)+(i.u?(['°','%'].includes(i.u)?'':' ')+i.u:''):i.t==='mc'?i.o[i.a]:i.a;
 const V=document.getElementById('view');
+const REF={t1:['S. 145–149','S. 8–9'],t2:['S. 150','S. 10'],t3:['S. 146–147','S. 16–18'],t4:['S. 146–147','S. 18'],t5:['S. 147–149','S. 11–12'],t6:['','S. 13–14 und 21'],t7:['S. 146–150','S. 13–15'],t8:['S. 172–174','S. 30'],t9:['S. 175–184','S. 22–25'],t10:['S. 156–158 und 161–165','S. 27–29'],t11:['S. 151–155 und 166–169','S. 33–41'],t12:['S. 151–153','S. 35 und 42']};
+const TT={T1:'t1',T2:'t3',T3:'t4',T4:'t8',T5:'t9',T6:'t10'};
+function topicBg(id){const t=M.topics.find(x=>x.id===id),r=REF[id]||[];return{t:`<b>${esc(t.icon+' '+t.title)}</b> (${esc(t.lz)})<div class="hook" style="margin:.5rem 0">💡 ${esc(t.hook)}</div><ul>${t.facts.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`,lm:r[0]||'',d:r[1]||''}}
+function numRange2(a){const d=a<=10?(a%1?0.5:1):Math.max(1,Math.round(a*0.1));return `Genauer: Die Zahl liegt zwischen <b>${String(+(a-d).toFixed(2)).replace('.',',')}</b> und <b>${String(+(a+d).toFixed(2)).replace('.',',')}</b>.`}
+function numRange(a){const d=a<=10?(a%1?1:2):Math.max(1,Math.round(a*0.3));const off=Math.round((Math.random()-.5)*d);let lo=+(a-d+off).toFixed(2),hi=+(a+d+off).toFixed(2);if(lo<0&&a>=0)lo=0;if(lo>a)lo=a;if(hi<a)hi=a;return `Die Zahl liegt zwischen <b>${String(lo).replace('.',',')}</b> und <b>${String(hi).replace('.',',')}</b>.`}
 let S={box:{},tabs:{},blitzBest:0},saveT=null,timer=null;
 function stopTimer(){if(timer){clearInterval(timer);timer=null}}
 function sure(){return ITEMS.filter(i=>(S.box[i.id]||0)>=2).length}
@@ -116,8 +121,12 @@ function drillQ(){
  if(i.t==='num')body=`<div class="ansrow">${i.pre?`<span class="pre">${esc(i.pre)}</span>`:''}<input id="in" type="text" inputmode="decimal" autocomplete="off" placeholder="Zahl"><span class="unit">${esc(i.u||'')}</span></div><div id="fb"></div><button class="btn" id="act">Prüfen</button>`;
  else if(i.t==='mc')body=shuffle(i.o.map((o,k)=>k)).map((k,n)=>`<button class="opt" data-k="${k}"><span class="k">${'ABCD'[n]}</span>${esc(i.o[k])}</button>`).join('')+`<div id="fb"></div>`;
  else body=`<div class="small">Sag die Antwort laut oder schreib sie auf. Dann deck sie auf und bewerte dich ehrlich.</div><div id="fb"></div><button class="btn" id="act">Antwort aufdecken</button>`;
- V.innerHTML=head('🧠 Abfragen')+`<div class="card"><div class="bar"><i style="width:${Math.round(100*done/total)}%"></i></div><div class="meta"><span>Frage ${done+1} von ${total}${R.repeated.has(i.id)?' · Wiederholung':''}</span><span>${['⚪ neu','🔴 üben','🟡 fast','🟢 sicher'][Math.min(3,b)]}</span></div><div class="small">${i.icon} ${esc(i.tt)}</div><div class="q">${esc(i.q)}</div>${body}</div>`;
+ V.innerHTML=head('🧠 Abfragen')+`<div class="card"><div class="bar"><i style="width:${Math.round(100*done/total)}%"></i></div><div class="meta"><span>Frage ${done+1} von ${total}${R.repeated.has(i.id)?' · Wiederholung':''}</span><span>${['⚪ neu','🔴 üben','🟡 fast','🟢 sicher'][Math.min(3,b)]}</span></div><div class="small">${i.icon} ${esc(i.tt)}</div><div class="q">${esc(i.q)}</div>${HILFE.bar()}${body}</div>`;
  wireHome();R.answered=false;
+ const t1=i.t==='num'?numRange(i.a):i.t==='mc'?()=>{const w=shuffle([...V.querySelectorAll('[data-k]')].filter(x=>+x.dataset.k!==i.a));w.slice(0,2).forEach(x=>{x.disabled=true;x.classList.add('gone')});return 'Ich habe zwei falsche Antworten durchgestrichen.'}:`Die Antwort beginnt mit: <b>${esc(String(i.a).split(/\s+/).slice(0,2).join(' '))} …</b>`;
+ const at=String(ans(i)).toLowerCase(),hk=i.hook.toLowerCase(),rel=i.t==='num'?hk.includes(String(i.a).replace('.',',').toLowerCase())||hk.includes(String(i.a)):at.split(/[^a-zäöü0-9]+/).some(w=>w.length>=5&&hk.includes(w));
+ const t2=rel?`Eselsbrücke: ${esc(i.hook)}`:i.t==='num'?numRange2(i.a):i.t==='self'?`Weiter geht es mit: <b>${esc(String(i.a).split(/\s+/).slice(0,Math.max(3,Math.ceil(String(i.a).split(/\s+/).length/2))).join(' '))} …</b>`:null;
+ R.hc=HILFE.wire(V,{tips:[t1,t2],bg:topicBg(i.topic),title:'Hintergrund: '+i.tt});
  if(i.t==='num'){const inp=document.getElementById('in');setTimeout(()=>inp.focus(),50);
   const check=()=>{if(R.answered)return;const x=parseNum(inp.value);if(isNaN(x)){document.getElementById('fb').innerHTML='<div class="msg err">Bitte eine Zahl eingeben.</div>';return}
    const ok=near(x,i.a);inp.disabled=true;inp.classList.add(ok?'ok':'no');result(ok)};
@@ -128,7 +137,7 @@ function drillQ(){
   document.getElementById('sy').onclick=()=>result(true,true);document.getElementById('sn').onclick=()=>result(false,true)}}
 function parseNum(v){v=String(v).replace(/[±+\s']/g,'').replace(',','.').replace(/[^0-9.\-]/g,'');return v===''||v==='.'||v==='-'?NaN:parseFloat(v)}
 function near(x,a){return Math.abs(x-a)<=Math.max(0.0001,Math.abs(a)*0.002)}
-function result(ok,self){if(R.answered)return;R.answered=true;const i=R.q[R.pos],b=S.box[i.id]||0;
+function result(ok,self){if(R.answered)return;R.answered=true;if(R.hc)R.hc.lock();const i=R.q[R.pos],b=S.box[i.id]||0;
  if(ok){S.box[i.id]=Math.min(3,b+1);R.ok++}else{S.box[i.id]=1;R.no++;if(!R.wrong.includes(i))R.wrong.push(i);if(!R.repeated.has(i.id)){R.repeated.add(i.id);R.again.push(i)}}
  save();const fb=document.getElementById('fb');
  if(self){fb.querySelector('.row2').remove()}
@@ -146,8 +155,10 @@ function tables(){
  V.innerHTML=head('🗂 Tabellen')+`<div class="card info">Wähle eine Tabelle und fülle sie aus dem Kopf. Geschafft ist sie, wenn alle Felder grün sind.</div><div class="tgrid">${M.tables.map(t=>`<button class="app" data-t="${t.id}"><b>${esc(t.title)}</b><small>${esc(t.lz)} · ${t.rows.length} Zeilen</small><span style="margin-top:auto;font-weight:800;color:${S.tabs[t.id]?'var(--green-d)':'var(--muted)'}">${S.tabs[t.id]?'✅ geschafft':'○ offen'}</span></button>`).join('')}</div>`;
  wireHome();V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>go(()=>table(b.dataset.t)))}
 function table(id){const t=M.tables.find(x=>x.id===id),P={};t.ask.forEach(c=>P[c]=shuffle([...new Set(t.rows.map(r=>String(r[c])))]));
- V.innerHTML=`<div class="top noprint"><button class="btn sec small" id="back">← Tabellen</button><b>🗂 ${M.tables.indexOf(t)+1} von ${M.tables.length}</b></div><div class="card"><b style="font-size:1.15rem">${esc(t.title)}</b><div class="small">${esc(t.lz)}</div><table class="fill"><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${t.rows.map((r,ri)=>`<tr>${r.map((v,c)=>t.ask.includes(c)?`<td><select data-r="${ri}" data-c="${c}"><option value="">wählen …</option>${P[c].map(o=>`<option>${esc(o)}</option>`).join('')}</select></td>`:`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table><div id="fb"></div><button class="btn" id="chk">Prüfen</button><div class="row2"><button class="btn sec small" id="rst">↺ Neu mischen</button><button class="btn sec small" id="next">Nächste Tabelle ▶</button></div></div>`;
+ V.innerHTML=`<div class="top noprint"><button class="btn sec small" id="back">← Tabellen</button><b>🗂 ${M.tables.indexOf(t)+1} von ${M.tables.length}</b></div><div class="card"><b style="font-size:1.15rem">${esc(t.title)}</b><div class="small">${esc(t.lz)}</div><table class="fill"><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${t.rows.map((r,ri)=>`<tr>${r.map((v,c)=>t.ask.includes(c)?`<td><select data-r="${ri}" data-c="${c}"><option value="">wählen …</option>${P[c].map(o=>`<option>${esc(o)}</option>`).join('')}</select></td>`:`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table>${HILFE.bar()}<div id="fb"></div><button class="btn" id="chk">Prüfen</button><div class="row2"><button class="btn sec small" id="rst">↺ Neu mischen</button><button class="btn sec small" id="next">Nächste Tabelle ▶</button></div></div>`;
  document.getElementById('back').onclick=()=>go(tables);
+ const fillOne=()=>{const s=[...V.querySelectorAll('select')].find(s=>s.value!==String(t.rows[+s.dataset.r][+s.dataset.c]));if(!s)return 'Alles stimmt schon. Drücke «Prüfen».';s.value=String(t.rows[+s.dataset.r][+s.dataset.c]);s.classList.add('ok');return `Ich habe ein Feld richtig ausgefüllt: <b>${esc(s.value)}</b>.`};
+ HILFE.wire(V,{tips:[`Eselsbrücke: ${esc(M.topics.find(x=>x.id===TT[t.id]).hook)}`,fillOne,fillOne],bg:topicBg(TT[t.id]),title:'Hintergrund: '+t.title});
  V.querySelectorAll('select').forEach(s=>s.onchange=()=>s.classList.remove('ok','no'));
  document.getElementById('chk').onclick=()=>{let ok=0,n=0,empty=0;V.querySelectorAll('select').forEach(s=>{n++;if(!s.value)empty++;const g=s.value===String(t.rows[+s.dataset.r][+s.dataset.c]);s.classList.toggle('ok',g);s.classList.toggle('no',!g);if(g)ok++});
   const fb=document.getElementById('fb');

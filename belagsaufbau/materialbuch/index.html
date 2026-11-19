@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Materialsammlung: eigene Fotos sammeln</title><link rel="stylesheet" href="../assets/app.css"></head><body>
 <div class="hero"><a href="../">← Alle Lernpfade</a><div class="who" id="who"></div><h1>📸 Materialsammlung: eigene Fotos sammeln</h1><p>Fotografiere echte Materialien (Kies, Körnungen, Natursteinplatten …) und lege sie in deiner Materialsammlung ab. Die Klasse sieht die Sammlung.</p></div>
 <div class="wrap"><div class="chips" style="margin:0 0 .8rem"><span class="chip">L169</span><span class="chip">L171</span></div><div class="card info"><b>Auftrag:</b> Fotografiere die Materialien und lege sie in deiner Sammlung ab. <b>Frage deine Lehrperson:</b> Sie hat einige Materialien <b>in echt im Schulzimmer</b>. Weitere findest du auf der Baustelle, im Lager oder im Garten.<ol style="margin:.5rem 0 .2rem;padding-left:1.2rem"><li>Lege einen <b>Meterstab (Zollstock) oder eine Münze</b> daneben, damit man die Grösse sieht.</li><li>Tippe auf <b>«📷 Foto aufnehmen»</b>, das Handy öffnet die Kamera.</li><li>Beschreibe das Material und speichere es. Deine Klasse sieht die Sammlung.</li></ol><span class="small">Bitte keine Gesichter, Namen oder Kennzeichen fotografieren.</span></div>
-<div id="mb"><div class="card">Lädt …</div></div>
+<div class="card" id="hilfe" style="padding:.7rem 1rem"><b>Hilfe zum Auftrag</b><div id="hb"></div></div><div id="mb"><div class="card">Lädt …</div></div>
 
 </div>
-<script src="../assets/config.js"></script><script src="../assets/core.js"></script>
+<script src="../assets/config.js"></script><script src="../assets/core.js"></script><script src="../assets/hilfe.js"></script>
 <script>
 const MAT=[
  ['🪨','Kiesgemisch 0/45','Fundation: grobe und feine Körner gemischt (Korngemisch)','Fundation'],
@@ -60,4 +60,4 @@ function open_(m){
  gal.onclick=async e=>{const a=e.target.closest('a[data-d]');if(!a)return;e.preventDefault();if(!confirm('Foto löschen?'))return;await LA.remove(a.dataset.d);await load();open_(m)};
  det.scrollIntoView({behavior:'smooth'})}
 LA.requireLogin().then(()=>{LA.who(document.getElementById('who'));load()});
-</script><p class="copy">© Tobias Abt, BBZ BL</p></body></html>
+</script><p class="copy">© Tobias Abt, BBZ BL</p><script>(function(){const h=document.getElementById('hb');h.innerHTML=HILFE.bar();HILFE.wire(h,{tips:["Lege immer einen Meterstab oder eine Münze daneben. So kannst du die Körnung schätzen: 0/45 hat Steine bis etwa so gross wie eine Baumnuss.", "Kantig oder rund? Splitt und Brechsand sind gebrochen (kantig). Rundkies kommt aus dem Fluss (rund).", "Bei Natursteinen auf Farbe und Struktur achten: Granit grau gesprenkelt, Porphyr rötlich, Muschelkalk mit Fossilien, Gneis gestreift."],bg:{"t": "Die Körnung wird mit zwei Zahlen angegeben: kleinstes / grösstes Korn in mm. Fundation 0/45, Ausgleich 0/22, Bettung Splitt 2/4 oder 4/8, Fugen Brechsand 0/4. Mergel ist bindig und für Chaussierungen. Natursteine: Hartgestein (Granit, Gneis) für befahrene Flächen.", "lm": "S. 147–150 und 156–163", "d": "S. 11–12 und 29"}})})();</script></body></html>
