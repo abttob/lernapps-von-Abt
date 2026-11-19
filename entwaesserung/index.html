@@ -474,9 +474,9 @@ SVG.uGraben=`<svg class="sk" viewBox="0 0 360 270">
  <rect x="133" y="44" width="7" height="172" fill="#d9a900"/><rect x="220" y="44" width="7" height="172" fill="#d9a900"/>
  <rect x="140" y="95" width="80" height="7" rx="2" fill="#777"/><rect x="140" y="160" width="80" height="7" rx="2" fill="#777"/>
  <circle cx="180" cy="229" r="15" fill="#fff" stroke="#333" stroke-width="2"/>
- ${dim(95,50,133,50)}${dim(238,44,238,58)}${dim(140,132,220,132)}${dim(238,167,238,246)}
+ ${dim(95,50,133,50)}${dim(238,44,238,58)}${dim(140,132,220,132)}${dim(238,216,238,246)}
  <line x1="122" y1="98" x2="140" y2="98" stroke="#333"/><line x1="122" y1="190" x2="133" y2="190" stroke="#333"/>
- ${mk(1,114,37)}${mk(2,256,50)}${mk(3,180,120)}${mk(4,256,206)}${mk(5,110,98)}${mk(6,110,190)}</svg>`;
+ ${mk(1,114,37)}${mk(2,256,50)}${mk(3,180,120)}${mk(4,256,231)}${mk(5,110,98)}${mk(6,110,190)}</svg>`;
 
 SVG.baustelle=`<svg class="sk" viewBox="85 35 480 285">
  <rect width="600" height="122" fill="#eaf4fb"/><rect y="120" width="600" height="200" fill="${SOIL}"/><rect y="118" width="600" height="7" fill="#7aa35a"/>
@@ -621,7 +621,7 @@ SIM.psi=v=>{
   <text x="250" y="40" font-size="17">Regen total: ${Math.round(tot)} l</text>
   <rect x="250" y="50" width="280" height="22" fill="#e6eef3"/><rect x="250" y="50" width="${280*p}" height="22" fill="#e74c3c"/><text x="255" y="66" font-size="16" fill="#fff">fliesst ab</text>
   <rect x="250" y="90" width="280" height="22" fill="#e6eef3"/><rect x="250" y="90" width="${280*(1-p)}" height="22" fill="#2f7a4a"/><text x="255" y="106" font-size="16" fill="#fff">versickert / verdunstet vor Ort</text></svg>`;
- return{svg:g,r:[["Abflussbeiwert ψ",p.toFixed(2)],["Abfluss",Math.round(Q)+" l",Q<=300?"good":"warn"],["bleibt vor Ort",Math.round(tot-Q)+" l"]]};};
+ return{svg:g,r:[["Versickerung",p>=0.6?"schlecht":p>=0.3?"mittel":"gut",p>=0.6?"warn":p>=0.3?"":"good"],["Abfluss",Math.round(Q)+" l",Q<=300?"good":"warn"],["bleibt vor Ort",Math.round(tot-Q)+" l"]]};};
 
 /* ================= Inhalte ================= */
 const mc=(id,q,o,a,ex,h)=>({id,t:"mc",q,o,a,ex,h});
@@ -656,7 +656,7 @@ POOLS.graben=[
   ex:"Sicherheit im Graben: Spriessung/Böschung, freier Grabenrand, Helm, keine Verbrennungsmotoren, Leiter, Werkleitungen abklären.",
   h:["Es sind 6 Fehler versteckt.","Schau dir den Grabenrand, die Grabenwände und alles im Graben genau an.","Denk an: Wände, Aushub, Kopf, Motor, Fluchtweg, Leitung."]},
  {id:"g_label",t:"label",q:"Grafik beschriften: Gespriesster U-Graben (Lehrmittel S. 107).",svg:SVG.uGraben,
-  labels:["freier Grabenrand mind. 50 cm","Dielen mind. 15 cm über Rand","lichte Breite mind. 60 cm","max. 80 cm bis zur Sohle","Spriesse","Diele (Grabenverbau)"],extra:["mind. 100 cm","Warnband"],
+  labels:["freier Grabenrand mind. 50 cm","Dielen mind. 15 cm über Rand","lichte Breite mind. 60 cm","Dielenende max. 80 cm über der Sohle","Spriesse","Diele (Grabenverbau)"],extra:["mind. 100 cm","Warnband"],
   h:["Rote Masslinien zeigen Mindest- oder Maximalmasse.","Die 50 cm gelten beim U-Graben, 100 cm beim V-Graben.","Die waagrechten grauen Balken sind Spriessen, die gelben senkrechten Bretter Dielen."]},
  {id:"g_match",t:"match",q:"Paare verknüpfen: Welche Regel gehört zu welchem Wert?",
   pairs:[["Leiter anstellen ab","1.00 m Tiefe"],["Spriessen oder böschen ab","1.50 m Tiefe"],["Böschung standfestes Material","2 : 1"],["Böschung rolliges Material","1 : 1"],["Warnband über Gas-, Wasser-, Elektroleitung","20–30 cm"],["Erster maschineller Verdichtungsdurchgang","30 cm über Schutzschicht"]],
@@ -844,8 +844,8 @@ POOLS.versickerung=[
   h:["Lass Fläche, Regen und Muldenfläche so, wie sie sind.","Erhöhe die Tiefe, bis der Notüberlauf nicht mehr anspringt.","Volumen = Fläche × Regen; Höhe = Volumen : Muldenfläche."]},
  {id:"v_sim2",t:"sim",q:"Simulation Beläge: Einfahrt 50 m², Gewitter 30 mm. Wähle einen Belag, bei dem höchstens 300 Liter abfliessen.",
   opt:[{k:"b",l:"Belag",c:Object.keys(PSI),v:"Asphalt"}],ctl:[{k:"F",l:"Fläche",min:10,max:100,st:5,v:50,u:"m²",d:0},{k:"R",l:"Regen",min:5,max:50,st:5,v:30,u:"mm",d:0}],
-  draw:SIM.psi,goal:v=>({ok:v.F===50&&v.R===30&&v.b==="Rasengitter",msg:"50 × 30 × 0.15 = 225 Liter. Sickerpflaster (ψ 0.25) gibt schon 375 Liter."}),
-  h:["Abfluss = Fläche × Regen × ψ.","300 : 1500 = 0.2 → ψ muss kleiner als 0.2 sein."]},
+  draw:SIM.psi,goal:v=>({ok:v.F===50&&v.R===30&&v.b==="Rasengitter",msg:"Rasengitter: nur ca. 15 % fliessen ab = 225 Liter. Sickerpflaster (ca. 25 %) gibt schon 375 Liter."}),
+  h:["Probiere die Beläge der Reihe nach aus und beobachte den Abfluss.","Je mehr offene Fläche (Fugen, Rasen), desto mehr versickert."]},
  {id:"v_cat",t:"cat",q:"Zuordnen: Welche Versickerungsart ist das?",buckets:["oberirdisch, mit Bodenpassage","unterirdisch, ohne Bodenpassage"],
   chips:[["Versickerung über die Schulter",0],["Versickerungsmulde",0],["Retentionsmulde mit Oberboden",0],["Rasenfläche",0],["Versickerungsschacht",1],["Rigole",1],["Versickerungsstrang",1]],
   h:["Bodenpassage = das Wasser fliesst durch den belebten Oberboden.","Alles mit Schacht oder Kies im Boden ist unterirdisch."]},
