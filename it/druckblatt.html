@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Druckblatt – IT-Onboarding BBZ BL</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  body{background:#fff}
+  .sheet{max-width:720px;margin:0 auto;padding:30px 24px;text-align:center}
+  .sheet img.logo{height:54px;margin-bottom:24px}
+  #qr{display:inline-block;margin:24px 0 8px;padding:12px;border:3px solid #1C1E21;border-radius:12px}
+  #qr svg{width:300px;height:300px;display:block}
+  .dc{font-size:1.6rem;font-weight:700;letter-spacing:.3em}
+  .bar{background:var(--blue-l);border-radius:12px;padding:14px;margin:12px auto;max-width:520px;text-align:left}
+  @media print{.noprint{display:none!important}.sheet{padding:0}@page{size:A4;margin:18mm}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <img class="logo" src="https://www.bbzbl.ch/wp-content/uploads/2025/08/bl_logo_bksd_bbzbl_a_r_rgb.svg" alt="BBZ BL">
+  <h1>Mein Druck-Test</h1>
+  <p id="who" class="muted"></p>
+  <div id="qr"></div>
+  <div class="small muted">Druckcode</div>
+  <div class="dc" id="dc"></div>
+  <div class="bar">
+    <b>So geht es weiter</b>
+    <ol style="margin:8px 0 0;padding-left:20px">
+      <li>Blatt am Drucker mit deinem <b>Lernendenausweis</b> freigeben.</li>
+      <li>Auf dem <b>Handy</b> das Onboarding öffnen → Schritt «Druck &amp; Scan».</li>
+      <li>Dieses Blatt fotografieren und hochladen.</li>
+    </ol>
+  </div>
+  <div class="noprint" style="margin-top:20px">
+    <button class="btn btn-primary" onclick="window.print()">🖨️ Jetzt drucken (SBL-Black)</button>
+    <p class="small muted" style="margin-top:10px">Im Druckfenster den Drucker <b>SBL-Black</b> wählen.</p>
+  </div>
+  <div id="err" class="note note-red hide"></div>
+</div>
+<script src="assets/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script>
+(async function(){
+  const t = ITO.store.get("ito_token");
+  const err = m => { const e = document.getElementById("err"); e.innerHTML = m; e.classList.remove("hide"); };
+  if(!t) return err('Du bist auf diesem Gerät nicht angemeldet. Öffne zuerst das <a href="start.html">Onboarding</a> und melde dich an.');
+  try{
+    const s = await ITO.rpc("ito_state", { p_token: t });
+    document.getElementById("who").textContent = s.name + " · Klasse " + s.class;
+    document.getElementById("dc").textContent = s.pcode + "D";
+    const q = qrcode(0, "M"); q.addData("BBZ-" + s.pcode + "-DRUCK"); q.make();
+    document.getElementById("qr").innerHTML = q.createSvgTag({ cellSize: 8, margin: 0, scalable: true });
+  }catch(e){ err(ITO.esc(e.message)); }
+})();
+</script>
+</body>
+</html>

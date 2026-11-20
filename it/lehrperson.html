@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Lehrperson – IT-Onboarding BBZ BL</title>
+<meta name="theme-color" content="#205C90">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .wrap{max-width:1280px}
+  .clist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+  .ccard{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:16px;cursor:pointer;border:2px solid transparent}
+  .ccard:hover{border-color:var(--blue)}
+  .ccard .code{font-weight:700;letter-spacing:.15em;color:var(--blue);font-size:1.2rem}
+  .ccard.arch{opacity:.55}
+  .bar2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .bar2 h1{margin:0;flex:1 1 auto}
+  .codebox{background:var(--blue);color:#fff;border-radius:12px;padding:6px 14px;font-weight:700;letter-spacing:.2em;font-size:1.4rem}
+  .grid-wrap{overflow:auto;background:#fff;border-radius:var(--r);box-shadow:var(--shadow)}
+  table.grid{border-collapse:separate;border-spacing:0;width:100%;min-width:760px;font-size:.92rem}
+  .grid th,.grid td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--line)}
+  .grid th{position:sticky;top:0;background:#FAFBFC;font-size:.78rem;color:var(--ink-3);font-weight:700;z-index:1;line-height:1.2}
+  .grid th .dv{display:block;font-size:1rem}
+  .grid td.nm,.grid th.nm{text-align:left;position:sticky;left:0;background:#fff;z-index:2;white-space:nowrap;padding-left:14px}
+  .grid th.nm{background:#FAFBFC;z-index:3}
+  .cell{width:34px;height:34px;border-radius:9px;display:inline-grid;place-items:center;font-weight:700;cursor:pointer;background:#F0F2F5;color:#B5BAC2;border:0;font:inherit}
+  .cell.ok{background:var(--green);color:#fff}
+  .cell.lp{background:#4FA874;color:#fff}
+  .cell.hp{background:var(--red);color:#fff;animation:pulse 1.4s infinite}
+  .cell.cm{background:#F59E0B;color:#fff}
+  .cell.wt{background:var(--yellow-l);color:#8A5E00}
+  @keyframes pulse{50%{box-shadow:0 0 0 5px rgba(234,50,35,.25)}}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#C9CED6;margin-right:6px;vertical-align:middle}
+  .dot.on{background:#22C55E}
+  .pp{font-weight:700}
+  .rm{background:none;border:0;color:#B5BAC2;cursor:pointer;font-size:1rem;padding:4px}
+  .rm:hover{color:var(--red)}
+  .queue{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:16px}
+  .qcard{background:#fff;border-left:6px solid var(--red);border-radius:12px;box-shadow:var(--shadow);padding:12px 14px}
+  .qcard.coming{border-left-color:#F59E0B}
+  .qcard b{font-size:1.05rem}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--ink-3);margin:10px 0}
+  .legend span{display:inline-flex;gap:6px;align-items:center}
+  .legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+  .panel{position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:50;display:flex;justify-content:flex-end}
+  .panel>div{background:#fff;width:min(520px,100%);height:100%;overflow:auto;padding:22px}
+  .beamer{position:fixed;inset:0;background:var(--blue);color:#fff;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2vh}
+  .beamer .big{font-size:16vh;font-weight:700;letter-spacing:.15em;line-height:1}
+  .beamer .url{font-size:4.5vh;font-weight:700}
+  .beamer #bqr{background:#fff;padding:2vh;border-radius:2vh}
+  .beamer #bqr svg{width:30vh;height:30vh;display:block}
+  .beamer .prog{font-size:3vh;opacity:.9}
+  .ferrow{display:grid;grid-template-columns:1fr 160px 36px;gap:8px;margin-bottom:8px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+  .tgl{display:flex;gap:10px;align-items:center;cursor:pointer}
+  .tgl input{width:22px;height:22px;accent-color:var(--blue)}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <section id="login" class="narrow hide" style="margin:40px auto">
+    <div class="card">
+      <h1>🔐 Dashboard Lehrperson</h1>
+      <form id="loginForm" class="stack">
+        <p id="loginInfo" class="muted">Bitte das gemeinsame Lehrpersonen-Passwort eingeben.</p>
+        <input id="pw1" type="password" placeholder="Passwort" autocomplete="current-password">
+        <input id="pw2" type="password" placeholder="Passwort wiederholen" class="hide" autocomplete="new-password">
+        <button class="btn btn-primary btn-block" type="submit" id="loginBtn">Anmelden</button>
+        <div id="loginErr" class="result err"></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="classes" class="hide">
+    <div class="bar2"><h1>Meine Klassen</h1><button class="btn btn-white btn-sm" id="gset">⚙️ Einstellungen</button><a class="btn btn-white btn-sm" href="plakat.html" target="_blank">🖼️ Plakat</a><button class="btn btn-white btn-sm" id="logout">Abmelden</button></div>
+    <form id="newClass" class="card row">
+      <input id="ncName" type="text" placeholder="Neue Klasse, z.B. GLA27A" maxlength="40">
+      <button class="btn btn-primary" type="submit" style="flex:0 0 auto">＋ Klasse erstellen</button>
+    </form>
+    <div class="clist" id="clist"></div>
+  </section>
+
+  <section id="cls" class="hide">
+    <div class="bar2">
+      <button class="btn btn-white btn-sm" id="back">← Klassen</button>
+      <h1 id="cName"></h1>
+      <span class="small muted">Klassencode</span><span class="codebox" id="cCode"></span>
+      <button class="btn btn-primary btn-sm" id="beamerBtn">📽️ Beamer</button>
+      <button class="btn btn-white btn-sm" id="addBtn">＋ Lernende</button>
+      <button class="btn btn-white btn-sm" id="setBtn">⚙️ Klasse</button>
+    </div>
+    <div id="warn"></div>
+    <div id="queue"></div>
+    <div class="row" style="margin-bottom:8px"><div><b id="sum"></b> <span class="small muted" id="upd"></span></div></div>
+    <div class="grid-wrap"><table class="grid" id="grid"></table></div>
+    <div class="legend">
+      <span><i style="background:var(--green)"></i>erledigt (automatisch geprüft)</span>
+      <span><i style="background:#4FA874"></i>von Lehrperson abgehakt</span>
+      <span><i style="background:var(--red)"></i>braucht Hilfe</span>
+      <span><i style="background:#F59E0B"></i>Hilfe unterwegs</span>
+      <span><i style="background:var(--yellow-l);border:1px solid #F1DC9C"></i>wartet auf Ausweis</span>
+      <span><span class="dot on"></span>gerade aktiv</span>
+    </div>
+    <p class="small muted">Tipp: Auf ein Feld klicken, um einen Schritt von Hand abzuhaken oder zurückzusetzen.</p>
+  </section>
+
+  <div id="loading" style="text-align:center;padding:60px"><span class="spinner dark"></span></div>
+</main>
+
+<div id="panel" class="panel hide"><div id="panelIn"></div></div>
+<div id="beamer" class="beamer hide">
+  <div style="font-size:3.5vh;opacity:.9">Öffne auf dem Handy</div>
+  <div class="url" id="bUrl"></div>
+  <div id="bqr"></div>
+  <div style="font-size:3.5vh;opacity:.9">Klassencode</div>
+  <div class="big" id="bCode"></div>
+  <div class="prog" id="bProg"></div>
+  <button class="btn btn-white btn-sm" style="position:fixed;top:16px;right:16px" id="bClose">✕ Schliessen</button>
+</div>
+
+<script src="assets/common.js"></script>
+<script src="assets/content.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script>
+(function(){
+  const { rpc, ss, esc, $, $$, toast, CFG } = ITO;
+  const { STEPS, DAY1 } = ITO_CONTENT;
+  ITO.header("");
+  const COLS = STEPS.filter(s => !s.bonus);
+  const BONUS = STEPS.filter(s => s.bonus);
+  let PW = ss.get("ito_pw"), setup = false, CL = null, ST = null, pollT = null, settings = null;
+  const show = id => ["login","classes","cls","loading"].forEach(x => $("#" + x).classList.toggle("hide", x !== id));
+  const T = (fn, a) => rpc(fn, Object.assign({ p_pw: PW }, a || {}));
+  const ago = t => { if(!t) return ""; const s = Math.round((Date.now() - new Date(t)) / 1000); return s < 60 ? "vor " + s + " s" : s < 3600 ? "vor " + Math.round(s / 60) + " min" : "vor " + Math.round(s / 3600) + " h"; };
+
+  /* Login */
+  async function start(){
+    try{
+      const r = await rpc("ito_t_login", { p_pw: PW || "" });
+      if(r.setup){ setup = true; $("#loginInfo").innerHTML = "<b>Erster Start:</b> Lege jetzt das gemeinsame Passwort für alle Lehrpersonen fest (mind. 8 Zeichen)."; $("#pw2").classList.remove("hide"); $("#loginBtn").textContent = "Passwort festlegen"; show("login"); return; }
+      loadClasses();
+    }catch(e){ ss.del("ito_pw"); PW = null; show("login"); }
+  }
+  $("#loginForm").addEventListener("submit", async e => {
+    e.preventDefault(); $("#loginErr").textContent = "";
+    const p = $("#pw1").value;
+    try{
+      if(setup){ if(p !== $("#pw2").value) throw new Error("Die beiden Passwörter sind nicht gleich."); await rpc("ito_t_setup", { p_pw: p }); setup = false; }
+      await rpc("ito_t_login", { p_pw: p }); PW = p; ss.set("ito_pw", p); loadClasses();
+    }catch(err){ $("#loginErr").textContent = err.message; }
+  });
+  $("#logout").onclick = () => { ss.del("ito_pw"); PW = null; location.reload(); };
+
+  /* Klassen */
+  async function loadClasses(){
+    clearInterval(pollT); CL = null;
+    try{
+      const list = await T("ito_t_classes");
+      show("classes");
+      $("#clist").innerHTML = list.length ? list.map(c => '<div class="ccard' + (c.archived ? " arch" : "") + '" data-id="' + c.id + '"><div class="row" style="justify-content:space-between"><h3 style="margin:0">' + esc(c.name) + '</h3><span class="code">' + c.code + '</span></div><p class="small muted" style="margin:6px 0 0">' + c.n + " Lernende" + (c.help ? ' · <span class="chip red">🙋 ' + c.help + " Hilfe</span>" : "") + (c.archived ? " · archiviert" : "") + "</p></div>").join("") : '<p class="muted">Noch keine Klassen. Erstelle oben die erste.</p>';
+    }catch(e){ if(e.code === "WRONG_PASSWORD"){ ss.del("ito_pw"); PW = null; show("login"); } else toast(e.message); }
+  }
+  $("#clist").addEventListener("click", e => { const c = e.target.closest(".ccard"); if(c) openClass(c.dataset.id); });
+  $("#newClass").addEventListener("submit", async e => {
+    e.preventDefault(); const n = $("#ncName").value.trim(); if(!n) return;
+    try{ const c = await T("ito_t_create_class", { p_name: n }); $("#ncName").value = ""; openClass(c.id, true); }catch(err){ toast(err.message); }
+  });
+  $("#back").onclick = () => { history.replaceState(null, "", "lehrperson.html"); loadClasses(); };
+
+  /* Klasse */
+  async function openClass(id, fresh){
+    CL = id; history.replaceState(null, "", "lehrperson.html?k=" + id);
+    show("loading"); await refresh(); show("cls");
+    clearInterval(pollT); pollT = setInterval(() => { if(!document.hidden) refresh(); }, 4000);
+    if(fresh) addPanel();
+  }
+  async function refresh(){
+    if(!CL) return;
+    try{ ST = await T("ito_t_status", { p_class: CL }); renderClass(); }catch(e){ if(e.code === "WRONG_PASSWORD"){ ss.del("ito_pw"); location.reload(); } }
+  }
+  function cellState(s, step){
+    const p = s.progress || {}, h = s.help;
+    if(p[step.id]) return p[step.id].by === "lp" ? ["lp","✓"] : ["ok","✓"];
+    if(h && h.step === step.id) return h.state === "coming" ? ["cm","🚶"] : ["hp","!"];
+    if(step.later && DAY1.every(x => p[x])) return ["wt","🪪"];
+    return ["",""];
+  }
+  function renderClass(){
+    const c = ST.class, S = ST.students;
+    $("#cName").textContent = c.name; $("#cCode").textContent = c.code;
+    let w = "";
+    if(!c.teams_code) w += '<div class="note note-yellow"><b>Kein Teams-Codewort gesetzt</b>Der Teams-Schritt wird dann ohne Kontrolle abgeschlossen. → ⚙️ Klasse</div>';
+    else w += '<div class="note note-blue"><b>📌 Teams-Codewort: <span style="letter-spacing:.1em">' + esc(c.teams_code) + "</span></b>Poste es im Klassenteam (Kanal «Allgemein») und hefte den Beitrag an.</div>";
+    $("#warn").innerHTML = w;
+    const q = S.filter(s => s.help).sort((a, b) => new Date(a.help.at) - new Date(b.help.at));
+    $("#queue").innerHTML = q.length ? '<h2>🙋 Hilfe-Warteschlange (' + q.length + ")</h2><div class=\"queue\">" + q.map((s, i) => {
+      const st = STEPS.find(x => x.id === s.help.step); const cm = s.help.state === "coming";
+      return '<div class="qcard' + (cm ? " coming" : "") + '"><div class="row" style="justify-content:space-between"><b>' + (i + 1) + ". " + esc(s.name) + '</b><span class="small muted">' + ago(s.help.at) + '</span></div><div class="small">' + (st ? st.dev + " " + esc(st.short) : "") + "</div>" + (s.help.msg ? '<div class="small" style="margin-top:4px">«' + esc(s.help.msg) + "»</div>" : "") +
+        '<div class="row" style="margin-top:8px">' + (cm ? "" : '<button class="btn btn-sm btn-white" data-help="coming" data-id="' + s.id + '">🚶 Ich komme</button>') + '<button class="btn btn-sm btn-green" data-help="done" data-id="' + s.id + '">✓ Erledigt</button></div></div>';
+    }).join("") + "</div>" : "";
+    const nDone = S.filter(s => DAY1.every(x => s.progress[x])).length;
+    $("#sum").textContent = S.length + " Lernende · " + nDone + " mit Tag 1 fertig";
+    $("#upd").textContent = "· aktualisiert " + new Date().toLocaleTimeString("de-CH");
+    let h = '<thead><tr><th class="nm">Name</th><th>Tag 1</th>' + COLS.map(s => '<th title="' + esc(s.title) + '"><span class="dv">' + s.dev + "</span>" + esc(s.short) + "</th>").join("") + '<th title="Bonus">⭐</th><th></th></tr></thead><tbody>';
+    if(!S.length) h += '<tr><td colspan="' + (COLS.length + 4) + '" class="muted" style="padding:30px">Noch keine Lernenden. Klicke auf «＋ Lernende» oder lass die Lernenden sich selbst eintragen.</td></tr>';
+    S.forEach(s => {
+      const on = s.last_seen && (Date.now() - new Date(s.last_seen)) < 30000;
+      const n = DAY1.filter(x => s.progress[x]).length;
+      h += '<tr><td class="nm"><span class="dot' + (on ? " on" : "") + '" title="' + (s.last_seen ? "zuletzt aktiv " + ago(s.last_seen) : "noch nicht angemeldet") + '"></span>' + esc(s.name) + '</td><td class="pp">' + n + "/" + DAY1.length + "</td>" +
+        COLS.map(step => { const [cl, t] = cellState(s, step); return '<td><button class="cell ' + cl + '" data-s="' + s.id + '" data-step="' + step.id + '" title="' + esc(step.title) + '">' + t + "</button></td>"; }).join("") +
+        "<td>" + BONUS.filter(b => s.progress[b.id]).map(() => "⭐").join("") + '</td><td><button class="rm" title="Entfernen" data-rm="' + s.id + '">✕</button></td></tr>';
+    });
+    if(S.length){
+      h += '<tr><td class="nm small muted">Erledigt</td><td></td>' + COLS.map(step => '<td class="small muted">' + S.filter(s => s.progress[step.id]).length + "</td>").join("") + "<td></td><td></td></tr>";
+    }
+    $("#grid").innerHTML = h + "</tbody>";
+    if(!$("#beamer").classList.contains("hide")) $("#bProg").textContent = nDone + " von " + S.length + " sind mit Tag 1 fertig";
+  }
+  $("#queue").addEventListener("click", async e => { const b = e.target.closest("[data-help]"); if(!b) return; try{ await T("ito_t_help", { p_student: b.dataset.id, p_state: b.dataset.help }); refresh(); }catch(err){ toast(err.message); } });
+  $("#grid").addEventListener("click", async e => {
+    const rm = e.target.closest("[data-rm]");
+    if(rm){ const s = ST.students.find(x => x.id === rm.dataset.rm); if(!confirm(s.name + " aus der Klasse entfernen? Der Fortschritt wird gelöscht.")) return; try{ await T("ito_t_remove_student", { p_student: s.id }); refresh(); }catch(err){ toast(err.message); } return; }
+    const b = e.target.closest(".cell"); if(!b) return;
+    const s = ST.students.find(x => x.id === b.dataset.s), step = STEPS.find(x => x.id === b.dataset.step);
+    const isDone = !!s.progress[step.id];
+    if(!confirm(s.name + " – " + step.title + "\n\n" + (isDone ? "Diesen Schritt zurücksetzen?" : "Diesen Schritt von Hand als erledigt markieren?"))) return;
+    try{ await T("ito_t_set_step", { p_student: s.id, p_step: step.id, p_done: !isDone }); if(!isDone && s.help && s.help.step === step.id) await T("ito_t_help", { p_student: s.id, p_state: "done" }); refresh(); }catch(err){ toast(err.message); }
+  });
+
+  /* Panels */
+  function panel(html){ $("#panelIn").innerHTML = '<div class="row" style="justify-content:flex-end;margin-bottom:6px"><button class="btn btn-white btn-sm" id="pClose">✕</button></div>' + html; $("#panel").classList.remove("hide"); $("#pClose").onclick = closePanel; }
+  function closePanel(){ $("#panel").classList.add("hide"); }
+  $("#panel").addEventListener("click", e => { if(e.target.id === "panel") closePanel(); });
+
+  function addPanel(){
+    panel('<h2>＋ Lernende hinzufügen</h2><p class="muted">Ein Name pro Zeile. Am besten Vorname und erster Buchstabe des Nachnamens (z.B. «Lara M.»), damit es keine Verwechslungen gibt.</p><textarea id="names" rows="12" placeholder="Lara M.\nNoah K.\n…"></textarea><button class="btn btn-primary btn-block" id="addGo" style="margin-top:12px">Hinzufügen</button><div class="note note-blue"><b>Oder: Selbsteintrag</b>Wenn in den Klasseneinstellungen erlaubt, können sich Lernende mit «Mein Name fehlt» selbst eintragen. Doppelte Einträge löschst du mit ✕.</div>');
+    $("#addGo").onclick = async () => {
+      const n = $("#names").value.split(/\n/).map(x => x.trim()).filter(Boolean); if(!n.length) return;
+      try{ const r = await T("ito_t_add_students", { p_class: CL, p_names: n }); toast(r.added + " hinzugefügt"); closePanel(); refresh(); }catch(e){ toast(e.message); }
+    };
+  }
+  $("#addBtn").onclick = addPanel;
+
+  $("#setBtn").onclick = () => {
+    const c = ST.class; const qz = (c.quiz || []).concat([{}, {}, {}]).slice(0, 3);
+    panel('<h2>⚙️ Klasse ' + esc(c.name) + '</h2><div class="stack">' +
+      '<div><label class="lbl">Name der Klasse</label><input id="sName" type="text" value="' + esc(c.name) + '"></div>' +
+      '<div><label class="lbl">Teams-Codewort</label><input id="sCode" type="text" value="' + esc(c.teams_code || "") + '"><p class="small muted">Poste dieses Wort im Klassenteam (Kanal «Allgemein») und hefte den Beitrag an. Leer = keine Kontrolle.</p></div>' +
+      '<div><label class="lbl">Such-Auftrag «Sich in Teams zurechtfinden»</label><p class="small muted">Bis zu 3 Fragen, deren Antwort im Klassenteam steht. Gross-/Kleinschreibung egal; die Antwort muss den Lösungsbegriff enthalten. Leer = Checkliste zum Abhaken.</p>' +
+      qz.map((q, i) => '<div class="qa"><input class="qq" placeholder="Frage ' + (i + 1) + ', z.B. Wie heisst der Ordner mit den Unterlagen?" value="' + esc(q.q || "") + '"><input class="qa_" placeholder="Lösung, z.B. Kursmaterialien" value="' + esc(q.a || "") + '"></div>').join("") + "</div>" +
+      '<label class="tgl"><input type="checkbox" id="sSelf"' + (c.allow_self ? " checked" : "") + '> Lernende dürfen sich selbst eintragen («Mein Name fehlt»)</label>' +
+      '<button class="btn btn-primary btn-block" id="sSave">Speichern</button>' +
+      '<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">' +
+      '<div class="row"><button class="btn btn-white" id="sArch">' + (c.archived ? "Archivierung aufheben" : "📦 Archivieren") + '</button><button class="btn btn-red" id="sDel">🗑️ Klasse löschen</button></div><p class="small muted">Archivierte Klassen können sich nicht mehr anmelden. Löschen entfernt alle Daten der Klasse endgültig.</p></div>');
+    $("#sSave").onclick = async () => {
+      const quiz = $$(".qa").map(r => ({ q: r.querySelector(".qq").value.trim(), a: r.querySelector(".qa_").value.trim() })).filter(x => x.q && x.a);
+      try{ await T("ito_t_update_class", { p_class: CL, p_data: { name: $("#sName").value, teams_code: $("#sCode").value, quiz, allow_self: $("#sSelf").checked } }); toast("Gespeichert"); closePanel(); refresh(); }catch(e){ toast(e.message); }
+    };
+    $("#sArch").onclick = async () => { try{ await T("ito_t_update_class", { p_class: CL, p_data: { archived: !c.archived } }); toast("Gespeichert"); closePanel(); refresh(); }catch(e){ toast(e.message); } };
+    $("#sDel").onclick = async () => { if(prompt("Zum Löschen den Klassencode " + c.code + " eintippen:") !== c.code) return; try{ await T("ito_t_delete_class", { p_class: CL }); closePanel(); loadClasses(); }catch(e){ toast(e.message); } };
+  };
+
+  $("#gset").onclick = async () => {
+    try{ settings = await T("ito_t_settings"); }catch(e){ return toast(e.message); }
+    const row = f => '<div class="ferrow"><input class="fn" placeholder="z.B. Herbstferien 2027" value="' + esc(f.name || "") + '"><input class="fd" type="date" value="' + esc(f.start || "") + '"><button class="rm frm" title="Entfernen">✕</button></div>';
+    panel('<h2>⚙️ Allgemeine Einstellungen</h2>' +
+      '<h3>Ferien (für den SAL-Nachweis)</h3><p class="small muted">Die Lernenden müssen das Startdatum der <b>nächsten</b> Ferien aus SAL eingeben. Trage hier die Ferien wie in SAL ein (Startdatum = «Von»). Vor jedem Schuljahr ergänzen!</p><div id="fer">' + (settings.ferien || []).map(row).join("") + '</div><button class="btn btn-white btn-sm" id="fAdd">＋ Ferien hinzufügen</button>' +
+      '<h3 style="margin-top:22px">Schul-IP für den WLAN-Check</h3><input id="ip" type="text" value="' + esc(settings.school_ip) + '"><p class="small muted">Öffentliche IP-Adresse des Schul-WLANs.</p>' +
+      '<h3 style="margin-top:22px">Passwort ändern</h3><input id="npw" type="password" placeholder="Neues Passwort (mind. 8 Zeichen), leer = unverändert" autocomplete="new-password">' +
+      '<button class="btn btn-primary btn-block" id="gSave" style="margin-top:18px">Speichern</button>');
+    $("#fAdd").onclick = () => $("#fer").insertAdjacentHTML("beforeend", row({}));
+    $("#fer").addEventListener("click", e => { if(e.target.classList.contains("frm")) e.target.parentElement.remove(); });
+    $("#gSave").onclick = async () => {
+      const ferien = $$(".ferrow").map(r => ({ name: r.querySelector(".fn").value.trim(), start: r.querySelector(".fd").value })).filter(f => f.start).sort((a, b) => a.start.localeCompare(b.start));
+      const npw = $("#npw").value; if(npw && npw.length < 8) return toast("Das Passwort braucht mindestens 8 Zeichen.");
+      try{ await T("ito_t_save_settings", { p_data: { ferien, school_ip: $("#ip").value, new_pw: npw } }); if(npw){ PW = npw; ss.set("ito_pw", npw); } toast("Gespeichert"); closePanel(); }catch(e){ toast(e.message); }
+    };
+  };
+
+  /* Beamer */
+  $("#beamerBtn").onclick = () => {
+    const url = CFG.BASE + "start.html?code=" + ST.class.code;
+    $("#bUrl").textContent = CFG.SHORT; $("#bCode").textContent = ST.class.code;
+    const q = qrcode(0, "M"); q.addData(url); q.make(); $("#bqr").innerHTML = q.createSvgTag({ cellSize: 8, margin: 0, scalable: true });
+    $("#beamer").classList.remove("hide"); renderClass();
+    try{ document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); }catch(e){}
+  };
+  $("#bClose").onclick = () => { $("#beamer").classList.add("hide"); try{ document.fullscreenElement && document.exitFullscreen(); }catch(e){} };
+  document.addEventListener("keydown", e => { if(e.key === "Escape"){ $("#beamer").classList.add("hide"); closePanel(); } });
+
+  const k = new URLSearchParams(location.search).get("k");
+  (async () => { await start(); if(k && PW && !setup) openClass(k); })();
+})();
+</script>
+</body>
+</html>

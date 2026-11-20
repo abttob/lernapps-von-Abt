@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IT-Onboarding – BBZ BL</title>
+<meta name="theme-color" content="#205C90">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .layout{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+  .side{position:sticky;top:80px}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}.side{position:static;order:2}}
+  .me{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .me .av{width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700;font-size:1.1rem}
+  .me .who{line-height:1.25}
+  .bigcode{font-size:2rem;font-weight:700;letter-spacing:.2em;color:var(--blue);background:#fff;border:2px dashed #9DBCD8;border-radius:12px;padding:10px 16px;display:inline-block;margin:6px 0}
+  .helpbar{position:sticky;top:60px;z-index:15;margin:-20px -16px 16px;padding:12px 16px;background:var(--red);color:#fff;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .helpbar.coming{background:var(--green)}
+  .helpbar b{flex:1}
+  .helpbar .btn{background:rgba(255,255,255,.2);color:#fff;min-height:38px;padding:8px 12px}
+  .navrow{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+  .devswitch{background:linear-gradient(135deg,#FFF5D6,#FFFBEF);border:1.5px solid #F1DC9C}
+  .file-drop{display:block;border:2px dashed #9DBCD8;border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#fff;font-weight:500;color:var(--blue)}
+  .file-drop input{display:none}
+  .qbox{margin-bottom:12px}
+  .cbx{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer}
+  .cbx input{width:22px;height:22px;margin-top:2px;flex:0 0 22px;accent-color:var(--green)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div id="helpbar" class="helpbar hide"></div>
+
+  <!-- ANMELDEN -->
+  <section id="join" class="narrow hide" style="margin:0 auto">
+    <div class="hero">
+      <h1>Willkommen am BBZ BL 👋</h1>
+      <p>In ca. 60 Minuten richtest du Handy und Laptop für die Schule ein, in deinem eigenen Tempo. Jeder Schritt wird automatisch geprüft. Wenn etwas nicht klappt, rufst du per Knopfdruck Hilfe.</p>
+    </div>
+    <div class="card" id="j1">
+      <h2>1. Klassencode eingeben</h2>
+      <p class="muted">Den Code zeigt dir deine Lehrperson (Wandtafel oder Beamer).</p>
+      <form id="codeForm" class="stack">
+        <input id="codeIn" class="code-input" type="text" maxlength="5" autocomplete="off" autocapitalize="characters" placeholder="•••••" aria-label="Klassencode">
+        <button class="btn btn-primary btn-block" type="submit">Weiter</button>
+        <div id="codeErr" class="result err"></div>
+      </form>
+    </div>
+    <div class="card hide" id="j2">
+      <h2>2. Wähle deinen Namen</h2>
+      <p class="muted" id="j2class"></p>
+      <div class="names" id="names"></div>
+      <div id="selfAdd" class="hide" style="margin-top:16px">
+        <details><summary class="small" style="cursor:pointer;color:var(--blue);font-weight:700">Mein Name fehlt</summary>
+          <form id="selfForm" class="row" style="margin-top:10px"><input id="selfName" type="text" placeholder="Vorname (und 1. Buchstabe Nachname)" maxlength="40"><button class="btn btn-ghost" type="submit">Hinzufügen</button></form>
+        </details>
+      </div>
+      <div id="confirm" class="note note-blue hide"></div>
+      <p style="margin-top:14px"><a href="#" id="backCode" class="small">← anderer Klassencode</a></p>
+    </div>
+    <p class="small muted" style="text-align:center">Gespeichert werden nur dein Vorname, deine Klasse und welche Schritte erledigt sind. Fotos und PDFs werden nur auf deinem Gerät geprüft und nicht hochgeladen.</p>
+  </section>
+
+  <!-- ABLAUF -->
+  <section id="app" class="hide">
+    <div class="layout">
+      <aside class="side">
+        <div class="card">
+          <div class="me"><div class="av" id="av">?</div><div class="who"><b id="meName"></b><br><span class="small muted" id="meClass"></span></div></div>
+          <div class="row" style="justify-content:space-between;margin-bottom:6px"><b class="small">Tag 1</b><span class="small muted" id="pText"></span></div>
+          <div class="pbar"><i id="pBar" style="width:0"></i></div>
+          <div id="list"></div>
+          <p class="small" style="margin-top:14px"><a href="#" id="logout">Nicht du? Abmelden</a></p>
+        </div>
+      </aside>
+      <div id="detail"></div>
+    </div>
+  </section>
+
+  <div id="loading" style="text-align:center;padding:60px"><span class="spinner dark"></span></div>
+</main>
+
+<script src="assets/common.js"></script>
+<script src="assets/content.js"></script>
+<script>
+(function(){
+  const { rpc, store, esc, $, $$, toast, isMobile, CFG } = ITO;
+  const { PARTS, STEPS, DAY1 } = ITO_CONTENT;
+  ITO.header("start");
+
+  let token = store.get("ito_token");
+  let S = null;            // Zustand vom Server
+  let cur = null;          // aktueller Schritt
+  let joinCode = "";
+  let roster = null;
+  let pollT = null;
+
+  const byId = id => STEPS.find(s => s.id === id);
+  const done = id => !!(S && S.progress && S.progress[id]);
+  const mobile = isMobile();
+
+  /* ---------- Anmelden ---------- */
+  function showJoin(){
+    $("#loading").classList.add("hide"); $("#app").classList.add("hide"); $("#join").classList.remove("hide");
+    const q = new URLSearchParams(location.search).get("code") || store.get("ito_code") || "";
+    $("#codeIn").value = q.toUpperCase();
+    $("#j1").classList.remove("hide"); $("#j2").classList.add("hide");
+    if(q.length === 5) loadRoster(q);
+  }
+  $("#codeForm").addEventListener("submit", e => { e.preventDefault(); loadRoster($("#codeIn").value); });
+  $("#backCode").addEventListener("click", e => { e.preventDefault(); $("#j2").classList.add("hide"); $("#j1").classList.remove("hide"); $("#codeIn").focus(); });
+
+  async function loadRoster(code){
+    code = (code || "").trim().toUpperCase(); $("#codeErr").textContent = "";
+    if(code.length !== 5){ $("#codeErr").textContent = "Der Klassencode hat 5 Zeichen."; return; }
+    try{
+      roster = await rpc("ito_roster", { p_code: code });
+      joinCode = code; store.set("ito_code", code);
+      $("#j2class").textContent = "Klasse " + roster.class + ". Tippe auf deinen Namen.";
+      $("#names").innerHTML = roster.students.length
+        ? roster.students.map(s => '<button type="button" data-id="' + s.id + '">' + esc(s.name) + "</button>").join("")
+        : '<p class="muted">Noch keine Namen erfasst.</p>';
+      $("#selfAdd").classList.toggle("hide", !roster.allow_self);
+      $("#confirm").classList.add("hide");
+      $("#j1").classList.add("hide"); $("#j2").classList.remove("hide");
+    }catch(e){ $("#codeErr").textContent = e.message; $("#j1").classList.remove("hide"); }
+  }
+  $("#names").addEventListener("click", e => {
+    const b = e.target.closest("button[data-id]"); if(!b) return;
+    const c = $("#confirm");
+    c.innerHTML = "<b>Bist du " + esc(b.textContent) + "?</b><div class=\"row\" style=\"margin-top:8px\"><button class=\"btn btn-primary\" id=\"yes\">Ja, das bin ich</button><button class=\"btn btn-white\" id=\"no\">Nein</button></div>";
+    c.classList.remove("hide"); c.scrollIntoView({behavior:"smooth", block:"center"});
+    $("#yes").onclick = () => join(b.dataset.id, null);
+    $("#no").onclick = () => c.classList.add("hide");
+  });
+  $("#selfForm").addEventListener("submit", e => { e.preventDefault(); const n = $("#selfName").value.trim(); if(n.length < 2) return toast("Bitte Vornamen eingeben."); join(null, n); });
+
+  async function join(id, name){
+    try{
+      const r = await rpc("ito_join", { p_code: joinCode, p_student: id, p_new_name: name });
+      token = r.token; store.set("ito_token", token);
+      history.replaceState(null, "", "start.html");
+      await boot();
+    }catch(e){ toast(e.message); }
+  }
+  $("#logout").addEventListener("click", e => { e.preventDefault(); if(!confirm("Abmelden? Dein Fortschritt bleibt gespeichert.")) return; store.del("ito_token"); token = null; S = null; clearInterval(pollT); showJoin(); });
+
+  /* ---------- Ablauf ---------- */
+  async function boot(){
+    if(!token){ showJoin(); return; }
+    try{ S = await rpc("ito_state", { p_token: token }); }
+    catch(e){ if(e.code === "TOKEN_INVALID"){ store.del("ito_token"); token = null; showJoin(); return; } $("#loading").innerHTML = '<div class="card narrow" style="margin:0 auto"><p>' + esc(e.message) + '</p><button class="btn btn-primary" onclick="location.reload()">Nochmals versuchen</button></div>'; return; }
+    $("#loading").classList.add("hide"); $("#join").classList.add("hide"); $("#app").classList.remove("hide");
+    const want = new URLSearchParams(location.search).get("s");
+    cur = (want && byId(want)) ? want : pickNext();
+    render();
+    clearInterval(pollT); pollT = setInterval(poll, 10000);
+  }
+  async function poll(){
+    if(document.hidden || !token) return;
+    try{
+      const n = await rpc("ito_state", { p_token: token });
+      const changed = JSON.stringify(n.progress) !== JSON.stringify(S.progress) || JSON.stringify(n.help) !== JSON.stringify(S.help) || JSON.stringify(n.quiz) !== JSON.stringify(S.quiz);
+      S = n; if(changed){ renderSide(); renderHelpbar(); if(done(cur)) renderDetail(); }
+    }catch(e){}
+  }
+
+  function pickNext(){
+    const open = DAY1.filter(id => !done(id));
+    if(!open.length) return "__finish";
+    if(!mobile && DAY1.filter(id => byId(id).part === "A").every(done)) return open.find(id => byId(id).part === "B") || open[0];
+    return open[0];
+  }
+
+  function render(){ renderSide(); renderHelpbar(); renderDetail(); }
+
+  function renderSide(){
+    $("#av").textContent = (S.name || "?").charAt(0).toUpperCase();
+    $("#meName").textContent = S.name; $("#meClass").textContent = "Klasse " + S.class + " · Code " + S.code;
+    const n = DAY1.filter(done).length;
+    $("#pText").textContent = n + " von " + DAY1.length + " erledigt";
+    $("#pBar").style.width = Math.round(n / DAY1.length * 100) + "%";
+    let h = "";
+    PARTS.forEach(p => {
+      const st = STEPS.filter(s => s.part === p.id);
+      h += '<div class="part"><div class="part-h">' + p.dev + " " + esc(p.title) + '</div><ul class="steplist">';
+      st.forEach((s, i) => {
+        const d = done(s.id), hp = !d && S.help && S.help.step === s.id;
+        const cls = [d ? "done" : "", hp ? "help" : "", (!d && s.later && DAY1.every(done)) ? "wait" : "", s.id === cur ? "cur" : ""].join(" ");
+        const num = STEPS.filter(x => !x.bonus).indexOf(s) + 1;
+        h += '<li class="' + cls + '" data-s="' + s.id + '"><span class="st">' + (d ? "✓" : hp ? "!" : (s.bonus ? "★" : num)) + '</span><span class="t">' + esc(s.short) + "</span></li>";
+      });
+      h += "</ul></div>";
+    });
+    h += '<ul class="steplist" style="margin-top:12px"><li data-s="__finish" class="' + (cur === "__finish" ? "cur" : "") + '"><span class="st">🏁</span><span class="t">Abschluss</span></li></ul>';
+    $("#list").innerHTML = h;
+  }
+  $("#list").addEventListener("click", e => { const li = e.target.closest("li[data-s]"); if(!li) return; go(li.dataset.s); });
+
+  function go(id){
+    cur = id; renderSide(); renderDetail();
+    const d = $("#detail"); if(window.innerWidth < 860) d.scrollIntoView({behavior:"smooth"}); else window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  function renderHelpbar(){
+    const b = $("#helpbar");
+    if(!S.help){ b.classList.add("hide"); return; }
+    const st = byId(S.help.step);
+    const coming = S.help.state === "coming";
+    b.className = "helpbar" + (coming ? " coming" : "");
+    b.innerHTML = "<b>" + (coming ? "🚶 Deine Lehrperson ist unterwegs zu dir." : "🙋 Hilfe ist angefordert" + (st ? " (" + esc(st.short) + ")" : "") + ". Deine Lehrperson sieht das.") + '</b><button class="btn" id="helpCancel">Hat sich erledigt</button>';
+    $("#helpCancel").onclick = async () => { try{ await rpc("ito_help", { p_token: token, p_step: null, p_msg: null }); S.help = null; renderHelpbar(); renderSide(); }catch(e){ toast(e.message); } };
+  }
+
+  function laptopHint(){
+    return '<div class="card devswitch"><h3>💻 Weiter am Laptop</h3><p>Öffne am Laptop im Browser:</p><p class="bigcode" style="letter-spacing:0;font-size:1.25rem">' + esc(CFG.SHORT) + '</p><p>→ <b>Onboarding</b> → Klassencode <b>' + esc(S.code) + "</b> → deinen Namen wählen.</p></div>";
+  }
+
+  function renderDetail(){
+    const D = $("#detail");
+    if(cur === "__finish"){ D.innerHTML = finishHtml(); bindFinish(); return; }
+    const s = byId(cur);
+    const main = STEPS.filter(x => !x.bonus);
+    const idx = main.indexOf(s);
+    const d = done(s.id);
+    let h = "";
+    if(mobile && (s.part === "A" || s.desktop) && STEPS.filter(x => x.part === "A").every(x => done(x.id)) && !DAY1.every(done)) h += laptopHint();
+    h += '<div class="card"><div class="step-head"><span class="chip">' + s.dev + " " + (s.part === "A" ? "Handy" : s.part === "B" ? "Laptop" : s.part === "C" ? "Später" : "Bonus") + "</span>" +
+      (idx >= 0 ? '<span class="chip grey">Schritt ' + (idx + 1) + " von " + main.length + "</span>" : "") +
+      (d ? '<span class="chip green">✓ Erledigt</span>' : "") + "</div>";
+    h += "<h1>" + esc(s.title) + "</h1>";
+    if(s.desktop && mobile && !d) h += '<div class="note note-yellow"><b>💻 Diesen Schritt machst du am Laptop.</b>Öffne am Laptop <b>' + esc(CFG.SHORT) + "</b> → Onboarding → Code <b>" + esc(S.code) + "</b> → deinen Namen.</div>";
+    h += "<p>" + s.intro + "</p>";
+    if(s.videos) h += "<div>" + s.videos.map(v => '<a class="video-btn" href="' + v[1] + '" target="_blank" rel="noopener">' + esc(v[0]) + "</a>").join("") + "</div>";
+    h += '<ol class="instr">' + s.steps().map(x => "<li>" + x + "</li>").join("") + "</ol>";
+    if(s.extra) h += s.extra;
+    if(s.tip) h += '<div class="note note-blue"><b>💡 Tipp</b>' + s.tip + "</div>";
+    h += d ? '<div class="note note-green"><b>✓ Dieser Schritt ist erledigt.</b>Super! Weiter geht\'s.</div>' : checkHtml(s);
+    if(!d) h += '<div class="row" style="margin-top:14px"><button class="btn btn-red" id="helpBtn">🙋 Ich brauche Hilfe</button></div><div id="helpForm" class="hide" style="margin-top:10px"><textarea id="helpMsg" rows="2" maxlength="200" placeholder="Was klappt nicht? (freiwillig)"></textarea><div class="row" style="margin-top:8px"><button class="btn btn-primary" id="helpSend">Hilfe anfordern</button></div></div>';
+    if(s.help) h += '<div class="later">📌 Später wieder nötig? Du findest alles unter <a href="hilfe.html#' + s.help + '">Hilfe › ' + esc((ITO_CONTENT.HELP.find(x => x.id === s.help) || {}).title || "") + "</a></div>";
+    const all = STEPS; const i = all.indexOf(s);
+    h += '<div class="navrow"><button class="btn btn-white" id="prev"' + (i <= 0 ? " disabled" : "") + '>← Zurück</button><button class="btn ' + (d ? "btn-primary" : "btn-ghost") + '" id="next">' + (d ? "Nächster Schritt →" : "Überspringen →") + "</button></div>";
+    h += "</div>";
+    D.innerHTML = h;
+    $("#prev").onclick = () => { if(i > 0) go(all[i - 1].id); };
+    $("#next").onclick = () => { const nx = nextAfter(s.id); go(nx); };
+    if(!d){
+      $("#helpBtn").onclick = () => $("#helpForm").classList.toggle("hide");
+      $("#helpSend").onclick = async () => { try{ await rpc("ito_help", { p_token: token, p_step: s.id, p_msg: $("#helpMsg").value }); S.help = { step: s.id, state: "open" }; renderHelpbar(); renderSide(); $("#helpForm").classList.add("hide"); toast("Deine Lehrperson wurde informiert."); window.scrollTo({top:0, behavior:"smooth"}); }catch(e){ toast(e.message); } };
+      bindCheck(s);
+    }
+  }
+
+  function nextAfter(id){
+    const open = DAY1.filter(x => !done(x));
+    const i = STEPS.findIndex(x => x.id === id);
+    const later = STEPS.slice(i + 1).find(x => !done(x.id) && !x.bonus && x.part !== "C" && (!mobile || !x.desktop || x.part === "A"));
+    if(later) return later.id;
+    if(!open.length) return "__finish";
+    return open[0];
+  }
+
+  /* ---------- Prüfungen ---------- */
+  function checkHtml(s){
+    const B = (inner, title) => '<div class="check-box"><h3>✅ ' + (title || "Nachweis") + "</h3>" + inner + '<div class="result" id="res"></div></div>';
+    switch(s.check){
+      case "ip": return B('<p class="small">Die Seite prüft, ob dein ' + (s.desktop ? "Laptop" : "Handy") + " im Schul-WLAN ist.</p>" + '<button class="btn btn-primary btn-block" id="go">📶 WLAN prüfen</button>');
+      case "next": return B('<p class="small">Hast du dein Passwort geändert? Dann geht es weiter. Der Nachweis folgt automatisch mit dem Teams-Login.</p><button class="btn btn-primary btn-block" id="go">Passwort ist geändert → weiter</button>');
+      case "code": return B('<label class="lbl" for="in1">Codewort aus deinem Klassenteam</label><input id="in1" type="text" autocomplete="off"><button class="btn btn-primary btn-block" id="go" style="margin-top:10px">Prüfen</button>');
+      case "date": return B('<label class="lbl" for="in1">Wann beginnen laut SAL die nächsten Ferien?</label><p class="small muted">SAL-Startseite → Tabelle «Ferienübersicht» → bei den nächsten Ferien das Datum unter «Von».</p><input id="in1" type="date"><button class="btn btn-primary btn-block" id="go" style="margin-top:10px">Prüfen</button>');
+      case "pdf": return B('<p>Dein persönlicher Code für das Word-Dokument:</p><div class="bigcode">' + esc(S.pcode) + '</div><label class="file-drop" style="margin-top:10px">📄 PDF auswählen und prüfen<input id="file" type="file" accept="application/pdf,.pdf"></label>');
+      case "quiz":
+        if(S.quiz && S.quiz.length) return B(S.quiz.map((q, i) => '<div class="qbox"><label class="lbl" for="q' + i + '">' + esc(q) + '</label><input id="q' + i + '" type="text" autocomplete="off"></div>').join("") + '<button class="btn btn-primary btn-block" id="go">Antworten prüfen</button>', "Such-Auftrag in Teams");
+        return B(["Ich habe mein Klassenteam am Laptop geöffnet.", "Ich weiss, wo die Beiträge (Mitteilungen) sind.", "Ich habe die Dateien (Unterlagen) gefunden.", "Ich weiss, wie ich jemandem im Chat schreibe."].map((t, i) => '<label class="cbx"><input type="checkbox" class="sc"> <span>' + t + "</span></label>").join("") + '<button class="btn btn-primary btn-block" id="go" style="margin-top:8px">Bestätigen</button>', "Checkliste");
+      case "printer": return B('<label class="lbl" for="in1">Wie heisst einer der Drucker genau?</label><input id="in1" type="text" placeholder="SBL-…" autocomplete="off"><button class="btn btn-primary btn-block" id="go" style="margin-top:10px">Prüfen</button>');
+      case "photo": return B('<div class="row"><a class="btn btn-ghost" href="druckblatt.html" target="_blank">🖨️ Druckblatt öffnen (am Laptop)</a></div><label class="file-drop" style="margin-top:12px">📷 Foto vom gedruckten Blatt aufnehmen<input id="file" type="file" accept="image/*" capture="environment"></label><details style="margin-top:10px"><summary class="small" style="cursor:pointer">QR-Code wird nicht erkannt?</summary><p class="small">Gib den Druckcode ein, der unter dem QR-Code auf dem Blatt steht.</p><div class="row"><input id="in1" type="text" maxlength="6" class="code-input" style="font-size:1.2rem!important"><button class="btn btn-primary" id="go">Prüfen</button></div></details>');
+      case "self": return B('<label class="cbx"><input type="checkbox" class="sc"> <span>Erledigt</span></label><button class="btn btn-primary btn-block" id="go">Bestätigen</button>', "Abhaken");
+    }
+    return "";
+  }
+
+  function setRes(msg, ok){ const r = $("#res"); if(!r) return; r.className = "result " + (ok ? "ok" : "err"); r.innerHTML = msg; }
+  function busy(on){ const b = $("#go"); if(!b) return; b.disabled = on; if(on){ b.dataset.t = b.innerHTML; b.innerHTML = '<span class="spinner"></span>'; } else if(b.dataset.t){ b.innerHTML = b.dataset.t; } }
+
+  async function submit(s, answer){
+    busy(true);
+    try{
+      const r = await rpc("ito_submit", { p_token: token, p_step: s.id, p_answer: answer });
+      if(r.ok){
+        S.progress = r.progress; if(S.help && S.help.step === s.id) S.help = null;
+        setRes("✓ Geschafft!", true); celebrate();
+        setTimeout(() => { go(DAY1.every(done) && !s.bonus && s.part !== "C" ? "__finish" : nextAfter(s.id)); }, 900);
+      } else { setRes(esc(r.msg), false); }
+    }catch(e){ setRes(esc(e.message), false); }
+    busy(false);
+  }
+
+  function bindCheck(s){
+    const go_ = $("#go");
+    switch(s.check){
+      case "ip":
+        go_.onclick = async () => {
+          if(s.desktop && mobile){ setRes("Diesen Schritt bitte am <b>Laptop</b> prüfen.", false); return; }
+          busy(true); let ip = "";
+          try{ const c = new AbortController(); setTimeout(() => c.abort(), 6000); ip = (await (await fetch("https://api.ipify.org?format=json", { signal: c.signal })).json()).ip; }catch(e){}
+          busy(false); submit(s, { ip });
+        }; break;
+      case "next": go_.onclick = () => go("h_teams"); break;
+      case "code": go_.onclick = () => { const v = $("#in1").value.trim(); if(!v) return setRes("Bitte Codewort eingeben.", false); submit(s, { code: v }); }; break;
+      case "date": go_.onclick = () => { const v = $("#in1").value; if(!v) return setRes("Bitte ein Datum wählen.", false); submit(s, { date: v }); }; break;
+      case "printer": go_.onclick = () => { const v = $("#in1").value.trim(); if(!v) return setRes("Bitte Druckernamen eingeben.", false); submit(s, { printer: v }); }; break;
+      case "quiz":
+        go_.onclick = () => {
+          if(S.quiz && S.quiz.length){ const a = S.quiz.map((q, i) => $("#q" + i).value.trim()); if(a.some(x => !x)) return setRes("Bitte alle Fragen beantworten.", false); submit(s, { answers: a }); }
+          else { if($$(".sc").some(c => !c.checked)) return setRes("Hake alle Punkte ab, wenn du sie erledigt hast.", false); submit(s, { self: true }); }
+        }; break;
+      case "self": go_.onclick = () => { if(!$(".sc").checked) return setRes("Bitte abhaken.", false); submit(s, { self: true }); }; break;
+      case "pdf": $("#file").onchange = e => checkPdf(s, e.target.files[0]); break;
+      case "photo":
+        $("#file").onchange = e => checkPhoto(s, e.target.files[0]);
+        go_.onclick = () => { const v = $("#in1").value.trim().toUpperCase(); if(v.length < 6) return setRes("Der Druckcode hat 6 Zeichen.", false); submit(s, { code: v }); };
+        break;
+    }
+  }
+
+  function loadScript(src){ return new Promise((ok, no) => { if($$('script[src="' + src + '"]').length) return ok(); const t = document.createElement("script"); t.src = src; t.onload = ok; t.onerror = () => no(new Error("Prüf-Werkzeug konnte nicht geladen werden. Internet prüfen.")); document.head.appendChild(t); }); }
+
+  async function checkPdf(s, f){
+    if(!f) return;
+    setRes('<span class="spinner dark"></span> PDF wird geprüft …', true);
+    try{
+      if(!/\.pdf$/i.test(f.name) && f.type !== "application/pdf") throw new Error("Das ist kein PDF. Speichere das Word-Dokument als PDF.");
+      await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      const pdf = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise;
+      const meta = await pdf.getMetadata().catch(() => ({}));
+      const info = (meta && meta.info) || {};
+      const who = ((info.Creator || "") + " " + (info.Producer || "")).toLowerCase();
+      let text = "";
+      for(let p = 1; p <= Math.min(pdf.numPages, 5); p++){ const pg = await pdf.getPage(p); const c = await pg.getTextContent(); text += c.items.map(i => i.str).join(" ") + " "; }
+      const flat = text.replace(/\s+/g, "").toUpperCase();
+      if(!/word|microsoft|office/.test(who)) throw new Error("Dieses PDF wurde nicht mit Word erstellt. Öffne Word, schreibe den Code hinein und speichere als PDF.");
+      if(!flat.includes(S.pcode)) throw new Error("Im PDF steht dein Code <b>" + esc(S.pcode) + "</b> nicht. Prüfe die Schreibweise.");
+      submit(s, { code: S.pcode });
+    }catch(e){ setRes(e.message, false); }
+  }
+
+  async function checkPhoto(s, f){
+    if(!f) return;
+    setRes('<span class="spinner dark"></span> Foto wird geprüft …', true);
+    try{
+      await loadScript("https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js");
+      const img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error("Das Foto konnte nicht gelesen werden.")); i.src = URL.createObjectURL(f); });
+      let found = null;
+      for(const max of [1200, 1800, 800, 2600]){
+        const sc = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+        const cv = document.createElement("canvas"); cv.width = Math.round(img.naturalWidth * sc); cv.height = Math.round(img.naturalHeight * sc);
+        const cx = cv.getContext("2d"); cx.drawImage(img, 0, 0, cv.width, cv.height);
+        const d = cx.getImageData(0, 0, cv.width, cv.height);
+        const q = jsQR(d.data, d.width, d.height, { inversionAttempts: "attemptBoth" });
+        if(q && q.data){ found = q.data; break; }
+      }
+      URL.revokeObjectURL(img.src);
+      if(!found) throw new Error("Auf dem Foto wurde kein QR-Code gefunden. Fotografiere das ganze Blatt gerade von oben, mit gutem Licht.");
+      submit(s, { code: found });
+    }catch(e){ setRes(e.message, false); }
+  }
+
+  /* ---------- Abschluss ---------- */
+  function finishHtml(){
+    const all = DAY1.every(done);
+    if(!all){
+      const open = DAY1.filter(x => !done(x)).map(byId);
+      return '<div class="card"><h1>Fast geschafft</h1><p>Diese Schritte fehlen noch:</p><ul class="steplist">' + open.map(s => '<li data-go="' + s.id + '"><span class="st">' + s.dev + '</span><span class="t">' + esc(s.title) + "</span></li>").join("") + "</ul></div>";
+    }
+    return '<div class="card done-big"><div class="em">🎉</div><h1>Tag 1 geschafft, ' + esc(S.name) + "!</h1><p>Handy und Laptop sind bereit für die Schule. Du kannst jetzt mit dem Unterricht starten.</p></div>" +
+      '<div class="card"><h2>Und so geht es weiter</h2>' +
+      '<div class="note note-yellow"><b>🪪 Teil C: Drucken und scannen</b>' + (done("scan") ? "✓ Erledigt." : "Sobald du deinen Lernendenausweis hast, machst du noch den Druck-Test. Er erscheint dann hier in der Liste.") + "</div>" +
+      '<div class="tiles" style="margin-top:12px"><a class="tile" href="hilfe.html"><span class="ico">🛟</span><h3>Hilfe</h3><p>Wenn während der Ausbildung etwas nicht geht: WLAN, Passwort, Drucker …</p></a><a class="tile" href="training.html"><span class="ico">🎓</span><h3>IT-Training</h3><p>Word, Excel, PowerPoint, Teams, OneDrive und der Tipptrainer.</p></a></div>' +
+      '<p style="margin-top:14px">⭐ <b>Bonus:</b> Lege diese Seite auf deinen Startbildschirm, dann findest du die Hilfe immer schnell. <a href="#" data-go="b_home">Anleitung</a></p></div>';
+  }
+  function bindFinish(){ $$("[data-go]", $("#detail")).forEach(el => el.addEventListener("click", e => { e.preventDefault(); go(el.dataset.go); })); }
+
+  function celebrate(){
+    const c = document.createElement("div"); c.style.cssText = "position:fixed;inset:0;pointer-events:none;z-index:98;overflow:hidden";
+    const col = ["#205C90", "#EA3223", "#1F8A4C", "#F2B705", "#2B74B1"];
+    for(let i = 0; i < 40; i++){ const p = document.createElement("i"); p.style.cssText = "position:absolute;top:-10px;left:" + Math.random() * 100 + "%;width:8px;height:12px;background:" + col[i % 5] + ";border-radius:2px;transform:rotate(" + Math.random() * 360 + "deg);transition:transform 1.4s ease-in,top 1.4s ease-in,opacity 1.4s"; c.appendChild(p); setTimeout(() => { p.style.top = 60 + Math.random() * 50 + "%"; p.style.transform = "rotate(" + Math.random() * 720 + "deg)"; p.style.opacity = "0"; }, 20); }
+    document.body.appendChild(c); setTimeout(() => c.remove(), 1600);
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>

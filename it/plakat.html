@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plakat – IT-Onboarding BBZ BL</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Roboto,Helvetica,Arial,sans-serif;background:#E9ECF0;color:#1C1E21}
+  .poster{width:210mm;min-height:297mm;margin:20px auto;background:#fff;display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.15)}
+  .top{padding:16mm 16mm 0}
+  .top img{height:16mm}
+  .main{flex:1;padding:12mm 16mm;display:flex;flex-direction:column;align-items:center;text-align:center}
+  h1{font-size:44pt;font-weight:900;line-height:1.02;margin:6mm 0 4mm;color:#205C90;letter-spacing:-.01em}
+  h1 span{color:#EA3223}
+  .sub{font-size:17pt;color:#44474D;margin:0 0 10mm;max-width:150mm}
+  #qr{padding:6mm;border-radius:8mm;background:#fff;border:2.5mm solid #205C90}
+  #qr svg{width:95mm;height:95mm;display:block}
+  .scan{font-size:22pt;font-weight:900;margin:7mm 0 2mm}
+  .url{font-size:15pt;color:#44474D}
+  .need{display:flex;gap:6mm;justify-content:center;margin-top:10mm;flex-wrap:wrap}
+  .need div{background:#E8F0F7;border-radius:5mm;padding:4mm 6mm;font-size:13pt;font-weight:700;color:#205C90}
+  .foot{background:#205C90;color:#fff;padding:7mm 16mm;font-size:12pt;display:flex;justify-content:space-between}
+  .noprint{text-align:center;margin:10px}
+  .noprint button{font:inherit;font-weight:700;background:#205C90;color:#fff;border:0;border-radius:10px;padding:12px 20px;cursor:pointer}
+  @media print{body{background:#fff}.poster{margin:0;box-shadow:none}.noprint{display:none}@page{size:A4;margin:0}}
+</style>
+</head>
+<body>
+<div class="noprint"><button onclick="window.print()">🖨️ Plakat drucken (A4, für A3 im Druckdialog skalieren)</button></div>
+<div class="poster">
+  <div class="top"><img src="https://www.bbzbl.ch/wp-content/uploads/2025/08/bl_logo_bksd_bbzbl_a_r_rgb.svg" alt="BBZ BL"></div>
+  <div class="main">
+    <h1>Dein IT-Start<br><span>am BBZ BL</span></h1>
+    <p class="sub">WLAN, Passwort, Teams, SAL, Office und Drucker: Die Seite führt dich Schritt für Schritt, in deinem Tempo.</p>
+    <div id="qr"></div>
+    <div class="scan">📱 Scanne mich mit der Handy-Kamera</div>
+    <div class="url">oder öffne <b>lernappsabt.vercel.app/it</b></div>
+    <div class="need"><div>📱 Handy</div><div>💻 Laptop</div><div>📄 Zugangsblatt</div><div>🔢 Klassencode</div></div>
+  </div>
+  <div class="foot"><span>Berufsbildungszentrum Baselland</span><span>Hilfe jederzeit: lernappsabt.vercel.app/it</span></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script>
+  const q = qrcode(0, "M"); q.addData("https://lernappsabt.vercel.app/it/start.html"); q.make();
+  document.getElementById("qr").innerHTML = q.createSvgTag({ cellSize: 8, margin: 0, scalable: true });
+</script>
+</body>
+</html>
