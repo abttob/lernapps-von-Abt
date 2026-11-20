@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Handy- & Laptop-Liste GLA25A (nur Lehrperson)</title>
+<title>Handy- & Laptop-Liste GLA 25-27 A (nur Lehrperson)</title>
 <style>
 :root{--bg:#f2f5f1;--card:#fff;--ink:#1f2d27;--muted:#5d6b64;--green:#2f7a4a;--gl:#d9efe0;--red:#c0392b;--rl:#f9dcd8;--line:#d4ddd6;--gelb:#ffe14d}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
@@ -45,8 +45,8 @@ th.today{background:var(--gelb)}
 <body>
 <div class="wrap">
  <div class="top noprint"><a href="../">← Alle Apps</a><div class="who" id="who"></div></div>
- <h1>📱💻 Handy- & Laptop-Liste</h1>
- <p class="sub">Klasse GLA25A · nur für die Lehrperson · Regel: 1 Unterrichtstag ohne rote Karte ➜ darf Handy und Laptop beim nächsten Mal behalten</p>
+ <h1>📱💻 Handy- & Laptop-Liste GLA 25-27 A</h1>
+ <p class="sub">Klasse GLA 25-27 A · nur für die Lehrperson · Regel: 1 Unterrichtstag ohne rote Karte ➜ darf Handy und Laptop beim nächsten Mal behalten</p>
  <div id="loading" class="card">Lädt …</div>
  <div id="main" class="hidden">
   <div class="card noprint"><div class="rules">
@@ -74,6 +74,9 @@ th.today{background:var(--gelb)}
 const SLUG="handy-liste";const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let D={days:{},notes:{}},studs=[];
+const KLASSE=["Ahmeti Ruhan","Bläsi Alessio","Brosi Nicola","Kaiser Ramona","Karimli Asif","Koma Massire","Lässer Erik","Lingg Linus","Mohamed Amar","Roka Resham","Rumaguera Randy","Schmid Ian","Thur Stella","Voggensperger Silas","Wiedera Benjamin"];
+const TAGE=["2026-11-26","2026-12-03","2026-12-10","2026-12-17","2027-01-07","2027-01-14","2027-01-21"];
+function startDay(){const t=today();if(TAGE.includes(t))return t;return TAGE.find(x=>x>=t)||t;}
 const iso=d=>d.toISOString().slice(0,10);
 function today(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return iso(d);}
 const fmt=s=>{const [y,m,d]=s.split("-");return d+"."+m+".";};
@@ -81,12 +84,12 @@ async function persist(){try{await LA.saveProgress(SLUG,{pct:0,days:D.days,notes
 function status(uid){const ds=Object.keys(D.days).sort();for(let i=ds.length-1;i>=0;i--){const v=D.days[ds[i]][uid];if(v)return v==="g"?{c:"keep",t:"📱 darf behalten"}:{c:"give",t:"📵 abgeben"};}return{c:"new",t:"📵 abgeben (Start)"};}
 function draw(){
  const day=$("day").value;if(!D.days[day])D.days[day]=D.days[day]||{};
- const ds=Object.keys(D.days).filter(k=>Object.keys(D.days[k]).length||k===day).sort();
+ const ds=[...new Set([...TAGE,...Object.keys(D.days).filter(k=>Object.keys(D.days[k]).length||k===day)])].sort();ds.forEach(k=>{if(!D.days[k])D.days[k]={};});
  const keep=studs.filter(s=>status(s.id).c==="keep").length,red=studs.filter(s=>D.days[day][s.id]==="r").length;
  $("kpis").innerHTML=`<div class="kpi"><b>${studs.length}</b><span>Lernende</span></div><div class="kpi"><b>${keep}</b><span>dürfen nächstes Mal behalten</span></div><div class="kpi"><b>${red}</b><span>rote Karten am ${fmt(day)}</span></div>`;
  $("tbl").innerHTML=`<tr><th style="text-align:left">Name</th>${ds.map(k=>`<th class="${k===day?"today":""}">${fmt(k)}</th>`).join("")}<th>Nächstes Mal</th><th>Notiz</th></tr>`+
  studs.map(s=>`<tr><td class="nm">${esc(s.name)}</td>${ds.map(k=>{const v=D.days[k][s.id];return `<td><button class="cell ${v||""}" data-u="${s.id}" data-d="${k}">${v==="g"?"🟢":v==="r"?"🟥":""}</button></td>`;}).join("")}
- <td><span class="st ${status(s.id).c}">${status(s.id).t}</span></td><td><input class="note" data-u="${s.id}" value="${esc(D.notes[s.id]||"")}" placeholder="z. B. Absprache …"></td></tr>`).join("")||'<tr><td>Noch keine Lernenden registriert.</td></tr>';
+ <td><span class="st ${status(s.id).c}">${status(s.id).t}</span></td><td><input class="note" data-u="${s.id}" value="${esc(D.notes[s.id]||"")}" placeholder="z. B. Absprache …"></td></tr>`).join("")||'';
  document.querySelectorAll(".cell").forEach(b=>b.onclick=()=>{const u=b.dataset.u,k=b.dataset.d;const v=D.days[k][u];D.days[k][u]=v===undefined?"g":v==="g"?"r":undefined;if(D.days[k][u]===undefined)delete D.days[k][u];persist();draw();});
  document.querySelectorAll(".note").forEach(i=>i.onchange=()=>{D.notes[i.dataset.u]=i.value;persist();});
 }
@@ -94,8 +97,8 @@ LA.requireLogin().then(async()=>{
  LA.who($("who"));$("loading").classList.add("hidden");
  if(LA.user.role!=="teacher"){$("loading").classList.remove("hidden");$("loading").innerHTML="Diese Seite ist nur für die Lehrperson.";return;}
  const p=LA.getProgress(SLUG);if(p&&p.data)D={days:p.data.days||{},notes:p.data.notes||{}};
- const profs=await LA.profiles();studs=profs.filter(x=>x.role==="student"&&x.klasse===LA.klasse).sort((a,b)=>a.name.localeCompare(b.name,"de"));
- $("day").value=today();$("day").onchange=draw;
+ studs=KLASSE.map(n=>({id:n,name:n}));
+ $("day").value=startDay();$("day").onchange=draw;
  $("allG").onclick=()=>{const k=$("day").value;studs.forEach(s=>{if(!D.days[k][s.id])D.days[k][s.id]="g";});persist();draw();};
  $("print").onclick=()=>window.print();
  $("main").classList.remove("hidden");draw();
