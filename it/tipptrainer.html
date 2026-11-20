@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tipptrainer – IT-Training BBZ BL</title>
+<meta name="theme-color" content="#205C90">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .wrap{max-width:1040px}
+  .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .lbtn{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px;border:2px solid transparent;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+  .lbtn:hover{border-color:var(--blue)}
+  .lbtn .no{font-size:.8rem;color:var(--ink-3);font-weight:700}
+  .lbtn .ti{font-weight:700;margin:2px 0 6px}
+  .lbtn .stars{font-size:1.1rem;letter-spacing:2px}
+  .lbtn.locked{opacity:.45;cursor:not-allowed}
+  .lbtn.next{border-color:var(--blue);box-shadow:0 0 0 4px rgba(32,92,144,.12)}
+  .play{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:20px}
+  .phead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .phead h2{margin:0;flex:1}
+  .stat{background:var(--blue-ll);border-radius:10px;padding:6px 12px;font-size:.9rem}
+  .stat b{font-size:1.1rem}
+  .text{font-family:"Roboto Mono",Consolas,monospace;font-size:1.65rem;line-height:2.1;background:#FAFBFC;border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;min-height:160px;max-height:200px;overflow:hidden;position:relative;word-break:break-word;user-select:none}
+  .text span{border-radius:4px}
+  .text .ok{color:#9AA3AE}
+  .text .cur{background:var(--blue);color:#fff;box-shadow:0 0 0 2px var(--blue)}
+  .text .cur.err{background:var(--red);box-shadow:0 0 0 2px var(--red);animation:shake .25s}
+  .text .sp.cur::after{content:"␣";}
+  .text .had{color:#D9534F}
+  @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  .finger{margin:12px 0 8px;font-weight:700;color:var(--blue);min-height:1.5em;text-align:center}
+  .kb{display:flex;flex-direction:column;gap:5px;align-items:center;margin-top:6px;user-select:none}
+  .kr{display:flex;gap:5px}
+  .k{width:44px;height:44px;border-radius:8px;display:grid;place-items:center;font-weight:500;font-size:.95rem;border:1px solid rgba(0,0,0,.08);border-bottom-width:3px;color:#33373D;position:relative}
+  .k.w15{width:68px}.k.w175{width:80px}.k.w2{width:92px}.k.w225{width:104px}.k.sp{width:300px}
+  .k.hit{outline:3px solid var(--ink);outline-offset:1px;transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.18);z-index:2}
+  .k.home::after{content:"";position:absolute;bottom:6px;width:12px;height:2px;border-radius:2px;background:#33373D;opacity:.6}
+  .f0{background:#FDE2E4}.f1{background:#FFF0C7}.f2{background:#D9F2E1}.f3{background:#D6E8FA}.f4{background:#E6DEFA}.f5{background:#D9F2E1}.f6{background:#FFF0C7}.f7{background:#FDE2E4}.f8{background:#ECEEF1}
+  .legend2{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;font-size:.8rem;margin-top:10px;color:var(--ink-2)}
+  .legend2 span{padding:3px 8px;border-radius:6px}
+  .result-big{text-align:center;padding:10px}
+  .result-big .st{font-size:3rem;letter-spacing:6px}
+  .nums{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+  .nums div{background:var(--blue-ll);border-radius:14px;padding:12px 18px;min-width:120px}
+  .nums b{display:block;font-size:1.7rem;color:var(--blue)}
+  .focus-hint{position:absolute;inset:0;background:rgba(250,251,252,.85);display:grid;place-items:center;font-family:Roboto,sans-serif;font-size:1.1rem;font-weight:700;color:var(--blue);cursor:pointer}
+  @media(max-width:760px){.k{width:26px;height:34px;font-size:.75rem}.k.w15{width:38px}.k.w175{width:44px}.k.w2{width:50px}.k.w225{width:56px}.k.sp{width:160px}.text{font-size:1.25rem}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p><a href="training.html">← IT-Training</a></p>
+  <section id="menu">
+    <div class="hero">
+      <h1>⌨️ Tipptrainer</h1>
+      <p>Lerne das 10-Finger-System auf der Schweizer Tastatur. Die Zeigefinger liegen auf <b>F</b> und <b>J</b> (die Tasten mit den kleinen Rillen). Schau auf den Bildschirm, nicht auf die Tasten!</p>
+    </div>
+    <div id="mobileNote" class="note note-yellow hide"><b>💻 Am Laptop üben</b>Der Tipptrainer braucht eine echte Tastatur.</div>
+    <div class="row" style="margin-bottom:14px"><div><b id="totStars"></b> <span class="muted small">Ab ⭐⭐ (95% Genauigkeit) wird die nächste Lektion freigeschaltet.</span></div><button class="btn btn-primary" id="speedBtn" style="flex:0 0 auto">⏱️ 1-Minuten-Tempotest</button></div>
+    <div class="lgrid" id="lessons"></div>
+    <p class="small muted" style="margin-top:14px" id="bestTest"></p>
+  </section>
+
+  <section id="play" class="hide">
+    <div class="play">
+      <div class="phead"><h2 id="pTitle"></h2><span class="stat">⏱ <b id="sTime">0:00</b></span><span class="stat">⚡ <b id="sApm">0</b> Anschl./Min</span><span class="stat">🎯 <b id="sAcc">100</b>%</span><button class="btn btn-white btn-sm" id="quit">✕</button></div>
+      <div class="text" id="text"></div>
+      <div class="finger" id="finger"></div>
+      <div class="kb" id="kb"></div>
+      <div class="legend2"><span class="f0">kleiner Finger</span><span class="f1">Ringfinger</span><span class="f2">Mittelfinger</span><span class="f3">Zeigefinger links</span><span class="f4">Zeigefinger rechts</span><span class="f8">Daumen</span></div>
+      <p class="small muted" style="text-align:center;margin-top:10px"><label><input type="checkbox" id="hideKb"> Tastatur ausblenden (blind tippen)</label></p>
+    </div>
+  </section>
+
+  <section id="done" class="hide">
+    <div class="play result-big" id="doneBox"></div>
+  </section>
+</main>
+<script src="assets/common.js"></script>
+<script>
+(function(){
+  const { $, $$, esc, store, isMobile } = ITO;
+  ITO.header("training");
+  if(isMobile() && !/Macintosh/.test(navigator.userAgent)) $("#mobileNote").classList.remove("hide");
+
+  /* ---------- Schweizer Tastatur (QWERTZ CH) ---------- */
+  // [Taste, Finger 0-8, Breite]
+  const ROWS = [
+    [["§",0],["1",0],["2",1],["3",2],["4",3],["5",3],["6",4],["7",4],["8",5],["9",6],["0",7],["'",7],["^",7],["⌫",7,"w2"]],
+    [["⇥",0,"w15"],["q",0],["w",1],["e",2],["r",3],["t",3],["z",4],["u",4],["i",5],["o",6],["p",7],["ü",7],["¨",7],["↵",7,"w15"]],
+    [["⇪",0,"w175"],["a",0],["s",1],["d",2],["f",3],["g",3],["h",4],["j",4],["k",5],["l",6],["ö",7],["ä",7],["$",7],["",7]],
+    [["⇧L",0,"w15"],["<",0],["y",0],["x",1],["c",2],["v",3],["b",3],["n",4],["m",4],[",",5],[".",6],["-",7],["⇧R",7,"w225"]],
+    [[" ",8,"sp"]]
+  ];
+  const SHIFTED = { "+":"1", '"':"2", "*":"3", "ç":"4", "%":"5", "&":"6", "/":"7", "(":"8", ")":"9", "=":"0", "?":"'", ";":",", ":":".", "_":"-" };
+  const FNAME = ["linker kleiner Finger","linker Ringfinger","linker Mittelfinger","linker Zeigefinger","rechter Zeigefinger","rechter Mittelfinger","rechter Ringfinger","rechter kleiner Finger","Daumen"];
+  const KEY = {}; ROWS.flat().forEach(k => KEY[k[0]] = k);
+  function keyFor(ch){
+    if(ch === " ") return { k:" ", shift:false };
+    if(KEY[ch]) return { k:ch, shift:false };
+    const lo = ch.toLowerCase(); if(lo !== ch && KEY[lo]) return { k:lo, shift:true };
+    if(SHIFTED[ch]) return { k:SHIFTED[ch], shift:true };
+    return null;
+  }
+
+  /* ---------- Wortschatz (neutral) ---------- */
+  const WORDS = ("als also alle alles alt am an and andere arbeit arbeiten auch auf aus bald bank baum bau bei beim berg beruf besser bett bild bis bitte blatt blau blume boden brief brot buch dach dann das dass dein den denn der des dich die dir doch dorf drei du durch eben eine einen einer eins elf ende er erde es essen fahren fall falsch farbe fast feld fein fenster fest feuer film finden fisch flasche frage frau frei freund froh fuss gabel garten gast geben gehen geld gerne gern glas glück gras gross gut haben hals hand haus heft heiss helfen heute hier hilfe himmel hof holz hose hund idee ihr im immer in ist ja jahr jede jetzt jung kaffee kalt karte kasse katze kind klar klasse klein kopf korb kurz lampe land lang laut leben leer lehre leicht lernen lesen licht lied links liste los luft machen mal man mann markt mehr mein milch mit morgen müde mund nach nacht nah name nase nein neu nicht noch nun nur ob oder ofen ohne papier pause pflanze platz post preis quelle rad rasen rat recht regen reise rot ruhe rund sack sagen salz satz schnell schule see sehen sehr sein seite selbst sie sind so sofort sonne spass spiel stadt stein stift strasse stuhl tag tal tasche tee teil tisch tor treppe tun tür uhr und uns unten velo viel vier vogel voll vom von vor wagen wald wand war wasser weg weil weit welt wenig wenn wer wetter wie wind wir wo woche wort zahl zeit zug zum zur zwei äste äpfel öl ölen ärger übung über füllen gärtner höhe löffel schön").split(" ");
+  const SENT = [
+    "Am Morgen fahren wir mit dem Velo zur Schule.",
+    "Die Lernenden arbeiten heute im Garten und am Laptop.",
+    "Speichere deine Dateien immer im OneDrive.",
+    "Nach der Pause lesen wir den Text gemeinsam.",
+    "Das Wetter ist schön, also arbeiten wir draussen.",
+    "Bitte schicke mir die Datei bis Freitag als PDF.",
+    "Im Lehrbetrieb lerne ich jeden Tag etwas Neues.",
+    "Der Zug fährt um acht Uhr vom Bahnhof ab.",
+    "Mit dem Zehnfingersystem schreibst du schneller und mit weniger Fehlern.",
+    "Ein gutes Passwort ist lang und leicht zu merken.",
+    "Wir treffen uns am Mittwoch um zehn Uhr im Schulzimmer.",
+    "Die Pflanzen brauchen genug Wasser und Licht.",
+    "Kannst du mir bitte kurz helfen?",
+    "In Teams findest du alle Unterlagen der Klasse.",
+    "Zuerst denken, dann tippen und am Schluss kontrollieren."
+  ];
+
+  /* ---------- Lektionen ---------- */
+  const L = [
+    { t:"Grundreihe links", c:"asdf", tgt:50 },
+    { t:"Grundreihe rechts", c:"jklö", tgt:50 },
+    { t:"Ganze Grundreihe + G H", c:"gh", tgt:60 },
+    { t:"Neu: E und I", c:"ei", tgt:70 },
+    { t:"Neu: R und U", c:"ru", tgt:70 },
+    { t:"Neu: T und Z", c:"tz", tgt:80 },
+    { t:"Neu: W und O", c:"wo", tgt:80 },
+    { t:"Neu: Q, P und Ü", c:"qpü", tgt:80 },
+    { t:"Neu: Ä", c:"ä", tgt:90 },
+    { t:"Neu: C, N, M und Komma", c:"cnm,", tgt:90 },
+    { t:"Neu: V, B und Punkt", c:"vb.", tgt:100 },
+    { t:"Neu: Y, X und Bindestrich", c:"yx-", tgt:100 },
+    { t:"Grossbuchstaben (Shift)", c:"SHIFT", tgt:100 },
+    { t:"Zahlen", c:"1234567890", tgt:90 },
+    { t:"Häufige Wörter", c:"WORDS", tgt:120 },
+    { t:"Ganze Sätze", c:"SENT", tgt:130 }
+  ];
+  const allowedUpTo = i => { let s = " "; for(let j = 0; j <= Math.min(i, 11); j++) s += L[j].c; return s; };
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  function genText(i){
+    const len = i < 3 ? 110 : 160;
+    if(L[i].c === "SENT") return shuffle(SENT).slice(0, 3).join(" ");
+    if(L[i].c === "WORDS") return shuffle(WORDS).slice(0, 26).join(" ");
+    if(L[i].c === "SHIFT"){ const w = shuffle(WORDS.filter(x => !/^[äöü]/.test(x))).slice(0, 16); return w.map((x, k) => k % 2 ? x : x[0].toUpperCase() + x.slice(1)).join(" ") + "."; }
+    if(L[i].c === "1234567890"){ let o = []; while(o.join(" ").length < len){ const r = Math.random(); o.push(r < .4 ? String(Math.floor(Math.random() * 90 + 10)) : r < .7 ? pick(WORDS.filter(x => x.length < 6)) : String(Math.floor(Math.random() * 9000 + 1000))); } return o.join(" "); }
+    const allow = allowedUpTo(i), neu = L[i].c.replace(/[^a-zäöü,.\-]/g, "");
+    const ok = WORDS.filter(w => [...w].every(ch => allow.includes(ch)));
+    const withNew = ok.filter(w => [...neu].some(ch => w.includes(ch)));
+    const pool = allow.replace(/ /g, "").split("");
+    const out = [];
+    const HOME = ["asdf","fdsa","fjfj","jfjf","dkdk","kdkd","slsl","lsls","aöaö","jklö","ölkj","asdf jklö","fdsa ölkj","sad","las","als"].filter(w => [...w].every(ch => allow.includes(ch)));
+    const drill = () => { if(i < 3 && HOME.length && Math.random() < .5) return pick(HOME); const a = pick(neu.split("")), b = pick(pool); return pick([a + a + a, a + b + a, b + a + b + a, a + a + b + b]); };
+    while(out.join(" ").length < len){
+      const r = Math.random();
+      if(withNew.length >= 3 && r < .55) out.push(pick(withNew));
+      else if(ok.length >= 6 && r < .8) out.push(pick(ok));
+      else out.push(drill());
+    }
+    return out.join(" ").replace(/ ,/g, ",").replace(/^[,.\-]+/, "").trim();
+  }
+
+  /* ---------- Speicher ---------- */
+  const SK = "ito_tipp_v1";
+  let D = {}; try{ D = JSON.parse(store.get(SK) || "{}") || {}; }catch(e){}
+  D.stars = D.stars || {}; D.best = D.best || {}; D.tests = D.tests || [];
+  const save = () => store.set(SK, JSON.stringify(D));
+  const unlocked = i => i === 0 || (D.stars[i - 1] || 0) >= 2;
+
+  function menu(){
+    ["play","done"].forEach(x => $("#" + x).classList.add("hide")); $("#menu").classList.remove("hide");
+    const next = L.findIndex((_, i) => unlocked(i) && !(D.stars[i] >= 2));
+    $("#lessons").innerHTML = L.map((l, i) => { const s = D.stars[i] || 0, lk = !unlocked(i);
+      return '<button class="lbtn' + (lk ? " locked" : "") + (i === next ? " next" : "") + '" data-i="' + i + '"' + (lk ? " disabled" : "") + '><div class="no">' + (lk ? "🔒 " : "") + "Lektion " + (i + 1) + '</div><div class="ti">' + esc(l.t) + '</div><div class="stars">' + "⭐".repeat(s) + '<span style="opacity:.25">' + "⭐".repeat(3 - s) + "</span></div>" + (D.best[i] ? '<div class="small muted">Bestwert ' + D.best[i] + " A/Min</div>" : "") + "</button>"; }).join("");
+    const tot = Object.values(D.stars).reduce((a, b) => a + b, 0);
+    $("#totStars").textContent = "⭐ " + tot + " von " + L.length * 3 + " Sternen";
+    const bt = D.tests.length ? Math.max(...D.tests.map(t => t.apm)) : 0;
+    $("#bestTest").textContent = bt ? "Bester Tempotest: " + bt + " Anschläge pro Minute" : "";
+  }
+  $("#lessons").addEventListener("click", e => { const b = e.target.closest(".lbtn"); if(b && !b.disabled) start(+b.dataset.i); });
+  $("#speedBtn").onclick = () => start(-1);
+  $("#quit").onclick = () => { stop(); menu(); };
+
+  /* ---------- Tastatur zeichnen ---------- */
+  function drawKb(){
+    $("#kb").innerHTML = ROWS.map(r => '<div class="kr">' + r.map(k => { const lab = k[0] === "⇧L" || k[0] === "⇧R" ? "⇧" : k[0] === " " ? "" : k[0];
+      return '<div class="k f' + k[1] + " " + (k[2] || "") + (["a","s","d","f","j","k","l","ö"].includes(k[0]) ? " home" : "") + '" data-k="' + esc(k[0]) + '">' + esc(lab.length === 1 ? lab.toUpperCase() : lab) + "</div>"; }).join("") + "</div>").join("");
+  }
+
+  /* ---------- Spiel ---------- */
+  let G = null, tick = null;
+  function start(i){
+    $("#menu").classList.add("hide"); $("#done").classList.add("hide"); $("#play").classList.remove("hide");
+    const test = i < 0;
+    let text = test ? shuffle(SENT).join(" ") + " " + shuffle(SENT).join(" ") : genText(i);
+    G = { i, test, text, pos:0, err:0, errAt:{}, t0:0, end:false, limit: test ? 60 : 0 };
+    $("#pTitle").textContent = test ? "⏱️ Tempotest: 1 Minute" : "Lektion " + (i + 1) + ": " + L[i].t;
+    drawKb(); renderText(); hint(); upd();
+    clearInterval(tick); tick = setInterval(upd, 250);
+  }
+  function stop(){ clearInterval(tick); G = null; }
+
+  function renderText(){
+    const t = G.text; let h = "";
+    for(let k = 0; k < t.length; k++){
+      const ch = t[k], cls = k < G.pos ? (G.errAt[k] ? "ok had" : "ok") : k === G.pos ? "cur" : "";
+      h += '<span class="' + cls + (ch === " " ? " sp" : "") + '" id="c' + k + '">' + (ch === " " && k !== G.pos ? " " : ch === " " ? "" : esc(ch)) + "</span>";
+    }
+    $("#text").innerHTML = h;
+    scrollCur();
+  }
+  function scrollCur(){ const c = $("#c" + G.pos), box = $("#text"); if(c){ const top = c.offsetTop - box.offsetTop; box.scrollTop = Math.max(0, top - 50); } }
+  function setCls(k){ const el = $("#c" + k); if(!el) return; const ch = G.text[k];
+    el.className = (k < G.pos ? (G.errAt[k] ? "ok had" : "ok") : k === G.pos ? "cur" : "") + (ch === " " ? " sp" : "");
+    el.textContent = ch === " " ? (k === G.pos ? "" : " ") : ch; }
+
+  function hint(){
+    $$(".k.hit").forEach(k => k.classList.remove("hit"));
+    const ch = G.text[G.pos]; if(ch == null) return;
+    const kf = keyFor(ch); if(!kf){ $("#finger").textContent = ""; return; }
+    const key = KEY[kf.k]; const el = $('.k[data-k="' + CSS.escape(kf.k) + '"]'); if(el) el.classList.add("hit");
+    let txt = FNAME[key[1]];
+    if(kf.shift){ const sh = key[1] <= 3 ? "⇧R" : "⇧L"; const se = $('.k[data-k="' + sh + '"]'); if(se) se.classList.add("hit"); txt += " + Shift mit dem " + (key[1] <= 3 ? "rechten" : "linken") + " kleinen Finger"; }
+    $("#finger").textContent = (ch === " " ? "Leertaste: " : "«" + ch + "»: ") + txt;
+  }
+
+  function stats(){
+    const ms = G.t0 ? (G.end || Date.now()) - G.t0 : 0, min = ms / 60000;
+    const apm = (ms > 2000 || G.end) && min > 0 ? Math.round(G.pos / min) : 0;
+    const acc = G.pos + G.err ? Math.round(G.pos / (G.pos + G.err) * 1000) / 10 : 100;
+    return { ms, apm, acc };
+  }
+  function upd(){
+    if(!G) return; const s = stats();
+    let sec = Math.floor(s.ms / 1000);
+    if(G.test){ sec = Math.max(0, 60 - sec); if(G.t0 && sec === 0 && !G.end){ G.end = G.t0 + 60000; finish(); return; } }
+    $("#sTime").textContent = Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0");
+    $("#sApm").textContent = s.apm; $("#sAcc").textContent = s.acc;
+  }
+
+  document.addEventListener("keydown", e => {
+    if(!G || G.end || $("#play").classList.contains("hide")) return;
+    if(e.ctrlKey || e.metaKey || e.altKey) return;
+    if(e.key === "Escape"){ stop(); menu(); return; }
+    if(e.key.length !== 1) { if(e.key === "Backspace" || e.key === "Tab") e.preventDefault(); return; }
+    e.preventDefault();
+    if(!G.t0) G.t0 = Date.now();
+    const want = G.text[G.pos];
+    if(e.key === want){
+      G.pos++; setCls(G.pos - 1); setCls(G.pos); scrollCur(); hint();
+      if(G.pos >= G.text.length){ if(G.test){ G.text += " " + shuffle(SENT).join(" "); renderText(); hint(); } else { G.end = Date.now(); finish(); } }
+    } else {
+      G.err++; G.errAt[G.pos] = true;
+      const el = $("#c" + G.pos); if(el){ el.classList.remove("err"); void el.offsetWidth; el.classList.add("err"); }
+    }
+  });
+  $("#hideKb").onchange = e => { $("#kb").style.visibility = e.target.checked ? "hidden" : "visible"; $(".legend2").style.visibility = e.target.checked ? "hidden" : "visible"; };
+
+  function finish(){
+    clearInterval(tick); const s = stats(), g = G;
+    $("#play").classList.add("hide"); $("#done").classList.remove("hide");
+    let h = "";
+    if(g.test){
+      D.tests.push({ apm:s.apm, acc:s.acc, d:new Date().toISOString().slice(0, 10) }); D.tests = D.tests.slice(-20); save();
+      const best = Math.max(...D.tests.map(t => t.apm));
+      h = '<div style="font-size:3rem">⏱️</div><h1>Tempotest fertig!</h1><div class="nums"><div><b>' + s.apm + "</b>Anschläge/Min</div><div><b>" + s.acc + "%</b>Genauigkeit</div><div><b>" + best + "</b>Bestwert</div></div>" +
+        '<p class="muted">' + (s.acc < 95 ? "Tipp: Genauigkeit vor Tempo! Lieber etwas langsamer und sauber." : s.apm >= best ? "Neuer Bestwert! 🎉" : "Bleib dran, mit Übung wirst du jede Woche schneller.") + "</p>";
+    } else {
+      const l = L[g.i];
+      const st = s.acc >= 97 && s.apm >= l.tgt ? 3 : s.acc >= 95 ? 2 : 1;
+      const old = D.stars[g.i] || 0; D.stars[g.i] = Math.max(old, st); D.best[g.i] = Math.max(D.best[g.i] || 0, s.apm); save();
+      const unlockedNow = st >= 2 && old < 2 && g.i + 1 < L.length;
+      h = '<div class="st">' + "⭐".repeat(st) + '<span style="opacity:.2">' + "⭐".repeat(3 - st) + "</span></div><h1>" + (st === 3 ? "Perfekt!" : st === 2 ? "Gut gemacht!" : "Geschafft!") + '</h1><div class="nums"><div><b>' + s.apm + "</b>Anschläge/Min</div><div><b>" + s.acc + "%</b>Genauigkeit</div><div><b>" + g.err + "</b>Fehler</div></div>" +
+        '<p class="muted">' + (st === 1 ? "Für ⭐⭐ brauchst du mindestens 95% Genauigkeit. Langsamer und sauber tippen!" : st === 2 ? "Für ⭐⭐⭐: mindestens 97% Genauigkeit und " + l.tgt + " Anschläge pro Minute." : "Alle drei Sterne!") + "</p>" +
+        (unlockedNow ? '<div class="note note-green" style="display:inline-block"><b>🔓 Lektion ' + (g.i + 2) + " freigeschaltet!</b></div>" : "");
+    }
+    h += '<div class="row" style="justify-content:center;margin-top:16px;flex-wrap:wrap"><button class="btn btn-ghost" id="again">🔁 Nochmals</button>' + (!g.test && g.i + 1 < L.length && unlocked(g.i + 1) ? '<button class="btn btn-primary" id="nextL">Nächste Lektion →</button>' : "") + '<button class="btn btn-white" id="toMenu">Übersicht</button></div>';
+    $("#doneBox").innerHTML = h;
+    $("#again").onclick = () => start(g.i);
+    $("#toMenu").onclick = menu;
+    if($("#nextL")) $("#nextL").onclick = () => start(g.i + 1);
+    G = null;
+  }
+
+  menu();
+})();
+</script>
+</body>
+</html>

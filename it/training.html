@@ -5,29 +5,188 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>IT-Training – BBZ BL</title>
 <meta name="theme-color" content="#205C90">
+<link rel="manifest" href="manifest.json">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="assets/style.css">
+<style>
+  .mtile .bar{margin-top:10px}
+  .mtile .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .mhead{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+  .mhead .ico{font-size:2.6rem}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
+  .lesson{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+  .lesson>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;gap:12px;align-items:center;font-weight:700}
+  .lesson>summary::-webkit-details-marker{display:none}
+  .lesson .n{width:30px;height:30px;border-radius:50%;background:var(--blue-l);color:var(--blue);display:grid;place-items:center;flex:0 0 30px;font-size:.9rem}
+  .lesson.ok .n{background:var(--green);color:#fff}
+  .lesson .body{padding:0 18px 18px}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0}
+  .mini{background:var(--blue-ll);border:1px solid #D3E2EF;border-radius:12px;padding:12px}
+  .mini p{margin:4px 0 0;font-size:.93rem}
+  .mini.good{background:var(--green-l);border-color:#BFE3CD}
+  .mini.bad{background:var(--red-l);border-color:#F6C5BF}
+  kbd{background:#fff;border:1px solid #C9CED6;border-bottom-width:2px;border-radius:6px;padding:1px 6px;font-family:inherit;font-size:.85em;white-space:nowrap}
+  table.kt{border-collapse:collapse;width:100%;margin:8px 0}
+  table.kt td{border-bottom:1px solid var(--line);padding:8px 6px;vertical-align:top}
+  code{background:#F1F3F6;border-radius:6px;padding:1px 6px;font-size:.92em}
+  pre.tree{background:#F1F3F6;border-radius:12px;padding:12px;overflow:auto;font-size:.9rem}
+  .xl table{border-collapse:collapse;font-size:.9rem;margin:8px 0}
+  .xl td,.xl th{border:1px solid #D0D5DD;padding:5px 10px}
+  .xl th{background:#F1F3F6;font-weight:500;color:var(--ink-3)}
+  .xl td.hl{outline:2.5px solid var(--green);outline-offset:-2px}
+  .q{margin-bottom:18px}
+  .q .opt{display:flex;gap:10px;align-items:center;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;margin:6px 0;cursor:pointer;background:#fff}
+  .q .opt input{accent-color:var(--blue);width:18px;height:18px}
+  .q .opt.right{border-color:var(--green);background:var(--green-l)}
+  .q .opt.wrong{border-color:#E7897F;background:var(--red-l)}
+  .q .ex{font-size:.9rem;margin-top:6px;color:var(--ink-2)}
+  .crit{list-style:none;padding:0;margin:10px 0}
+  .crit li{padding:6px 0;display:flex;gap:8px}
+</style>
 </head>
 <body>
 <main class="wrap">
-  <div class="hero">
-    <h1>🎓 IT-Training</h1>
-    <p>Lerne die wichtigsten Werkzeuge für Schule und Beruf. Dein Fortschritt bleibt auf deinem Gerät gespeichert.</p>
-  </div>
-  <div class="note note-yellow"><b>🚧 Im Aufbau</b>Die Module werden gerade erstellt und erscheinen hier nach und nach.</div>
-  <div class="tiles">
-    <div class="tile soon"><span class="ico">💬</span><h3>Teams</h3><p>Kanäle, Chat, Dateien, Aufgaben abgeben</p></div>
-    <div class="tile soon"><span class="ico">📝</span><h3>Word</h3><p>Formatvorlagen, Listen, Tabellen, Inhaltsverzeichnis</p></div>
-    <div class="tile soon"><span class="ico">📊</span><h3>Excel</h3><p>Zellen, Formeln, Summe, Diagramm</p></div>
-    <div class="tile soon"><span class="ico">📓</span><h3>OneNote</h3><p>Klassennotizbuch und Lernjournal</p></div>
-    <div class="tile soon"><span class="ico">📽️</span><h3>PowerPoint</h3><p>Gute Folien und präsentieren</p></div>
-    <div class="tile soon"><span class="ico">☁️</span><h3>Daten speichern</h3><p>OneDrive oder Festplatte, Ordner, Dateinamen</p></div>
-    <div class="tile soon"><span class="ico">📄</span><h3>PDF erstellen</h3><p>Aus Word, PowerPoint und mit dem Handy</p></div>
-    <div class="tile soon"><span class="ico">⌨️</span><h3>Tipptrainer</h3><p>Das 10-Finger-System spielerisch üben</p></div>
-  </div>
+  <section id="hub">
+    <div class="hero">
+      <h1>🎓 IT-Training</h1>
+      <p>Lerne die wichtigsten Werkzeuge für Schule und Beruf, Schritt für Schritt. Jedes Modul: lesen, Quiz lösen, Praxis-Auftrag machen. Dein Fortschritt bleibt auf diesem Gerät gespeichert.</p>
+    </div>
+    <div class="tiles" id="tiles"></div>
+  </section>
+  <section id="mod" class="hide narrow" style="margin:0 auto"></section>
 </main>
 <script src="assets/common.js"></script>
-<script>ITO.header("training");</script>
+<script src="assets/training.js"></script>
+<script>
+(function(){
+  const { $, $$, esc, store, toast } = ITO;
+  const { MODULES } = ITO_TRAINING;
+  ITO.header("training");
+  const KEY = "ito_training_v1";
+  let P = {}; try{ P = JSON.parse(store.get(KEY) || "{}") || {}; }catch(e){ P = {}; }
+  const save = () => store.set(KEY, JSON.stringify(P));
+  const mp = id => (P[id] = P[id] || { read:{}, quiz:0, ex:false });
+
+  function status(m){
+    const p = mp(m.id), r = Object.keys(p.read).length, L = m.lessons.length;
+    const parts = 1 + 1 + (m.ex ? 1 : 0);
+    const doneParts = (r >= L ? 1 : 0) + (p.quiz >= 80 ? 1 : 0) + (m.ex && p.ex ? 1 : 0);
+    const pct = Math.round(((r / L) + (p.quiz >= 80 ? 1 : p.quiz / 100 * .5) + (m.ex ? (p.ex ? 1 : 0) : 0)) / parts * 100);
+    return { r, L, pct: Math.min(100, pct), done: doneParts === parts };
+  }
+
+  function hub(){
+    $("#hub").classList.remove("hide"); $("#mod").classList.add("hide");
+    $("#tiles").innerHTML = MODULES.map(m => { const s = status(m);
+      return '<a class="tile mtile" href="#' + m.id + '"><span class="ico">' + m.ico + "</span><h3>" + esc(m.title) + (s.done ? " ✅" : "") + "</h3><p>" + esc(m.sub) + '</p><div class="meta"><span class="chip grey">⏱ ca. ' + m.min + " Min.</span>" + (m.ex ? '<span class="chip">Praxis-Auftrag</span>' : "") + '</div><div class="pbar bar"><i style="width:' + s.pct + '%"></i></div></a>'; }).join("") +
+      '<a class="tile mtile" href="tipptrainer.html"><span class="ico">⌨️</span><h3>Tipptrainer</h3><p>Das 10-Finger-System spielerisch üben, Lektion für Lektion.</p><div class="meta"><span class="chip">Spiel</span><span class="chip grey">Laptop</span></div></a>';
+  }
+
+  function module(m){
+    $("#hub").classList.add("hide"); const M = $("#mod"); M.classList.remove("hide");
+    const p = mp(m.id), s = status(m);
+    let h = '<p><a href="#">← Alle Module</a></p><div class="mhead"><span class="ico">' + m.ico + "</span><div><h1 style=\"margin:0\">" + esc(m.title) + '</h1><span class="muted">' + esc(m.sub) + "</span></div></div>";
+    h += '<div class="chips" id="chips"><span class="chip ' + (s.r >= s.L ? "green" : "grey") + '">📖 Lernen ' + s.r + "/" + s.L + '</span><span class="chip ' + (p.quiz >= 80 ? "green" : "grey") + '">❓ Quiz ' + (p.quiz ? p.quiz + "%" : "offen") + "</span>" + (m.ex ? '<span class="chip ' + (p.ex ? "green" : "grey") + '">🛠️ Praxis ' + (p.ex ? "✓" : "offen") + "</span>" : "") + "</div>";
+    if(s.done) h += '<div class="note note-green"><b>🏆 Modul abgeschlossen!</b>Stark. Weiter mit dem nächsten Modul.</div>';
+    h += "<h2>📖 Lernen</h2>";
+    m.lessons.forEach((l, i) => { h += '<details class="lesson' + (p.read[i] ? " ok" : "") + '"' + (!p.read[i] && i === Object.keys(p.read).length ? " open" : "") + '><summary><span class="n">' + (p.read[i] ? "✓" : i + 1) + "</span>" + esc(l.t) + '</summary><div class="body">' + l.h + '<button class="btn btn-ghost btn-sm" data-read="' + i + '" style="margin-top:10px">' + (p.read[i] ? "✓ Verstanden" : "Verstanden ✓") + "</button></div></details>"; });
+    h += '<h2 style="margin-top:26px">❓ Quiz</h2><div class="card" id="quiz">' + m.quiz.map((q, i) => '<div class="q" data-q="' + i + '"><b>' + (i + 1) + ". " + esc(q.q) + "</b>" + q.o.map((o, j) => '<label class="opt"><input type="radio" name="q' + i + '" value="' + j + '"> ' + esc(o) + "</label>").join("") + '<div class="ex hide"></div></div>').join("") + '<button class="btn btn-primary btn-block" id="qgo">Auswerten</button><div id="qres" class="result"></div></div>';
+    if(m.ex) h += '<h2 style="margin-top:26px">🛠️ ' + esc(m.ex.title) + '</h2><div class="card">' + m.ex.h + '<label class="file-drop" style="margin-top:10px;display:block;border:2px dashed #9DBCD8;border-radius:12px;padding:18px;text-align:center;cursor:pointer;font-weight:500;color:var(--blue)">📎 Datei auswählen und prüfen<input id="exf" type="file" style="display:none" accept="' + ({docx:".docx",xlsx:".xlsx",pptx:".pptx",pdf:".pdf,application/pdf"}[m.ex.type]) + '"></label><ul class="crit" id="crit"></ul><div id="exres" class="result"></div></div>';
+    h += '<div class="navrow" style="display:flex;justify-content:space-between;margin-top:20px"><a class="btn btn-white" href="#">← Alle Module</a>' + (nextMod(m) ? '<a class="btn btn-primary" href="#' + nextMod(m).id + '">' + esc(nextMod(m).title) + " →</a>" : '<a class="btn btn-primary" href="tipptrainer.html">Tipptrainer →</a>') + "</div>";
+    M.innerHTML = h; window.scrollTo(0, 0);
+    $$("[data-read]", M).forEach(b => b.onclick = () => { p.read[b.dataset.read] = true; save(); const d = b.closest("details"); module(m); const nx = $$(".lesson", $("#mod"))[+b.dataset.read + 1]; if(nx){ nx.open = true; nx.scrollIntoView({behavior:"smooth", block:"start"}); } });
+    $("#qgo").onclick = () => {
+      let ok = 0, all = true;
+      m.quiz.forEach((q, i) => { const c = $('input[name="q' + i + '"]:checked'); if(!c) all = false; });
+      if(!all){ $("#qres").className = "result err"; $("#qres").textContent = "Bitte alle Fragen beantworten."; return; }
+      m.quiz.forEach((q, i) => {
+        const box = $('[data-q="' + i + '"]'), c = +$('input[name="q' + i + '"]:checked').value;
+        $$(".opt", box).forEach((o, j) => { o.classList.toggle("right", j === q.a); o.classList.toggle("wrong", j === c && c !== q.a); });
+        const ex = $(".ex", box); ex.classList.remove("hide"); ex.innerHTML = (c === q.a ? "✅ " : "❌ ") + esc(q.e);
+        if(c === q.a) ok++;
+      });
+      const pct = Math.round(ok / m.quiz.length * 100); p.quiz = Math.max(p.quiz, pct); save();
+      const qc = $$("#chips .chip")[1]; if(qc){ qc.className = "chip " + (p.quiz >= 80 ? "green" : "grey"); qc.textContent = "❓ Quiz " + p.quiz + "%"; }
+      $("#qres").className = "result " + (pct >= 80 ? "ok" : "err");
+      $("#qres").innerHTML = ok + " von " + m.quiz.length + " richtig (" + pct + "%). " + (pct >= 80 ? "Bestanden! 🎉" : "Ab 80% ist das Quiz bestanden. Lies die Erklärungen und versuche es nochmals.") + ' <button class="btn btn-white btn-sm" id="qagain">Nochmals</button>';
+      $("#qagain").onclick = () => module(m);
+    };
+    if(m.ex) $("#exf").onchange = e => checkFile(m, e.target.files[0]);
+  }
+  const nextMod = m => MODULES[MODULES.indexOf(m) + 1];
+
+  /* ---------- Dateiprüfung (nur im Browser) ---------- */
+  function loadScript(src){ return new Promise((ok, no) => { if($$('script[src="' + src + '"]').length) return ok(); const t = document.createElement("script"); t.src = src; t.onload = ok; t.onerror = () => no(new Error("Prüf-Werkzeug konnte nicht geladen werden. Internet prüfen.")); document.head.appendChild(t); }); }
+  const zipLib = () => loadScript("https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js");
+  const txt = (z, n) => z.file(n) ? z.file(n).async("string") : Promise.resolve("");
+
+  async function checkFile(m, f){
+    if(!f) return;
+    const crit = $("#crit"), res = $("#exres");
+    crit.innerHTML = ""; res.className = "result"; res.innerHTML = '<span class="spinner dark"></span> Wird geprüft …';
+    try{
+      const C = await ({ docx: cDocx, xlsx: cXlsx, pptx: cPptx, pdf: cPdf }[m.ex.type])(f);
+      crit.innerHTML = C.map(c => "<li>" + (c[1] ? "✅" : "⬜") + " <span>" + c[0] + "</span></li>").join("");
+      const ok = C.every(c => c[1]);
+      if(ok){ mp(m.id).ex = true; save(); res.className = "result ok"; res.innerHTML = "Alles erfüllt, Praxis-Auftrag bestanden! 🎉"; setTimeout(() => module(m), 1800); }
+      else { res.className = "result err"; res.textContent = "Noch nicht alles erfüllt. Ergänze die fehlenden Punkte, speichere und lade die Datei nochmals hoch."; }
+    }catch(e){ res.className = "result err"; res.textContent = e.message; }
+  }
+
+  async function openZip(f, ext){
+    if(!new RegExp("\\." + ext + "$", "i").test(f.name)) throw new Error("Bitte eine ." + ext + "-Datei hochladen.");
+    await zipLib();
+    try{ return await JSZip.loadAsync(await f.arrayBuffer()); }catch(e){ throw new Error("Die Datei konnte nicht gelesen werden. Ist sie beschädigt?"); }
+  }
+
+  async function cDocx(f){
+    const z = await openZip(f, "docx");
+    const doc = await txt(z, "word/document.xml"), sty = await txt(z, "word/styles.xml");
+    const names = {}; (sty.match(/<w:style\b[\s\S]*?<\/w:style>/g) || []).forEach(s => { const id = (s.match(/w:styleId="([^"]+)"/) || [])[1], nm = (s.match(/<w:name w:val="([^"]+)"/) || [])[1]; if(id) names[id] = (nm || id).toLowerCase(); });
+    const used = (doc.match(/<w:pStyle w:val="([^"]+)"/g) || []).map(x => names[x.match(/w:val="([^"]+)"/)[1]] || x.match(/w:val="([^"]+)"/)[1].toLowerCase());
+    const h1 = used.filter(n => n === "heading 1" || n === "überschrift 1").length;
+    const h2 = used.filter(n => n === "heading 2" || n === "überschrift 2").length;
+    const list = /<w:numPr>/.test(doc) || used.some(n => n.includes("list"));
+    const tbl = /<w:tbl>/.test(doc);
+    const toc = /TOC \\[a-z]/i.test(doc) || /Table of Contents/.test(doc) || used.some(n => n.startsWith("toc "));
+    return [["Haupttitel mit «Überschrift 1»", h1 >= 1], ["Mindestens 2 Untertitel mit «Überschrift 2» (" + h2 + " gefunden)", h2 >= 2], ["Aufzählung oder Nummerierung", list], ["Tabelle", tbl], ["Automatisches Inhaltsverzeichnis", toc]];
+  }
+
+  async function cXlsx(f){
+    const z = await openZip(f, "xlsx");
+    const sheets = Object.keys(z.files).filter(n => /^xl\/worksheets\/sheet\d+\.xml$/.test(n));
+    let F = [], rows = 0;
+    for(const s of sheets){ const x = await txt(z, s); F = F.concat((x.match(/<f[^>]*>([^<]*)<\/f>/g) || []).map(t => t.replace(/<[^>]+>/g, ""))); rows = Math.max(rows, (x.match(/<row\b/g) || []).length); }
+    const chart = Object.keys(z.files).some(n => /^xl\/charts\/chart/.test(n));
+    return [["Mindestens 5 Artikel (" + Math.max(0, rows - 1) + " Zeilen)", rows >= 6], ["Formel mit Multiplikation (Menge × Preis)", F.some(x => /\*/.test(x))], ["Gesamtsumme mit SUMME", F.some(x => /SUM\(/i.test(x))], ["Durchschnitt mit MITTELWERT", F.some(x => /AVERAGE\(/i.test(x))], ["Diagramm", chart]];
+  }
+
+  async function cPptx(f){
+    const z = await openZip(f, "pptx");
+    const slides = Object.keys(z.files).filter(n => /^ppt\/slides\/slide\d+\.xml$/.test(n));
+    let maxW = 0;
+    for(const s of slides){ const x = await txt(z, s); const w = (x.match(/<a:t>([^<]*)<\/a:t>/g) || []).map(t => t.replace(/<[^>]+>/g, "")).join(" ").split(/\s+/).filter(Boolean).length; maxW = Math.max(maxW, w); }
+    const img = Object.keys(z.files).some(n => /^ppt\/media\/.+\.(png|jpe?g|gif|bmp|svg|webp|tiff?)$/i.test(n));
+    let notes = false;
+    for(const n of Object.keys(z.files).filter(n => /^ppt\/notesSlides\/notesSlide\d+\.xml$/.test(n))){ const x = await txt(z, n); const t = (x.replace(/<a:fld\b[\s\S]*?<\/a:fld>/g, "").match(/<a:t>([^<]*)<\/a:t>/g) || []).map(t => t.replace(/<[^>]+>/g, "")).join(""); if(/[A-Za-zÄÖÜäöü]{3,}/.test(t)) notes = true; }
+    return [["Mindestens 5 Folien (" + slides.length + " gefunden)", slides.length >= 5], ["Mindestens ein Bild", img], ["Höchstens 40 Wörter pro Folie (max. " + maxW + ")", maxW <= 40 && slides.length > 0], ["Notizen auf mindestens einer Folie", notes]];
+  }
+
+  async function cPdf(f){
+    if(!/\.pdf$/i.test(f.name) && f.type !== "application/pdf") throw new Error("Bitte ein PDF hochladen.");
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const pdf = await pdfjsLib.getDocument({ data: await f.arrayBuffer() }).promise;
+    const info = ((await pdf.getMetadata().catch(() => ({}))).info) || {};
+    const who = ((info.Creator || "") + " " + (info.Producer || "")).toLowerCase();
+    return [["Ein gültiges PDF", true], ["Aus PowerPoint erstellt", /powerpoint/.test(who)], ["Mindestens 2 Seiten (" + pdf.numPages + " gefunden)", pdf.numPages >= 2]];
+  }
+
+  function route(){ const id = location.hash.slice(1); const m = MODULES.find(x => x.id === id); m ? module(m) : hub(); }
+  window.addEventListener("hashchange", route); route();
+})();
+</script>
 </body>
 </html>
