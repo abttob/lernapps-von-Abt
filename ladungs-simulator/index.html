@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🚚 Ladungs-Simulator · L63–65</title>
+<style>
+:root{--g:#98C723;--gd:#5f8a12;--ink:#1f2a22;--bg:#f4f7f0;--card:#fff;--red:#d32f2f;--yel:#ffcf33;--blue:#2b6a9a;--mut:#6b7a70}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--ink);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header a{color:#cfe8a0;text-decoration:none;font-size:14px}
+header h1{font-size:20px;margin:0;flex:1}
+.tabs{display:flex;gap:6px}
+.tabs button{border:0;border-radius:999px;padding:8px 14px;font-weight:700;background:#33443a;color:#fff;cursor:pointer;font-size:14px}
+.tabs button.on{background:var(--g);color:var(--ink)}
+main{display:grid;grid-template-columns:1fr;gap:12px;padding:12px;max-width:1400px;margin:auto}
+@media(min-width:980px){main{grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr)}}
+.card{background:var(--card);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:12px}
+#stage{position:relative;min-width:0}
+#cvwrap{position:relative;width:100%;overflow:hidden}
+canvas#cv{width:100%;max-width:100%;aspect-ratio:1200/624;height:auto;display:block;border-radius:12px;background:linear-gradient(#cfe9ff,#eaf6ff 60%,#d9e8cf 60%)}
+#hud{position:absolute;left:22px;top:20px;font-weight:800;font-size:clamp(18px,3vw,34px);color:var(--ink);text-shadow:0 1px 0 #fff;pointer-events:none}
+#hud small{display:block;font-size:.45em;font-weight:700;color:var(--mut)}
+#slow{position:absolute;left:50%;transform:translateX(-50%);top:14px;background:#fff8;border-radius:8px;padding:2px 8px;font-weight:700;color:var(--blue);font-size:14px;display:none}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.lab{font-weight:800;font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;margin-top:10px}
+.seg button,.chip{border:2px solid #d5dfcf;background:#fff;border-radius:12px;padding:9px 12px;font-size:15px;font-weight:700;cursor:pointer;min-height:44px;color:var(--ink)}
+.seg button.on,.chip.on{border-color:var(--gd);background:#e8f3d0}
+.seg button:disabled,.chip:disabled,input:disabled{opacity:.45;cursor:not-allowed}
+input[type=range]{width:100%;accent-color:var(--gd);height:30px}
+.val{font-weight:800;min-width:72px;text-align:right}
+.go{display:flex;gap:8px;margin-top:12px}
+.btn{flex:1;border:0;border-radius:14px;padding:14px;font-size:18px;font-weight:900;cursor:pointer;min-height:52px}
+.btn.play{background:var(--g);color:var(--ink)}
+.btn.reset{background:#e7ece4;color:var(--ink);flex:.5}
+#result{margin-top:10px;border-radius:14px;padding:12px;display:none}
+#result h3{margin:0 0 6px;font-size:20px}
+#result.ok{background:#e3f4d6;border:2px solid #7cb342}
+#result.bad{background:#fde7e7;border:2px solid #e57373}
+#result.warn{background:#fff4d6;border:2px solid #f0b400}
+.bars{margin:8px 0}
+.bar{height:22px;border-radius:6px;margin:4px 0;display:flex;align-items:center;padding:0 8px;font-size:13px;font-weight:800;color:#fff;white-space:nowrap;min-width:2px}
+.bar.push{background:#e05252}.bar.hold{background:#4f9a2c}.bar.wall{background:#5a6f86}
+.tip{font-size:14px;margin:4px 0}
+.mission{border-radius:14px;padding:10px 12px;margin:8px 0;cursor:pointer;border:2px solid transparent;background:#f7faf3;display:flex;gap:10px;align-items:center}
+.mission:hover{border-color:var(--g)}
+.mission .lv{font-size:22px}
+.mission b{display:block}
+.mission small{color:var(--mut)}
+.mission .st{margin-left:auto;font-size:22px}
+#mbar{display:none;background:#fff4d6;border:2px solid #f0b400;border-radius:12px;padding:8px 12px;margin-bottom:8px;font-size:15px}
+#mbar b{font-size:16px}
+.guess{display:flex;gap:6px;flex-wrap:wrap}
+.guess button{flex:1;border:2px dashed #c7d3bf;background:#fff;border-radius:12px;padding:8px;font-weight:800;cursor:pointer;font-size:14px;min-height:42px}
+.guess button.on{border-style:solid;border-color:var(--blue);background:#dcebf6}
+details{margin-top:10px;font-size:13px;color:#445}
+.hide{display:none!important}
+.stars{font-weight:900}
+body.beamer header h1{font-size:30px}
+body.beamer .seg button,body.beamer .chip{font-size:20px;padding:12px 16px}
+body.beamer .btn{font-size:24px}
+body.beamer #result h3{font-size:28px}
+body.beamer .tip{font-size:18px}
+#confetti{position:fixed;inset:0;pointer-events:none}
+</style>
+</head>
+<body>
+<header>
+  <a href="../">← Alle Apps</a>
+  <h1>🚚 Ladungs-Simulator <span style="font-weight:500;font-size:.7em">· L63–65</span></h1>
+  <div class="tabs"><button id="tFree" class="on">🧪 Experiment</button><button id="tMis">⭐ Missionen <span class="stars" id="starCount"></span></button></div>
+</header>
+<main>
+  <section class="card" id="stage">
+    <div id="mbar"></div>
+    <div id="cvwrap">
+      <canvas id="cv" width="1200" height="620"></canvas>
+      <div id="hud"></div>
+      <div id="slow"></div>
+    </div>
+    <div id="result"></div>
+  </section>
+  <section class="card" id="panel">
+    <div id="freePane">
+      <div class="lab">1 · Situation</div>
+      <div class="row seg" id="sEvent">
+        <button data-v="bremsen" class="on">🛑 Vollbremsung</button>
+        <button data-v="kurve">↪️ Scharfe Kurve</button>
+        <button data-v="crash">💥 Auffahrunfall</button>
+      </div>
+      <div class="lab">2 · Tempo</div>
+      <div class="row"><input type="range" id="speed" min="20" max="100" step="10" value="50"><span class="val" id="speedV">50 km/h</span></div>
+      <div class="lab">3 · Ladung</div>
+      <div class="row seg" id="sLoad"></div>
+      <div class="lab" id="gapLab">4 · Lücke zur Stirnwand</div>
+      <div class="row"><input type="range" id="gap" min="0" max="1.8" step="0.1" value="0.5"><span class="val" id="gapV">0.5 m</span></div>
+      <div class="lab">5 · Sicherung</div>
+      <div class="row">
+        <button class="chip" id="cMat">▒ Antirutschmatte</button>
+        <button class="chip" id="cWet">💧 Brücke nass</button>
+      </div>
+      <div class="row seg" id="sStraps"><span style="font-weight:700">Gurte:</span><button data-v="0" class="on">0</button><button data-v="1">1</button><button data-v="2">2</button></div>
+      <div class="row seg" id="sType"><button data-v="nieder" class="on">🪢 Niederzurren</button><button data-v="direkt">⛓️ Direktzurren</button></div>
+      <div class="row seg" id="sAngle"><button data-v="steil" class="on">◢ steil</button><button data-v="flach">◣ flach</button></div>
+      <div class="lab">🔮 Dein Tipp (freiwillig)</div>
+      <div class="guess" id="sGuess"><button data-v="haelt">💪 Hält</button><button data-v="rutscht">💨 Rutscht</button><button data-v="crash">💥 Kippt / Bruch</button></div>
+      <div class="go"><button class="btn play" id="play">▶ Los!</button><button class="btn reset" id="reset">↺</button></div>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-weight:700"><input type="checkbox" id="slowmo"> 🐢 Zeitlupe</label>
+      <details><summary>So rechnet der Simulator (vereinfacht)</summary>
+        <p>Vollbremsung ≈ 0.8 g · Kurve mit Radius 40 m: Querkraft wächst mit dem Tempo im Quadrat (doppelt so schnell = 4× so viel Kraft) · Auffahrunfall: Stopp auf 60 cm.</p>
+        <p>Reibung Holz/Metall 0.3, mit Antirutschmatte 0.6, nass 40 % weniger · Spanngurt 300 daN Vorspannung (Niederzurren drückt mit 2 × Vorspannung × sin Winkel) · Direktzurren: 1 Gurt hält ca. 1400 kg.</p>
+        <p>Stirnwand hält ca. 1500 kg, Bordwand ca. 800 kg. Kräfte werden in «kg» angezeigt. Grundlage: Ordner E3 S. 352–355. Die Werte sind Richtwerte für den Unterricht, keine Norm-Berechnung.</p>
+      </details>
+    </div>
+    <div id="misPane" class="hide">
+      <p style="margin:4px 0 8px">Löse die Missionen in deinem Niveau. Grau = fest eingestellt, das Bunte darfst du ändern.</p>
+      <div id="misList"></div>
+    </div>
+  </section>
+</main>
+<canvas id="confetti"></canvas>
+<script src="phys.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const P=new URLSearchParams(location.search);
+if(P.has("beamer"))document.body.classList.add("beamer");
+const L=LSIM;
+let cfg={event:"bremsen",speed:50,load:"palette",gap:0.5,mat:false,wet:false,straps:0,strapType:"nieder",angle:"steil"};
+let guess=null, mission=null, locks={};
+// ---------- Steuerung
+$("sLoad").innerHTML=Object.entries(L.LOADS).map(([k,v])=>`<button data-v="${k}" class="${k===cfg.load?"on":""}">${v.icon} ${v.name}</button>`).join("");
+function seg(id,key,num){$(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{if(b.disabled)return;cfg[key]=num?+b.dataset.v:b.dataset.v;sync();reset();});}
+seg("sEvent","event");seg("sLoad","load");seg("sStraps","straps",1);seg("sType","strapType");seg("sAngle","angle");
+$("sGuess").querySelectorAll("button").forEach(b=>b.onclick=()=>{guess=guess===b.dataset.v?null:b.dataset.v;sync();});
+$("speed").oninput=e=>{cfg.speed=+e.target.value;sync();reset();};
+$("gap").oninput=e=>{cfg.gap=+e.target.value;sync();reset();};
+$("cMat").onclick=()=>{if(locks.mat)return;cfg.mat=!cfg.mat;sync();reset();};
+$("cWet").onclick=()=>{if(locks.wet)return;cfg.wet=!cfg.wet;sync();reset();};
+function sync(){
+  const mark=(id,val)=>$(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",String(b.dataset.v)===String(val)));
+  mark("sEvent",cfg.event);mark("sLoad",cfg.load);mark("sStraps",cfg.straps);mark("sType",cfg.strapType);mark("sAngle",cfg.angle);mark("sGuess",guess);
+  $("speed").value=cfg.speed;$("speedV").textContent=cfg.speed+" km/h";
+  const s=L.setup(cfg);
+  $("gap").max=Math.floor(s.room*10)/10; if(cfg.gap>+$("gap").max)cfg.gap=+$("gap").max;
+  $("gap").value=cfg.gap;$("gapV").textContent=cfg.gap.toFixed(1)+" m";
+  $("gapLab").textContent=cfg.event==="kurve"?"4 · Lücke zur Bordwand (aussen)":"4 · Lücke zur Stirnwand";
+  $("cMat").classList.toggle("on",cfg.mat);$("cWet").classList.toggle("on",cfg.wet);
+  $("sType").classList.toggle("hide",cfg.straps===0);$("sAngle").classList.toggle("hide",cfg.straps===0||cfg.strapType!=="nieder");
+  // Sperren (Missionen)
+  const dis=(id,k)=>$(id).querySelectorAll("button").forEach(b=>b.disabled=!!locks[k]);
+  dis("sEvent","event");dis("sLoad","load");dis("sStraps","straps");dis("sType","strapType");dis("sAngle","angle");
+  $("speed").disabled=!!locks.speed;$("gap").disabled=!!locks.gap;$("cMat").disabled=!!locks.mat;$("cWet").disabled=!!locks.wet;
+}
+// ---------- Zeichnen
+const cv=$("cv"),ctx=cv.getContext("2d");
+let anim=null, res=null;
+function fit(){const w=$("cvwrap").clientWidth;const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(w*dpr);cv.height=Math.round(w*0.52*dpr);draw(stateAt(0));}
+window.addEventListener("resize",fit);
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function stateAt(tAnim){return {phase:"idle",x:0,v:L.kmh(cfg.speed),road:0,tip:0,brk:0,extra:0,shake:0,roll:0,obst:null};}
+
+function drawLoad(key,x,y,w,h,s){ // x,y = unten links in px; w,h px
+  const c=ctx;
+  if(key==="palette"){
+    c.fillStyle="#b07a45";c.fillRect(x,y-h*0.2,w,h*0.2);c.fillStyle="#8a5a2c";for(let i=0;i<3;i++)c.fillRect(x+i*(w-w*0.12)/2,y-h*0.2,w*0.12,h*0.2);
+    for(let i=0;i<4;i++){c.fillStyle=i%2?"#9aa3ab":"#b7bfc6";c.fillRect(x+2,y-h*0.2-(i+1)*h*0.2,w-4,h*0.2);}
+    c.strokeStyle="#555";c.lineWidth=1;c.strokeRect(x+2,y-h,w-4,h*0.8);
+  }else if(key==="topf"){
+    c.fillStyle="#7a4a2a";c.beginPath();c.moveTo(x+w*0.12,y);c.lineTo(x+w*0.88,y);c.lineTo(x+w,y-h*0.38);c.lineTo(x,y-h*0.38);c.closePath();c.fill();
+    c.fillStyle="#3f8f2f";c.beginPath();c.ellipse(x+w/2,y-h*0.66,w*0.62,h*0.32,0,0,7);c.fill();c.fillStyle="#56a83c";c.beginPath();c.ellipse(x+w*0.38,y-h*0.74,w*0.3,h*0.18,0,0,7);c.fill();
+  }else if(key==="ruettel"){
+    c.fillStyle="#f2b600";c.fillRect(x,y-h*0.32,w,h*0.32);c.fillStyle="#333";c.fillRect(x,y-h*0.06,w,h*0.06);
+    c.fillStyle="#555";c.fillRect(x+w*0.3,y-h*0.45,w*0.4,h*0.14);
+    c.strokeStyle="#333";c.lineWidth=Math.max(3,w*0.06);c.beginPath();c.moveTo(x+w*0.15,y-h*0.32);c.lineTo(x-w*0.05,y-h);c.lineTo(x+w*0.25,y-h);c.stroke();
+  }else{
+    c.fillStyle="#d32f2f";rr(x,y-h,w,h,w*0.12);c.fill();c.fillStyle="#a31d1d";c.fillRect(x+w*0.2,y-h-h*0.08,w*0.25,h*0.1);c.fillStyle="#fff";c.font=`${Math.max(9,h*0.18)}px system-ui`;c.textAlign="center";c.fillText("⛽",x+w/2,y-h*0.4);
+  }
+}
+function draw(st){
+  const W=cv.width,H=cv.height,c=ctx;c.clearRect(0,0,W,H);
+  const lateral=cfg.event==="kurve", ld=L.LOADS[cfg.load], B=L.BED;
+  // Hintergrund
+  c.fillStyle="#8fbf6a";c.fillRect(0,H*0.70,W,H*0.30);
+  c.fillStyle="#555b60";c.fillRect(0,H*0.78,W,H*0.12);
+  c.strokeStyle="#fff";c.lineWidth=H*0.012;c.setLineDash([W*0.06,W*0.05]);c.lineDashOffset=st.road;c.beginPath();c.moveTo(0,H*0.84);c.lineTo(W,H*0.84);c.stroke();c.setLineDash([]);
+  if(!lateral){
+    // Bäume im Hintergrund (Bewegung)
+    for(let i=0;i<6;i++){const tx=((i*W*0.23-st.road*0.6)%(W*1.38)+W*1.38)%(W*1.38)-W*0.1;c.fillStyle="#6b4a2b";c.fillRect(tx,H*0.52,W*0.012,H*0.18);c.fillStyle="#4c8a34";c.beginPath();c.arc(tx+W*0.006,H*0.5,W*0.035,0,7);c.fill();}
+  }
+  const ground=H*0.80;
+  c.save();
+  if(st.shake){c.translate((Math.random()-.5)*st.shake,(Math.random()-.5)*st.shake);}
+  if(!lateral){
+    const sc=Math.min(W*0.68/4.8,H*0.62/2.45), x0=(W-4.75*sc)/2, bedY=ground-0.95*sc, bedL=B.L*sc, wallX=x0+bedL;
+    // Hindernis (Auffahrunfall)
+    if(st.obst!=null){const ox=wallX+1.7*sc+st.obst*sc;c.fillStyle="#2b4c7e";rr(ox,ground-1.5*sc,1.6*sc,1.2*sc,12);c.fill();c.fillStyle="#9cc3f2";c.fillRect(ox+0.15*sc,ground-1.35*sc,0.5*sc,0.4*sc);c.fillStyle="#222";c.beginPath();c.arc(ox+0.35*sc,ground-0.25*sc,0.25*sc,0,7);c.arc(ox+1.25*sc,ground-0.25*sc,0.25*sc,0,7);c.fill();}
+    // Rahmen + Räder
+    c.fillStyle="#3a3f44";c.fillRect(x0,bedY,bedL+1.7*sc,0.18*sc);
+    for(const wx of [x0+0.7*sc,wallX+1.0*sc]){c.fillStyle="#222";c.beginPath();c.arc(wx,ground-0.35*sc,0.35*sc,0,7);c.fill();c.fillStyle="#999";c.beginPath();c.arc(wx,ground-0.35*sc,0.14*sc,0,7);c.fill();}
+    // Kabine
+    c.fillStyle="#7eb32a";rr(wallX+0.12*sc,ground-2.25*sc,1.6*sc,1.65*sc,0.25*sc);c.fill();
+    c.fillStyle="#bfe0f5";rr(wallX+0.95*sc,ground-2.1*sc,0.65*sc,0.65*sc,0.12*sc);c.fill();
+    c.fillStyle="#ffb000";c.fillRect(wallX+0.5*sc,ground-2.37*sc,0.3*sc,0.12*sc);
+    // Ladefläche
+    c.fillStyle="#9aa1a8";c.fillRect(x0,bedY-0.08*sc,bedL,0.08*sc);
+    // Stirnwand
+    c.save();
+    if(st.brk){c.translate(wallX,bedY);c.rotate(st.brk*0.5);c.translate(-wallX,-bedY);}
+    c.fillStyle=st.brk?"#c62828":"#4a5058";c.fillRect(wallX-0.06*sc,bedY-1.25*sc,0.08*sc,1.25*sc);
+    c.strokeStyle="#7d858e";c.lineWidth=2;for(let k=1;k<6;k++){c.beginPath();c.moveTo(wallX-0.06*sc,bedY-k*0.2*sc);c.lineTo(wallX+0.02*sc,bedY-k*0.2*sc);c.stroke();}
+    c.restore();
+    // Matte
+    const lw=ld.L*sc, lh=ld.H*sc;
+    const front=wallX-0.06*sc-(cfg.gap-st.x)*sc+st.extra*sc, lx=front-lw;
+    if(cfg.mat){c.fillStyle="#111";c.fillRect(lx-2-(st.x-0)*sc,bedY-0.1*sc,lw+4,0.03*sc+2);}
+    // Ladung (mit Kippen)
+    c.save();
+    if(st.tip){const px=st.tipBack?lx:front;c.translate(px,bedY-0.08*sc);c.rotate((st.tipBack?-1:1)*st.tip*Math.PI/2);c.translate(-px,-(bedY-0.08*sc));}
+    drawLoad(cfg.load,lx,bedY-0.08*sc,lw,lh);
+    c.restore();
+    // Gurte
+    drawStrapsSide(lx,lw,lh,bedY-0.08*sc,sc,x0,wallX,st);
+    // Bordwand (durchsichtig)
+    c.fillStyle="rgba(150,160,170,.28)";c.fillRect(x0,bedY-0.08*sc-B.wallH*sc,bedL-0.06*sc,B.wallH*sc);c.strokeStyle="rgba(90,100,110,.6)";c.lineWidth=2;c.strokeRect(x0,bedY-0.08*sc-B.wallH*sc,bedL-0.06*sc,B.wallH*sc);
+    // Fahrtrichtung
+    c.fillStyle="#1f2a22";c.font=`700 ${Math.round(H*0.04)}px system-ui`;c.textAlign="right";c.fillText("Fahrtrichtung ➜",W-W*0.03,H*0.08);
+  }else{
+    // Ansicht von hinten (Kurve)
+    const sc=Math.min(W*0.5/2.6,H*0.6/2.45), cx=W*0.5, bedY=ground-0.95*sc, half=B.W/2*sc;
+    c.translate(cx,ground);c.rotate(-st.roll);c.translate(-cx,-ground);
+    for(const wx of [cx-half+0.25*sc,cx+half-0.25*sc]){c.fillStyle="#222";rr(wx-0.2*sc,ground-0.7*sc,0.4*sc,0.7*sc,0.08*sc);c.fill();}
+    c.fillStyle="#3a3f44";c.fillRect(cx-half*0.8,bedY,half*1.6,0.2*sc);
+    c.fillStyle="#7eb32a";rr(cx-half*0.9,ground-2.25*sc,half*1.8,1.25*sc,0.2*sc);c.fill();c.fillStyle="#bfe0f5";c.fillRect(cx-half*0.7,ground-2.1*sc,half*1.4,0.45*sc);
+    c.fillStyle="#9aa1a8";c.fillRect(cx-half,bedY-0.08*sc,half*2,0.08*sc);
+    // Bordwände
+    c.fillStyle="#5d6670";c.fillRect(cx-half-0.06*sc,bedY-0.08*sc-B.wallH*sc,0.06*sc,B.wallH*sc);
+    c.save();const rwx=cx+half;if(st.brk){c.translate(rwx,bedY-0.08*sc);c.rotate(st.brk*1.4);c.translate(-rwx,-(bedY-0.08*sc));}
+    c.fillStyle=st.brk?"#c62828":"#5d6670";c.fillRect(rwx,bedY-0.08*sc-B.wallH*sc,0.06*sc,B.wallH*sc);c.restore();
+    c.fillStyle="#d32f2f";c.fillRect(cx-half,bedY+0.05*sc,0.25*sc,0.1*sc);c.fillRect(cx+half-0.25*sc,bedY+0.05*sc,0.25*sc,0.1*sc);
+    const lw=ld.W*sc, lh=ld.H*sc;
+    const right=cx+half-(cfg.gap-st.x)*sc+st.extra*sc, lx=right-lw;
+    if(cfg.mat){c.fillStyle="#111";c.fillRect(lx-st.x*sc-2,bedY-0.1*sc,lw+4,0.03*sc+2);}
+    c.save();
+    let dy=st.fall||0;
+    if(st.tip){c.translate(right,bedY-0.08*sc+dy);c.rotate(st.tip*Math.PI/2);c.translate(-right,-(bedY-0.08*sc));}
+    drawLoad(cfg.load==="palette"?"palette":cfg.load,lx,bedY-0.08*sc,lw,lh);
+    c.restore();
+    drawStrapsRear(lx,lw,lh,bedY-0.08*sc,sc,cx,half,st);
+    // Heckklappe durchsichtig
+    c.fillStyle="rgba(150,160,170,.28)";c.fillRect(cx-half,bedY-0.08*sc-B.wallH*sc,half*2,B.wallH*sc);
+    c.restore();c.save();
+    c.fillStyle="#1f2a22";c.font=`700 ${Math.round(H*0.04)}px system-ui`;c.textAlign="right";c.fillText("Ansicht von hinten · Linkskurve ↰",W-W*0.03,H*0.08);
+    c.font=`700 ${Math.round(H*0.035)}px system-ui`;c.fillStyle="#c62828";c.fillText(st.phase==="event"?"Fliehkraft ➜":"",W-W*0.03,H*0.14);
+  }
+  c.restore();
+}
+function drawStrapsSide(lx,lw,lh,by,sc,x0,wallX,st){
+  if(!cfg.straps)return;const c=ctx;
+  const broke=st.strapBroke;c.lineWidth=Math.max(3,sc*0.04);c.strokeStyle=broke?"rgba(211,47,47,.45)":"#d32f2f";if(broke)c.setLineDash([8,8]);
+  for(let i=0;i<cfg.straps;i++){
+    const off=(i+1)/(cfg.straps+1);
+    if(cfg.strapType==="nieder"){
+      const topY=by-lh*(cfg.load==="topf"?0.4:cfg.load==="ruettel"?0.32:1), px=lx+lw*off;
+      const spread=cfg.angle==="flach"?Math.max(lw*0.9,0.9*sc):lw*0.12;
+      const aL=Math.max(x0+4,lx-spread), aR=Math.min(wallX-0.1*sc,lx+lw+spread);
+      c.beginPath();c.moveTo(aL,by);c.lineTo(lx+2,topY);c.lineTo(lx+lw-2,topY);c.lineTo(aR,by);c.stroke();
+      c.fillStyle="#333";c.fillRect(aL-4,by-4,8,8);c.fillRect(aR-4,by-4,8,8);
+    }else{
+      const hy=by-lh*0.5;c.beginPath();c.moveTo(lx+lw,hy);c.lineTo(Math.min(wallX-0.1*sc,lx+lw+0.5*sc+i*6),by);c.moveTo(lx,hy);c.lineTo(Math.max(x0+4,lx-0.5*sc-i*6),by);c.stroke();
+    }
+  }
+  c.setLineDash([]);
+}
+function drawStrapsRear(lx,lw,lh,by,sc,cx,half,st){
+  if(!cfg.straps)return;const c=ctx;c.lineWidth=Math.max(3,sc*0.04);c.strokeStyle=st.strapBroke?"rgba(211,47,47,.45)":"#d32f2f";if(st.strapBroke)c.setLineDash([8,8]);
+  const topY=by-lh*(cfg.load==="topf"?0.4:cfg.load==="ruettel"?0.32:1);
+  if(cfg.strapType==="nieder"){const spread=cfg.angle==="flach"?Math.max(lw*0.8,0.6*sc):lw*0.1;const aL=Math.max(cx-half+4,lx-spread),aR=Math.min(cx+half-4,lx+lw+spread);
+    c.beginPath();c.moveTo(aL,by);c.lineTo(lx+2,topY);c.lineTo(lx+lw-2,topY);c.lineTo(aR,by);c.stroke();}
+  else{const hy=by-lh*0.5;c.beginPath();c.moveTo(lx+lw,hy);c.lineTo(Math.min(cx+half-4,lx+lw+0.4*sc),by);c.moveTo(lx,hy);c.lineTo(Math.max(cx-half+4,lx-0.4*sc),by);c.stroke();}
+  c.setLineDash([]);
+}
+// ---------- Ablauf
+function reset(){if(anim)cancelAnimationFrame(anim);anim=null;res=null;$("result").style.display="none";$("slow").style.display="none";hud(cfg.speed,"bereit");draw(stateAt(0));}
+function hud(v,txt){$("hud").innerHTML=`${Math.round(v)} km/h<small>${txt}</small>`;}
+function play(){
+  if(anim)cancelAnimationFrame(anim);
+  res=L.simulate(cfg);const s=res.s;
+  const pre=1.4; // Anfahrt in s
+  const evVis=cfg.event==="crash"?3.0:Math.max(1.6,res.T);
+  let rate=evVis/res.T; if($("slowmo").checked)rate*=2.5;
+  $("slow").style.display=rate>1.2?"block":"none";$("slow").textContent="🐢 Zeitlupe ×"+Math.round(rate);
+  const lastT=res.frames.length?res.frames[res.frames.length-1][0]:0;
+  const endDur=1.2; const t0=performance.now(); let road=0, prev=t0;
+  $("result").style.display="none";
+  function frame(now){
+    const el=(now-t0)/1000, dtw=(now-prev)/1000;prev=now;
+    let st=stateAt(0);
+    if(el<pre){ // Fahrt
+      st.phase="drive";road-=s.v*dtw*60;st.road=road;st.obst=cfg.event==="crash"?(1-el/pre)*3:null;hud(cfg.speed,cfg.event==="kurve"?"Kurve kommt …":"unterwegs …");draw(st);anim=requestAnimationFrame(frame);return;
+    }
+    const tsim=(el-pre)/rate;
+    const fr=pickFrame(tsim);
+    const vNow=cfg.event==="kurve"?s.v:Math.max(0,s.v-(cfg.event==="crash"?s.v/res.T:L.C.brakeA)*Math.min(tsim,res.T));
+    road-=vNow*dtw*60/rate;
+    st.phase="event";st.road=road;st.x=fr[1];st.strapBroke=res.strapBroke&&fr[1]>0.001;
+    st.obst=cfg.event==="crash"?0:null;
+    st.shake=cfg.event==="crash"&&tsim<res.T*1.3?Math.max(0,8-tsim/res.T*6):0;
+    st.roll=cfg.event==="kurve"&&tsim<res.T?Math.min(0.06,s.A/L.G*0.08):0;
+    hud(vNow*3.6,cfg.event==="bremsen"?"Vollbremsung!":cfg.event==="kurve"?"in der Kurve":"AUFPRALL!");
+    if(tsim>=lastT){
+      const te=(tsim-lastT)*rate; const k=Math.min(1,te/endDur);
+      const o=res.outcome;
+      if(o==="kippt"){st.tip=k;st.tipBack=res.vImp>0&&!s.lateral;}
+      if(o==="faellt"){st.tip=k;st.fall=k*k*0.9*cv.height*0.25;st.extra=k*0.4;}
+      if(o==="durch"){st.brk=k;st.extra=k*(s.lateral?0.6:0.7);if(s.lateral){st.tip=Math.max(0,k-0.4);st.fall=Math.max(0,k-0.4)*cv.height*0.3;}}
+      draw(st);
+      if(te<endDur+0.3){anim=requestAnimationFrame(frame);return;}
+      hud(cfg.event==="kurve"?cfg.speed:0,"fertig");showResult();anim=null;return;
+    }
+    draw(st);anim=requestAnimationFrame(frame);
+  }
+  anim=requestAnimationFrame(frame);
+}
+function pickFrame(t){const f=res.frames;if(!f.length)return [0,0,0];let lo=0,hi=f.length-1;if(t>=f[hi][0])return f[hi];while(hi-lo>1){const m=(lo+hi)>>1;if(f[m][0]<=t)lo=m;else hi=m;}return f[lo];}
+const kg=n=>Math.round(n/L.G).toLocaleString("de-CH");
+function showResult(){
+  const r=res,s=r.s,o=r.outcome,wall=s.lateral?"Bordwand":"Stirnwand";
+  let cls="bad",h="";
+  if(o==="haelt"){cls="ok";h=s.gap<=0.001&&r.fImp>0?`✅ Hält – dank der ${wall}!`:"✅ Hält! Die Ladung bleibt an ihrem Platz.";}
+  else if(o==="rutscht"){cls="warn";h=`💨 Rutscht ${Math.round(r.slid*100)} cm. Nicht sicher!`;}
+  else if(o==="knallt"){h=`💥 Rutscht ${r.slid.toFixed(1)} m und knallt mit ${Math.round(r.vImp*3.6)} km/h gegen die ${wall}.`;}
+  else if(o==="kippt"){h="🔄 Kippt um!";}
+  else if(o==="faellt"){h="😱 Fällt von der Ladefläche!";}
+  else if(o==="durch"){h=`💥 Die ${wall} bricht! Die Ladung drückt mit ${kg(r.fImp)} kg.`;}
+  const push=r.drive, hold=s.fric+s.direct, maxv=Math.max(push,hold+(s.gap<=0.001?s.wallCap:0),1);
+  let html=`<h3>${h}</h3>`;
+  if(guess){const ok=(guess==="haelt"&&o==="haelt")||(guess==="rutscht"&&(o==="rutscht"||o==="knallt"))||(guess==="crash"&&["kippt","faellt","durch"].includes(o));html+=`<div class="tip">${ok?"🎯 Dein Tipp war richtig!":"🤔 Dein Tipp war falsch."}</div>`;}
+  html+=`<div class="bars"><div class="bar push" style="width:${Math.max(8,push/maxv*100)}%">➜ Schiebt: ${kg(push)} kg</div>
+  <div class="bar hold" style="width:${Math.max(8,hold/maxv*100)}%">✋ Hält: Reibung${s.down?" (mit Gurtdruck)":""} ${kg(s.fric)} kg${s.direct?` + Gurte ${kg(s.direct)} kg`:""}</div>
+  ${s.gap<=0.001?`<div class="bar wall" style="width:${Math.max(8,s.wallCap/maxv*100)}%">🧱 ${wall} hält bis ${kg(s.wallCap)} kg</div>`:""}</div>`;
+  const lines=[];
+  if(r.hFall>0.02)lines.push(`Der Aufprall ist so stark wie ein Sturz aus <b>${r.hFall.toFixed(1)} m</b> Höhe.`);
+  if(r.brakeDist!=null)lines.push(`Bremsweg bei ${cfg.speed} km/h: <b>${Math.round(r.brakeDist)} m</b>.`);
+  if(cfg.event==="kurve")lines.push(`In der Kurve gilt: <b>doppelt so schnell = 4× so viel Kraft</b>.`);
+  if(r.strapBroke)lines.push("⚠️ Die Gurte haben nicht gereicht und sind gerissen.");
+  // Tipps
+  const tips=[];
+  if(!r.ok){
+    if(s.gap>0.001&&(o==="knallt"||o==="durch"||o==="kippt"))tips.push(`Ladung direkt an die ${wall} stellen (formschlüssig, keine Lücke).`);
+    if(!cfg.mat&&o!=="kippt")tips.push("Antirutschmatte drunter: doppelte Reibung.");
+    if(cfg.straps===0&&(o==="kippt"||o==="faellt"))tips.push("Hohe Teile mit einem Gurt sichern, sonst kippen sie.");
+    if(cfg.straps===1&&cfg.strapType==="nieder")tips.push("Immer 2 Gurte beim Niederzurren.");
+    if(cfg.straps&&cfg.strapType==="nieder"&&cfg.angle==="flach")tips.push("Gurt steil spannen: flach drückt er nur halb so stark.");
+    if(cfg.wet)tips.push("Nässe und Schmutz machen die Brücke rutschig.");
+    if(cfg.event==="kurve")tips.push("Langsamer in die Kurve fahren!");
+    if(cfg.event==="crash")tips.push("Bei einem Unfall wirken riesige Kräfte: formschlüssig laden, direkt zurren und vorsichtig fahren.");
+  }
+  html+=lines.map(l=>`<div class="tip">${l}</div>`).join("")+(tips.length?`<div class="tip"><b>💡 Tipps:</b> ${tips.join(" · ")}</div>`:"");
+  if(mission){const ok=mission.check(cfg,r);html+=`<div class="tip" style="font-size:17px;margin-top:6px"><b>${ok?"⭐ Mission erfüllt!":"Mission noch nicht erfüllt."}</b> ${ok?(mission.after||""):(mission.hint&&!r.ok?"":mission.hint||"")}</div>`;if(ok){star(mission.id);confetti();}}
+  const box=$("result");box.className=cls;box.innerHTML=html;box.style.display="block";
+}
+$("play").onclick=play;$("reset").onclick=()=>{reset();};
+// ---------- Missionen
+const MIS=[
+ {id:"B1",lv:"🟢",niv:"Basis",t:"Der Topf kippt!",g:"Bei der Vollbremsung soll der Topf stehen bleiben.",p:{event:"bremsen",speed:50,load:"topf",gap:0.6},lock:["event","speed","load"],check:(c,r)=>r.ok,after:"Formschlüssig oder mit Gurt: beides hilft!"},
+ {id:"B2",lv:"🟢",niv:"Basis",t:"Achtung Lücke!",g:"Ohne Gurte und ohne Matte: Wie bleibt die Palette sicher?",p:{event:"bremsen",speed:50,load:"palette",gap:1.0},lock:["event","speed","load","straps","mat"],check:(c,r)=>r.ok,after:"Genau: direkt an die Stirnwand!"},
+ {id:"B3",lv:"🟢",niv:"Basis",t:"Kurve mit Rüttelplatte",g:"Die Rüttelplatte darf in der Kurve nicht rutschen.",p:{event:"kurve",speed:50,load:"ruettel",gap:0.7},lock:["event","speed","load","gap"],check:(c,r)=>r.ok},
+ {id:"S1",lv:"🔵",niv:"Standard",t:"Wie schnell in die Kurve?",g:"Finde das höchste Tempo, bei dem die ungesicherte Palette nicht rutscht.",p:{event:"kurve",speed:80,load:"palette",gap:0.6},lock:["event","load","gap","mat","wet","straps"],check:(c,r)=>r.ok&&c.speed===30,hint:"Es geht noch schneller!",after:"Ab 40 km/h rutscht sie schon."},
+ {id:"S2",lv:"🔵",niv:"Standard",t:"Nasse Brücke",g:"Es regnet. 2 Gurte sind gespannt – trotzdem rutscht die Palette. Was fehlt?",p:{event:"bremsen",speed:80,load:"palette",gap:0.5,wet:true,straps:2},lock:["event","speed","load","gap","wet","straps","strapType"],check:(c,r)=>r.ok,after:"Die Antirutschmatte macht den Unterschied!"},
+ {id:"S3",lv:"🔵",niv:"Standard",t:"Steil oder flach?",g:"2 Gurte, keine Matte: Mach, dass die Palette hält.",p:{event:"bremsen",speed:50,load:"palette",gap:0.8,straps:2,angle:"flach"},lock:["event","speed","load","gap","mat","wet","straps","strapType"],check:(c,r)=>r.ok,after:"Steil drückt doppelt so stark wie flach."},
+ {id:"P1",lv:"⚫",niv:"Profi",t:"Kanister in der Kurve",g:"Der Kanister steht 1 m von der Bordwand weg. Er soll bei 50 km/h stehen bleiben.",p:{event:"kurve",speed:50,load:"kanister",gap:1.0},lock:["event","speed","load","gap"],check:(c,r)=>r.ok},
+ {id:"P2",lv:"⚫",niv:"Profi",t:"Mit nur 1 Gurt",g:"Nasse Brücke, 80 km/h, Vollbremsung. Schaffst du es mit nur 1 Gurt?",p:{event:"bremsen",speed:80,load:"palette",gap:0.3,wet:true},lock:["event","speed","load","gap","wet"],check:(c,r)=>r.ok&&c.straps===1,hint:"Mit genau 1 Gurt!",after:"Direktzurren ist laut Ordner die beste Methode."},
+ {id:"P3",lv:"⚫",niv:"Profi",t:"Auffahrunfall",g:"Bei 30 km/h soll die Stirnwand den Aufprall der Palette aushalten.",p:{event:"crash",speed:30,load:"palette",gap:0.5},lock:["event","speed","load"],check:(c,r)=>r.ok,after:"Probier jetzt 50 km/h: Dann hält nichts mehr. Darum: vorsichtig fahren!"}
+];
+function stars(){try{return JSON.parse(localStorage.getItem("ladesim_stars")||"[]")}catch(e){return[]}}
+function star(id){try{const s=stars();if(!s.includes(id)){s.push(id);localStorage.setItem("ladesim_stars",JSON.stringify(s));}}catch(e){}renderMis();}
+function renderMis(){const s=stars();$("starCount").textContent=`${s.length}/${MIS.length}`;
+  $("misList").innerHTML=MIS.map(m=>`<div class="mission" data-id="${m.id}"><span class="lv">${m.lv}</span><div><b>${m.id} · ${m.t}</b><small>${m.niv} · ${m.g}</small></div><span class="st">${s.includes(m.id)?"⭐":"☆"}</span></div>`).join("");
+  $("misList").querySelectorAll(".mission").forEach(d=>d.onclick=()=>startMission(d.dataset.id));}
+function startMission(id){
+  mission=MIS.find(m=>m.id===id);
+  cfg={event:"bremsen",speed:50,load:"palette",gap:0.5,mat:false,wet:false,straps:0,strapType:"nieder",angle:"steil",...mission.p};
+  locks={};mission.lock.forEach(k=>locks[k]=true);
+  $("mbar").style.display="block";$("mbar").innerHTML=`<b>${mission.lv} Mission ${mission.id}: ${mission.t}</b><br>${mission.g} <button class="chip" style="min-height:32px;padding:4px 10px;margin-left:6px" onclick="endMission()">✕ beenden</button>`;
+  showTab("free");guess=null;sync();reset();window.scrollTo({top:0,behavior:"smooth"});
+}
+function endMission(){mission=null;locks={};$("mbar").style.display="none";sync();reset();}
+function showTab(t){$("freePane").classList.toggle("hide",t!=="free");$("misPane").classList.toggle("hide",t!=="mis");$("tFree").classList.toggle("on",t==="free");$("tMis").classList.toggle("on",t==="mis");}
+$("tFree").onclick=()=>showTab("free");$("tMis").onclick=()=>showTab("mis");
+// ---------- Konfetti
+function confetti(){const c=$("confetti"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;const P=[...Array(120)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*200,v:2+Math.random()*4,r:4+Math.random()*5,col:["#98C723","#ffcf33","#2b6a9a","#d32f2f"][Math.random()*4|0]}));let n=0;
+  (function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=Math.sin((p.y+n)/30);x.fillStyle=p.col;x.fillRect(p.x,p.y,p.r,p.r);});if(n++<140)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height);})();}
+renderMis();sync();fit();reset();
+if(P.get("tab")==="mis")showTab("mis");
+</script>
+</body>
+</html>

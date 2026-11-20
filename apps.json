@@ -112,5 +112,11 @@
     "title": "Test-App",
     "description": "Kleines Quiz, um den automatischen Ablauf zu prüfen.",
     "added": "2026-11-02"
+  },
+  {
+    "slug": "ladungs-simulator",
+    "title": "🚚 Ladungs-Simulator (L63–65)",
+    "description": "Vollbremsung, Kurve, Auffahrunfall: Wie bewegt sich die Ladung bei verschiedenem Tempo? Mit Antirutschmatte, Gurten, Missionen in 3 Niveaus.",
+    "added": "2026-11-20"
   }
 ]
