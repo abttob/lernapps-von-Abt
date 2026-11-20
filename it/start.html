@@ -343,7 +343,7 @@
       let text = "";
       for(let p = 1; p <= Math.min(pdf.numPages, 5); p++){ const pg = await pdf.getPage(p); const c = await pg.getTextContent(); text += c.items.map(i => i.str).join(" ") + " "; }
       const flat = text.replace(/\s+/g, "").toUpperCase();
-      if(!/word|microsoft|office/.test(who)) throw new Error("Dieses PDF wurde nicht mit Word erstellt. Öffne Word, schreibe den Code hinein und speichere als PDF.");
+      if(!/microsoft|word/.test(who) || /libre|openoffice|google|pages/.test(who)) throw new Error("Dieses PDF wurde nicht mit Word erstellt. Öffne Word, schreibe den Code hinein und speichere als PDF.");
       if(!flat.includes(S.pcode)) throw new Error("Im PDF steht dein Code <b>" + esc(S.pcode) + "</b> nicht. Prüfe die Schreibweise.");
       submit(s, { code: S.pcode });
     }catch(e){ setRes(e.message, false); }
