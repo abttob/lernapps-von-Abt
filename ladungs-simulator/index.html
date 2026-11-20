@@ -100,7 +100,7 @@ body.beamer .tip{font-size:18px}
         <button class="chip" id="cMat">▒ Antirutschmatte</button>
         <button class="chip" id="cWet">💧 Brücke nass</button>
       </div>
-      <div class="row seg" id="sStraps"><span style="font-weight:700">Gurte:</span><button data-v="0" class="on">0</button><button data-v="1">1</button><button data-v="2">2</button></div>
+      <div class="row seg" id="sStraps"><span style="font-weight:700">Gurte:</span><button data-v="0" class="on">0</button><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button></div>
       <div class="row seg" id="sType"><button data-v="nieder" class="on">🪢 Niederzurren</button><button data-v="direkt">⛓️ Direktzurren</button></div>
       <div class="row seg" id="sAngle"><button data-v="steil" class="on">◢ steil</button><button data-v="flach">◣ flach</button></div>
       <div class="lab">🔮 Dein Tipp (freiwillig)</div>
@@ -108,7 +108,7 @@ body.beamer .tip{font-size:18px}
       <div class="go"><button class="btn play" id="play">▶ Los!</button><button class="btn reset" id="reset">↺</button></div>
       <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-weight:700"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="slowmo"> 🐢 Zeitlupe</label><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="snd" checked> 🔊 Ton</label></div>
       <details><summary>So rechnet der Simulator (vereinfacht)</summary>
-        <p>Vollbremsung ≈ 0.8 g · Kurve mit Radius 40 m: Querkraft wächst mit dem Tempo im Quadrat (doppelt so schnell = 4× so viel Kraft) · Auffahrunfall: Stopp auf 60 cm.</p>
+        <p>Vollbremsung ≈ 0.8 g · Kurve mit Radius 40 m: Querkraft wächst mit dem Tempo im Quadrat (doppelt so schnell = 4× so viel Kraft) · Auffahrunfall: Du fährst auf ein Auto auf, dein Lieferwagen stoppt auf ca. 2.5 m (Knautschzonen).</p>
         <p>Reibung Holz/Metall 0.3, mit Antirutschmatte 0.6, nass 40 % weniger · Spanngurt 300 daN Vorspannung (Niederzurren drückt mit 2 × Vorspannung × sin Winkel) · Direktzurren: 1 Gurt hält ca. 1400 kg.</p>
         <p>Stirnwand hält ca. 1500 kg, Bordwand ca. 800 kg. Kräfte werden in «kg» angezeigt. Grundlage: Ordner E3 S. 352–355. Die Werte sind Richtwerte für den Unterricht, keine Norm-Berechnung.</p>
       </details>
@@ -351,7 +351,7 @@ function play(){
     if(el<pre){ // Fahrt
       st.phase="drive";road+=s.v*dtw*60;st.road=road;st.obst=cfg.event==="crash"?(1-el/pre)*3:null;hud(cfg.speed,cfg.event==="kurve"?"Kurve kommt …":"unterwegs …");draw(st);anim=requestAnimationFrame(frame);return;
     }
-    const tsim=(el-pre)/rate;
+    const real=el-pre, slowDur=res.T*1.3*rate; const tsim=real<slowDur?real/rate:res.T*1.3+(real-slowDur);
     const fr=pickFrame(tsim);
     const vNow=cfg.event==="kurve"?s.v:Math.max(0,s.v-(cfg.event==="crash"?s.v/res.T:L.C.brakeA)*Math.min(tsim,res.T));
     road+=vNow*dtw*60/rate;
@@ -365,7 +365,7 @@ function play(){
     st.roll=cfg.event==="kurve"&&tsim<res.T?Math.min(0.06,s.A/L.G*0.08):0;
     hud(vNow*3.6,cfg.event==="bremsen"?"Vollbremsung!":cfg.event==="kurve"?"in der Kurve":"AUFPRALL!");
     if(tsim>=lastT){
-      const te=(tsim-lastT)*rate; const k=Math.min(1,te/endDur);
+      const te=tsim<=res.T*1.3?(tsim-lastT)*rate:(tsim-Math.max(lastT,res.T*1.3))+(lastT<res.T*1.3?(res.T*1.3-lastT)*rate:0); const k=Math.min(1,te/endDur);
       if(cfg.event==="crash")st.crumple=1;
       if(!firedEnd&&(res.outcome==="durch"||res.outcome==="faellt"||res.outcome==="kippt")){firedEnd=true;if(res.outcome==="durch"&&impT==null)boom(GEO.wallX,GEO.bedY-0.5*GEO.sc,1.2,"KRACH!");else if(res.outcome!=="durch")window._bt=setTimeout(()=>boom(GEO.wallX-(GEO.lateral?0:0.6*GEO.sc),GEO.ground-0.3*GEO.sc,0.5,res.outcome==="faellt"?"PATSCH!":"RUMS!"),endDur*700);}
       const o=res.outcome;
@@ -386,7 +386,8 @@ const kg=n=>Math.round(n/L.G).toLocaleString("de-CH");
 function showResult(){
   const r=res,s=r.s,o=r.outcome,wall=s.lateral?"Bordwand":"Stirnwand";
   let cls="bad",h="";
-  if(o==="haelt"){cls="ok";h=s.gap<=0.001&&r.fImp>0?`✅ Hält – dank der ${wall}!`:"✅ Hält! Die Ladung bleibt an ihrem Platz.";}
+  if(o==="haelt"&&cfg.event==="crash"){cls="ok";h="✅ Hält trotz Unfall! Gut gesichert.";}
+  else if(o==="haelt"){cls="ok";h=s.gap<=0.001&&r.fImp>0?`✅ Hält – dank der ${wall}!`:"✅ Hält! Die Ladung bleibt an ihrem Platz.";}
   else if(o==="rutscht"){cls="warn";h=`💨 Rutscht ${Math.round(r.slid*100)} cm. Nicht sicher!`;}
   else if(o==="knallt"){h=`💥 Rutscht ${r.slid.toFixed(1)} m und knallt mit ${Math.round(r.vImp*3.6)} km/h gegen die ${wall}.`;}
   else if(o==="kippt"){h="🔄 Kippt um!";}
@@ -413,7 +414,7 @@ function showResult(){
     if(cfg.straps&&cfg.strapType==="nieder"&&cfg.angle==="flach")tips.push("Gurt steil spannen: flach drückt er nur halb so stark.");
     if(cfg.wet)tips.push("Nässe und Schmutz machen die Brücke rutschig.");
     if(cfg.event==="kurve")tips.push("Langsamer in die Kurve fahren!");
-    if(cfg.event==="crash")tips.push("Bei einem Unfall wirken riesige Kräfte: formschlüssig laden, direkt zurren und vorsichtig fahren.");
+    if(cfg.event==="crash")tips.push(cfg.speed>=100?"Bei 100 km/h hält keine Sicherung mehr: langsamer fahren!":"Beim Unfall wirken riesige Kräfte: an die Stirnwand, Antirutschmatte und mehr Gurte direkt zurren (bis 4).");
   }
   html+=lines.map(l=>`<div class="tip">${l}</div>`).join("")+(tips.length?`<div class="tip"><b>💡 Tipps:</b> ${tips.join(" · ")}</div>`:"");
   if(mission){const ok=mission.check(cfg,r);html+=`<div class="tip" style="font-size:17px;margin-top:6px"><b>${ok?"⭐ Mission erfüllt!":"Mission noch nicht erfüllt."}</b> ${ok?(mission.after||""):(mission.hint&&!r.ok?"":mission.hint||"")}</div>`;if(ok){star(mission.id);confetti();}}
@@ -430,7 +431,7 @@ const MIS=[
  {id:"S3",lv:"🔵",niv:"Standard",t:"Steil oder flach?",g:"2 Gurte, keine Matte: Mach, dass die Palette hält.",p:{event:"bremsen",speed:50,load:"palette",gap:0.8,straps:2,angle:"flach"},lock:["event","speed","load","gap","mat","wet","straps","strapType"],check:(c,r)=>r.ok,after:"Steil drückt doppelt so stark wie flach."},
  {id:"P1",lv:"⚫",niv:"Profi",t:"Kanister in der Kurve",g:"Der Kanister steht 1 m von der Bordwand weg. Er soll bei 50 km/h stehen bleiben.",p:{event:"kurve",speed:50,load:"kanister",gap:1.0},lock:["event","speed","load","gap"],check:(c,r)=>r.ok},
  {id:"P2",lv:"⚫",niv:"Profi",t:"Mit nur 1 Gurt",g:"Nasse Brücke, 80 km/h, Vollbremsung. Schaffst du es mit nur 1 Gurt?",p:{event:"bremsen",speed:80,load:"palette",gap:0.3,wet:true},lock:["event","speed","load","gap","wet"],check:(c,r)=>r.ok&&c.straps===1,hint:"Mit genau 1 Gurt!",after:"Direktzurren ist laut Ordner die beste Methode."},
- {id:"P3",lv:"⚫",niv:"Profi",t:"Auffahrunfall",g:"Bei 30 km/h soll die Stirnwand den Aufprall der Palette aushalten.",p:{event:"crash",speed:30,load:"palette",gap:0.5},lock:["event","speed","load"],check:(c,r)=>r.ok,after:"Probier jetzt 50 km/h: Dann hält nichts mehr. Darum: vorsichtig fahren!"}
+ {id:"P3",lv:"⚫",niv:"Profi",t:"Auffahrunfall",g:"Du fährst mit 50 km/h auf ein Auto auf. Sichere die Palette so, dass sie hält.",p:{event:"crash",speed:50,load:"palette",gap:0.5},lock:["event","speed","load"],check:(c,r)=>r.ok,after:"Stark! Probier jetzt 80 und 100 km/h: Wie viele Gurte braucht es? Bei 100 km/h hält nichts mehr."}
 ];
 function stars(){try{return JSON.parse(localStorage.getItem("ladesim_stars")||"[]")}catch(e){return[]}}
 function star(id){try{const s=stars();if(!s.includes(id)){s.push(id);localStorage.setItem("ladesim_stars",JSON.stringify(s));}}catch(e){}renderMis();}

@@ -10,7 +10,7 @@
     curveR: 40,        // scharfe Kurve, Radius 40 m
     curveMax: 7.8,     // mehr Querbeschleunigung schafft das Fahrzeug nicht (schleudert)
     curveTime: 2.2,    // Dauer der Kurvenfahrt (s)
-    crashS: 0.6,       // Knautschzone beim Auffahrunfall (m)
+    crashS: 2.5,       // Auffahrunfall auf ein Auto vor dir: Knautschzonen + Wegschieben (m)
     stf: 3000,         // Vorspannkraft Spanngurt 300 daN (Niederzurren)
     direct: 13700,     // Direktzurren: 1 Gurt hält ca. 1400 kg in Fahrtrichtung
     wallFront: 1500 * G, // Stirnwand hält ca. 1500 kg
@@ -105,6 +105,7 @@
         }
       }
       res.frames.push([t, x, 0]);
+      if (!sliding && t > T + 0.05) break;   // Ereignis vorbei, nichts bewegt sich mehr
       t += dt;
     }
     res.slid = x;
