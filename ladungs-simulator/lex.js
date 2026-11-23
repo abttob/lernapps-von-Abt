@@ -87,8 +87,22 @@
       m: "Grün muss länger sein als Rot, sonst rutscht es." }
   ];
   window.LEX = CARDS;
-  window.renderLex = function (el) {
-    el.innerHTML = `<p class="lexintro">Tippe im Experiment auf <b>ⓘ</b>, dann kommst du direkt zur passenden Erklärung.</p><div class="lexgrid">` +
-      CARDS.map(c => `<article class="lexcard" id="lex-${c.id}"><h3>${c.t}</h3><div class="lexpic">${c.img}</div><p>${c.d}</p><div class="merke">💡 <b>Merke:</b> ${c.m}</div></article>`).join("") + `</div>`;
+  const cardHTML = c => `<article class="lexcard"><h3>${c.t}</h3><div class="lexpic">${c.img}</div><p>${c.d}</p><div class="merke">💡 <b>Merke:</b> ${c.m}</div></article>`;
+  window.lexCard = id => cardHTML(CARDS.find(c => c.id === id) || CARDS[0]);
+  let cur = 0;
+  window.renderLex = function (el, id) {
+    if (id) cur = Math.max(0, CARDS.findIndex(c => c.id === id));
+    const c = CARDS[cur];
+    el.innerHTML = `<div class="lexnav">${CARDS.map((x, i) => `<button class="lexchip${i === cur ? " on" : ""}" data-i="${i}">${x.t}</button>`).join("")}</div>
+      <div class="lexone">
+        <button class="lexarrow" id="lexPrev" ${cur === 0 ? "disabled" : ""} aria-label="vorherige">◀</button>
+        ${cardHTML(c)}
+        <button class="lexarrow" id="lexNext" ${cur === CARDS.length - 1 ? "disabled" : ""} aria-label="nächste">▶</button>
+      </div>
+      <div class="lexfoot"><span>${cur + 1} / ${CARDS.length} · Pfeiltasten ◀ ▶ zum Blättern</span><button class="backbtn" onclick="showTab('free')">← zurück zum Experiment <kbd>Esc</kbd></button></div>`;
+    el.querySelectorAll(".lexchip").forEach(b => b.onclick = () => { cur = +b.dataset.i; window.renderLex(el); });
+    const p = el.querySelector("#lexPrev"), n = el.querySelector("#lexNext");
+    p.onclick = () => window.lexStep(el, -1); n.onclick = () => window.lexStep(el, 1);
   };
+  window.lexStep = function (el, d) { cur = Math.min(CARDS.length - 1, Math.max(0, cur + d)); window.renderLex(el); };
 })();
