@@ -63,13 +63,26 @@ body.beamer .btn{font-size:24px}
 body.beamer #result h3{font-size:28px}
 body.beamer .tip{font-size:18px}
 #confetti{position:fixed;inset:0;pointer-events:none}
+.info{border:0;background:#dcebf6;color:#2b6a9a;border-radius:999px;width:28px;height:28px;font-size:15px;font-weight:900;cursor:pointer;margin-left:4px;vertical-align:middle;text-transform:none}
+.seg .info{min-height:28px;padding:0;border:0}
+#lexPane{max-width:1400px;margin:auto;padding:12px}
+.lexintro{margin:4px 4px 10px;font-size:15px}
+.lexgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.lexcard{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:12px 14px;scroll-margin-top:12px}
+.lexcard h3{margin:2px 0 8px;font-size:20px}
+.lexpic{background:linear-gradient(#e9f5ff,#f6fbff);border-radius:12px;padding:4px}
+.lexpic svg{width:100%;height:auto;display:block}
+.lexcard p{font-size:16px;line-height:1.45;margin:10px 0}
+.merke{background:#fff4d6;border-left:5px solid #f0b400;border-radius:8px;padding:8px 10px;font-size:15px}
+.lexcard.flash{outline:4px solid #98C723;outline-offset:2px}
+body.beamer .lexcard p{font-size:20px}body.beamer .merke{font-size:18px}body.beamer .lexcard h3{font-size:26px}
 </style>
 </head>
 <body>
 <header>
   <a href="../">← Alle Apps</a>
   <h1>🚚 Ladungs-Simulator <span style="font-weight:500;font-size:.7em">· L63–65</span></h1>
-  <div class="tabs"><button id="tFree" class="on">🧪 Experiment</button><button id="tMis">⭐ Missionen <span class="stars" id="starCount"></span></button></div>
+  <div class="tabs"><button id="tFree" class="on">🧪 Experiment</button><button id="tMis">⭐ Missionen <span class="stars" id="starCount"></span></button><button id="tLex">📘 Erklärungen</button></div>
 </header>
 <main>
   <section class="card" id="stage">
@@ -83,26 +96,26 @@ body.beamer .tip{font-size:18px}
   </section>
   <section class="card" id="panel">
     <div id="freePane">
-      <div class="lab">1 · Situation</div>
+      <div class="lab">1 · Situation <button class="info" data-lex="vollbremsung" title="Erklärung">ⓘ</button><button class="info" data-lex="kurve" title="Erklärung">ⓘ</button><button class="info" data-lex="crash" title="Erklärung">ⓘ</button></div>
       <div class="row seg" id="sEvent">
         <button data-v="bremsen" class="on">🛑 Vollbremsung</button>
         <button data-v="kurve">↪️ Scharfe Kurve</button>
         <button data-v="crash">💥 Auffahrunfall</button>
       </div>
-      <div class="lab">2 · Tempo</div>
+      <div class="lab">2 · Tempo <button class="info" data-lex="tempo" title="Erklärung">ⓘ</button></div>
       <div class="row"><input type="range" id="speed" min="20" max="100" step="10" value="50"><span class="val" id="speedV">50 km/h</span></div>
       <div class="lab">3 · Ladung</div>
       <div class="row seg" id="sLoad"></div>
-      <div class="lab" id="gapLab">4 · Lücke zur Stirnwand</div>
+      <div class="lab"><span id="gapLab">4 · Lücke zur Stirnwand</span> <button class="info" data-lex="luecke" title="Erklärung">ⓘ</button><button class="info" data-lex="stirnwand" title="Erklärung">ⓘ</button><button class="info" data-lex="bordwand" title="Erklärung">ⓘ</button></div>
       <div class="row"><input type="range" id="gap" min="0" max="1.8" step="0.1" value="0.5"><span class="val" id="gapV">0.5 m</span></div>
-      <div class="lab">5 · Sicherung</div>
+      <div class="lab">5 · Sicherung <button class="info" data-lex="matte" title="Erklärung">ⓘ</button><button class="info" data-lex="nass" title="Erklärung">ⓘ</button><button class="info" data-lex="zurrpunkt" title="Erklärung">ⓘ</button></div>
       <div class="row">
         <button class="chip" id="cMat">▒ Antirutschmatte</button>
         <button class="chip" id="cWet">💧 Brücke nass</button>
       </div>
-      <div class="row seg" id="sStraps"><span style="font-weight:700">Gurte:</span><button data-v="0" class="on">0</button><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button></div>
+      <div class="row seg" id="sStraps"><span style="font-weight:700">Gurte:</span><button data-v="0" class="on">0</button><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button class="info" data-lex="nieder" title="Erklärung">ⓘ</button><button class="info" data-lex="direkt" title="Erklärung">ⓘ</button></div>
       <div class="row seg" id="sType"><button data-v="nieder" class="on">🪢 Niederzurren</button><button data-v="direkt">⛓️ Direktzurren</button></div>
-      <div class="row seg" id="sAngle"><button data-v="steil" class="on">◢ steil</button><button data-v="flach">◣ flach</button></div>
+      <div class="row seg" id="sAngle"><button data-v="steil" class="on">◢ steil</button><button data-v="flach">◣ flach</button><button class="info" data-lex="winkel" title="Erklärung">ⓘ</button></div>
       <div class="lab">🔮 Dein Tipp (freiwillig)</div>
       <div class="guess" id="sGuess"><button data-v="haelt">💪 Hält</button><button data-v="rutscht">💨 Rutscht</button><button data-v="crash">💥 Kippt / Bruch</button></div>
       <div class="go"><button class="btn play" id="play">▶ Los!</button><button class="btn reset" id="reset">↺</button></div>
@@ -119,8 +132,10 @@ body.beamer .tip{font-size:18px}
     </div>
   </section>
 </main>
+<section id="lexPane" class="hide"></section>
 <canvas id="confetti"></canvas>
 <script src="phys.js"></script>
+<script src="lex.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const P=new URLSearchParams(location.search);
@@ -130,7 +145,7 @@ let cfg={event:"bremsen",speed:50,load:"palette",gap:0.5,mat:false,wet:false,str
 let guess=null, mission=null, locks={};
 // ---------- Steuerung
 $("sLoad").innerHTML=Object.entries(L.LOADS).map(([k,v])=>`<button data-v="${k}" class="${k===cfg.load?"on":""}">${v.icon} ${v.name}</button>`).join("");
-function seg(id,key,num){$(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{if(b.disabled)return;cfg[key]=num?+b.dataset.v:b.dataset.v;sync();reset();});}
+function seg(id,key,num){$(id).querySelectorAll("button[data-v]").forEach(b=>b.onclick=()=>{if(b.disabled)return;cfg[key]=num?+b.dataset.v:b.dataset.v;sync();reset();});}
 seg("sEvent","event");seg("sLoad","load");seg("sStraps","straps",1);seg("sType","strapType");seg("sAngle","angle");
 $("sGuess").querySelectorAll("button").forEach(b=>b.onclick=()=>{guess=guess===b.dataset.v?null:b.dataset.v;sync();});
 $("speed").oninput=e=>{cfg.speed=+e.target.value;sync();reset();};
@@ -138,7 +153,7 @@ $("gap").oninput=e=>{cfg.gap=+e.target.value;sync();reset();};
 $("cMat").onclick=()=>{if(locks.mat)return;cfg.mat=!cfg.mat;sync();reset();};
 $("cWet").onclick=()=>{if(locks.wet)return;cfg.wet=!cfg.wet;sync();reset();};
 function sync(){
-  const mark=(id,val)=>$(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",String(b.dataset.v)===String(val)));
+  const mark=(id,val)=>$(id).querySelectorAll("button[data-v]").forEach(b=>b.classList.toggle("on",String(b.dataset.v)===String(val)));
   mark("sEvent",cfg.event);mark("sLoad",cfg.load);mark("sStraps",cfg.straps);mark("sType",cfg.strapType);mark("sAngle",cfg.angle);mark("sGuess",guess);
   $("speed").value=cfg.speed;$("speedV").textContent=cfg.speed+" km/h";
   const s=L.setup(cfg);
@@ -148,7 +163,7 @@ function sync(){
   $("cMat").classList.toggle("on",cfg.mat);$("cWet").classList.toggle("on",cfg.wet);
   $("sType").classList.toggle("hide",cfg.straps===0);$("sAngle").classList.toggle("hide",cfg.straps===0||cfg.strapType!=="nieder");
   // Sperren (Missionen)
-  const dis=(id,k)=>$(id).querySelectorAll("button").forEach(b=>b.disabled=!!locks[k]);
+  const dis=(id,k)=>$(id).querySelectorAll("button[data-v]").forEach(b=>b.disabled=!!locks[k]);
   dis("sEvent","event");dis("sLoad","load");dis("sStraps","straps");dis("sType","strapType");dis("sAngle","angle");
   $("speed").disabled=!!locks.speed;$("gap").disabled=!!locks.gap;$("cMat").disabled=!!locks.mat;$("cWet").disabled=!!locks.wet;
 }
@@ -446,13 +461,18 @@ function startMission(id){
   showTab("free");guess=null;sync();reset();window.scrollTo({top:0,behavior:"smooth"});
 }
 function endMission(){mission=null;locks={};$("mbar").style.display="none";sync();reset();}
-function showTab(t){$("freePane").classList.toggle("hide",t!=="free");$("misPane").classList.toggle("hide",t!=="mis");$("tFree").classList.toggle("on",t==="free");$("tMis").classList.toggle("on",t==="mis");}
-$("tFree").onclick=()=>showTab("free");$("tMis").onclick=()=>showTab("mis");
+function showTab(t){$("freePane").classList.toggle("hide",t!=="free");$("misPane").classList.toggle("hide",t!=="mis");$("tFree").classList.toggle("on",t==="free");$("tMis").classList.toggle("on",t==="mis");$("tLex").classList.toggle("on",t==="lex");
+  document.querySelector("main").classList.toggle("hide",t==="lex");$("lexPane").classList.toggle("hide",t!=="lex");}
+function lex(id){showTab("lex");const el=$("lex-"+id);if(el){el.scrollIntoView({behavior:"smooth",block:"start"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),2200);}}
+document.querySelectorAll(".info").forEach(b=>b.onclick=e=>{e.stopPropagation();lex(b.dataset.lex);});
+renderLex($("lexPane"));
+$("tFree").onclick=()=>showTab("free");$("tMis").onclick=()=>showTab("mis");$("tLex").onclick=()=>{showTab("lex");window.scrollTo({top:0});};
 // ---------- Konfetti
 function confetti(){const c=$("confetti"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;const P=[...Array(120)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*200,v:2+Math.random()*4,r:4+Math.random()*5,col:["#98C723","#ffcf33","#2b6a9a","#d32f2f"][Math.random()*4|0]}));let n=0;
   (function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=Math.sin((p.y+n)/30);x.fillStyle=p.col;x.fillRect(p.x,p.y,p.r,p.r);});if(n++<140)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height);})();}
 renderMis();sync();fit();reset();
 if(P.get("tab")==="mis")showTab("mis");
+if(P.get("tab")==="lex")showTab("lex");
 </script>
 </body>
 </html>
