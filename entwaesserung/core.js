@@ -49,7 +49,7 @@ const Sup={
  demo:false,sb:null,
  async init(){
   if(!window.supabase){await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';s.onload=ok;s.onerror=()=>no(new Error('Supabase konnte nicht geladen werden.'));document.head.appendChild(s)})}
-  Sup.sb=window.supabase.createClient(C.url,C.key,{auth:{persistSession:true,autoRefreshToken:true}});
+  Sup.sb=window.supabase.createClient(C.url,C.key,{auth:{persistSession:true,autoRefreshToken:true,lock:(n,t,fn)=>fn()}});
  },
  err(e){const m=(e&&e.message)||String(e);
   if(/Klassencode/i.test(m))return new Error('Klassencode falsch.');
@@ -93,9 +93,10 @@ const Sup={
 const B=DEMO?Local:Sup;
 const wrongClass=u=>KL&&u&&u.role!=='teacher'&&u.klasse!==KL;
 const LA={demo:DEMO,klasse:KL,esc,norm,$,store,resizeImage,uuid,user:null,prog:{},
- async init(){try{await B.init()}catch(e){LA.fatal=e;return null}try{LA.user=await B.session()}catch(e){LA.user=null}
+ async init(){const TO=(p,ms)=>Promise.race([p,new Promise((_,no)=>setTimeout(()=>no(new Error('Der Server antwortet nicht. Bitte Seite neu laden.')),ms))]);
+  try{await TO(B.init(),12000)}catch(e){LA.fatal=e;return null}try{LA.user=await TO(B.session(),8000)}catch(e){LA.user=null;LA.fatal=e}
   if(wrongClass(LA.user)){try{await B.signOut()}catch(e){}LA.user=null}
-  if(LA.user){try{LA.prog=await B.progressMine(LA.user.id)}catch(e){LA.prog={}}}return LA.user},
+  if(LA.user){try{LA.prog=await TO(B.progressMine(LA.user.id),8000)}catch(e){LA.prog={}}}return LA.user},
  /* Anmeldung erzwingen (Overlay) */
  requireLogin(){return new Promise(async res=>{
   await LA.init();if(LA.user)return res(LA.user);
