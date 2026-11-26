@@ -206,7 +206,9 @@ let S={niveau:2,ci:null,mods:{},co:[]};
 function load(){const p=LA.getProgress(SLUG);if(p&&p.data)S=Object.assign(S,p.data);}
 async function save(){const pct=Math.round(([S.ci?1:0,S.mods.sort?1:0,S.mods.quiz?1:0,S.co.length?1:0].reduce((a,b)=>a+b,0))/4*100);try{await LA.saveProgress(SLUG,Object.assign({pct},S));}catch(e){}}
 function openForStudents(){return nowMs()>=CHECKOUT_TS;}
-function checkoutOpen(){return openForStudents();} // gilt für alle, auch für die Lehrperson in der Schüleransicht
+const EARLY=["nicola","brosi"]; // darf früher gehen (26.11.): Checkout schon offen
+function earlyOk(){const n=((LA.user&&LA.user.name)||"").toLowerCase();return EARLY.some(e=>n.split(/[\s,]+/).includes(e));}
+function checkoutOpen(){return openForStudents()||earlyOk();} // gilt für alle, auch für die Lehrperson in der Schüleransicht
 function untilText(){let m=Math.max(0,Math.ceil((CHECKOUT_TS-nowMs())/60000));return m>=60?Math.floor(m/60)+" h "+(m%60)+" min":m+" min";}
 
 /* ================= HOME ================= */
