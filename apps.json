@@ -130,5 +130,11 @@
     "title": "Pflanzen-Arena – Gruppenwettkampf L35",
     "description": "Live-Teamspiel am Beamer: Verwendungsfälle, max. 4 Pflanzen nennen, Tempo- und Unikat-Punkte, Ereigniskarten, Joker und wachsender Garten.",
     "added": "2026-11-26"
+  },
+  {
+    "slug": "pflanzen-coach",
+    "title": "Pflanzen-Coach L35 – Prüfungstraining Pflanzenverwendung",
+    "description": "Kundenfälle, Auswählen, Fehler im Plan, Namen-Sprint, Steckbrief-Rätsel und Blitzrunde. Der Coach prüft jede Pflanze (botanisch und deutsch, Standort, Eigenschaften) und begründet sein Urteil. Mit Übersicht für die Lehrperson.",
+    "added": "2026-11-26"
   }
 ]

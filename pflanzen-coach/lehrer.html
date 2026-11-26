@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pflanzen-Coach · Übersicht Lehrperson</title>
+<link rel="stylesheet" href="../belagsaufbau/assets/app.css"><link rel="stylesheet" href="coach.css">
+<style>.wrap{max-width:1150px}table.pr{border-collapse:collapse;width:100%;font-size:.92rem;background:#fff}table.pr th,table.pr td{border:1px solid var(--line);padding:.45rem .5rem;text-align:center}
+table.pr th{background:#e8f6e2;position:sticky;top:0}table.pr td:first-child{text-align:left;font-weight:800}.sc{font-weight:800;border-radius:8px;padding:.1rem .4rem;display:inline-block;min-width:48px}
+.g0{background:#f1f1f1;color:#999}.g1{background:#fde0de}.g2{background:#fff0b8}.g3{background:#d6f5d3}.scroll{overflow:auto;max-height:65vh;border:3px solid var(--line);border-radius:14px}
+tr.det td{text-align:left;background:#fbfdf9;font-size:.88rem}.lg{list-style:none;padding:0;margin:.2rem 0}.lg li{border-bottom:1px solid var(--line);padding:.3rem 0}
+.tools{display:flex;gap:.6rem;flex-wrap:wrap}.tools .btn{width:auto;min-height:46px;font-size:.95rem;margin:0}</style></head><body>
+<div class="hero"><a href="./">← Pflanzen-Coach</a><div class="who" id="who"></div><h1>👩‍🏫 Pflanzen-Coach: Übersicht</h1><p>Training Pflanzenverwendung L35 · Fortschritt der Klasse</p></div>
+<div class="wrap" id="root"><div class="card">Lädt …</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="../belagsaufbau/assets/config.js"></script><script src="../belagsaufbau/assets/core.js"></script><script src="db.js"></script>
+<script>
+const $=s=>document.querySelector(s),esc=LA.esc,SLUG='pflanzen-coach';
+const cls=p=>p==null?'g0':p>=80?'g3':p>=60?'g2':'g1';
+const TN={fall:'🏡 Fälle',wahl:'🃏 Auswählen',falsch:'🔍 Fehler',name:'🔤 Namen',gruppe:'🗂️ Gruppe',steckbrief:'🕵️ Steckbrief',eigenschaft:'✅ Stimmt das?',blitz:'⚡ Blitz'};
+const DE={};window.PDB_RAW.trim().split('\n').forEach(l=>{const a=l.split('|');DE[a[0]]=a[1].split(';')[0]});
+const ago=t=>{if(!t)return'–';const d=(Date.now()-new Date(t))/864e5;return d<1?'heute':d<2?'gestern':Math.floor(d)+' Tage'};
+LA.requireLogin().then(async()=>{
+ LA.who($('#who'));const root=$('#root');
+ if(LA.user.role!=='teacher'){root.innerHTML=`<div class="card"><b>Nur für Lehrpersonen.</b><p>Melde dich mit dem Lehrerkonto an.</p><button class="btn" onclick="LA.logout()">Abmelden</button></div>`;return}
+ let profs,prog;try{[profs,prog]=await Promise.all([LA.profiles(),LA.allProgress()])}catch(e){root.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';return}
+ const stu=profs.filter(p=>p.role==='student'&&!p.klasse);const by={};prog.filter(r=>r.slug===SLUG).forEach(r=>by[r.user_id]=r);
+ const act=stu.filter(s=>by[s.id]);
+ /* Klasse gesamt */
+ const types={},weak={},unk={};act.forEach(s=>{const d=by[s.id].data||{};Object.entries(d.types||{}).forEach(([k,[a,b]])=>{types[k]=types[k]||[0,0];types[k][0]+=a;types[k][1]+=b});
+  Object.entries(d.weak||{}).forEach(([b,n])=>weak[b]=(weak[b]||0)+n);(d.unknown||[]).forEach(u=>{const k=u.t.trim().toLowerCase();unk[k]=unk[k]||{t:u.t,n:0,who:new Set()};unk[k].n++;unk[k].who.add(s.name)})});
+ const tp=k=>types[k]&&types[k][1]?Math.round(types[k][0]/types[k][1]*100):null;
+ root.innerHTML=`<div class="card"><div class="row2"><div><small>Lernende aktiv</small><div class="bigp">${act.length} / ${stu.length}</div></div><div><small>Trainings total</small><div class="bigp">${act.reduce((s,x)=>s+((by[x.id].data||{}).runs||0),0)}</div></div><div><small>Ø Bestwert</small><div class="bigp">${act.length?Math.round(act.reduce((s,x)=>s+((by[x.id].data||{}).best||0),0)/act.length):0} %</div></div></div>
+  <p class="small" style="margin-bottom:0">Stärken und Schwächen der Klasse: ${Object.keys(TN).map(k=>tp(k)==null?'':`<span class="sc ${cls(tp(k))}">${TN[k]} ${tp(k)} %</span>`).join(' ')}</p></div>
+ <div class="card"><div class="tools"><b style="align-self:center">Lernende</b><button class="btn sec" id="csv">⬇️ CSV</button></div><div class="scroll"><table class="pr"><tr><th>Name</th><th>Trainings</th><th>Bestwert</th><th>Letztes</th><th>🏡 Fälle</th><th>🔤 Namen</th><th>Knacknüsse</th><th>Zuletzt</th></tr>
+ ${stu.map(s=>{const r=by[s.id],d=r?r.data||{}:{};const t=k=>{const x=(d.types||{})[k];return x&&x[1]?Math.round(x[0]/x[1]*100):null};
+  return`<tr data-s="${s.id}" style="cursor:${r?'pointer':'default'}"><td>${esc(s.name)} ${r?'▸':''}</td><td>${d.runs||0}</td><td><span class="sc ${cls(r?d.best:null)}">${r?d.best+' %':'–'}</span></td><td>${d.last!=null?d.last+' %':'–'}</td><td><span class="sc ${cls(t('fall'))}">${t('fall')!=null?t('fall')+' %':'–'}</span></td><td><span class="sc ${cls(t('name'))}">${t('name')!=null?t('name')+' %':'–'}</span></td>
+  <td style="text-align:left;font-size:.82rem">${Object.entries(d.weak||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([b])=>esc(DE[b]||b)).join(', ')||'–'}</td><td>${r?ago(r.updated_at):'–'}</td></tr>`}).join('')}</table></div><p class="small">Auf einen Namen tippen: die letzten Antworten mit dem Urteil des Coachs.</p></div>
+ <div class="card"><b>🧠 Häufigste Knacknüsse der Klasse</b><p class="small">Falsch eingesetzt oder falsch geschrieben. Gut für die Repetition im Plenum.</p><div class="chips">${Object.entries(weak).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([b,n])=>`<span class="chip2">${esc(b)} (${esc(DE[b]||'')}) · ${n}×</span>`).join('')||'–'}</div></div>
+ <div class="card"><b>🤔 Eingaben, die der Coach nicht erkannt hat</b><p class="small">Tippfehler, unbekannte Sorten oder Pflanzen, die noch nicht in der Datenbank sind. Melde mir neue Pflanzen, dann ergänze ich sie.</p>
+ <table class="t">${Object.values(unk).sort((a,b)=>b.n-a.n).slice(0,40).map(u=>`<tr><td><b>${esc(u.t)}</b></td><td>${u.n}×</td><td class="small">${esc([...u.who].join(', '))}</td></tr>`).join('')||'<tr><td>– noch nichts</td></tr>'}</table></div>`;
+ root.querySelectorAll('tr[data-s]').forEach(tr=>tr.onclick=()=>{const r=by[tr.dataset.s];if(!r)return;const n=tr.nextElementSibling;if(n&&n.classList.contains('det')){n.remove();return}
+  const d=r.data||{};tr.insertAdjacentHTML('afterend',`<tr class="det"><td colspan="8"><b>Letzte Antworten</b><ul class="lg">${(d.log||[]).slice(0,15).map(l=>`<li><b>${l.pts} / ${l.max}</b> · ${esc(l.q)}<br><span class="small">«${esc(l.a)}»</span></li>`).join('')||'<li>–</li>'}</ul>
+  ${(d.unknown||[]).length?`<b>Nicht erkannt:</b> ${(d.unknown||[]).slice(0,10).map(u=>esc(u.t)).join(', ')}`:''}</td></tr>`)});
+ $('#csv').onclick=()=>{const L=[['Name','Trainings','Bestwert','Letztes','Faelle %','Namen %']].concat(stu.map(s=>{const d=by[s.id]?by[s.id].data||{}:{};const t=k=>{const x=(d.types||{})[k];return x&&x[1]?Math.round(x[0]/x[1]*100):''};return[s.name,d.runs||0,d.best||'',d.last==null?'':d.last,t('fall'),t('name')]}));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+L.map(r=>r.join(';')).join('\n')],{type:'text/csv'}));a.download='pflanzen-coach.csv';a.click()};
+});
+</script></body></html>
