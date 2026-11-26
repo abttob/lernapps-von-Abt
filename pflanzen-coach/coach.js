@@ -6,7 +6,8 @@ const SLUG='pflanzen-coach', APP=$('#app');
 const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)], shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
 const sample=(a,n)=>shuffle(a).slice(0,n);
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ß/g,'ss');
-const words=s=>norm(s).replace(/['"‘’«»]/g,' ').replace(/[^a-z\s-]/g,' ').split(/[\s-]+/).filter(w=>w.length>1);
+const fold=w=>w.replace(/ph/g,'f').replace(/th/g,'t').replace(/rh/g,'r').replace(/ck/g,'k').replace(/tz/g,'z').replace(/y/g,'i').replace(/ie/g,'i').replace(/ae/g,'a').replace(/oe/g,'o').replace(/ue/g,'u').replace(/c(?=[aou])/g,'k').replace(/(.)\1+/g,'$1');
+const words=s=>norm(s).replace(/['"‘’«»]/g,' ').replace(/[^a-z\s-]/g,' ').split(/[\s-]+/).filter(w=>w.length>1).map(fold);
 
 /* ---------- Datenbank ---------- */
 const MON=['','Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
@@ -23,11 +24,12 @@ const lab=p=>`${p.bot} (${p.de})`;
 const blText=p=>{if(!p.bls)return'keine auffällige Blüte';const [a,b]=p.bls.split('-').map(Number);return b?`${MON[a]} bis ${MON[b]}`:MON[a]};
 
 /* ---------- Namen erkennen (tolerant) ---------- */
-function lev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let v=Array(n+1).fill(0).map((_,i)=>i);for(let i=1;i<=m;i++){let pr=v[0];v[0]=i;for(let j=1;j<=n;j++){const t=v[j];v[j]=Math.min(v[j]+1,v[j-1]+1,pr+(a[i-1]===b[j-1]?0:1));pr=t}}return v[n]}
-const tol=w=>w.length<=4?0:w.length<=7?1:2;
+function lev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m)return n;if(!n)return m;const d=[];for(let i=0;i<=m;i++){d[i]=[i];for(let j=1;j<=n;j++)d[i][j]=i?0:j}
+ for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){const c=a[i-1]===b[j-1]?0:1;d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+c);if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}return d[m][n]}
+const tol=w=>w.length<=3?0:w.length<=5?1:w.length<=9?2:3;
 function tokMatch(t,ws){let best=99;for(const w of ws){const d=lev(t,w);if(d<best)best=d;if(!best)break}return best<=tol(t)?best:-1}
 const IDX=P.map(p=>{const bw=words(p.bot.replace(/ x /,' ').replace(/subsp\.?/,' ')).filter(w=>w!=='x');
- return{p,genus:bw[0],sp:bw.slice(1),des:p.des.map(d=>({w:words(d),j:norm(d).replace(/[^a-z]/g,'')}))}});
+ return{p,genus:bw[0],sp:bw.slice(1),des:p.des.map(d=>({w:words(d),j:fold(norm(d).replace(/[^a-z]/g,''))}))}});
 Object.entries(window.SYN||{}).forEach(([s,t])=>{const x=IDX.find(i=>i.p.bot===t);if(x){const w=words(s);x.syn=(x.syn||[]).concat([w])}});
 function recognize(input){
  const ws=words(input);if(!ws.length)return null;
@@ -42,11 +44,11 @@ function recognize(input){
   for(const d of x.des){const j=tokMatch(d.j,ws2);if(j>=0){if(4-(j?1:0)>de){de=j?3:4;deTypo=j>0}if(!j)break}
    if(d.w.length>1&&d.w.every(t=>tokMatch(t,ws)>=0)){de=Math.max(de,4)}}
   if(de&&bot===1&&g>0){bot=0;typo=false}
-  if(de&&bot===1&&x.des.some(d=>d.j===norm(x.genus)))typo=false;
+  if(de&&bot===1&&x.des.some(d=>d.j===x.genus))typo=false;
   const sc=(bot===2?6:bot===1?2:0)+de-(typo?1:0);
   if(sc>0&&(!best||sc>best.sc))best={p:x.p,bot,de:de?2:0,typo,deTypo,sc,genus:x.genus};
  }
- if(!best)return null;
+ if(!best){const c=IDX.filter(x=>x.des.some(d=>d.w.length>1&&ws.some(w=>tokMatch(d.w[d.w.length-1],[w])>=0)));if(c.length)return{genusOnly:true,genus:input.trim(),cands:c.map(x=>x.p)};return null}
  if(best.bot===1&&!best.de){const same=IDX.filter(x=>x.genus===best.genus);if(same.length>1)return{genusOnly:true,genus:best.p.bot.split(' ')[0],cands:same.map(x=>x.p)}}
  return best;
 }
@@ -106,7 +108,7 @@ function home(){const pct=STATS.best||0;
  <div class="card"><div class="row2"><div><small>Bestes Training</small><div class="bigp">${pct} %</div></div><div><small>Trainings</small><div class="bigp">${STATS.runs||0}</div></div><div><small>Serie</small><div class="bigp">🔥 ${STATS.streak||0}</div></div></div></div>
  <div class="modes">${Object.entries(MODES).map(([k,m])=>`<button class="mode" data-m="${k}"><span class="ic">${m.icon}</span><b>${m.name}</b><small>${m.txt}</small></button>`).join('')}</div>
  ${Object.keys(STATS.weak||{}).length?`<div class="card"><b>🧠 Deine Knacknüsse</b><p class="small">Diese Pflanzen hast du falsch eingesetzt oder falsch geschrieben. Lerne sie extra:</p><div class="chips">${Object.entries(STATS.weak).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([b,n])=>{const p=P.find(x=>x.bot===b);return`<span class="chip2">${esc(p?lab(p):b)} · ${n}×</span>`}).join('')}</div></div>`:''}
- <div class="card"><b>📚 So bekommst du die Punkte</b><ul class="small"><li>Botanischer Name richtig: Gattung und Art (z. B. <i>Taxus baccata</i>)</li><li>Deutscher Name richtig</li><li>Die Pflanze passt zum Standort und zum Wunsch der Kundschaft</li></ul></div>`);
+ <div class="card"><b>📚 So bekommst du die Punkte</b><ul class="small"><li>Botanischer Name: Gattung und Art (z. B. <i>Taxus baccata</i>)</li><li>Deutscher Name</li><li>Rechtschreibung zählt nicht: Hauptsache, man erkennt die Pflanze</li><li>Die Pflanze passt zum Standort und zum Wunsch der Kundschaft</li></ul></div>`);
  APP.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>start(b.dataset.m))}
 function start(mode){const plan=MODES[mode].plan();RUN={mode,tasks:plan.map(t=>TYPES[t].make()).filter(Boolean),i:0,pts:0,max:0,res:[]};next()}
 function head(){const T=RUN.tasks[RUN.i],ty=TYPES[T.t];return`<div class="prog"><span>${ty.icon} ${ty.name}</span><span>Aufgabe ${RUN.i+1} von ${RUN.tasks.length}</span></div><div class="bar"><i style="width:${Math.round(RUN.i/RUN.tasks.length*100)}%"></i></div>`}
@@ -131,16 +133,16 @@ function judge(txt,k,umkehr,qtext,seen){
  txt=txt.trim();if(!txt)return{pts:0,html:`<li class="no">– leer</li>`};
  const r=recognize(txt);
  if(!r){logUnknown(txt,qtext);return{pts:0,html:`<li class="no">🤔 <b>«${esc(txt)}»</b> kenne ich nicht. Prüfe die Schreibweise oder nimm eine andere Pflanze. <span class="small">(Ich melde es der Lehrperson.)</span></li>`}}
- if(r.genusOnly){const ok=r.cands.filter(p=>check(p,k).ok);return{pts:ok.length===r.cands.length?.75:0,html:`<li class="mid">🟡 <b>«${esc(txt)}»</b>: Gattung <i>${esc(r.genus)}</i> erkannt, aber welche Art? ${r.cands.slice(0,4).map(p=>`<i>${esc(p.bot)}</i> (${esc(p.de)})`).join(', ')} … Nenne Gattung <b>und</b> Art.</li>`}}
+ if(r.genusOnly){const ok=r.cands.filter(p=>check(p,k).ok);return{pts:ok.length===r.cands.length?.75:0,html:`<li class="mid">🟡 <b>«${esc(txt)}»</b>: «${esc(r.genus)}» erkannt, aber welche Art genau? ${r.cands.slice(0,4).map(p=>`<i>${esc(p.bot)}</i> (${esc(p.de)})`).join(', ')} … Nenne Gattung <b>und</b> Art.</li>`}}
  const p=r.p;if(seen.has(p.id))return{pts:0,html:`<li class="no">🔁 <b>${esc(lab(p))}</b> hast du schon genannt.</li>`};seen.add(p.id);
  let pts=0;const notes=[];
- if(r.bot===2){pts+=r.typo?.25:.5;if(r.typo)notes.push(`Schreibweise: richtig ist <i>${esc(p.bot)}</i>`)}else if(r.bot===1){pts+=.25;notes.push(`botanisch nur die Gattung, richtig: <i>${esc(p.bot)}</i>`)}else notes.push(`botanischer Name fehlt: <i>${esc(p.bot)}</i>`);
- if(r.de){pts+=.5;if(r.deTypo)notes.push(`deutsch genauer: ${esc(p.de)}`)}else notes.push(`deutscher Name fehlt: ${esc(p.de)}`);
+ if(r.bot===2){pts+=.5;if(r.typo)notes.push(`erkannt ✔️ So schreibt man es: <i>${esc(p.bot)}</i>`)}else if(r.bot===1){pts+=.25;notes.push(`botanisch nur die Gattung, richtig: <i>${esc(p.bot)}</i>`)}else notes.push(`botanischer Name fehlt: <i>${esc(p.bot)}</i>`);
+ if(r.de){pts+=.5;if(r.deTypo)notes.push(`erkannt ✔️ So schreibt man es: ${esc(p.de)}`)}else notes.push(`deutscher Name fehlt: ${esc(p.de)}`);
  const c=check(p,k);let fit=c.ok?1:c.half?.5:0;
  let line;
  if(umkehr){line=c.ok?`✅ <b>${esc(lab(p))}</b>: richtig, ${esc((k.has||k.any||[]).filter(f=>has(p,f)).map(f=>FL[f]).join(' und '))}.`:`❌ <b>${esc(lab(p))}</b>: ${esc(c.why.join('; '))}.`}
  else line=c.ok?`✅ <b>${esc(lab(p))}</b> passt: ${esc(plus(p,k))}.`:c.half?`🟡 <b>${esc(lab(p))}</b> geht knapp: ${esc(c.why.join('; '))}.`:`❌ <b>${esc(lab(p))}</b> passt nicht: ${esc(c.why.join('; '))}.`;
- if(!c.ok||r.typo||!r.de||r.bot<2)weak(p);
+ if(!c.ok||!r.de||r.bot<2)weak(p);
  pts+=fit;return{pts,html:`<li class="${c.ok?'ok':c.half?'mid':'no'}">${line}${notes.length?`<div class="small">✍️ ${notes.join(' · ')}</div>`:''}</li>`,fit}}
 function ideas(k,exclude,n=4){return sample(fits(k).filter(p=>!exclude.has(p.id)),n).map(p=>`<i>${esc(p.bot)}</i> (${esc(p.de)})`).join(' · ')}
 
@@ -171,7 +173,7 @@ const R={
  name(T){const p=T.p,askBot=T.dir==='bot';shell(`<div class="card">${head()}<p class="q">${askBot?`Wie heisst <b>${esc(p.de)}</b> botanisch?`:`Wie heisst <b><i>${esc(p.bot)}</i></b> auf Deutsch?`}</p>
   <div class="hint">${esc(TYP[p.typ])} · ${[...p.licht].map(l=>LICHT[l]).join('/')}${p.gr.length?' · '+esc(grpName(p.gr[0])):''}</div>${nameField(1,askBot?'Gattung Art':'deutscher Name')}<button class="btn" id="ok">🧑‍🌾 Prüfen lassen</button><div id="fb"></div></div>`);
   focusFirst();$('#ok').onclick=()=>{const v=$('[data-k]').value;if(!v.trim())return;lock();const r=recognize(v);let pts=0,msg;
-   if(r&&!r.genusOnly&&r.p.id===p.id&&(askBot?r.bot:r.de)){if(askBot){pts=r.bot===2?(r.typo?1.5:2):1;msg=r.bot===2?(r.typo?`Fast! Achte auf die Schreibweise: <b><i>${esc(p.bot)}</i></b>.`:`Genau: <b><i>${esc(p.bot)}</i></b>.`):`Gattung stimmt, die Art fehlt: <b><i>${esc(p.bot)}</i></b>.`}else{pts=r.deTypo?1.5:2;msg=`Genau: <b>${esc(p.de)}</b>${p.des.length>1?` (auch: ${esc(p.des.slice(1).join(', '))})`:''}.`}}
+   if(r&&!r.genusOnly&&r.p.id===p.id&&(askBot?r.bot:r.de)){if(askBot){pts=r.bot===2?2:1;msg=r.bot===2?(r.typo?`Richtig erkannt! So schreibt man es: <b><i>${esc(p.bot)}</i></b>.`:`Genau: <b><i>${esc(p.bot)}</i></b>.`):`Gattung stimmt, die Art fehlt: <b><i>${esc(p.bot)}</i></b>.`}else{pts=2;msg=`${r.deTypo?'Richtig erkannt! So schreibt man es':'Genau'}: <b>${esc(p.de)}</b>${p.des.length>1?` (auch: ${esc(p.des.slice(1).join(', '))})`:''}.`}}
    else if(r&&r.genusOnly&&askBot&&r.genus===p.bot.split(' ')[0]){pts=1;msg=`Gattung stimmt, die Art fehlt: <b><i>${esc(p.bot)}</i></b>.`}
    else{msg=`Richtig ist <b>${askBot?'<i>'+esc(p.bot)+'</i>':esc(p.de)}</b>.${r&&!r.genusOnly?` Du hast ${esc(lab(r.p))} genannt.`:''}`;if(!r)logUnknown(v,'Name: '+p.de)}
    if(pts<2)weak(p);logAns('Name: '+(askBot?p.de:p.bot),v,'',pts,2);done(T,pts,`<p>${msg}</p><p class="small">🧠 Eselsbrücke: ${esc(memo(p))}</p>`)}},
