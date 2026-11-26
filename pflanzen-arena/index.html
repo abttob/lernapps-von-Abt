@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="de-CH"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pflanzen-Arena · Wer berät am besten?</title>
 <link rel="stylesheet" href="../belagsaufbau/assets/app.css"><link rel="stylesheet" href="arena.css">
-</head><body>
-<div id="app"><div class="wrap"><div class="card">Lädt …</div></div></div>
-<script src="../belagsaufbau/assets/config.js"></script><script src="../belagsaufbau/assets/core.js"></script>
+<link rel="preconnect" href="https://bbgqfuyezgxdcjcncrel.supabase.co" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin></head><body>
+<div id="app"><div class="wrap"><div class="card" id="boot" style="max-width:520px;margin:3rem auto;text-align:center"><div style="font-size:3rem">🌿</div><b>Pflanzen-Arena startet …</b><div class="small" id="bootmsg" style="margin-top:.4rem">Verbindung wird aufgebaut</div></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script><script src="../belagsaufbau/assets/config.js"></script><script src="../belagsaufbau/assets/core.js"></script>
 <script src="runden.js"></script><script src="arena.js"></script>
+<script>setTimeout(function(){var b=document.getElementById('bootmsg');if(b&&!document.querySelector('.auth'))b.innerHTML='Das dauert ungewöhnlich lange. Prüfe das WLAN.<br><button class="btn" style="margin-top:.6rem" onclick="location.reload()">Neu laden</button>'},8000)</script>
 </body></html>

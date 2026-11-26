@@ -24,6 +24,7 @@ async function saveG(){GREC.data=G;await LA.update(GREC.id,G)}
 function teamName(id){const t=TEAMS.find(x=>x.id===id);return t?t.data.name:'?'}
 function teamEmo(id){const t=TEAMS.find(x=>x.id===id);return t?t.data.emo:'🌱'}
 async function loadTeams(){const L=await LA.list('arena_team',{grp:G.code});const seen={},out=[];L.slice().reverse().forEach(r=>{seen[r.owner]=r});Object.values(seen).forEach(r=>out.push(r));out.sort((a,b)=>ts(a)-ts(b));TEAMS=out}
+function alertBox(e){const d=document.createElement('div');d.className='msg err';d.style.cssText='position:fixed;left:50%;top:1rem;transform:translateX(-50%);z-index:99;max-width:90vw';d.textContent='Fehler: '+(e&&e.message||e);document.body.appendChild(d);setTimeout(()=>d.remove(),8000)}
 function newCode(){return String(1000+Math.floor(Math.random()*9000))}
 function shell(inner,right=''){return `<div class="wrap"><div class="bar0"><div class="logo">🌿 Pflanzen-Arena<small>${esc(SET.titel)} · Code ${esc(G?G.code:'')}</small></div><div class="row">${right}</div></div>${inner}</div><button class="mute" id="mute" title="Ton">${muted?'🔇':'🔊'}</button>`}
 function wireMute(){const m=$('#mute');if(m)m.onclick=()=>{muted=!muted;m.textContent=muted?'🔇':'🔊'}}
@@ -39,7 +40,7 @@ async function hostStart(){
  <p>Teams zu zweit, ein Handy pro Team. Pro Runde ein Fall, bis 4 Pflanzen. Du bewertest die Korrektheit, die App vergibt Tempo, Unikat- und Joker-Punkte.</p>
  <button class="hbtn2" id="new">▶ Neues Spiel eröffnen</button>
  ${mine.length?`<p style="margin-top:1.2rem">oder weiterspielen:</p>${mine.map(r=>`<button class="hbtn2 sec" data-g="${r.id}" style="margin:.3rem">Spiel ${esc(r.data.code)} · Runde ${(r.data.done||[]).length}</button>`).join('')}`:''}</div></div>`;
- $('#new').onclick=async()=>{G={code:newCode(),set:SETKEY,phase:'lobby',r:-1,order:R.map((_,i)=>i),done:[],marks:{},snap:{},pts:{},last:{},jokers:{},adj:{},hist:{}};GREC=await LA.add('arena_game',G.code,G);G=GREC.data;lobby()};
+ $('#new').onclick=async()=>{const bt=$('#new');bt.disabled=true;bt.textContent='⏳ Spiel wird eröffnet …';try{G={code:newCode(),set:SETKEY,phase:'lobby',r:-1,order:R.map((_,i)=>i),done:[],marks:{},snap:{},pts:{},last:{},jokers:{},adj:{},hist:{}};GREC=await LA.add('arena_game',G.code,G);G=GREC.data;lobby()}catch(e){bt.disabled=false;bt.textContent='▶ Neues Spiel eröffnen';alertBox(e)}};
  APP.querySelectorAll('[data-g]').forEach(b=>b.onclick=async()=>{GREC=mine.find(r=>r.id===b.dataset.g);G=GREC.data;await loadTeams();resume()});
 }
 function resume(){({lobby,event:nextRound,question:hostQuestion,mark:hostMark,scores:hostScores,end:hostEnd})[G.phase]()}
@@ -208,5 +209,6 @@ async function renderPlayer(){
  if(ph==='end'){clearInterval(pH);return card(`<div class="card">${head()}<div class="wait"><span class="e">🏆</span><h2>Spiel fertig: Rang ${rankOf()}</h2><p>Danke fürs Mitspielen! Lernt bis zum 09.12. weiter: botanisch und deutsch. 🌱</p></div></div>`)}
 }
 
+new MutationObserver(()=>{const b=$('#boot');if(b&&document.querySelector('.auth'))b.style.display='none'}).observe(document.body,{childList:true});
 (HOST?hostStart:playerStart)().catch(e=>{APP.innerHTML=`<div class="wrap"><div class="card"><div class="msg err">${esc(e.message||e)}</div></div></div>`});
 })();
