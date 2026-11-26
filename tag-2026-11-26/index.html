@@ -132,6 +132,10 @@ l.innerHTML='<b>Das Laden dauert zu lange.</b><br><span class="small">Meist hilf
 /* ================= INHALTE ================= */
 const SLUG="tag-2026-11-26";
 const CHECKOUT_AB={h:16,m:45}; // Checkout erst ab 16.45 Uhr
+const CHECKOUT_TS=Date.parse("2026-11-26T16:45:00+01:00"); // fester Zeitpunkt (Schweizer Zeit)
+let SKEW=0; // Unterschied Handy-Uhr zu Server-Uhr: verstellte Handy-Uhr hilft nicht
+async function syncTime(){try{const r=await fetch(location.pathname+"?t="+Date.now(),{method:"HEAD",cache:"no-store"});const d=Date.parse(r.headers.get("date"));if(d)SKEW=d-Date.now();}catch(e){}}
+const nowMs=()=>Date.now()+SKEW;
 const LZ={L58:"L58 Warum warten?",L61:"L61 Wie warten?",L62:"L62 Ordnung & Sauberkeit",L63:"L63 Palettenhubwagen",L64:"L64 Gefahren beim Transport",L65:"L65 Vorschriften & Sichern"};
 /* Check-in: Rückblick 19.11.2026 (gleich für alle, damit vergleichbar). Richtige Antwort an 1. Stelle. */
 const CI=[
@@ -201,9 +205,9 @@ const NIV={1:"Basis",2:"Standard",3:"Profi"};
 let S={niveau:2,ci:null,mods:{},co:[]};
 function load(){const p=LA.getProgress(SLUG);if(p&&p.data)S=Object.assign(S,p.data);}
 async function save(){const pct=Math.round(([S.ci?1:0,S.mods.sort?1:0,S.mods.quiz?1:0,S.co.length?1:0].reduce((a,b)=>a+b,0))/4*100);try{await LA.saveProgress(SLUG,Object.assign({pct},S));}catch(e){}}
-function openForStudents(){const n=new Date();return n.getHours()>CHECKOUT_AB.h||(n.getHours()===CHECKOUT_AB.h&&n.getMinutes()>=CHECKOUT_AB.m);}
-function checkoutOpen(){return (LA.user&&LA.user.role==="teacher")||openForStudents();}
-function untilText(){const n=new Date(),t=new Date();t.setHours(CHECKOUT_AB.h,CHECKOUT_AB.m,0,0);let m=Math.max(0,Math.round((t-n)/60000));return m>=60?Math.floor(m/60)+" h "+(m%60)+" min":m+" min";}
+function openForStudents(){return nowMs()>=CHECKOUT_TS;}
+function checkoutOpen(){return openForStudents();} // gilt für alle, auch für die Lehrperson in der Schüleransicht
+function untilText(){let m=Math.max(0,Math.ceil((CHECKOUT_TS-nowMs())/60000));return m>=60?Math.floor(m/60)+" h "+(m%60)+" min":m+" min";}
 
 /* ================= HOME ================= */
 let homeTick=null;
@@ -229,7 +233,7 @@ document.querySelectorAll("#niv button").forEach(b=>b.onclick=()=>{S.niveau=+b.d
 let mode="",set=[],qi=0,pts=0,streak=0,right=0,log=[],t0=0,tick=null,locked=false,TIME=25,order=[];
 function pool(n){return n===1?MC.filter(q=>q.lv===1).concat(shuffle(MC.filter(q=>q.lv===2)).slice(0,4)):n===2?MC.filter(q=>q.lv<=2):MC.filter(q=>q.lv>=2);}
 function pick(p,N){const out=[];["L63","L64","L65"].forEach(l=>out.push(...shuffle(p.filter(q=>q.lz===l)).slice(0,Math.floor(N/3))));const rest=shuffle(p.filter(q=>!out.includes(q)));while(out.length<N&&rest.length)out.push(rest.pop());return shuffle(out);}
-function startQ(m){mode=m;
+function startQ(m){if(m==="co"&&!checkoutOpen()&&!(LA.user&&LA.user.role==="teacher")){goCO();return;}mode=m;
  if(m==="ci"){set=shuffle(CI);TIME=25;}
  else{set=pick(pool(S.niveau),m==="co"?8:10);TIME=S.niveau===3?20:0;}
  qi=0;pts=0;streak=0;right=0;log=[];show("quiz");drawQ();}
@@ -286,7 +290,9 @@ $("sA").onclick=()=>ansS(true);$("sB").onclick=()=>ansS(false);
 $("snext").onclick=async()=>{si++;if(si<sset.length)drawS();else{const pct=Math.round(sright/sset.length*100);const m=S.mods.sort||{best:0,runs:0};m.best=Math.max(m.best,pct);m.runs++;S.mods.sort=m;await save();
  $("resBox").innerHTML=`<div class="big">${pct} %</div><p style="text-align:center">${sright} von ${sset.length} richtig entschieden.</p>`;show("res");}};
 
-function goCO(){if(!checkoutOpen()){$("resBox").innerHTML=`<div class="lockbox"><div style="font-size:3rem">🔒</div><div class="clock">16.45 Uhr</div><p>Der Checkout öffnet erst um 16.45 Uhr.<br>Noch <b>${untilText()}</b>.</p><p class="small">Bis dahin: Dossier fertig machen, Lösungsstation, Training 2 und 3.</p></div>`;show("res");return;}startQ("co");}
+async function goCO(){await syncTime();if(!checkoutOpen()){const t=LA.user&&LA.user.role==="teacher";
+ $("resBox").innerHTML=`<div class="lockbox"><div style="font-size:3rem">🔒</div><div class="clock">16.45 Uhr</div><p>Der Checkout öffnet erst um 16.45 Uhr.<br>Noch <b>${untilText()}</b>.</p><p class="small">Bis dahin: Dossier fertig machen, Lösungsstation, Training 2 und 3.</p>${t?'<p class="small" style="margin-top:14px">👩‍🏫 Nur für dich als Lehrperson sichtbar:</p><button class="btn" id="tPrev">Vorschau Checkout (Lehrperson)</button>':""}</div>`;
+ show("res");if(t)$("tPrev").onclick=()=>startQ("co");return;}startQ("co");}
 const GO={ci:()=>startQ("ci"),sort:startSort,quiz:()=>startQ("quiz"),co:goCO,sim:()=>{location.href="../ladungs-simulator/";}};
 
 /* ================= LEHRPERSON ================= */
@@ -329,7 +335,8 @@ async function drawT(){
   const csv=L.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"}));a.download="tag-26-11-2026-GLA25A.csv";a.click();};
 }
 
-LA.requireLogin().then(()=>{LA.who($("who"));load();
+syncTime();
+LA.requireLogin().then(async()=>{await syncTime();LA.who($("who"));load();
  if(LA.user.role==="teacher"&&!/[?&]test=1/.test(location.search))teacher();
  else if(/[?&]checkout=1/.test(location.search)){home();goCO();}
  else{home();}

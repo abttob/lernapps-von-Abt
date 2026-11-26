@@ -70,7 +70,7 @@ const Sup={
    if(!r.error){const u=await Sup.session();if(u&&u.role==='teacher')return u;await Sup.sb.auth.signOut();}
   }
   if(error)throw Sup.err(error);return Sup.session()},
- async signOut(){await Sup.sb.auth.signOut()},
+ async signOut(){try{await Promise.race([Sup.sb.auth.signOut({scope:'local'}),new Promise(r=>setTimeout(r,2500))])}catch(e){}},
  async session(){const {data}=await Sup.sb.auth.getSession();const s=data&&data.session;if(!s)return null;
   const {data:p}=await Sup.sb.from('profiles').select('*').eq('id',s.user.id).maybeSingle();
   return p?{id:p.id,name:p.name,role:p.role,klasse:p.klasse||null}:{id:s.user.id,name:(s.user.user_metadata||{}).name||'?',role:'student'}},
@@ -118,7 +118,7 @@ const LA={demo:DEMO,klasse:KL,esc,norm,$,store,resizeImage,uuid,user:null,prog:{
    try{const cc=window.LA_FIXCODE?window.LA_FIXCODE(c.trim()):c.trim();LA.user=mode==='up'?await B.signUp(n,p,cc):await B.signIn(n,p);if(wrongClass(LA.user)){await B.signOut();LA.user=null;throw new Error(mode==='up'?'Klassencode falsch.':'Name oder Passwort stimmt nicht.')}try{LA.prog=await B.progressMine(LA.user.id)}catch(e){LA.prog={}}box.remove();res(LA.user)}
    catch(e){m.innerHTML='<div class="msg err">'+esc(e.message)+'</div>';$('#la_go',box).disabled=false}};
   $('#la_go',box).onclick=go;box.addEventListener('keydown',e=>{if(e.key==='Enter')go()})})},
- async logout(){await B.signOut();LA.user=null;location.reload()},
+ async logout(){try{await B.signOut()}catch(e){}try{Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)||k==='la:session').forEach(k=>localStorage.removeItem(k))}catch(e){}LA.user=null;location.href=location.pathname},
  who(el){if(!el||!LA.user)return;el.innerHTML=`<span>${LA.user.role==='teacher'?'👩‍🏫':'🙂'} ${esc(LA.user.name)}${LA.demo?' · Demo':''}</span><a href="#" id="la_out">Abmelden</a>`;$('#la_out',el).onclick=e=>{e.preventDefault();LA.logout()}},
  /* Fortschritt */
  async saveProgress(slug,o){if(!LA.user)return;const old=(LA.prog[slug]&&LA.prog[slug].data)||{};
