@@ -70,6 +70,7 @@ td.n{text-align:center}
 .beamer h1{font-size:2.6rem}.beamer .lbr b{font-size:1.9rem}.beamer .lbr .p{font-size:2.2rem}.beamer .kpi b{font-size:2.4rem}
 .prog{height:16px;background:#2c303b;border-radius:10px;overflow:hidden}.prog>div{height:100%;background:var(--lime)}
 .dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;vertical-align:-1px}.d1{background:#2e9d4a}.d2{background:#4da3ff}.d3{background:#ddd}
+.homebtn{cursor:pointer;font:inherit;font-weight:800;color:inherit}
 </style>
 </head>
 <body>
@@ -94,7 +95,7 @@ td.n{text-align:center}
  </div>
 
  <div id="quiz" class="hidden">
-  <div class="hud"><span class="pill" id="pos"></span><span class="pill fire hidden" id="streak"></span><span class="pill" id="pts"></span></div>
+  <div class="hud"><button class="pill homebtn" onclick="home()">🏠 Übersicht</button><span class="pill" id="pos"></span><span class="pill fire hidden" id="streak"></span><span class="pill" id="pts"></span></div>
   <div class="timer" id="tWrap"><div id="tbar" style="width:100%"></div></div>
   <div class="card">
    <span class="tag" id="tag"></span>
@@ -105,7 +106,7 @@ td.n{text-align:center}
  </div>
 
  <div id="sort" class="hidden">
-  <div class="hud"><span class="pill" id="spos"></span><span class="pill" id="sscore"></span></div>
+  <div class="hud"><button class="pill homebtn" onclick="home()">🏠 Übersicht</button><span class="pill" id="spos"></span><span class="pill" id="sscore"></span></div>
   <div class="card">
    <h2>🧲 Hält's oder rutscht's?</h2>
    <p class="small" style="margin:0">Stell dir eine Vollbremsung vor. Ist diese Ladung richtig gesichert?</p>
@@ -115,7 +116,7 @@ td.n{text-align:center}
   </div>
  </div>
 
- <div id="res" class="hidden"><div class="card" id="resBox"></div><button class="btn" onclick="home()">← Zurück</button></div>
+ <div id="res" class="hidden"><div class="card" id="resBox"></div><button class="btn primary" onclick="home()">🏠 Weiter zu allen Apps von heute</button></div>
  <div id="teacher" class="hidden"></div>
 </div>
 <div class="pop" id="pop"></div>
@@ -216,7 +217,8 @@ function home(){
  <button class="tile ci" data-go="ci"><div class="ic">🎟️</div><div><b>1 · Check-in</b><span>Was weisst du noch vom 19.11.? 12 Fragen, 25 s pro Frage</span></div>${S.ci?st(true,"✓ "+S.ci.pts+" Pkt."):st(false,"zuerst!")}</button>
  <button class="tile" data-go="sort"><div class="ic">🧲</div><div><b>2 · Hält's oder rutscht's?</b><span>Blitz-Entscheid zur Ladungssicherung (L65)</span></div>${S.mods.sort?st(S.mods.sort.best>=80,S.mods.sort.best+" %"):st(false,"offen")}</button>
  <button class="tile" data-go="quiz"><div class="ic">🚚</div><div><b>3 · Lade-Profi-Training</b><span>10 Fragen zu L63–65 in deinem Niveau</span></div>${S.mods.quiz?st(S.mods.quiz.best>=80,S.mods.quiz.best+" %"):st(false,"offen")}</button>
- <button class="tile co ${open?"":"lock"}" data-go="co"><div class="ic">${open?"✅":"🔒"}</div><div><b>4 · Checkout = Ticket zum Aufräumen</b><span>${open?"Jetzt offen! 8 Fragen in deinem Niveau":"Öffnet um 16.45 Uhr (noch "+untilText()+")"}</span></div>${S.co.length?st(true,"✓ "+S.co[0].score+"/"+S.co[0].total):st(false,open?"offen":"🔒")}</button>`;
+ <button class="tile" data-go="sim"><div class="ic">🎮</div><div><b>4 · Ladungs-Simulator</b><span>Dossier Teil 4: Missionen in deinem Niveau · mit Erklärungen</span></div>${st(false,"öffnen ↗")}</button>
+ <button class="tile co ${open?"":"lock"}" data-go="co"><div class="ic">${open?"✅":"🔒"}</div><div><b>5 · Checkout = Ticket zum Aufräumen</b><span>${open?"Jetzt offen! 8 Fragen in deinem Niveau":"Öffnet um 16.45 Uhr (noch "+untilText()+")"}</span></div>${S.co.length?st(true,"✓ "+S.co[0].score+"/"+S.co[0].total):st(false,open?"offen":"🔒")}</button>`;
  document.querySelectorAll("#tiles .tile").forEach(b=>b.onclick=()=>GO[b.dataset.go]());
  show("home");
  clearInterval(homeTick);homeTick=setInterval(()=>{if(!$("home").classList.contains("hidden")&&checkoutOpen()!==open)home();},20000);
@@ -285,7 +287,7 @@ $("snext").onclick=async()=>{si++;if(si<sset.length)drawS();else{const pct=Math.
  $("resBox").innerHTML=`<div class="big">${pct} %</div><p style="text-align:center">${sright} von ${sset.length} richtig entschieden.</p>`;show("res");}};
 
 function goCO(){if(!checkoutOpen()){$("resBox").innerHTML=`<div class="lockbox"><div style="font-size:3rem">🔒</div><div class="clock">16.45 Uhr</div><p>Der Checkout öffnet erst um 16.45 Uhr.<br>Noch <b>${untilText()}</b>.</p><p class="small">Bis dahin: Dossier fertig machen, Lösungsstation, Training 2 und 3.</p></div>`;show("res");return;}startQ("co");}
-const GO={ci:()=>startQ("ci"),sort:startSort,quiz:()=>startQ("quiz"),co:goCO};
+const GO={ci:()=>startQ("ci"),sort:startSort,quiz:()=>startQ("quiz"),co:goCO,sim:()=>{location.href="../ladungs-simulator/";}};
 
 /* ================= LEHRPERSON ================= */
 const BEAMER=/[?&]beamer=1/.test(location.search);let tT=null;
@@ -330,7 +332,7 @@ async function drawT(){
 LA.requireLogin().then(()=>{LA.who($("who"));load();
  if(LA.user.role==="teacher"&&!/[?&]test=1/.test(location.search))teacher();
  else if(/[?&]checkout=1/.test(location.search)){home();goCO();}
- else{home();if(!S.ci)startQ("ci");}
+ else{home();}
 });
 </script>
 </body>
