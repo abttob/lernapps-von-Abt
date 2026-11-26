@@ -83,7 +83,7 @@ body.host::before{display:none}
 .emos{display:grid;grid-template-columns:repeat(6,1fr);gap:.4rem;margin:.4rem 0 .8rem}
 .emos button{font-size:1.8rem;border:3px solid var(--line);background:#fff;border-radius:14px;padding:.3rem;cursor:pointer}
 .emos button.on{border-color:var(--green);background:#e3f5dd}
-.pin{font-size:2rem;text-align:center;letter-spacing:.5rem;font-weight:900}
+.fld.pin{position:static;transform:none;display:block;width:100%;height:auto;min-width:0;border-radius:12px;color:inherit;box-shadow:none;background:#fff;font-size:2rem;text-align:center;letter-spacing:.5rem;font-weight:900;margin:.2rem 0 .6rem}
 .pf{display:flex;gap:.4rem;align-items:center;margin:.4rem 0}
 .pf b{width:1.6rem;text-align:center;color:var(--green-d)}
 .pf input{flex:1}

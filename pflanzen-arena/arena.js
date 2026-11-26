@@ -33,11 +33,11 @@ function stopAll(){clearInterval(timerH);clearInterval(pollH);timerH=pollH=null}
 async function hostStart(){
  document.body.classList.add('host');
  const u=await LA.requireLogin();
- if(u.role!=='teacher'){APP.innerHTML=`<div class="wrap"><div class="card"><b>Nur für die Lehrperson.</b><br>Melde dich mit dem Lehrerkonto an. Lernende öffnen die Seite ohne «?host».</div></div>`;return}
+ const T=u.role==='teacher';
  const mine=(await LA.list('arena_game',{owner:u.id})).filter(r=>r.data&&r.data.phase!=='end'&&Date.now()-ts(r)<12*3600e3);
  APP.innerHTML=`<div class="wrap"><div class="bar0"><div class="logo">🌿 Pflanzen-Arena<small>${esc(SET.titel)}</small></div></div>
  <div class="card" style="max-width:720px;margin:2rem auto;text-align:center"><h2 style="margin-top:0">Gruppenwettkampf Pflanzenverwendung</h2>
- <p>Teams zu zweit, ein Handy pro Team. Pro Runde ein Fall, bis 4 Pflanzen. Du bewertest die Korrektheit, die App vergibt Tempo, Unikat- und Joker-Punkte.</p>
+ ${T?'<p>Teams zu zweit, ein Handy pro Team. Pro Runde ein Fall, bis 4 Pflanzen. Du bewertest die Korrektheit, die App vergibt Tempo, Unikat- und Joker-Punkte.</p>':'<p><b>Ihr seid die Spielleitung.</b> Ihr eröffnet das Spiel auf dem Laptop, zeigt die Fälle und bewertet die Pflanzen der anderen Gruppen (✅ / 🟡 / ❌). Die Lösungsvorschläge erscheinen erst nach Ablauf der Zeit. Die App vergibt Tempo-, Unikat- und Joker-Punkte.</p><p class="small">Die anderen Gruppen öffnen auf dem Handy <b>lernappsabt.vercel.app/pflanzen-arena</b> und geben euren Spiel-Code ein.</p>'}
  <button class="hbtn2" id="new">▶ Neues Spiel eröffnen</button>
  ${mine.length?`<p style="margin-top:1.2rem">oder weiterspielen:</p>${mine.map(r=>`<button class="hbtn2 sec" data-g="${r.id}" style="margin:.3rem">Spiel ${esc(r.data.code)} · Runde ${(r.data.done||[]).length}</button>`).join('')}`:''}</div></div>`;
  $('#new').onclick=async()=>{const bt=$('#new');bt.disabled=true;bt.textContent='⏳ Spiel wird eröffnet …';try{G={code:newCode(),set:SETKEY,phase:'lobby',r:-1,order:R.map((_,i)=>i),done:[],marks:{},snap:{},pts:{},last:{},jokers:{},adj:{},hist:{}};GREC=await LA.add('arena_game',G.code,G);G=GREC.data;lobby()}catch(e){bt.disabled=false;bt.textContent='▶ Neues Spiel eröffnen';alertBox(e)}};
@@ -158,7 +158,9 @@ function card(h){APP.innerHTML=`<div class="hero" style="min-height:150px;paddin
 async function playerStart(){
  ME=await LA.requireLogin();
  let code=(Q.get('code')||'').replace(/\D/g,'');
- if(!code){card(`<div class="card"><label><b>Spiel-Code vom Beamer</b></label><input class="fld pin" id="c" inputmode="numeric" maxlength="4" placeholder="0000"><button class="btn" id="ok">Weiter</button><div id="m"></div></div>`);
+ if(!code){card(`<div class="card"><label><b>Spiel-Code</b></label><div class="small" style="margin-bottom:.4rem">steht am Beamer oder auf dem Laptop der Spielleitung</div><input class="fld pin" id="c" inputmode="numeric" maxlength="4" placeholder="0000"><button class="btn" id="ok">Mitspielen</button><div id="m"></div></div>
+  <div class="card" style="text-align:center"><b>Ihr seid die Spielleitung?</b><p class="small" style="margin:.3rem 0 .6rem">Eine Gruppe leitet auf dem Laptop, die anderen spielen auf dem Handy gegeneinander.</p><button class="btn" id="lead" style="background:#5e4b8b">🎬 Spiel leiten (Laptop)</button></div>`);
+  $('#lead').onclick=()=>{location.search='?host'+(Q.has('demo')?'&demo=1':'')};
   $('#ok').onclick=()=>{const c=$('#c').value.replace(/\D/g,'');if(c.length!==4){$('#m').innerHTML='<div class="msg err">Der Code hat 4 Ziffern.</div>';return}location.search='?code='+c};return}
  const g=await findGame(code);if(!g){card(`<div class="card"><div class="msg err">Kein laufendes Spiel mit Code ${esc(code)}.</div><button class="btn" onclick="location.search=''">Anderen Code eingeben</button></div>`);return}
  GAME=g;const mine=(await LA.list('arena_team',{grp:code,owner:ME.id}))[0];
@@ -187,10 +189,10 @@ async function renderPlayer(){
  if(key===view&&!(ph==='question'&&!myAns[i]))return;
  if(ph==='question'&&!myAns[i]&&view===key)return;view=key;
  const r=R[i],ev=r?(EV[r.ereignis]||EV.normal):null;
- if(ph==='lobby')return card(`<div class="card">${head()}<div class="wait"><span class="e">🌱</span><h2>Ihr seid dabei!</h2><p>Schaut auf den Beamer. Das Spiel startet gleich.</p></div></div>`);
- if(ph==='event')return card(`<div class="card">${head()}<div class="wait"><span class="e">🎴</span><h2>Ereigniskarte …</h2><p>Gleich geht es los. Augen auf den Beamer!</p></div></div>`);
+ if(ph==='lobby')return card(`<div class="card">${head()}<div class="wait"><span class="e">🌱</span><h2>Ihr seid dabei!</h2><p>Schaut auf den Bildschirm der Spielleitung. Das Spiel startet gleich.</p></div></div>`);
+ if(ph==='event')return card(`<div class="card">${head()}<div class="wait"><span class="e">🎴</span><h2>Ereigniskarte …</h2><p>Gleich geht es los. Augen auf den Bildschirm der Spielleitung!</p></div></div>`);
  if(ph==='question'){
-  if(myAns[i])return card(`<div class="card">${head()}<div class="wait"><span class="e">📨</span><h2>Abgegeben!</h2><p>Wartet auf die Auflösung am Beamer.</p></div></div>`);
+  if(myAns[i])return card(`<div class="card">${head()}<div class="wait"><span class="e">📨</span><h2>Abgegeben!</h2><p>Wartet auf die Auflösung bei der Spielleitung.</p></div></div>`);
   const jUsed=g.jokers&&g.jokers[TEAM.id]!=null;const d=drafts[i]||[];
   card(`<div class="card">${head()}<span class="evtag">${ev.icon} ${esc(ev.name)}</span><h2 style="margin:.3rem 0">${esc(r.titel)}</h2><p style="font-weight:700;margin:.2rem 0">${esc(r.fall)}</p>
    <p style="font-weight:900;color:var(--green-d)">${esc(r.frage)} <span class="mini-clock" id="mc"></span></p><div class="small">Botanisch und deutsch, z. B. «Carpinus betulus, Hainbuche»</div>
@@ -203,7 +205,7 @@ async function renderPlayer(){
    if(GAME.data.phase!=='question'){$('#m').innerHTML='<div class="msg err">Die Zeit ist leider abgelaufen.</div>';return}
    $('#send').disabled=true;try{myAns[i]=await LA.add('arena_ans',g.code+':'+i,{team:TEAM.id,plants:pl,joker:$('#jk').checked&&!jUsed});view='';renderPlayer()}catch(e){$('#m').innerHTML='<div class="msg err">'+esc(e.message)+'</div>';$('#send').disabled=false}};
   return}
- if(ph==='mark')return card(`<div class="card">${head()}<div class="wait"><span class="e">🧐</span><h2>Zeit um!</h2><p>Die Lehrperson bewertet jetzt eure Pflanzen am Beamer. Diskutiert mit: Was passt, was nicht?</p></div></div>`);
+ if(ph==='mark')return card(`<div class="card">${head()}<div class="wait"><span class="e">🧐</span><h2>Zeit um!</h2><p>Die Spielleitung bewertet jetzt eure Pflanzen. Diskutiert mit: Was passt, was nicht?</p></div></div>`);
  if(ph==='scores'){const L=(g.last||{})[TEAM.id];
   return card(`<div class="card">${head()}${L?`<div class="res-big">+${L.tot}</div><ul style="font-weight:800"><li>✅ Korrekt: ${L.k}</li><li>⚡ Tempo: ${L.t?'+'+L.t:'0'}</li><li>🦄 Unikat: ${L.u?'+'+L.u:'0'}</li>${L.mult>1?`<li>✖️ Bonus: ×${L.mult}</li>`:''}</ul>`:'<p>Diese Runde habt ihr nichts abgegeben.</p>'}<p style="text-align:center;font-weight:900;font-size:1.2rem">Rang ${rankOf()}</p><div class="small" style="text-align:center">Gleich kommt die nächste Ereigniskarte …</div></div>`)}
  if(ph==='end'){clearInterval(pH);return card(`<div class="card">${head()}<div class="wait"><span class="e">🏆</span><h2>Spiel fertig: Rang ${rankOf()}</h2><p>Danke fürs Mitspielen! Lernt bis zum 09.12. weiter: botanisch und deutsch. 🌱</p></div></div>`)}
