@@ -271,7 +271,9 @@ function home(){
  const st=(ok,txt)=>`<span class="st ${ok?"done":""}">${txt}</span>`;
  $("tiles").innerHTML=`
  <button class="tile ci" data-go="ci"><div class="ic">🎟️</div><div><b>1 · Check-in</b><span>Was weisst du noch vom 26.11.? Ladungssicherung L63–65 · 12 Fragen, 25 s pro Frage</span></div>${S.ci?st(true,"✓ "+S.ci.pts+" Pkt."):st(false,"zuerst!")}</button>
- <button class="tile" data-go="sim"><div class="ic">🎮</div><div><b>2 · Ladungs-Simulator</b><span>Dossier L63–65: Missionen in deinem Niveau · mit Erklärungen</span></div>${st(false,"öffnen ↗")}</button>
+ <button class="tile" data-go="pt"><div class="ic">🌿</div><div><b>2 · Pflanzen-Transport</b><span>Zum Dossier «Pflanzen sicher transportieren» · 4 Runden bis Gold</span></div>${st(false,"öffnen ↗")}</button>
+ <button class="tile" data-go="kt"><div class="ic">🎙️</div><div><b>2b · Kolloquium-Trainer</b><span>Fallkarten mit Bild, Timer, Vertiefungsfragen, Selbstbewertung</span></div>${st(false,"öffnen ↗")}</button>
+ <button class="tile" data-go="sim"><div class="ic">🎮</div><div><b>2c · Ladungs-Simulator</b><span>Missionen in deinem Niveau · mit Erklärungen</span></div>${st(false,"öffnen ↗")}</button>
  <button class="tile" data-go="sort"><div class="ic">🎤</div><div><b>3 · Stimmt's? Kolloquium-Blitz</b><span>Schnell entscheiden: L53–68 quer durch</span></div>${S.mods.sort?st(S.mods.sort.best>=80,S.mods.sort.best+" %"):st(false,"offen")}</button>
  <button class="tile" data-go="quiz"><div class="ic">🧠</div><div><b>4 · Kolloquium-Training</b><span>10 Fragen zu L53–68 in deinem Niveau · beliebig oft</span></div>${S.mods.quiz?st(S.mods.quiz.best>=80,S.mods.quiz.best+" %"):st(false,"offen")}</button>
  <button class="tile co ${open?"":"lock"}" data-go="co"><div class="ic">${open?"✅":"🔒"}</div><div><b>5 · Checkout = Ticket zum Aufräumen</b><span>${open?"Jetzt offen! 8 Fragen: Kolloquium L53–68 + Transport":"Öffnet um 16.45 Uhr (noch "+untilText()+")"}</span></div>${S.co.length?st(true,"✓ "+S.co[0].score+"/"+S.co[0].total):st(false,open?"offen":"🔒")}</button>`;
@@ -345,7 +347,7 @@ $("snext").onclick=async()=>{si++;if(si<sset.length)drawS();else{const pct=Math.
 async function goCO(){await syncTime();if(!checkoutOpen()){const t=LA.user&&LA.user.role==="teacher";
  $("resBox").innerHTML=`<div class="lockbox"><div style="font-size:3rem">🔒</div><div class="clock">16.45 Uhr</div><p>Der Checkout öffnet erst um 16.45 Uhr.<br>Noch <b>${untilText()}</b>.</p><p class="small">Bis dahin: Dossier fertig, Simulator-Missionen, Kolloquium-Training.</p>${t?'<p class="small" style="margin-top:14px">👩‍🏫 Nur für dich als Lehrperson sichtbar:</p><button class="btn" id="tPrev">Vorschau Checkout (Lehrperson)</button>':""}</div>`;
  show("res");if(t)$("tPrev").onclick=()=>startQ("co");return;}startQ("co");}
-const GO={ci:()=>startQ("ci"),sort:startSort,quiz:()=>startQ("quiz"),co:goCO,sim:()=>{location.href="../ladungs-simulator/";}};
+const GO={ci:()=>startQ("ci"),sort:startSort,quiz:()=>startQ("quiz"),co:goCO,sim:()=>{location.href="../ladungs-simulator/";},pt:()=>{location.href="../pflanzen-transport/";},kt:()=>{location.href="../kolloquium-trainer/";}};
 
 /* ================= LEHRPERSON ================= */
 const BEAMER=/[?&]beamer=1/.test(location.search);let tT=null;
