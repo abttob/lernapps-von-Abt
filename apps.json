@@ -154,5 +154,17 @@
     "title": "🎤 Kolloquium-Champion – Abschlussspiel L53–68",
     "description": "Steh-auf-Quiz am Beamer: 15 Aussagen zu Kompost, Mulch, Lagern, Warten und Entsorgen, mit Joker, Finale und Kolloquium-Bonusfrage.",
     "added": "2026-11-27"
+  },
+  {
+    "slug": "pflanzen-transport",
+    "title": "🌿 Pflanzen-Transport – L64/L65",
+    "description": "Gefahren erkennen (Fahrtwind, Kälte, Hitze, Druck, Erschütterung), Schutz wählen, Fehler-Detektiv auf der Brücke und Profi-Fragen. Passend zum Dossier «Pflanzen sicher transportieren».",
+    "added": "2026-11-27"
+  },
+  {
+    "slug": "kolloquium-trainer",
+    "title": "🎤 Kolloquium-Trainer L53–68",
+    "description": "Kolloquium-Simulator mit 40 Fallkarten (Bild, Vorbereitungstimer, Vertiefungsfragen, Selbstbewertung 1–4), Quiz-Mix in 7 Frageformen, Fachbegriffe-Karten und persönlicher Stand.",
+    "added": "2026-11-27"
   }
 ]

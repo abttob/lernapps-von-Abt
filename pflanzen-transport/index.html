@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🌿 Pflanzen-Transport – L64/L65</title>
+<style>
+:root{--bg:#14151a;--card:#20232c;--card2:#2a2e3a;--ink:#f3f5f2;--muted:#a7b0aa;--lime:#98c723;--gelb:#ffc400;--gruen:#21c36b;--rot:#ff5a5a;--blau:#4da3ff;--line:#363b48}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.4}
+.wrap{max-width:720px;margin:0 auto;padding:14px 14px 60px}
+a.back{color:var(--muted);text-decoration:none;font-size:14px}
+h1{font-size:24px;margin:8px 0 2px}.sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+.tile{display:flex;gap:12px;align-items:center;width:100%;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px;margin:10px 0;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.tile:hover{border-color:var(--lime)}.tile .ic{font-size:32px}.tile b{font-size:17px}.tile span{display:block;color:var(--muted);font-size:13px}
+.tile .st{margin-left:auto;font-size:20px;white-space:nowrap}
+.card{background:var(--card);border-radius:16px;padding:16px;margin:10px 0}
+.art{border-radius:14px;overflow:hidden;max-width:420px;margin:0 auto 10px}.art svg{display:block;width:100%;height:auto}
+.q{font-size:18px;font-weight:700;margin:6px 0 12px}
+.opt{display:block;width:100%;text-align:left;background:var(--card2);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:13px 14px;margin:8px 0;font:inherit;font-size:16px;cursor:pointer}
+.opt.sel{border-color:var(--blau);background:#1d2b40}.opt.ok{border-color:var(--gruen);background:#143a27}.opt.bad{border-color:var(--rot);background:#3d1a1d}
+.btn{background:var(--lime);color:#14151a;border:0;border-radius:12px;padding:13px 18px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;margin-top:8px}
+.btn.sec{background:var(--card2);color:var(--ink)}
+.fb{margin-top:10px;padding:12px;border-radius:12px;background:var(--card2);font-size:15px}
+.bar{height:8px;background:var(--card2);border-radius:8px;overflow:hidden;margin:6px 0 12px}.bar i{display:block;height:100%;background:var(--lime)}
+.top{display:flex;justify-content:space-between;color:var(--muted);font-size:14px}
+.medal{font-size:64px;text-align:center}.center{text-align:center}
+.spot{cursor:pointer}.chip{display:inline-block;background:var(--card2);border-radius:20px;padding:4px 10px;margin:3px;font-size:13px}
+.hint{color:var(--muted);font-size:13px}
+</style></head><body><div class="wrap" id="app"></div>
+<script src="art.js"></script>
+<script>
+const KEY="pflanzen-transport-v1";
+let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s), app=$("#app");
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+/* ---------- Inhalte (Ordner E3 S. 355–356, Dossier L63–65) ---------- */
+const GEF=["💨 Fahrtwind","❄️ Kälte","☀️ Hitze","🤜 Druckstellen","〰️ Erschütterungen"];
+const R1=[
+{a:"wind",t:"Du fährst 30 Stauden auf der offenen Brücke 20 Minuten über Land. Am Ziel hängen die Blätter schlaff.",g:0,e:"Der Fahrtwind entzieht den Blättern Wasser. Abdecken, Tempo anpassen, nicht auf der Autobahn."},
+{a:"frost",t:"Im Dezember lieferst du bei –2 °C Weihnachtssterne. Am nächsten Tag sind die Blätter glasig und schwarz.",g:1,e:"Temperaturschock durch Kälte. Schrumpffolie, geschlossenes Fahrzeug, schnell ausladen."},
+{a:"sonne",t:"Über Mittag stehen die Containerpflanzen eine Stunde im Lieferwagen auf dem Parkplatz. Es ist Juli.",g:2,e:"Im Fahrzeug wird es sehr heiss: Pflanzen welken und verbrennen. Schattig abstellen, lüften."},
+{a:"druck",t:"Das Spannset liegt direkt über dem Stamm eines Hochstamms. Am Ziel ist die Rinde aufgerissen.",g:3,e:"Druckstelle an der Rinde = Wunde und Eintrittspforte für Krankheiten. Stammschutz (Ballentuch, Kunststoff) unterlegen."},
+{a:"schuetteln",t:"Ein grosser Wurzelballen rollt bei jeder Kurve hin und her. Am Ziel ist der Ballen auseinandergebrochen.",g:4,e:"Erschütterungen zerstören den Ballen, Feinwurzeln reissen. Ballen mit Keilen und Spannset sichern."},
+{a:"stauden",t:"Die Töpfe stehen mit grossen Lücken auf der Brücke. Nach der Fahrt liegen viele um, Triebe sind abgeknickt.",g:3,e:"Umfallende Töpfe drücken und knicken Triebe. Topf an Topf stellen oder Kisten/Paletten mit Rahmen."},
+{a:"hochstamm",t:"Ein Hochstamm liegt auf der Brücke, die Krone ragt im Fahrtwind über die Kabine hinaus.",g:0,e:"Die Krone trocknet im Fahrtwind aus und wird gepeitscht. Krone zusammenbinden und abdecken."},
+{a:"lieferwagen",t:"Auf einer holprigen Baustellenzufahrt springen die Wavinboxen mit Wechselflor auf und ab.",g:4,e:"Erschütterungen schütteln Erde und Blüten heraus. Kisten kreuzweise stapeln, sichern, langsam fahren."}
+];
+const R2=[
+{q:"Gegen Austrocknung durch Fahrtwind hilft …",o:[["Pflanzen und Wurzelballen abdecken",1],["Verdunstungsschutz aufsprühen",1],["Tempo anpassen, nicht auf die Autobahn",1],["Pflanzen vor der Fahrt nicht mehr giessen",0],["Schneller fahren, damit es kürzer dauert",0]]},
+{q:"Gegen mechanische Schäden (Druck, Umfallen) helfen …",o:[["Transport in Kisten (Wavinbox, Staudenkiste)",1],["CC-Wagen für Topfpflanzen und Wechselflor",1],["Stämme polstern",1],["Töpfe mit viel Abstand verteilen",0],["Spannset direkt über die Rinde",0]]},
+{q:"Grosse Ballenpflanzen sicherst du so:",o:[["Ballen mit Keilen gegen Rollen sichern",1],["Spannset über den Ballen",1],["Schwer und vorne an die Stirnwand",1],["Ballen ganz hinten, damit man gut auslädt",0],["Am Stamm festbinden, Ballen lose",0]]},
+{q:"Bei Kälte im Winter schützt du Pflanzen so:",o:[["Schrumpffolie bei empfindlichen Pflanzen",1],["Geschlossenes Fahrzeug oder Planenaufbau",1],["Rasch ausladen, nicht stehen lassen",1],["Pflanzen nass machen",0],["Offene Brücke ohne Abdeckung",0]]},
+{q:"Was stimmt zur Verantwortung und zum Gewicht?",o:[["Die Person am Steuer ist verantwortlich",1],["Mitfahrer und Werkzeug zählen zur Zuladung",1],["Bei Überladung drohen Bussen und Ausweisentzug",1],["Wer geladen hat, wird gebüsst – nicht der Fahrer",0],["Pflanzen zählen nicht zum Gewicht",0]]},
+{q:"Wurzelnackte Gehölze transportierst du so:",o:[["Wurzeln feucht halten und abdecken",1],["Nicht in der Sonne stehen lassen",1],["Rasch pflanzen oder einschlagen",1],["Wurzeln frei im Fahrtwind trocknen lassen",0],["Mehrere Tage auf dem Anhänger lassen",0]]}
+];
+const SPOTS=[ // Fehler-Detektiv
+{x:40,y:52,t:"Hochstamm liegt ganz hinten, Krone ragt über die Kabine",bad:1,e:"Schweres gehört vorne an die Stirnwand, Krone zusammenbinden und schützen."},
+{x:86,y:34,t:"Spannset direkt über der Rinde",bad:1,e:"Immer Stammschutz (Ballentuch oder Kunststoff) unterlegen."},
+{x:112,y:30,t:"Stauden stehen lose mit Lücken",bad:1,e:"Topf an Topf, in Kisten oder auf Palette mit Rahmen."},
+{x:150,y:20,t:"Keine Abdeckung, es ist windig",bad:1,e:"Pflanzen und Ballen abdecken gegen Fahrtwind."},
+{x:160,y:78,t:"Fahrt über die Autobahn mit 120 km/h",bad:1,e:"Tempo anpassen, Autobahn vermeiden."},
+{x:22,y:62,t:"Antirutschmatte unter dem Ballen",bad:0,e:"Richtig: mehr Reibung, weniger Rutschen."},
+{x:66,y:52,t:"Ladung liegt tief, Schwerpunkt unten",bad:0,e:"Richtig: tiefer Schwerpunkt, das Fahrzeug kippt weniger."}
+];
+const R4=[
+{q:"Warum ist ein gebrochener Wurzelballen so schlimm?",o:["Die Feinwurzeln reissen: Die Pflanze nimmt kaum Wasser auf und wächst schlecht an","Der Ballen wird schwerer","Die Pflanze blüht früher","Das ist egal, Hauptsache der Stamm ist ganz"],e:"Im Ballen sitzen die Feinwurzeln. Ohne sie kein Wasser."},
+{q:"Eine Druckstelle an der Rinde ist gefährlich, weil …",o:["… sie eine Eintrittspforte für Krankheiten ist","… die Pflanze schneller wächst","… die Blätter grösser werden","… der Baum dann leichter ist"],e:"Wunden an der Rinde heilen schlecht, Pilze und Bakterien dringen ein."},
+{q:"Warum werden Weihnachtssterne in Schrumpffolie verpackt?",o:["Schutz vor Temperaturschock und Fahrtwind","Damit sie schöner glänzen","Damit sie nicht giessen müssen","Damit sie leichter sind"],e:"Weihnachtssterne sind sehr kälteempfindlich."},
+{q:"Was ist ein CC-Wagen?",o:["Ein Rollwagen mit Etagen für Topfpflanzen und Wechselflor","Ein Kühlwagen","Ein Kran für Hochstämme","Ein Anhänger für Kies"],e:"So stehen Töpfe sicher und werden nicht gequetscht."},
+{q:"4 Ballen à 180 kg, 20 Container à 15 kg, 2 Personen (160 kg), Werkzeug 60 kg. Nutzlast 1200 kg. Geht das?",o:["Nein: 720 + 300 + 160 + 60 = 1240 kg, das ist zu viel","Ja, das geht locker","Ja, Personen zählen nicht","Ja, Pflanzen zählen nicht zum Gewicht"],e:"Alles zählt zur Zuladung: auch Personen, Kanister, Werkzeug, Gurte."},
+{q:"Welche Ladung kommt zuerst auf die Brücke?",o:["Die schweren Ballen vorne an die Stirnwand","Die leichten Stauden ganz vorne","Egal, Hauptsache alles hat Platz","Zuerst das Werkzeug obendrauf"],e:"Schweres vorne und unten, formschlüssig laden."},
+{q:"Offene Brücke im Winter: Was ist das grösste Problem für Pflanzen?",o:["Fahrtwind und Kälte","Zu viel Licht","Zu viel Platz","Die Farbe der Brücke"],e:"Darum abdecken oder geschlossen transportieren."},
+{q:"Wer ist bei einer Polizeikontrolle für die Ladung verantwortlich?",o:["Die Person am Steuer","Die Person, die geladen hat","Die Kundin","Der Lehrbetrieb allein"],e:"Auch wenn jemand anderes geladen hat."}
+];
+/* ---------- UI ---------- */
+const star=p=>p==null?"⬜":p>=90?"🥇":p>=70?"🥈":p>=50?"🥉":"🔁";
+function home(){
+ const m=["r1","r2","r3","r4"].map(k=>S[k]);const done=m.filter(x=>x!=null);const avg=done.length?Math.round(done.reduce((a,b)=>a+b,0)/done.length):null;
+ app.innerHTML=`<a class="back" href="../">← Alle Apps</a><h1>🌿 Pflanzen-Transport</h1><div class="sub">L64/L65 · Gefahren erkennen, Pflanzen schützen, richtig laden · Ordner E3 S. 355–356</div>
+ <div class="art">${ART("hochstamm")}</div>
+ ${[["r1","⚠️","1 · Gefahr erkennen","8 Situationen: Was schadet der Pflanze?"],["r2","🛡️","2 · Schutz wählen","Mehrere richtige Antworten antippen"],["r3","🔍","3 · Fehler-Detektiv","Finde die Fehler auf der Brücke"],["r4","🎤","4 · Profi-Fragen","Vertiefungsfragen wie im Kolloquium"]].map(([k,i,t,s])=>`<button class="tile" data-k="${k}"><span class="ic">${i}</span><div><b>${t}</b><span>${s}</span></div><span class="st">${star(S[k])}${S[k]!=null?" "+S[k]+"%":""}</span></button>`).join("")}
+ <div class="card center">${avg==null?"Starte mit Runde 1!":`Dein Schnitt: <b>${avg} %</b> ${star(avg)}`}${done.length==4&&avg>=90?"<div class='medal'>🏆</div><b>Gold! Du bist Transport-Profi.</b>":""}</div>`;
+ app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>({r1,r2,r3,r4})[b.dataset.k]());
+}
+function finish(k,p,txt){S[k]=Math.max(S[k]||0,p);save();
+ app.innerHTML=`<div class="card center"><div class="medal">${star(p)}</div><h2>${p} %</h2><p>${txt||""}</p><button class="btn" id="h">🏠 Übersicht</button> <button class="btn sec" id="a">🔁 Nochmals</button></div>`;
+ $("#h").onclick=home;$("#a").onclick=()=>({r1,r2,r3,r4})[k]();}
+function r1(){const set=shuffle(R1);let i=0,ok=0;
+ const draw=()=>{const s=set[i];app.innerHTML=`<div class="top"><span>⚠️ Gefahr erkennen</span><span>${i+1}/${set.length}</span></div><div class="bar"><i style="width:${i/set.length*100}%"></i></div>
+ <div class="card"><div class="art">${ART(s.a)}</div><div class="q">${esc(s.t)}</div><div class="hint">Welche Gefahr war das?</div>${GEF.map((g,j)=>`<button class="opt" data-j="${j}">${g}</button>`).join("")}<div id="fb"></div></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(app.querySelector(".ok"))return;const j=+b.dataset.j;app.querySelectorAll(".opt")[s.g].classList.add("ok");if(j===s.g)ok++;else b.classList.add("bad");
+   $("#fb").innerHTML=`<div class="fb">${j===s.g?"✅ Richtig!":"❌ Nicht ganz."} ${esc(s.e)}</div><button class="btn" id="n">Weiter ➜</button>`;$("#n").onclick=()=>{i++;i<set.length?draw():finish("r1",Math.round(ok/set.length*100),"Gefahren erkannt: "+ok+" von "+set.length)}});};draw();}
+function r2(){const set=shuffle(R2);let i=0,pts=0,max=0;
+ const draw=()=>{const s=set[i];const os=shuffle(s.o);app.innerHTML=`<div class="top"><span>🛡️ Schutz wählen</span><span>${i+1}/${set.length}</span></div><div class="bar"><i style="width:${i/set.length*100}%"></i></div>
+ <div class="card"><div class="q">${esc(s.q)}</div><div class="hint">Tippe ALLE richtigen an, dann «Prüfen».</div>${os.map((o,j)=>`<button class="opt" data-j="${j}">${esc(o[0])}</button>`).join("")}<button class="btn" id="p">Prüfen</button><div id="fb"></div></div>`;
+  const bs=[...app.querySelectorAll(".opt")];bs.forEach(b=>b.onclick=()=>{if($("#p").disabled)return;b.classList.toggle("sel")});
+  $("#p").onclick=()=>{$("#p").disabled=true;let r=0;bs.forEach((b,j)=>{const c=os[j][1],sel=b.classList.contains("sel");b.classList.remove("sel");if(c)b.classList.add("ok");else if(sel)b.classList.add("bad");if(c===+sel)r++});pts+=r;max+=bs.length;
+   $("#fb").innerHTML=`<div class="fb">${r===bs.length?"✅ Alles richtig!":"Grün = richtig. "+r+" von "+bs.length+" Entscheidungen stimmen."}</div><button class="btn" id="n">Weiter ➜</button>`;$("#n").onclick=()=>{i++;i<set.length?draw():finish("r2",Math.round(pts/max*100))}};};draw();}
+function r3(){const sel=new Set();
+ const scene=`<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">${ART("detektiv").replace(/^<svg[^>]*>|<\/svg>$/g,"")}<rect x="150" y="96" width="44" height="18" rx="4" fill="#fff"/><text x="172" y="109" font-size="10" text-anchor="middle" font-weight="800">120 km/h</text>${SPOTS.map((p,j)=>`<g class="spot" data-j="${j}"><circle cx="${p.x}" cy="${p.y}" r="8" fill="#ffc400" stroke="#14151a" stroke-width="2"/><text x="${p.x}" y="${p.y+4}" font-size="10" text-anchor="middle" font-weight="800">${j+1}</text></g>`).join("")}</svg>`;
+ app.innerHTML=`<div class="top"><span>🔍 Fehler-Detektiv</span><span>${SPOTS.filter(s=>s.bad).length} Fehler versteckt</span></div><div class="card"><div class="art" style="max-width:560px">${scene}</div>
+ <div class="hint">Tippe die Nummern an (im Bild oder in der Liste), die FALSCH sind. Achtung: 2 Punkte sind richtig!</div>
+ ${SPOTS.map((p,j)=>`<button class="opt" data-j="${j}"><b>${j+1}</b> · ${esc(p.t)}</button>`).join("")}<button class="btn" id="p">Prüfen</button><div id="fb"></div></div>`;
+ const tog=j=>{if($("#p").disabled)return;sel.has(j)?sel.delete(j):sel.add(j);app.querySelectorAll(".opt").forEach((b,k)=>b.classList.toggle("sel",sel.has(k)))};
+ app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>tog(+b.dataset.j));app.querySelectorAll(".spot").forEach(g=>g.onclick=()=>tog(+g.dataset.j));
+ $("#p").onclick=()=>{$("#p").disabled=true;let r=0;app.querySelectorAll(".opt").forEach((b,j)=>{const s=SPOTS[j],c=sel.has(j);b.classList.remove("sel");b.classList.add(c===!!s.bad?"ok":"bad");if(c===!!s.bad)r++;b.innerHTML+=`<div class="hint">${s.bad?"❌ Fehler: ":"✅ "}${esc(s.e)}</div>`});
+  $("#fb").innerHTML=`<button class="btn" id="n">Auswertung ➜</button>`;$("#n").onclick=()=>finish("r3",Math.round(r/SPOTS.length*100),r+" von "+SPOTS.length+" richtig beurteilt")};}
+function r4(){const set=shuffle(R4);let i=0,ok=0;
+ const draw=()=>{const s=set[i];const os=shuffle(s.o.map((t,j)=>[t,j===0]));app.innerHTML=`<div class="top"><span>🎤 Profi-Fragen</span><span>${i+1}/${set.length}</span></div><div class="bar"><i style="width:${i/set.length*100}%"></i></div>
+ <div class="card"><div class="q">${esc(s.q)}</div><div class="hint">🎤 Tipp: Sag die Antwort zuerst laut, dann tippen.</div>${os.map((o,j)=>`<button class="opt" data-j="${j}">${esc(o[0])}</button>`).join("")}<div id="fb"></div></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(app.querySelector(".ok"))return;const j=+b.dataset.j;const c=os.findIndex(o=>o[1]);app.querySelectorAll(".opt")[c].classList.add("ok");if(j===c)ok++;else b.classList.add("bad");
+   $("#fb").innerHTML=`<div class="fb">${j===c?"✅":"❌"} ${esc(s.e)}</div><button class="btn" id="n">Weiter ➜</button>`;$("#n").onclick=()=>{i++;i<set.length?draw():finish("r4",Math.round(ok/set.length*100))}});};draw();}
+home();
+</script></body></html>
