@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exit-Quiz EBA 2 – Blockkurs Tag 2</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<style>
+  :root { --g:#98C723; --gd:#4E7A12; --gl:#EEF6DC; --dk:#22262A; --grey:#6B7378;
+          --a0:#E21B3C; --a1:#1368CE; --a2:#D89E00; --a3:#26890C; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; font-family: "Century Gothic", "Avenir Next", "Segoe UI", system-ui, sans-serif; color:var(--dk); background:#F6F8F2; }
+  button { font:inherit; cursor:pointer; border:0; }
+  .wrap { max-width:560px; margin:0 auto; padding:18px 16px 40px; }
+  .top { display:flex; justify-content:space-between; align-items:center; font-size:14px; color:var(--grey); }
+  .top a { color:var(--gd); text-decoration:none; }
+  h1 { font-size:26px; margin:14px 0 4px; }
+  .sub { color:var(--grey); margin:0 0 18px; }
+  .card { background:#fff; border-radius:18px; padding:18px; box-shadow:0 2px 10px rgba(0,0,0,.06); margin-bottom:14px; }
+  label { display:block; font-weight:700; margin:10px 0 6px; }
+  input { width:100%; font:inherit; font-size:20px; padding:14px; border-radius:12px; border:2px solid #D7DDCF; }
+  input:focus { outline:none; border-color:var(--g); }
+  .btn { display:block; width:100%; padding:16px; border-radius:14px; background:var(--g); color:var(--dk); font-size:20px; font-weight:700; margin-top:14px; }
+  .btn.dark { background:var(--dk); color:#fff; }
+  .btn:disabled { opacity:.5; }
+  .err { color:#B5462B; font-weight:700; margin-top:10px; min-height:1.2em; }
+  .center { text-align:center; }
+  .big { font-size:28px; font-weight:800; }
+  .muted { color:var(--grey); }
+  .answers { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+  .ans { min-height:120px; border-radius:16px; color:#fff; font-size:17px; font-weight:700; padding:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; text-align:center; box-shadow:0 4px 0 rgba(0,0,0,.18); }
+  .ans .sym { font-size:30px; line-height:1; }
+  .ans:active { transform:translateY(2px); box-shadow:0 2px 0 rgba(0,0,0,.18); }
+  .c0{background:var(--a0)} .c1{background:var(--a1)} .c2{background:var(--a2)} .c3{background:var(--a3)}
+  .result { border-radius:18px; padding:28px 18px; color:#fff; text-align:center; }
+  .result.ok { background:var(--a3); } .result.no { background:var(--a0); } .result.wait { background:var(--dk); }
+  .pill { display:inline-block; background:var(--gl); color:var(--gd); border-radius:99px; padding:6px 14px; font-weight:700; }
+  .spinner { width:46px; height:46px; border:5px solid #DDE5CF; border-top-color:var(--g); border-radius:50%; margin:18px auto; animation:sp 1s linear infinite; }
+  @keyframes sp { to { transform:rotate(360deg); } }
+
+  /* ---------- Beamer ---------- */
+  body.beamer { background:#1F2A14; color:#fff; overflow:hidden; }
+  .bm { position:fixed; inset:0; display:flex; flex-direction:column; padding:2.2vh 3vw; }
+  .bm-head { display:flex; justify-content:space-between; align-items:center; font-size:2.2vh; color:#C9D6B4; }
+  .bm-head b { color:#fff; }
+  .bm-main { flex:1; display:flex; flex-direction:column; justify-content:center; min-height:0; }
+  .bm-foot { display:flex; justify-content:space-between; align-items:center; font-size:2vh; color:#C9D6B4; }
+  .bm .btn { width:auto; display:inline-block; padding:1.4vh 3vw; font-size:2.6vh; margin:0; }
+  .lobby { display:grid; grid-template-columns: 1fr 1.2fr; gap:4vw; align-items:center; }
+  .lobby .qr { background:#fff; border-radius:2vh; padding:2vh; display:inline-block; }
+  .lobby .qr img, .lobby .qr canvas { width:30vh; height:30vh; image-rendering:pixelated; display:block; }
+  .code { font-size:12vh; font-weight:800; letter-spacing:1vh; color:var(--g); line-height:1; }
+  .url { font-size:2.6vh; color:#E6EED8; }
+  .names { display:flex; flex-wrap:wrap; gap:1vh; margin-top:2vh; max-height:40vh; overflow:hidden; }
+  .names span { background:rgba(255,255,255,.12); padding:.8vh 1.6vh; border-radius:99px; font-size:2.4vh; animation:pop .3s; }
+  @keyframes pop { from { transform:scale(.6); opacity:0; } }
+  .qtitle { font-size:4.6vh; font-weight:800; text-align:center; margin:1vh 4vw 3vh; line-height:1.2; }
+  .qnum { text-align:center; font-size:2.4vh; color:#C9D6B4; }
+  .timer { width:12vh; height:12vh; border-radius:50%; background:var(--g); color:var(--dk); display:flex; align-items:center; justify-content:center; font-size:5vh; font-weight:800; }
+  .qmid { display:flex; justify-content:space-between; align-items:center; margin:0 4vw 3vh; }
+  .qmid .cnt { text-align:center; font-size:2.4vh; } .qmid .cnt b { display:block; font-size:5vh; }
+  .bm .answers { gap:1.6vh; margin:0; }
+  .bm .ans { min-height:13vh; font-size:3.4vh; flex-direction:row; justify-content:flex-start; padding:0 2.5vw; gap:2vw; text-align:left; box-shadow:none; transition:opacity .3s; }
+  .bm .ans .sym { font-size:5vh; }
+  .bm .ans.dim { opacity:.25; }
+  .bm .ans .bar { margin-left:auto; font-size:3vh; }
+  .board { margin:0 auto; width:min(80vw, 110vh); }
+  .row { display:grid; grid-template-columns:7vh 1fr 14vh; align-items:center; background:rgba(255,255,255,.08); border-radius:1.2vh; margin-bottom:1vh; padding:1.1vh 1.6vh; font-size:3vh; }
+  .row .rk { font-weight:800; color:var(--g); }
+  .row .pts { text-align:right; font-weight:800; }
+  .row.top1 { background:rgba(152,199,35,.35); }
+  .podium { display:flex; justify-content:center; align-items:flex-end; gap:2vw; height:46vh; }
+  .pod { width:22vw; text-align:center; }
+  .pod .nm { font-size:3.4vh; font-weight:800; margin-bottom:1vh; }
+  .pod .pt { font-size:2.4vh; color:#C9D6B4; margin-bottom:1vh; }
+  .pod .blk { border-radius:1.4vh 1.4vh 0 0; display:flex; align-items:flex-start; justify-content:center; padding-top:2vh; font-size:7vh; font-weight:800; color:var(--dk); animation:up .9s ease-out both; }
+  @keyframes up { from { transform:scaleY(0); transform-origin:bottom; } }
+  .p1 .blk { height:30vh; background:#E8C547; } .p2 .blk { height:22vh; background:#C9CDD2; } .p3 .blk { height:15vh; background:#D49A6A; }
+  .hard { display:grid; grid-template-columns:repeat(3,1fr); gap:1.6vw; margin-top:3vh; }
+  .hard div { background:rgba(255,255,255,.08); border-radius:1.4vh; padding:1.6vh; font-size:2.1vh; line-height:1.3; }
+  .hard b { color:var(--g); display:block; font-size:2.6vh; margin-bottom:.6vh; }
+  .hard i { color:#E6EED8; font-style:normal; display:block; margin-top:.8vh; }
+  .hint { font-size:1.8vh; color:#93A07C; }
+
+  /* ---------- Auswertung ---------- */
+  .mx { border-collapse:collapse; margin:1vh auto; font-size:1.9vh; }
+  .mx th, .mx td { padding:.6vh .7vw; text-align:center; border-bottom:1px solid rgba(255,255,255,.12); }
+  .mx thead th { font-size:1.7vh; color:#C9D6B4; vertical-align:bottom; }
+  .mx thead small { display:block; font-size:1.2vh; font-weight:400; max-width:6vw; }
+  .mx tbody th { text-align:left; white-space:nowrap; }
+  .mx-ok { color:#9BE36A; font-weight:800; } .mx-no { color:#FF7B7B; font-weight:800; } .mx-n { color:#6E7C5E; }
+  .mx-sum { font-weight:800; } .mx .low, .mx-sum.low { color:#FF9C7B; }
+  .mx tfoot td, .mx tfoot th { font-weight:800; }
+  .mx-topics { display:flex; flex-wrap:wrap; gap:1vh; justify-content:center; margin-bottom:1vh; }
+  .mx-topics span { background:rgba(255,255,255,.1); border-radius:99px; padding:.6vh 1.4vh; font-size:2vh; }
+  .mx-topics span.low { background:rgba(226,27,60,.45); }
+  .mx-q { display:grid; grid-template-columns:repeat(2,1fr); gap:.8vh 2vw; font-size:1.7vh; margin-top:1.5vh; color:#E6EED8; }
+  .mx-q .low b { color:#FF9C7B; } .mx-q i { color:#9BE36A; font-style:normal; }
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function(){
+  const URL_ = "https://bbgqfuyezgxdcjcncrel.supabase.co/rest/v1/rpc/";
+  const KEY = "sb_publishable_z0hjQLCnjFoV00YvPUK9lw_JH6iskSy";
+  const LIMIT = 20;            // Sekunden pro Frage
+  const SYM = ["▲", "◆", "●", "■"];
+  const qs = new URLSearchParams(location.search);
+  const BEAMER = qs.has("beamer");
+  const $ = s => document.querySelector(s);
+  const app = $("#app");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  // ---------- Zwei Fragensets ----------
+  // Start-Check: Codes 1000–4999 · Exit-Quiz: Codes 5000–9999
+  const SETS = {
+    exit: {
+      title: "Exit-Quiz", sub: "Was nimmst du vom 2. Blockkurstag mit?",
+      Q: [
+        { t: "Platzbedarf", q: "Mit welcher Grösse planst du Bäume auf dem Plan?", a: ["Mit der Pflanzgrösse beim Kauf", "Mit der Endgrösse", "Mit der Topfgrösse", "Mit der Grösse nach 2 Jahren"], c: 1 },
+        { t: "Platzbedarf", q: "Massstab 1:200: Ein Baum hat 8 m Kronendurchmesser. Wie gross ist der Kreis auf dem Plan?", a: ["8 mm", "2 cm", "4 cm", "8 cm"], c: 2 },
+        { t: "Laubbäume", q: "Wie hoch wird ein mittelgrosser Baum?", a: ["2–6 m", "8–12 m", "12–30 m", "Über 40 m"], c: 1 },
+        { t: "Laubbäume", q: "Was muss ein Strassenbaum aushalten können?", a: ["Hitze, Streusalz, Abgase", "Nur viel Wasser", "Nur Schatten", "Gar nichts, er wird gut gepflegt"], c: 0 },
+        { t: "Laubbäume", q: "Welcher Baum ist ein Pionierbaum und spendet schnell Schatten?", a: ["Fagus sylvatica (Rot-Buche)", "Betula pendula (Hänge-Birke)", "Taxus baccata (Eibe)", "Quercus robur (Stiel-Eiche)"], c: 1 },
+        { t: "Wuchsformen", q: "Bei einem Baum treiben die oberen Knospen stärker aus. Wie nennt man das?", a: ["basiton", "akroton", "polsterbildend", "ausläuferbildend"], c: 1 },
+        { t: "Wuchsformen", q: "Welche Pflanze breitet sich mit Ausläufern aus?", a: ["Paeonia lactiflora (Pfingstrose)", "Miscanthus sinensis (Chinaschilf)", "Waldsteinia ternata (Golderdbeere)", "Delphinium (Rittersporn)"], c: 2 },
+        { t: "Geselligkeit", q: "Geselligkeitsstufe I bedeutet …", a: ["grossflächig pflanzen", "in grossen Gruppen von 10–20", "einzeln oder in kleinen Tuffs", "nur unter Bäumen"], c: 2 },
+        { t: "Bodendecker", q: "Fläche B ist 20 m² gross. Wie viele Bodendecker brauchst du (10–12 Stück/m²)?", a: ["20–24 Stück", "60–70 Stück", "200–240 Stück", "1000 Stück"], c: 2 },
+        { t: "Bodendecker", q: "Was passiert, wenn du zu wenig Bodendecker pflanzt?", a: ["Es wächst viel Beikraut", "Die Pflanzen konkurrieren stark", "Die Fläche ist sofort dicht", "Gar nichts"], c: 0 },
+        { t: "Hecken", q: "In welcher Form schneidet man eine Formhecke?", a: ["Oben breiter als unten", "Trapezform: unten breiter als oben", "Kugelform", "Senkrecht wie eine Wand"], c: 1 },
+        { t: "Grenzabstände", q: "Kanton Basel-Landschaft: Eine Hecke steht 60 cm von der Grenze. Wie hoch darf sie höchstens sein?", a: ["60 cm", "1.20 m", "1.80 m", "Beliebig hoch"], c: 2 },
+        { t: "Nadelgehölze", q: "Welches Nadelgehölz verliert im Winter seine Nadeln?", a: ["Picea abies (Fichte)", "Taxus baccata (Eibe)", "Pinus mugo (Berg-Föhre)", "Larix decidua (Lärche)"], c: 3 },
+      ]
+    }
+  };
+  const setOfCode = c => "exit";
+
+  // ---------- Helpers ----------
+  async function rpc(fn, args){
+    const r = await fetch(URL_ + fn, { method:"POST", headers:{ "apikey":KEY, "Authorization":"Bearer " + KEY, "Content-Type":"application/json" }, body:JSON.stringify(args) });
+    const txt = await r.text(); let data = null;
+    try { data = txt ? JSON.parse(txt) : null; } catch (e) {}
+    if (!r.ok) throw new Error((data && (data.message || data.hint)) || txt || "Fehler");
+    return data;
+  }
+  function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function msg(e){
+    const m = String(e && e.message || e);
+    if (/nicht gefunden/i.test(m)) return "Spiel nicht gefunden. Prüfe den Code.";
+    if (/Name/i.test(m)) return "Der Name braucht 2 bis 20 Zeichen.";
+    if (/voll/i.test(m)) return "Das Spiel ist voll.";
+    if (/geschlossen/i.test(m)) return "Zu spät – die Frage ist schon geschlossen.";
+    if (/fetch|network|Failed/i.test(m)) return "Keine Verbindung. Prüfe dein Internet.";
+    return "Das hat nicht geklappt. Versuche es nochmals.";
+  }
+  const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+
+  BEAMER ? beamer() : player();
+
+  // =================================================================
+  //  SPIELER (Handy)
+  // =================================================================
+  function player(){
+    let code = (qs.get("code") || store("ebaexit:code") || "").replace(/\D/g, "").slice(0, 6);
+    let pid = null, name = "", lastKey = "", timer = null, answeredQ = -1;
+    const S = () => SETS[setOfCode(code)];
+
+    function login(err){
+      app.innerHTML = `<div class="wrap">
+        <div class="top"><a href="../">← Alle Apps</a><span>BBZ BL · EBA 2</span></div>
+        <h1>Exit-Quiz 🏁</h1><p class="sub">Blockkurs Pflanzenkompetenz · 2. Kurstag</p>
+        <div class="card">
+          <label for="c">Spiel-Code (steht am Beamer)</label>
+          <input id="c" inputmode="numeric" maxlength="6" placeholder="z. B. 4821" value="${esc(code)}">
+          <label for="n">Dein Vorname</label>
+          <input id="n" maxlength="20" placeholder="Vorname" value="${esc(store("ebaexit:name") || "")}">
+          <button class="btn" id="go">Mitspielen</button>
+          <div class="err" id="err">${esc(err || "")}</div>
+        </div>
+      </div>`;
+      $("#go").onclick = async () => {
+        code = $("#c").value.replace(/\D/g, ""); name = $("#n").value.trim();
+        if (code.length < 4) return $("#err").textContent = "Bitte den Code eingeben.";
+        $("#go").disabled = true;
+        try {
+          pid = await rpc("rq_join", { p_code: code, p_name: name });
+          store("ebaexit:code", code); store("ebaexit:name", name); store("ebaexit:pid:" + code, pid);
+          poll();
+        } catch (e) { $("#err").textContent = msg(e); $("#go").disabled = false; }
+      };
+    }
+
+    async function poll(){
+      clearTimeout(timer);
+      try {
+        const s = await rpc("rq_state", { p_code: code, p_player: pid });
+        if (!s) { pid = null; return login("Das Spiel wurde beendet."); }
+        render(s);
+      } catch (e) { /* kurz offline: weiter versuchen */ }
+      timer = setTimeout(poll, 1000);
+    }
+
+    function render(s){
+      const key = [s.phase, s.q, s.my ? s.my.choice + "/" + s.my.correct : "-", s.me ? s.me.score : 0].join("|");
+      if (key === lastKey) return; lastKey = key;
+      const me = s.me || {}; const Q = S().Q;
+      let body = "";
+      if (s.phase === "lobby") {
+        body = `<div class="card center"><div class="big">Du bist dabei! 🌱</div><p><b>${esc(S().title)}</b><br>${esc(S().sub)}</p><p>Schau auf den Beamer. Gleich geht es los …</p><div class="spinner"></div><p class="muted">${s.players} Personen im Spiel</p></div>`;
+      } else if (s.phase === "question") {
+        const q = Q[s.q];
+        if (s.my || answeredQ === s.q) {
+          body = `<div class="result wait"><div class="big">Antwort gespeichert</div><p>Warte auf die anderen …</p><div class="spinner"></div></div>`;
+        } else {
+          body = `<p class="center muted">Frage ${s.q + 1} von ${Q.length} · ${esc(q.t)}</p><div class="card"><b>${esc(q.q)}</b></div>
+            <div class="answers">${q.a.map((t, i) => `<button class="ans c${i}" data-i="${i}"><span class="sym">${SYM[i]}</span>${esc(t)}</button>`).join("")}</div>
+            <div class="err" id="err"></div>`;
+        }
+      } else if (s.phase === "reveal") {
+        const q = Q[s.q];
+        if (!s.my) body = `<div class="result no"><div class="big">Keine Antwort</div><p>Richtig war: ${SYM[q.c]} ${esc(q.a[q.c])}</p></div>`;
+        else if (s.my.correct) body = `<div class="result ok"><div class="big">Richtig! ✔</div><p class="big">+${s.my.points}</p></div>`;
+        else body = `<div class="result no"><div class="big">Leider falsch ✘</div><p>Richtig war: ${SYM[q.c]} ${esc(q.a[q.c])}</p></div>`;
+        body += `<p class="center muted">Schau auf den Beamer.</p>`;
+      } else if (s.phase === "leaderboard") {
+        body = `<div class="card center"><p class="muted">Dein Zwischenrang</p><div class="big" style="font-size:56px">${me.rank || "–"}.</div><p>von ${s.players}</p><span class="pill">${me.score || 0} Punkte</span></div>`;
+      } else if (s.phase === "end") {
+        const r = me.rank || 0;
+        const medal = r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : "🌿";
+        body = `<div class="card center"><div style="font-size:70px">${medal}</div><div class="big">Rang ${r || "–"} von ${s.players}</div><p><span class="pill">${me.score || 0} Punkte</span></p><p>Danke fürs Mitspielen!</p></div>`;
+      }
+      app.innerHTML = `<div class="wrap"><div class="top"><span>${esc(me.name || name)}</span><span class="pill">${me.score || 0} Punkte</span></div>${body}</div>`;
+      document.querySelectorAll(".ans").forEach(b => b.onclick = async () => {
+        const i = +b.dataset.i;
+        document.querySelectorAll(".ans").forEach(x => { x.disabled = true; if (x !== b) x.style.opacity = .3; });
+        try { await rpc("rq_answer", { p_code: code, p_player: pid, p_q: s.q, p_choice: i }); answeredQ = s.q; lastKey = ""; }
+        catch (e) { const el = $("#err"); if (el) el.textContent = msg(e); }
+      });
+    }
+
+    const saved = code && store("ebaexit:pid:" + code);
+    if (saved && !qs.get("neu")) { pid = saved; name = store("ebaexit:name") || ""; poll(); } else login();
+  }
+
+  // =================================================================
+  //  BEAMER (Lehrperson)
+  // =================================================================
+  function beamer(){
+    document.body.classList.add("beamer");
+    const SET = "exit";
+    if (!SETS[SET]) {
+      app.innerHTML = `<div class="bm"><div class="bm-head"><span>🌳 <b>Pflanzen-Check</b> · Blockkurs EBA 2</span><span><a href="../" style="color:#C9D6B4">Alle Apps</a></span></div>
+        <div class="bm-main center"><p style="font-size:3.4vh">Welches Quiz möchtest du starten?</p>
+        <div style="display:flex;gap:3vw;justify-content:center;margin-top:3vh">
+          <a class="btn" style="text-decoration:none;font-size:3.2vh;padding:3vh 4vw" href="?beamer=1&set=start">▶ Start-Check<br><small>Repetition Tag 1 · 13 Fragen</small></a>
+          <a class="btn" style="text-decoration:none;font-size:3.2vh;padding:3vh 4vw" href="?beamer=1&set=exit">🏁 Exit-Quiz<br><small>Tag 2 · 13 Fragen</small></a>
+        </div></div></div>`;
+      return;
+    }
+    const S = SETS[SET], Q = S.Q;
+    const K = "ebaexit:host:" + SET + ":";
+    let code = store(K + "code"), token = store(K + "token");
+    let st = null, busy = false, timer = null, prevRanks = {}, showMatrix = false, matrix = null;
+    const joinUrl = location.origin + location.pathname;
+
+    async function newGame(){
+      const base = SET === "exit" ? 5000 : 1000;
+      code = String(base + Math.floor(Math.random() * 4000));
+      token = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()) + "x";
+      await rpc("rq_create", { p_code: code, p_token: token });
+      store(K + "code", code); store(K + "token", token);
+    }
+    async function start(){
+      app.innerHTML = `<div class="bm"><div class="bm-main center"><div class="spinner"></div></div></div>`;
+      try {
+        if (!code || !token || qs.has("neu")) { await newGame(); try { history.replaceState(null, "", location.pathname + "?beamer=1"); } catch (e) {} }
+        else { try { await rpc("rq_host", { p_code: code, p_token: token }); } catch (e) { await newGame(); } }
+        poll();
+      } catch (e) { app.innerHTML = `<div class="bm"><div class="bm-main center"><div class="big">${esc(msg(e))}</div><p><button class="btn" onclick="location.reload()">Nochmals</button></p></div></div>`; }
+    }
+    async function setPhase(p, q){ await rpc("rq_phase", { p_code: code, p_token: token, p_phase: p, p_q: q }); }
+    async function reveal(){ if (busy) return; busy = true;
+      try { await rpc("rq_reveal", { p_code: code, p_token: token, p_q: st.q, p_correct: Q[st.q].c, p_limit: LIMIT }); } finally { busy = false; } }
+    async function next(){
+      if (busy || !st || showMatrix) return; busy = true;
+      try {
+        if (st.phase === "lobby") await setPhase("question", 0);
+        else if (st.phase === "question") { busy = false; await reveal(); busy = true; }
+        else if (st.phase === "reveal") {
+          prevRanks = {}; (st.players || []).forEach((p, i) => prevRanks[p.id] = i);
+          await setPhase(st.q >= Q.length - 1 ? "end" : "leaderboard", st.q);
+        }
+        else if (st.phase === "leaderboard") await setPhase("question", st.q + 1);
+      } catch (e) {} finally { busy = false; lastKey = ""; poll(); }
+    }
+    document.addEventListener("keydown", e => {
+      if (e.code === "Space" || e.code === "ArrowRight" || e.code === "Enter") { e.preventDefault(); next(); }
+      if (e.key === "a" || e.key === "A") toggleMatrix();
+    });
+    async function toggleMatrix(){
+      showMatrix = !showMatrix; lastKey = "";
+      if (showMatrix) { try { matrix = await rpc("rq_matrix", { p_code: code, p_token: token }); } catch (e) { matrix = null; } }
+      render();
+    }
+
+    let lastKey = "";
+    async function poll(){
+      clearTimeout(timer);
+      try {
+        st = await rpc("rq_host", { p_code: code, p_token: token });
+        if (st.phase === "question" && !showMatrix) {
+          const left = LIMIT - (st.elapsed || 0);
+          if ((left <= 0 || (st.players.length && st.answered >= st.players.length)) && !busy) { await reveal(); st = await rpc("rq_host", { p_code: code, p_token: token }); }
+        }
+        if (showMatrix) { try { matrix = await rpc("rq_matrix", { p_code: code, p_token: token }); } catch (e) {} }
+        render();
+      } catch (e) {}
+      timer = setTimeout(poll, showMatrix ? 3000 : 800);
+    }
+
+    function head(right){
+      return `<div class="bm-head"><span>🌳 <b>${esc(S.title)}</b> · ${esc(S.sub)}</span><span>${right || ""}</span></div>`;
+    }
+    function foot(label){
+      return `<div class="bm-foot"><span class="hint">Weiter mit Leertaste · Code <b>${code}</b> · ${st.players.length} Spieler · <a href="#" id="mx" style="color:#C9D6B4">Auswertung (A)</a></span>${label ? `<button class="btn" id="nx">${label}</button>` : "<span></span>"}</div>`;
+    }
+
+    // ---------- Lehrer-Auswertung: wer weiss was ----------
+    function matrixHtml(){
+      const m = matrix || { players: [], answers: [] };
+      const A = {}; m.answers.forEach(a => { A[a.p + ":" + a.q] = a; });
+      const done = st.phase === "end" ? Q.length : (st.phase === "question" ? st.q : st.q + 1);
+      const cols = Q.slice(0, Math.max(done, 0));
+      const cell = (p, i) => { const a = A[p.id + ":" + i]; if (!a) return `<td class="mx-n">–</td>`; if (a.ok === null) return `<td class="mx-n">…</td>`; return a.ok ? `<td class="mx-ok">✔</td>` : `<td class="mx-no" title="${esc(Q[i].a[a.c])}">✘</td>`; };
+      const rows = m.players.map(p => { let ok = 0; cols.forEach((q, i) => { const a = A[p.id + ":" + i]; if (a && a.ok) ok++; });
+        const r = pct(ok, cols.length); return `<tr><th>${esc(p.name)}</th>${cols.map((q, i) => cell(p, i)).join("")}<td class="mx-sum ${r < 50 ? "low" : ""}">${ok}/${cols.length}</td></tr>`; }).join("");
+      const colPct = cols.map((q, i) => { const n = m.players.length; let ok = 0; m.players.forEach(p => { const a = A[p.id + ":" + i]; if (a && a.ok) ok++; }); return pct(ok, n); });
+      const topics = {}; cols.forEach((q, i) => { (topics[q.t] = topics[q.t] || []).push(colPct[i]); });
+      const tlist = Object.entries(topics).map(([t, v]) => ({ t, r: Math.round(v.reduce((a, b) => a + b, 0) / v.length) })).sort((a, b) => a.r - b.r);
+      return head("Auswertung · nur für die Lehrperson") + `<div class="bm-main" style="justify-content:flex-start;overflow:auto">
+          <div class="mx-topics">${tlist.map(x => `<span class="${x.r < 60 ? "low" : ""}">${esc(x.t)} <b>${x.r} %</b></span>`).join("")}</div>
+          <table class="mx"><thead><tr><th>Name</th>${cols.map((q, i) => `<th title="${esc(q.q)}">F${i + 1}<small>${esc(q.t)}</small></th>`).join("")}<th>Total</th></tr></thead>
+          <tbody>${rows || `<tr><td colspan="${cols.length + 2}">Noch keine Antworten.</td></tr>`}</tbody>
+          <tfoot><tr><th>% richtig</th>${colPct.map(v => `<td class="${v < 60 ? "low" : ""}">${v}</td>`).join("")}<td></td></tr></tfoot></table>
+          <div class="mx-q">${cols.map((q, i) => `<div class="${colPct[i] < 60 ? "low" : ""}"><b>F${i + 1} · ${colPct[i]} %</b> ${esc(q.q)} <i>✔ ${esc(q.a[q.c])}</i></div>`).join("")}</div>
+        </div>` + `<div class="bm-foot"><span class="hint">Rot = unter 60 % richtig → kurz nachbesprechen · Mauszeiger auf ✘ zeigt die gewählte Antwort</span><button class="btn" id="mx">Zurück zum Quiz (A)</button></div>`;
+    }
+
+    function render(){
+      const s = st; if (!s) return;
+      const key = [showMatrix, JSON.stringify(showMatrix ? matrix : ""), s.phase, s.q, s.answered, s.players.length, s.phase === "question" ? Math.ceil(LIMIT - s.elapsed) : ""].join("|");
+      if (key === lastKey) return; lastKey = key;
+      let html = "";
+      if (showMatrix) html = matrixHtml();
+      else if (s.phase === "lobby") {
+        html = head("Lobby") + `<div class="bm-main"><div class="lobby">
+            <div class="center"><div class="qr" id="qr"></div><p class="url">${esc(joinUrl.replace(/^https?:\/\//, ""))}</p></div>
+            <div><p style="font-size:3vh;margin:0">Handy öffnen, QR-Code scannen<br>und diesen Code eingeben:</p>
+              <div class="code">${code}</div>
+              <p style="font-size:2.6vh">${s.players.length} angemeldet</p>
+              <div class="names">${s.players.map(p => `<span>${esc(p.name)}</span>`).join("")}</div></div>
+          </div></div>` + foot(s.players.length ? "Quiz starten ▶" : "");
+      } else if (s.phase === "question") {
+        const q = Q[s.q]; const left = Math.max(0, Math.ceil(LIMIT - s.elapsed));
+        html = head(`Frage ${s.q + 1} / ${Q.length} · ${esc(q.t)}`) + `<div class="bm-main">
+            <div class="qtitle">${esc(q.q)}</div>
+            <div class="qmid"><div class="timer">${left}</div><div class="cnt"><b>${s.answered}</b>Antworten</div></div>
+            <div class="answers">${q.a.map((t, i) => `<div class="ans c${i}"><span class="sym">${SYM[i]}</span>${esc(t)}</div>`).join("")}</div>
+          </div>` + foot("Auflösen");
+      } else if (s.phase === "reveal") {
+        const q = Q[s.q]; const n = s.players.length || 1;
+        html = head(`Frage ${s.q + 1} / ${Q.length} · ${esc(q.t)}`) + `<div class="bm-main">
+            <div class="qtitle">${esc(q.q)}</div>
+            <div class="answers">${q.a.map((t, i) => `<div class="ans c${i} ${i === q.c ? "" : "dim"}"><span class="sym">${i === q.c ? "✔" : SYM[i]}</span>${esc(t)}<span class="bar">${(s.dist || [])[i] || 0}</span></div>`).join("")}</div>
+            <p class="center" style="font-size:2.6vh;margin-top:2.5vh">${pct(((s.dist || [])[q.c]) || 0, n)} % haben richtig geantwortet</p>
+          </div>` + foot(s.q >= Q.length - 1 ? "Siegerpodest 🏆" : "Rangliste");
+      } else if (s.phase === "leaderboard") {
+        const top = s.players.slice(0, 5);
+        html = head(`Top 5 nach Frage ${s.q + 1} / ${Q.length}`) + `<div class="bm-main"><div class="board">
+            ${top.map((p, i) => { const d = prevRanks[p.id]; const mv = d === undefined || d === i ? "" : d > i ? ` <span style="color:var(--g)">▲${d - i}</span>` : ` <span style="color:#E8826B">▼${i - d}</span>`;
+              return `<div class="row ${i === 0 ? "top1" : ""}"><span class="rk">${i + 1}.</span><span>${esc(p.name)}${mv}</span><span class="pts">${p.score}</span></div>`; }).join("")}
+          </div></div>` + foot("Nächste Frage ▶");
+      } else if (s.phase === "end") {
+        const p = s.players; const n = p.length || 1;
+        const rate = Q.map((q, i) => { const x = (s.stats || []).find(z => z.q === i); return { i, r: x ? x.ok / n : 0 }; });
+        const hard = rate.sort((a, b) => a.r - b.r).slice(0, 3);
+        const pod = (k, cls) => p[k] ? `<div class="pod ${cls}"><div class="nm">${esc(p[k].name)}</div><div class="pt">${p[k].score} Punkte</div><div class="blk">${k + 1}</div></div>` : `<div class="pod ${cls}"></div>`;
+        html = head("Siegerpodest 🏆") + `<div class="bm-main">
+            <div class="podium">${pod(1, "p2")}${pod(0, "p1")}${pod(2, "p3")}</div>
+            <p class="center" style="font-size:2.6vh;margin:3vh 0 0">Diese 3 Fragen schauen wir nochmals an</p>
+            <div class="hard">${hard.map(h => `<div><b>${Math.round(h.r * 100)} % richtig</b>${esc(Q[h.i].q)}<i>✔ ${esc(Q[h.i].a[Q[h.i].c])}</i></div>`).join("")}</div>
+          </div>` + `<div class="bm-foot"><span class="hint">Code ${code} · ${n} Spieler · <a href="#" id="mx" style="color:#C9D6B4">Auswertung pro Person (A)</a></span><button class="btn" id="neu">Neues Spiel</button></div>`;
+      }
+      app.innerHTML = `<div class="bm">${html}</div>`;
+      const nx = $("#nx"); if (nx) nx.onclick = next;
+      const mx = $("#mx"); if (mx) mx.onclick = e => { e.preventDefault(); toggleMatrix(); };
+      const nb = $("#neu"); if (nb) nb.onclick = () => { store(K + "code", ""); store(K + "token", ""); location.href = location.pathname + "?beamer=1" + "&neu=1"; };
+      if (s.phase === "lobby" && !showMatrix) drawQR();
+    }
+    function drawQR(){
+      const el = $("#qr"); if (!el || typeof qrcode === "undefined") return;
+      const q = qrcode(0, "M"); q.addData(joinUrl + "?code=" + code); q.make();
+      el.innerHTML = q.createImgTag(8, 0);
+    }
+    start();
+  }
+})();
+</script>
+</body>
+</html>
