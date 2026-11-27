@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎤 Kolloquium-Champion · Abschlussspiel L53–68</title>
+<style>
+:root{--bg:#12161a;--card:#1d242b;--ink:#f3f5f2;--mut:#9fb0a6;--g:#98c723;--ok:#2ecc71;--bad:#ff5a5a;--y:#ffc400}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.wrap{min-height:100%;display:flex;flex-direction:column;padding:2.2vh 3vw}
+.top{display:flex;justify-content:space-between;align-items:center;font-weight:800;color:var(--mut);font-size:2.2vh}
+.top a{color:var(--mut);text-decoration:none}
+.stripes{height:1.2vh;background:repeating-linear-gradient(45deg,var(--y) 0 2vh,#222 2vh 4vh);border-radius:6px;margin:1.2vh 0 2vh}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+h1{font-size:7vh;margin:0 0 2vh}
+.rules{font-size:3.4vh;line-height:1.5;max-width:1300px}
+.rules b{color:var(--y)}
+.tag{display:inline-block;background:#2a333c;border-radius:999px;padding:.6vh 2vh;font-weight:800;font-size:2.4vh;color:var(--g);margin-bottom:2.4vh}
+.stmt{font-size:6vh;font-weight:800;line-height:1.25;max-width:1500px}
+.thumbs{display:flex;gap:6vw;margin-top:4vh;font-size:4vh;font-weight:900}
+.thumbs div{background:var(--card);border-radius:3vh;padding:2vh 4vh}
+.cd{font-size:12vh;font-weight:900;color:var(--y);margin-top:2vh;font-variant-numeric:tabular-nums}
+.verdict{font-size:11vh;font-weight:900;margin:1vh 0}
+.verdict.r{color:var(--ok)}.verdict.f{color:var(--bad)}
+.why{font-size:3.6vh;max-width:1400px;background:var(--card);border-radius:2.4vh;padding:2.4vh 3.4vh;line-height:1.4;margin-top:1vh}
+.joker{font-size:7vh;font-weight:900;color:var(--y)}
+.bar{display:flex;gap:1.2vw;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:2vh}
+button{font:inherit;border:0;border-radius:1.6vh;padding:1.6vh 3vh;font-size:2.8vh;font-weight:900;cursor:pointer}
+.go{background:var(--g);color:#12161a}
+.sec{background:#2a333c;color:var(--ink)}
+.prog{height:1vh;background:#2a333c;border-radius:9px;overflow:hidden;margin-top:2vh}
+.prog i{display:block;height:100%;background:var(--g);transition:width .4s}
+.hint{color:var(--mut);font-size:2vh;margin-top:1.4vh}
+.pop{animation:pop .45s ease-out}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.shake{animation:sh .5s}
+@keyframes sh{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-14px)}40%,80%{transform:translateX(14px)}}
+.bonus{margin-top:1.6vh;font-size:3vh;background:rgba(160,200,60,.15);border:2px dashed #a3d13c;border-radius:14px;padding:1.2vh 2vh;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="../">← Alle Apps</a><span>🎤 L53–68 · Kolloquium-Themen</span><span id="cnt"></span></div>
+  <div class="stripes"></div>
+  <div class="stage" id="stage"></div>
+  <div class="prog"><i id="pg" style="width:0%"></i></div>
+  <div class="hint">Leertaste oder ➜ = weiter · Esc = Start · Ton: <label><input type="checkbox" id="snd" checked> an</label></div>
+</div>
+<script>
+const Q=[
+ ["Gekochte Essensreste gehören auf den Gartenkompost.",0,"Falsch: Gekochtes lockt <b>Ratten</b> an. Auf den Gartenkompost nur rohe Rüst- und Gartenabfälle.","Nenne 3 Dinge, die auf den Kompost dürfen."],
+ ["Bei der Heissrotte werden Unkrautsamen und Krankheitskeime abgetötet.",1,"Richtig: In der ersten Phase wird es im Kompost <b>50–70 °C</b> heiss.","Welche Bodenlebewesen arbeiten im Kompost?"],
+ ["Frischkompost ist ideal für Aussaaten und junge Sämlinge.",0,"Falsch: Frischkompost ist noch nicht fertig zersetzt. Für Aussaaten nimmt man <b>Reifekompost</b>.","Wie prüfst du, ob Kompost reif ist?"],
+ ["Mulch hält den Boden feucht und unterdrückt Unkraut.",1,"Richtig: Nachteil: <b>Schnecken und Mäuse</b> fühlen sich darunter wohl.","Nenne ein mineralisches und ein organisches Mulchmaterial."],
+ "JOKER",
+ ["Die «Flex» heisst im Fachjargon Trennscheibe.",0,"Falsch: Das Gerät heisst <b>Winkelschleifer</b>. Im Kolloquium immer Fachbegriffe!","Nenne 2 weitere Maschinen mit ihrem Fachbegriff."],
+ ["Benzin darf ich in einer gut beschrifteten PET-Flasche aufbewahren.",0,"Falsch: Nur in <b>zugelassenen Kanistern</b>, kühl, nicht an der Sonne.","Wie lagerst du Akkus richtig?"],
+ ["Pflanzenschutzmittel lagert man abgeschlossen und getrennt von Lebensmitteln.",1,"Richtig: In einem <b>abschliessbaren Schrank</b>, im Originalgebinde.","Was machst du mit abgelaufenen Pflanzenschutzmitteln?"],
+ ["Den Tagesparkdienst macht man einmal pro Jahr in der Werkstatt.",0,"Falsch: Der Tagesparkdienst ist <b>nach jedem Einsatz</b>: reinigen, kontrollieren, auftanken.","Was gehört zum Service?"],
+ ["Vor Arbeiten am Mähmesser ziehe ich den Zündkerzenstecker ab.",1,"Richtig: So kann der Motor <b>nicht anspringen</b>.","Wie kippst du einen Rasenmäher richtig?"],
+ "JOKER",
+ ["Wurzelnackte Gehölze kann man ein paar Tage an der Sonne liegen lassen.",0,"Falsch: Die Wurzeln trocknen aus. <b>Einschlagen</b>, schattig und feucht halten.","Wie machst du einen Pflanzeneinschlag?"],
+ ["Wiederverwenden ist in der Abfallpyramide besser als Recyceln.",1,"Richtig: Reihenfolge: vermeiden – vermindern – <b>wiederverwenden</b> – recyceln – energetisch nutzen – deponieren.","Gib ein Beispiel für Wiederverwenden im Gartenbau."],
+ ["Alte Bahnschwellen mit Teeröl sind eine gute Beeteinfassung.",0,"Falsch: Teeröl ist giftig ➜ <b>Sonderabfall</b>.","Nenne 2 weitere Sonderabfälle."],
+ ["Riesen-Bärenklau kommt in die Grünabfuhr.",0,"Falsch: Invasive Neophyten gehören in den <b>Kehricht</b> (Verbrennung), sonst verbreiten sie sich.","Warum sind invasive Neophyten ein Problem?"],
+ ["Getrennte Mulden machen die Entsorgung günstiger.",1,"Richtig: Sauber getrennte Abfälle können <b>recycelt</b> werden. Gemischte Abfälle sind teuer.","Welche Mulden gibt es auf der Baustelle?"],
+ "FINALE",
+ ["Kompost, der nach faulen Eiern riecht, ist zu trocken.",0,"Falsch: Er ist <b>zu nass</b> und hat <b>zu wenig Luft</b> ➜ umsetzen, grobes Material untermischen.","Erkläre die Kresse-Probe."]
+];
+const $=id=>document.getElementById(id);
+let i=-1, phase="start", timer=null;
+const TIME=10;
+let AC=null;
+function beep(f,d,type="sine",vol=.25){if(!$("snd").checked)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(vol,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){}}
+function fanfare(){[523,659,784,1046].forEach((f,k)=>setTimeout(()=>beep(f,.25,"triangle",.3),k*140));}
+function buzz(){beep(140,.5,"sawtooth",.25);}
+const real=Q.filter(q=>Array.isArray(q)).length;
+function nr(){return Q.slice(0,i+1).filter(q=>Array.isArray(q)).length;}
+function render(html,cls){const s=$("stage");s.innerHTML=html;s.classList.remove("pop","shake");void s.offsetWidth;if(cls)s.classList.add(cls);$("pg").style.width=Math.max(0,nr()/real*100)+"%";$("cnt").textContent=i>=0&&i<Q.length?`Frage ${nr()} / ${real}`:"";}
+function start(){i=-1;phase="start";clearInterval(timer);
+ render(`<h1>🎤 Kolloquium-Champion</h1><div class="rules">
+  1️⃣ <b>Alle stehen auf.</b><br>
+  2️⃣ Eine Aussage erscheint. Ihr habt <b>10 Sekunden</b>.<br>
+  3️⃣ Alle gleichzeitig: <b>👍 Daumen hoch = richtig</b> · <b>👎 Daumen runter = falsch</b><br>
+  4️⃣ Wer falsch liegt, <b>setzt sich</b>. Bei ⭐ <b>JOKER</b> stehen alle wieder auf!<br>
+  🏆 Wer im <b>FINALE</b> noch steht, ist <b>Kolloquium-Champion</b>.<br>🎤 Nach jeder Frage: Wer noch steht, kann den <b>Bonus</b> beantworten.</div>
+  <div class="bar"><button class="go" onclick="next()">▶ Start</button></div>`,"pop");}
+function next(){clearInterval(timer);
+ if(phase==="ask"){reveal();return;}
+ i++;
+ if(i>=Q.length){phase="end";fanfare();render(`<h1>🏆 Kolloquium-Champions!</h1><div class="rules">Wer noch steht: <b>Applaus!</b> 👏<br>Ihr seid bereit fürs Kolloquium am 10. und 17. Dezember.<br><br>➜ Jetzt: <b>Checkout</b> in der Tages-App = Ticket zum Aufräumen 🎟️</div><div class="bar"><button class="sec" onclick="start()">↺ Nochmals</button></div>`,"pop");return;}
+ const q=Q[i];
+ if(q==="JOKER"){phase="joker";fanfare();render(`<div class="joker">⭐ JOKER! ⭐</div><div class="rules">Alle stehen wieder auf!</div><div class="bar"><button class="go" onclick="next()">Weiter ➜</button></div>`,"pop");return;}
+ if(q==="FINALE"){phase="joker";fanfare();render(`<div class="joker">🔥 FINALE 🔥</div><div class="rules">Nur wer jetzt noch steht, spielt mit.<br>Die schwierigste Frage kommt …</div><div class="bar"><button class="go" onclick="next()">Weiter ➜</button></div>`,"pop");return;}
+ phase="ask";let t=TIME;
+ render(`<span class="tag">Richtig oder falsch?</span><div class="stmt">${q[0]}</div><div class="thumbs"><div>👍 richtig</div><div>👎 falsch</div></div><div class="cd" id="cd">${t}</div><div class="bar"><button class="sec" onclick="reveal()">Auflösen ➜</button></div>`,"pop");
+ timer=setInterval(()=>{t--;const c=$("cd");if(c)c.textContent=t;if(t<=3&&t>0)beep(880,.12);else if(t>3)beep(440,.05,"sine",.08);if(t<=0){clearInterval(timer);beep(220,.4,"square",.2);const c2=$("cd");if(c2){c2.textContent="Daumen hoch!";c2.style.fontSize="7vh";}}},1000);
+}
+function reveal(){clearInterval(timer);if(phase!=="ask")return;phase="rev";const q=Q[i];
+ q[1]?fanfare():buzz();
+ render(`<div class="stmt" style="font-size:4.2vh;opacity:.85">${q[0]}</div><div class="verdict ${q[1]?"r":"f"}">${q[1]?"👍 RICHTIG":"👎 FALSCH"}</div><div class="why">${q[2]}</div><div class="rules" style="font-size:3vh;margin-top:1.6vh">Wer falsch lag: <b>hinsetzen</b>.</div>${q[3]?`<div class="bonus">🎤 <b>Kolloquium-Bonus:</b> ${q[3]}</div>`:""}<div class="bar"><button class="go" onclick="next()">Nächste ➜</button></div>`,q[1]?"pop":"shake");}
+document.addEventListener("keydown",e=>{if(e.key===" "||e.key==="ArrowRight"||e.key==="Enter"){e.preventDefault();if(phase==="start"||phase==="joker"||phase==="rev"||phase==="ask")next();}else if(e.key==="Escape")start();});
+start();
+</script>
+</body>
+</html>

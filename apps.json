@@ -142,5 +142,17 @@
     "title": "🏆 Lade-Champion (Abschlussspiel L63–65)",
     "description": "Steh-auf-Quiz für den Beamer: Alle stehen, Daumen hoch oder runter, wer falsch liegt setzt sich. 16 schwierige Aussagen zu Transport und Ladungssicherung, mit Joker-Runden.",
     "added": "2026-11-26"
+  },
+  {
+    "slug": "tag-2026-12-03",
+    "title": "Tages-App 03.12.2026 – Ladungssicherung & Kolloquium-Training (GLA25A)",
+    "description": "Check-in zu L63–65, Ladungs-Simulator, «Stimmt's?»-Blitz und Kolloquium-Training zu L53–68 in 3 Niveaus. Checkout (Ticket zum Aufräumen) erst ab 16.45 Uhr. Live-Übersicht für die Lehrperson.",
+    "added": "2026-11-27"
+  },
+  {
+    "slug": "kolloquium-champion",
+    "title": "🎤 Kolloquium-Champion – Abschlussspiel L53–68",
+    "description": "Steh-auf-Quiz am Beamer: 15 Aussagen zu Kompost, Mulch, Lagern, Warten und Entsorgen, mit Joker, Finale und Kolloquium-Bonusfrage.",
+    "added": "2026-11-27"
   }
 ]
