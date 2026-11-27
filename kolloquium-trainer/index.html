@@ -38,6 +38,8 @@ ul.e{margin:6px 0 0 18px;padding:0}ul.e li{margin:4px 0}
 </style></head><body><div class="wrap" id="app"></div>
 <script src="art.js"></script><script src="cards.js"></script><script src="quiz.js"></script>
 <script>
+const TAGB=(()=>{try{const t=new URLSearchParams(location.search).get("tag");return t&&/^tag-\d{4}-\d{2}-\d{2}$/.test(t)?t:null}catch(e){return null}})();
+const BACKHTML=TAGB?`<a class="back" href="../${TAGB}/">← Tages-App</a>`:`<a class="back" href="../">← Alle Apps</a>`;
 const KEY="kolloquium-trainer-v1";
 let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
 S.sim=S.sim||{};S.quiz=S.quiz||{};S.known=S.known||{};S.th=S.th||"alle";
@@ -53,7 +55,7 @@ function bindChips(f){app.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{S.
 /* ---------------- Home ---------------- */
 function home(){stopT();
  const nSim=Object.keys(S.sim).length, qv=Object.values(S.quiz), qAvg=qv.length?Math.round(qv.reduce((a,b)=>a+b.best,0)/qv.length):null;
- app.innerHTML=`<a class="back" href="../">← Alle Apps</a><h1>🎤 Kolloquium-Trainer</h1><div class="sub">L53–68 · Kolloquium am 10.12. und 17.12.2026 · alles mit Ordner und Dossiers lösbar</div>
+ app.innerHTML=`${BACKHTML}<h1>🎤 Kolloquium-Trainer</h1><div class="sub">L53–68 · Kolloquium am 10.12. und 17.12.2026 · alles mit Ordner und Dossiers lösbar</div>
  <div class="card"><b>Wähle dein Thema</b>${chips()}</div>
  <button class="tile" data-m="sim"><span class="ic">🎤</span><div><b>1 · Kolloquium-Simulator</b><span>Fallkarte mit Bild · 4 Min. Vorbereitung · laut erzählen · Vertiefungsfragen · Selbstbewertung wie im echten Kolloquium</span></div><span class="st">${nSim}/${CARDS.length}</span></button>
  <button class="tile" data-m="mix"><span class="ic">🧠</span><div><b>2 · Quiz-Mix</b><span>12 Fragen in 7 Formen: Bild-Quiz, Stimmt's?, Fachbegriff, Reihenfolge, Sortieren, Paare, Lückentext</span></div><span class="st">${qAvg==null?"":qAvg+" %"}</span></button>

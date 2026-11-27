@@ -500,5 +500,6 @@ renderMis();sync();fit();reset();
 if(P.get("tab")==="mis")showTab("mis");
 if(P.get("tab")==="lex")showTab("lex");
 </script>
+<script>(()=>{try{const t=new URLSearchParams(location.search).get("tag");if(t&&/^tag-\d{4}-\d{2}-\d{2}$/.test(t))document.querySelectorAll('a[href="../"]').forEach(a=>{a.href="../"+t+"/";a.textContent="← Tages-App"})}catch(e){}})();</script>
 </body>
 </html>
