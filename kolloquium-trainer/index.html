@@ -40,7 +40,7 @@ ul.e{margin:6px 0 0 18px;padding:0}ul.e li{margin:4px 0}
 <script>
 const TAGB=(()=>{try{const t=new URLSearchParams(location.search).get("tag");return t&&/^tag-\d{4}-\d{2}-\d{2}$/.test(t)?t:null}catch(e){return null}})();
 const BACKHTML=TAGB?`<a class="back" href="../${TAGB}/">← Tages-App</a>`:`<a class="back" href="../">← Alle Apps</a>`;
-const KEY="kolloquium-trainer-v1";
+const KEY="kolloquium-trainer-v2";
 let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
 S.sim=S.sim||{};S.quiz=S.quiz||{};S.known=S.known||{};S.th=S.th||"alle";
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -49,7 +49,7 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random(
 const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 const inTh=th=>S.th==="alle"||S.th===th;
 let timerId=null;const stopT=()=>{if(timerId){clearInterval(timerId);timerId=null}};
-const CRIT=[["Lösungsweg","richtig und zielführend"],["Inhalt","korrekt"],["Fachbegriffe","richtig statt Umschreibungen"],["Kommunikation","deutlich, zügig, klar"]];
+const CRIT=[["Inhalt (zählt doppelt)","richtig und vollständig",2],["Aufbau","klar geordnet, geht auf den Auftrag ein",1],["Fachbegriffe","die wichtigsten sicher und richtig",1],["Vertiefungsfragen","selbständig und richtig",1],["Kommunikation","verständlich, eigene Worte, ganze Sätze",1]];
 function chips(){return `<div class="chips">${[["alle","🌈 Alle Themen"],...Object.entries(TH)].map(([k,t])=>`<button class="chip ${S.th===k?"on":""}" data-th="${k}">${t}</button>`).join("")}</div>`}
 function bindChips(f){app.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{S.th=c.dataset.th;save();f()})}
 /* ---------------- Home ---------------- */
@@ -69,7 +69,7 @@ function simPick(){stopT();
  const list=CARDS.map((c,i)=>[c,i]).filter(([c])=>inTh(LZG[c.lz]));
  app.innerHTML=`<a class="back" href="#" id="bk">← Übersicht</a><h2>🎤 Kolloquium-Simulator</h2>${chips()}
  <button class="btn" id="rnd">🎲 Zufällige Karte</button>
- ${list.map(([c,i])=>`<button class="tile" data-i="${i}"><span class="ic">${S.sim[i]!=null?"✅":"🎴"}</span><div><b>${i+1} · ${esc(c.t)}</b><span>${c.lz}</span></div><span class="st">${S.sim[i]!=null?S.sim[i]+"/16":""}</span></button>`).join("")}`;
+ ${list.map(([c,i])=>`<button class="tile" data-i="${i}"><span class="ic">${S.sim[i]!=null?"✅":"🎴"}</span><div><b>${i+1} · ${esc(c.t)}</b><span>${c.lz}</span></div><span class="st">${S.sim[i]!=null?S.sim[i]+"/18":""}</span></button>`).join("")}`;
  $("#bk").onclick=e=>{e.preventDefault();home()};bindChips(simPick);
  $("#rnd").onclick=()=>{const open=list.filter(([c,i])=>S.sim[i]==null);const p=(open.length?open:list);sim(p[Math.random()*p.length|0][1])};
  app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>sim(+b.dataset.i));
@@ -98,14 +98,14 @@ function deep(i,k,known,nf){stopT();const c=CARDS[i];
  $("#sh").onclick=()=>{$("#sh").remove();$("#a").innerHTML=`<div class="ans">${esc(c.va[k])}</div><div class="row"><button class="btn green" id="y">✅ Gewusst</button><button class="btn red" id="no">❌ Noch nicht</button></div>`;
   $("#y").onclick=()=>deep(i,k+1,known+1,nf);$("#no").onclick=()=>deep(i,k+1,known,nf)};
 }
-function rate(i,known,nf){const c=CARDS[i];const r=[0,0,0,0];
+function rate(i,known,nf){const c=CARDS[i];const r=CRIT.map(()=>-1);
  app.innerHTML=`<div class="top"><span>📝 Selbstbewertung · Karte ${i+1}</span></div>
- <div class="card"><p>Fachbegriffe: <b>${nf}/${c.f.length}</b> · Vertiefungsfragen gewusst: <b>${known}/${c.v.length}</b></p><p class="hint">Bewerte dich ehrlich wie im echten Kolloquium (je 1–4 Punkte):</p>
- ${CRIT.map((x,k)=>`<div class="crit"><div><b>${x[0]}</b><small>${x[1]}</small></div><div class="pts" data-k="${k}">${[1,2,3,4].map(p=>`<button data-p="${p}">${p}</button>`).join("")}</div></div>`).join("")}
- <div class="center"><h2 id="tot">0 / 16</h2></div><button class="btn" id="sv" disabled>💾 Speichern</button></div>`;
- app.querySelectorAll(".pts").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{r[+g.dataset.k]=+b.dataset.p;g.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));const t=r.reduce((a,b)=>a+b,0);$("#tot").textContent=t+" / 16";$("#sv").disabled=r.includes(0)}));
- $("#sv").onclick=()=>{const t=r.reduce((a,b)=>a+b,0);S.sim[i]=Math.max(S.sim[i]||0,t);save();
-  app.innerHTML=`<div class="card center"><div class="medal">${t>=14?"🏆":t>=11?"💪":t>=8?"👍":"🔁"}</div><h2>${t} / 16 Punkte</h2><p>${t>=14?"Stark! So kannst du ins Kolloquium.":t>=11?"Gut! Noch die Lücken mit dem Ordner schliessen.":"Lies das Thema im Ordner nach und probiere die Karte nochmals."}</p>
+ <div class="card"><p>Fachbegriffe: <b>${nf}/${c.f.length}</b> · Vertiefungsfragen gewusst: <b>${known}/${c.v.length}</b></p><p class="hint">Bewerte dich ehrlich wie im echten Kolloquium (je 0–3 Punkte, Inhalt zählt doppelt):</p>
+ ${CRIT.map((x,k)=>`<div class="crit"><div><b>${x[0]}</b><small>${x[1]}</small></div><div class="pts" data-k="${k}">${[0,1,2,3].map(p=>`<button data-p="${p}">${p}</button>`).join("")}</div></div>`).join("")}
+ <div class="center"><h2 id="tot">0 / 18</h2></div><button class="btn" id="sv" disabled>💾 Speichern</button></div>`;
+ app.querySelectorAll(".pts").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{r[+g.dataset.k]=+b.dataset.p;g.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));const t=r.reduce((a,b,k)=>a+Math.max(0,b)*CRIT[k][2],0);$("#tot").textContent=t+" / 18";$("#sv").disabled=r.includes(-1)}));
+ $("#sv").onclick=()=>{const t=r.reduce((a,b,k)=>a+b*CRIT[k][2],0);S.sim[i]=Math.max(S.sim[i]||0,t);save();
+  app.innerHTML=`<div class="card center"><div class="medal">${t>=16?"🏆":t>=12?"💪":t>=9?"👍":"🔁"}</div><h2>${t} / 18 Punkte</h2><p>${t>=16?"Stark! So kannst du ins Kolloquium.":t>=12?"Gut! Noch die Lücken mit dem Ordner schliessen.":"Lies das Thema im Ordner nach und probiere die Karte nochmals."}</p>
   <p class="hint">📘 ${esc(c.q)}</p><button class="btn" id="nx">🎲 Nächste Karte</button><button class="btn sec" id="ov">Kartenliste</button><button class="btn sec" id="hm">🏠 Übersicht</button></div>`;
   $("#nx").onclick=()=>{const l=CARDS.map((c,j)=>j).filter(j=>inTh(LZG[CARDS[j].lz])&&j!==i);sim(l[Math.random()*l.length|0])};$("#ov").onclick=simPick;$("#hm").onclick=home};
 }
@@ -161,7 +161,7 @@ function flash(){stopT();const list=GLOSS.map((g,i)=>[g,i]).filter(([g])=>inTh(g
   $("#ok").onclick=()=>{S.known[i]=1;save();k=(k+1)%order.length;dr()};$("#no").onclick=()=>{delete S.known[i];save();k=(k+1)%order.length;dr()};};dr();}
 /* ---------------- 4 Stand ---------------- */
 function stand(){stopT();
- const rows=Object.entries(TH).map(([th,t])=>{const cs=CARDS.map((c,i)=>[c,i]).filter(([c])=>LZG[c.lz]===th);const done=cs.filter(([c,i])=>S.sim[i]!=null);const avg=done.length?done.reduce((a,[c,i])=>a+S.sim[i],0)/done.length/16*100:0;
+ const rows=Object.entries(TH).map(([th,t])=>{const cs=CARDS.map((c,i)=>[c,i]).filter(([c])=>LZG[c.lz]===th);const done=cs.filter(([c,i])=>S.sim[i]!=null);const avg=done.length?done.reduce((a,[c,i])=>a+S.sim[i],0)/done.length/18*100:0;
   const gl=GLOSS.map((g,i)=>[g,i]).filter(([g])=>g[0]===th);const kn=gl.filter(([g,i])=>S.known[i]).length;
   return `<div class="card"><b>${t}</b><div class="lzbar"><span>🎤 Simulator ${done.length}/${cs.length} Karten</span><div class="bar"><i style="width:${avg}%"></i></div></div><div class="lzbar"><span>🃏 Fachbegriffe ${kn}/${gl.length}</span><div class="bar"><i style="width:${gl.length?kn/gl.length*100:0}%"></i></div></div><div class="hint">🧠 Quiz-Mix bestes Resultat: ${S.quiz[th]?S.quiz[th].best+" %":"–"}</div></div>`}).join("");
  app.innerHTML=`<a class="back" href="#" id="bk">← Übersicht</a><h2>📊 Mein Stand</h2><p class="hint">Grüner Balken = deine Selbstbewertung im Simulator. Kurze Balken = dort noch üben!</p>${rows}<button class="btn sec" id="rs">🗑️ Alles zurücksetzen</button>`;
